@@ -45,10 +45,6 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
                     if (chest == null && tile instanceof TileEntityChest)
                     {
                         chest = new WeakReference(tile);
-                        checkForChest(world, xPos, yPos, zPos, 1, 0);
-                        checkForChest(world, xPos, yPos, zPos, -1, 0);
-                        checkForChest(world, xPos, yPos, zPos, 0, 1);
-                        checkForChest(world, xPos, yPos, zPos, 0, -1);
                     }
                     else if (patternChest == null && tile instanceof PatternChestLogic)
                         patternChest = new WeakReference(tile);
