@@ -42,16 +42,11 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
                 for (int zPos = z - 1; zPos <= z + 1; zPos++)
                 {
                     TileEntity tile = world.getTileEntity(xPos, yPos, zPos);
-
                     if (chest == null && tile instanceof TileEntityChest)
                     {
                         chest = new WeakReference(tile);
-                        /*checkForChest(world, xPos, yPos, zPos, 1, 0);
-                        checkForChest(world, xPos, yPos, zPos, -1, 0);
-                        checkForChest(world, xPos, yPos, zPos, 0, 1);
-                        checkForChest(world, xPos, yPos, zPos, 0, -1);*/
                     }
-                    else  if (patternChest == null && tile instanceof PatternChestLogic)
+                    else if (patternChest == null && tile instanceof PatternChestLogic)
                         patternChest = new WeakReference(tile);
                     else if (furnace == null && (tile instanceof TileEntityFurnace || tile instanceof FurnaceLogic))
                         furnace = new WeakReference(tile);
