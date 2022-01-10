@@ -402,6 +402,13 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         xSize -= chestWidth;
     }
     
+    @Override
+    protected void mouseMovedOrUp(int x, int y, int button) {
+        // Hacks
+        xSize += chestWidth;
+        super.mouseMovedOrUp(x, y, button);
+        xSize -= chestWidth;  
+    }
     
     // updates slot visibility
     protected void updateChestSlots() {
