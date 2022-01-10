@@ -375,9 +375,9 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         chestLeft = guiLeft - chestWidth;
         chestTop = guiTop;
 
-        // Leaving out the xsize increase by chestSize and adjusting where it's used, because otherwise it shifts both the bookmarks and item panel
-        // way too far out.
-        //xSize += guiLeft - chestLeft;
+        // Putting this back in because otherwise mouseClick doesn't find the slots on the right :-/
+        // Would love to find a way to _not_ push the bookmarks and NEI item panel so far over, but for now... we'll live with it
+        xSize += guiLeft - chestLeft;
         guiLeft = chestLeft;
 
         if (logic.doubleChest != null)
