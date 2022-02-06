@@ -36,9 +36,9 @@ public class CastingRecipe
         if (castingMetal.isFluidEqual(metal)) {
             if (cast != null && cast.getItemDamage() == OreDictionary.WILDCARD_VALUE && inputCast.getItem() == cast.getItem()) {
                 return true;
-            } else if (!ignoreNBT && ItemStack.areItemStacksEqual(this.cast, inputCast)) {
+            } else if (!ignoreNBT && ItemStack.areItemStacksEqual(cast, inputCast)) {
                 return true;
-            } else if (ignoreNBT && cast != null && this.cast.isItemEqual(inputCast)) {
+            } else if (ignoreNBT && cast != null && inputCast != null && cast.isItemEqual(inputCast)) {
                 return true;
             }
         }
