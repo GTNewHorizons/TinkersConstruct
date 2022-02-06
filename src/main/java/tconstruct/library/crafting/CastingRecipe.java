@@ -2,6 +2,7 @@ package tconstruct.library.crafting;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 import tconstruct.library.client.FluidRenderProperties;
 
 public class CastingRecipe
@@ -33,7 +34,7 @@ public class CastingRecipe
     public boolean matches (FluidStack metal, ItemStack inputCast)
     {
         if (castingMetal.isFluidEqual(metal)) {
-            if (cast != null && cast.getItemDamage() == Short.MAX_VALUE && inputCast.getItem() == cast.getItem()) {
+            if (cast != null && cast.getItemDamage() == OreDictionary.WILDCARD_VALUE && inputCast.getItem() == cast.getItem()) {
                 return true;
             } else if (!ignoreNBT && ItemStack.areItemStacksEqual(this.cast, inputCast)) {
                 return true;
