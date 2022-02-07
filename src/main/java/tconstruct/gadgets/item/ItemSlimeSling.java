@@ -1,7 +1,10 @@
 package tconstruct.gadgets.item;
 
+import java.util.List;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -94,5 +97,12 @@ public class ItemSlimeSling extends Item {
 			SlimeBounceHandler.addBounceHandler(player);
 			// TinkerCommons.potionSlimeBounce.apply(player);
 		}
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+		list.add("Aim at a block behind you to get thrown into the air.");
+		list.add(player.onGround ? "Shoot for the moon!" : "Must be on the ground to use.");
 	}
 }

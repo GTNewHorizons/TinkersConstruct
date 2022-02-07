@@ -7,7 +7,9 @@ import javax.vecmath.Vector3d;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -221,6 +223,7 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
 		list.add("Boooounce!");
+		list.add("Hold "+(I18n.format(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyDescription(), new Object[0]))+" to stop bouncing.");
 	}
 
 	/* Prevent armor from dying */
