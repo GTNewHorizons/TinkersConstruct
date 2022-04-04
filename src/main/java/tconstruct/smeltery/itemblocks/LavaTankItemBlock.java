@@ -65,15 +65,17 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
      *         FluidStack attempting to set to the container.
      */
     public void setFluid(ItemStack container, FluidStack resource) {
-        boolean removeFluid = resource == null || resource.amount <= 0;
-        NBTTagCompound nbt = container.getTagCompound();
-        if (removeFluid && nbt == null) return;
-        if (nbt == null) nbt = new NBTTagCompound();
-        if (removeFluid) {
-            nbt.removeTag("Fluid");
-        } else {
+        if (container == null) return;
+        if (resource != null && 0 < resource.amount) {
+            NBTTagCompound nbt = container.getTagCompound() != null ? container.getTagCompound() : new NBTTagCompound();
             nbt.setTag("Fluid", resource.writeToNBT(new NBTTagCompound()));
+            container.setTagCompound(nbt);
+            return;
         }
+        NBTTagCompound nbt = container.getTagCompound();
+        if (nbt == null) return;
+        nbt.removeTag("Fluid");
+        if (nbt.hasNoTags()) nbt = null;
         container.setTagCompound(nbt);
     }
 
@@ -119,6 +121,7 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
      * @param maxDrain
      *         Maximum amount of fluid to be removed from the container.
      * @param doDrain
+     *         If false, the drain will only be simulated.
      * @return Amount of fluid that was (or would have been, if simulated) drained from the
      * container.
      */
