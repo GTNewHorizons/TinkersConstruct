@@ -92,7 +92,8 @@ public class CraftingStationContainer extends Container {
             IInventory inv = logic.getFirstInventory();
             IInventory secondInv = logic.getSecondInventory();
 
-            final Set<Integer> accessibleSlots = inv instanceof ISidedInventory ? new HashSet<>(Ints.asList(((ISidedInventory) inv).getAccessibleSlotsFromSide(logic.chestDirection.getOpposite().ordinal()))) : null;
+            final int accessSide = logic.chestDirection.getOpposite().ordinal();
+            final Set<Integer> accessibleSlots = inv instanceof ISidedInventory ? new HashSet<>(Ints.asList(((ISidedInventory) inv).getAccessibleSlotsFromSide(accessSide))) : null;
             
             int index = 0, curIndex = 0;
             IInventory curInv;
@@ -106,7 +107,7 @@ public class CraftingStationContainer extends Container {
                     curIndex = secondInv != null && index >= 27 ? index - 27 : index;
                     
                     if(accessibleSlots == null || accessibleSlots.contains(curIndex)) {
-                        this.addSlotToContainer(new ChestSlot(curInv, curIndex, 8 + col * 18, 19 + row * 18));
+                        this.addSlotToContainer(new ChestSlot(curInv, curIndex, 8 + col * 18, 19 + row * 18, accessSide));
                     }
                     index++;
                 }
