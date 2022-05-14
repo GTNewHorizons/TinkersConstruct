@@ -14,16 +14,22 @@ public class ChestSlot extends Slot {
      */
     public boolean enabled = true;
     private int accessSide;
+    private int visualIndex;
 
-    public ChestSlot(IInventory inventory, int index, int xPosition, int yPosition, int accessSide) {
+    public ChestSlot(IInventory inventory, int index, int visualIndex, int xPosition, int yPosition, int accessSide) {
         super(inventory, index, xPosition, yPosition);
         this.accessSide = accessSide;
+        this.visualIndex = visualIndex;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public boolean func_111238_b/*isEnabled*/() {
         return enabled;
+    }
+
+    public int getVisualIndex() {
+        return visualIndex;
     }
 
     public void disable() {
