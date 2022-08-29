@@ -76,11 +76,10 @@ public class ArmorControls {
 		this.keys[5] = ArmorControls.invKey;
 	}
 
-	private static KeyBinding[] getVanillaKeyBindings() {
+	private static void getVanillaKeyBindings() {
 		mc = Minecraft.getMinecraft();
 		jumpKey = mc.gameSettings.keyBindJump;
 		invKey = mc.gameSettings.keyBindInventory;
-		return new KeyBinding[] { jumpKey, invKey };
 	}
 
 	@SubscribeEvent
