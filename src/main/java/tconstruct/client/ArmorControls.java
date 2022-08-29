@@ -13,7 +13,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
-import net.minecraftforge.client.event.MouseEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import tconstruct.TConstruct;
@@ -80,13 +79,6 @@ public class ArmorControls {
 		mc = Minecraft.getMinecraft();
 		jumpKey = mc.gameSettings.keyBindJump;
 		invKey = mc.gameSettings.keyBindInventory;
-	}
-
-	@SubscribeEvent
-	public void mouseEvent(MouseEvent event) {
-		if (!Loader.isModLoaded("notenoughkeys")) {
-			this.checkKeys(event.button + 100);
-		}
 	}
 
 	@SubscribeEvent
