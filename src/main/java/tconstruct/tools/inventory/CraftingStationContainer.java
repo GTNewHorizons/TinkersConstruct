@@ -282,7 +282,7 @@ public class CraftingStationContainer extends Container {
                 otherInventorySlot = (Slot) this.inventorySlots.get(slotIndex);
                 copyStack = otherInventorySlot.getStack();
 
-                if (copyStack == null) {
+                if (copyStack == null && otherInventorySlot.isItemValid(stack)) {
                     otherInventorySlot.putStack(stack.copy());
                     otherInventorySlot.onSlotChanged();
                     stack.stackSize = 0;
