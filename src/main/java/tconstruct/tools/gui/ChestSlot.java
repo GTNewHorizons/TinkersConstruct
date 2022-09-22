@@ -24,7 +24,7 @@ public class ChestSlot extends Slot {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean func_111238_b/*isEnabled*/() {
+    public boolean func_111238_b /*isEnabled*/() {
         return enabled;
     }
 
