@@ -57,4 +57,10 @@ public class ChestSlot extends Slot {
         }
         return super.canTakeStack(player);
     }
+
+    @Override
+    public ItemStack getStack() {
+        ItemStack stack = super.getStack();
+        return (stack != null && stack.stackSize > 0) ? stack : null;
+    }
 }
