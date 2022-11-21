@@ -1,5 +1,6 @@
 package tconstruct.weaponry.entity;
 
+import net.minecraft.entity.EntityLivingBase;
 import tconstruct.library.entity.ProjectileBase;
 import tconstruct.library.util.PiercingArrowDamage;
 import net.minecraft.entity.Entity;
@@ -99,6 +100,12 @@ public class ArrowEntity extends ProjectileBase {
 
         // deal armor piercing damage
         if(shift > 0) {
+
+            if (entityHit instanceof EntityLivingBase) {
+                int armorValue = Math.min(20, ((EntityLivingBase) entityHit).getTotalArmorValue());
+                shift = (int) (shift / (1 - (0.04 * armorValue)));
+            }
+
             DamageSource damagesource;
             if (this.shootingEntity == null)
                 damagesource = new PiercingArrowDamage("arrow", this, this);
