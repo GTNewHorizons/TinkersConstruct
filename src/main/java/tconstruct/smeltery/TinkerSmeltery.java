@@ -765,7 +765,7 @@ public class TinkerSmeltery {
         GameRegistry.addRecipe(
                 new ItemStack(TinkerSmeltery.searedBlockNether, 1, 2), "b b", "b b", "bbb", 'b', searedBrick); // Basin
         GameRegistry.addRecipe(
-                new ItemStack(TinkerSmeltery.castingChannel, 4, 0), "b b", "bbb", 'b', searedBrick); // Channel
+                new ItemStack(TinkerSmeltery.castingChannel, 4, 1), "b b", "bbb", 'b', searedBrick); // Channel
 
         // Slab Smeltery Components Recipes
         for (int i = 0; i < 7; i++) {
