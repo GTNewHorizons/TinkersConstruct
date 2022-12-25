@@ -1,9 +1,7 @@
 package tconstruct.weaponry.entity;
 
-import net.minecraft.entity.EntityLivingBase;
-import tconstruct.library.entity.ProjectileBase;
-import tconstruct.library.util.PiercingArrowDamage;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -97,7 +95,7 @@ public class ArrowEntity extends ProjectileBase {
         if (damage > 0) dealtDamage = super.dealDamage(damage, ammo, tags, entityHit);
 
         // deal armor piercing damage
-        if(shift > 0) {
+        if (shift > 0) {
 
             if (entityHit instanceof EntityLivingBase) {
                 int armorValue = Math.min(20, ((EntityLivingBase) entityHit).getTotalArmorValue());

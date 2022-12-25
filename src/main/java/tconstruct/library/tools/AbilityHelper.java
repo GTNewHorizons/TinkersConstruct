@@ -114,8 +114,8 @@ public class AbilityHelper {
                     boolean isAlive = entity.isEntityAlive();
 
                     if (tool.pierceArmor() && !broken && entity instanceof EntityLivingBase) {
-                      int armorValue = Math.min(20, ((EntityLivingBase) entity).getTotalArmorValue());
-                      damage = (int) (damage / (1 -(0.04*armorValue)));
+                        int armorValue = Math.min(20, ((EntityLivingBase) entity).getTotalArmorValue());
+                        damage = (int) (damage / (1 - (0.04 * armorValue)));
 
                         if (player instanceof EntityPlayer)
                             causedDamage =
