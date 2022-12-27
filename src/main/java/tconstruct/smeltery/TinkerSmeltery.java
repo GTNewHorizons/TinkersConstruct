@@ -1088,7 +1088,7 @@ public class TinkerSmeltery {
                             / 2;
                     ItemStack metalCast = new ItemStack(TinkerTools.patternOutputs[iter], 1, liquidDamage[iterTwo]);
                     tableCasting.addCastingRecipe(metalCast, new FluidStack(fs, fluidAmount), cast, 50);
-                    if (iter < 14 || iter == 22 || iter == 25) {
+                    if (isValidClayCast(iter)) {
                         tableCasting.addCastingRecipe(metalCast, new FluidStack(fs, fluidAmount), clay_cast, true, 50);
                     }
                     Smeltery.addMelting(FluidType.getFluidType(fs), metalCast, 0, fluidAmount);
@@ -2034,5 +2034,9 @@ public class TinkerSmeltery {
         }
 
         return fluid;
+    }
+
+    public boolean isValidClayCast(int meta) {
+        return meta < 14 || meta == 22 || meta == 25;
     }
 }
