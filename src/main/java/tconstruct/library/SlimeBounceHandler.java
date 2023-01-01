@@ -2,6 +2,7 @@ package tconstruct.library;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.IdentityHashMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
@@ -10,8 +11,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import tconstruct.gadgets.TinkerGadgets;
 import tconstruct.gadgets.item.ItemSlimeBoots;
-
-import java.util.IdentityHashMap;
 
 /** Logic for entities bouncing */
 public class SlimeBounceHandler {

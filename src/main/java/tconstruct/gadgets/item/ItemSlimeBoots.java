@@ -3,6 +3,7 @@ package tconstruct.gadgets.item;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.I18n;
@@ -26,8 +27,6 @@ import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.armor.ArmorPart;
 import tconstruct.tools.entity.FancyEntityItem;
-
-import java.util.List;
 
 public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
 
