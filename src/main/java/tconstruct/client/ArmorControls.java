@@ -27,7 +27,7 @@ import tconstruct.util.network.GogglePacket;
 public class ArmorControls {
 
     public static final String keybindCategory = "tconstruct.keybindings";
-    public static final String[] keyDescs = new String[]{"key.tarmor", "key.tgoggles", "key.tbelt", "key.tzoom"};
+    public static final String[] keyDescs = new String[] {"key.tarmor", "key.tgoggles", "key.tbelt", "key.tzoom"};
     public static KeyBinding armorKey = new KeyBinding(keyDescs[0], Keyboard.KEY_NONE, keybindCategory);
     public static KeyBinding toggleGoggles = new KeyBinding(keyDescs[1], Keyboard.KEY_NONE, keybindCategory);
     public static KeyBinding beltSwap = new KeyBinding(keyDescs[2], Keyboard.KEY_NONE, keybindCategory);
