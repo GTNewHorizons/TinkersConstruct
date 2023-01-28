@@ -995,12 +995,6 @@ public class TinkerSmeltery {
                 50);
         tableCasting.addCastingRecipe(
                 new ItemStack(TinkerWorld.strangeFood, 1, 1), new FluidStack(TinkerSmeltery.bloodFluid, 160), null, 50);
-        tableCasting.addCastingRecipe(
-                new ItemStack(TinkerTools.materials, 1, 43),
-                new FluidStack(TinkerSmeltery.moltenAlubrassFluid, 144),
-                new ItemStack(TinkerTools.largePlate, 1, 6),
-                true,
-                80);
 
         // Buckets
         ItemStack bucket = new ItemStack(Items.bucket);
