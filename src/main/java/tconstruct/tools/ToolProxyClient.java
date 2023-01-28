@@ -444,7 +444,7 @@ public class ToolProxyClient extends ToolProxyCommon {
         TConstructClientRegistry.registerManualModifier(
                 "silkymod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 26));
         TConstructClientRegistry.registerManualModifier(
-                "reinforcedmod", ironpick.copy(), new ItemStack(TinkerTools.largePlate, 1, 6));
+                "reinforcedmod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 43));
 
         TConstructClientRegistry.registerManualModifier(
                 "pistonmod", ironlongsword.copy(), new ItemStack(Blocks.piston));
