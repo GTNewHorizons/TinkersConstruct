@@ -25,7 +25,7 @@ public class MaterialItem extends CraftingItem {
             "EssenceCrystal", "AluBrassNugget", "SilkyCloth", "SilkyJewel", "ObsidianNugget", "CobaltNugget",
             "ArditeNugget", "ManyullynNugget", "BronzeNugget", "AlumiteNugget", "SteelNugget", "PigIronIngot",
             "PigIronNugget", "GlueBall", "SearedBrick", "ArditeDust", "CobaltDust", "AluminumDust", "ManyullynDust",
-            "AluBrassDust", Reinforcement" };
+            "AluBrassDust", "Reinforcement" };
 
     static String[] craftingTextures = new String[] { "paperstack", "slimecrystal", "searedbrick", "cobaltingot",
             "arditeingot", "manyullyningot", "mossball", "lavacrystal", "necroticbone", "copperingot", "tiningot",
