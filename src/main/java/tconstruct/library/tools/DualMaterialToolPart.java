@@ -1,21 +1,24 @@
 package tconstruct.library.tools;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.Map;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.TextureHelper;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class DualMaterialToolPart extends DynamicToolPart {
+
     public IIcon defaultIcon2;
     public IIcon[] icons2;
 
@@ -37,11 +40,8 @@ public class DualMaterialToolPart extends DynamicToolPart {
 
     public int getMaterialID2(ItemStack stack) {
         if (!stack.hasTagCompound()) return -1;
-
         int id = stack.getTagCompound().getCompoundTag("DualMat").getInteger("Material2");
-
-        if (TConstructRegistry.toolMaterials.keySet().contains(id)) return id;
-
+        if (TConstructRegistry.toolMaterials.containsKey(id)) return id;
         return -1;
     }
 
@@ -72,12 +72,16 @@ public class DualMaterialToolPart extends DynamicToolPart {
 
         // register icon for each material that has one
         if (!PHConstruct.minimalTextures)
-            for (Map.Entry<Integer, tconstruct.library.tools.ToolMaterial> entry :
-                    TConstructRegistry.toolMaterials.entrySet()) {
-                String tex = modTexPrefix + ":" + folder
-                        + entry.getValue().materialName.toLowerCase() + texture + "_2";
-                if (TextureHelper.itemTextureExists(tex)) this.icons2[entry.getKey()] = iconRegister.registerIcon(tex);
-            }
+            for (Map.Entry<Integer, tconstruct.library.tools.ToolMaterial> entry : TConstructRegistry.toolMaterials
+                    .entrySet()) {
+                        String tex = modTexPrefix + ":"
+                                + folder
+                                + entry.getValue().materialName.toLowerCase()
+                                + texture
+                                + "_2";
+                        if (TextureHelper.itemTextureExists(tex))
+                            this.icons2[entry.getKey()] = iconRegister.registerIcon(tex);
+                    }
 
         this.defaultIcon2 = iconRegister.registerIcon(modTexPrefix + ":" + folder + texture + "_2");
     }
@@ -101,8 +105,7 @@ public class DualMaterialToolPart extends DynamicToolPart {
             int matId = getMaterialID2(stack);
             if (matId > icons2.length || matId < 0) return super.getColorFromItemStack(stack, renderpass);
 
-            if (icons[matId] == null)
-                return TConstructRegistry.getMaterial(matId).primaryColor();
+            if (icons[matId] == null) return TConstructRegistry.getMaterial(matId).primaryColor();
 
             return super.getColorFromItemStack(stack, renderpass);
         }

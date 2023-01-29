@@ -1,13 +1,16 @@
 package tconstruct.armor.items;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.items.abstracts.CraftingItem;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
+
 import tconstruct.library.*;
+import cpw.mods.fml.relauncher.*;
 
 public class ArmorPattern extends CraftingItem implements ItemBlocklike {
 
@@ -38,7 +41,7 @@ public class ArmorPattern extends CraftingItem implements ItemBlocklike {
         baseIcon = iconRegister.registerIcon("tinker:" + folder + "armor_cast");
     }
 
-    private static final String[] patternName = new String[] {"helmet", "chestplate", "leggings", "boots"};
+    private static final String[] patternName = new String[] { "helmet", "chestplate", "leggings", "boots" };
 
     @Override
     public void getSubItems(Item block, CreativeTabs tab, List list) {

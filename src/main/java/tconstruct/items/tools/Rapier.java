@@ -6,10 +6,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
 import tconstruct.library.tools.Weapon;
 import tconstruct.tools.TinkerTools;
 
 public class Rapier extends Weapon {
+
     public Rapier() {
         super(2);
         this.setUnlocalizedName("InfiTool.Rapier");
@@ -26,12 +28,12 @@ public class Rapier extends Weapon {
             player.addExhaustion(0.1f);
             player.motionY += 0.32;
             float f = 0.5F;
-            player.motionX = (double) (MathHelper.sin(player.rotationYaw / 180.0F * (float) Math.PI)
+            player.motionX = MathHelper.sin(player.rotationYaw / 180.0F * (float) Math.PI)
                     * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI)
-                    * f);
-            player.motionZ = (double) (-MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI)
+                    * f;
+            player.motionZ = -MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI)
                     * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI)
-                    * f);
+                    * f;
         }
         return stack;
     }

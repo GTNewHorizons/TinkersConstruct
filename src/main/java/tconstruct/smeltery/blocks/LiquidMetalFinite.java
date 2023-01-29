@@ -1,16 +1,18 @@
 package tconstruct.smeltery.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.TinkerSmeltery;
+import cpw.mods.fml.relauncher.*;
 
 public class LiquidMetalFinite extends BlockFluidFinite {
+
     String texture;
     public IIcon stillIcon;
     public IIcon flowIcon;

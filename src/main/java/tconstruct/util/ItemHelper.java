@@ -1,6 +1,7 @@
 package tconstruct.util;
 
 import java.lang.reflect.Field;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -9,16 +10,19 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.TConstruct;
 
 public class ItemHelper {
+
     public static Object getStaticItem(String name, String classPackage) {
         try {
-            Class clazz = Class.forName(classPackage);
+            Class<?> clazz = Class.forName(classPackage);
             Field field = clazz.getDeclaredField(name);
             Object ret = field.get(null);
-            if (ret != null && (ret instanceof ItemStack || ret instanceof Item)) return ret;
+            if ((ret instanceof ItemStack || ret instanceof Item)) return ret;
             return null;
         } catch (Exception e) {
             TConstruct.logger.warn("Could not find " + name + "from " + classPackage);
@@ -46,8 +50,8 @@ public class ItemHelper {
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderblocks.renderFaceYPos(
-                block, 0.0D, 0.0D, 0.0D, ItemHelper.getIconSafe(block.getIcon(1, meta))); // block.getIcon(1, meta));
+        renderblocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, ItemHelper.getIconSafe(block.getIcon(1, meta))); // block.getIcon(1,
+                                                                                                              // meta));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, -1F);

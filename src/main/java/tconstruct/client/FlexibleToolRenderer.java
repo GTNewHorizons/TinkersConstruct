@@ -6,12 +6,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
 import tconstruct.TConstruct;
 import tconstruct.library.tools.ToolCore;
 
 public class FlexibleToolRenderer implements IItemRenderer {
+
     public float depth = 1 / 32f;
 
     public void setDepth(float d) {
@@ -248,19 +251,17 @@ public class FlexibleToolRenderer implements IItemRenderer {
         ToolCore tool = (ToolCore) item.getItem();
 
         IIcon[] tempParts = new IIcon[iconParts];
-        label:
-        {
+        label: {
             if (!isInventory && ent instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) ent;
                 ItemStack itemInUse = player.getItemInUse();
                 if (itemInUse != null) {
                     int useCount = player.getItemInUseCount();
-                    for (int i = iconParts; i-- > 0; )
-                        tempParts[i] = tool.getIcon(item, i, player, itemInUse, useCount);
+                    for (int i = iconParts; i-- > 0;) tempParts[i] = tool.getIcon(item, i, player, itemInUse, useCount);
                     break label;
                 }
             }
-            for (int i = iconParts; i-- > 0; ) tempParts[i] = tool.getIcon(item, i);
+            for (int i = iconParts; i-- > 0;) tempParts[i] = tool.getIcon(item, i);
         }
 
         int count = 0;

@@ -1,24 +1,26 @@
 package tconstruct.tools.gui;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.library.client.ToolGuiElement;
+import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 public class GuiButtonTool extends GuiButton {
+
     /**
-     * True for pointing right (next page), false for pointing left (previous
-     * page).
+     * True for pointing right (next page), false for pointing left (previous page).
      */
     int textureX;
 
     int textureY;
     public String texture;
     public ToolGuiElement element;
-    private ResourceLocation background; // = new
+    private final ResourceLocation background; // = new
     // ResourceLocation("tinker",
     // "textures/gui/armorextended.png");
 
@@ -37,15 +39,13 @@ public class GuiButtonTool extends GuiButton {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
-            boolean var4 = mouseX >= this.xPosition
-                    && mouseY >= this.yPosition
+            boolean var4 = mouseX >= this.xPosition && mouseY >= this.yPosition
                     && mouseX < this.xPosition + this.width
                     && mouseY < this.yPosition + this.height;
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             mc.getTextureManager().bindTexture(background);
 
-            this.field_146123_n = mouseX >= this.xPosition
-                    && mouseY >= this.yPosition
+            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
                     && mouseX < this.xPosition + this.width
                     && mouseY < this.yPosition + this.height;
             int var5 = this.getHoverState(this.field_146123_n);

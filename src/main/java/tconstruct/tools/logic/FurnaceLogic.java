@@ -1,9 +1,9 @@
 package tconstruct.tools.logic;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mantle.blocks.BlockUtils;
 import mantle.blocks.abstracts.InventoryLogic;
 import mantle.blocks.iface.*;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,25 +18,25 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import tconstruct.tools.inventory.FurnaceContainer;
 
-/* Slots
- * 0: Input
- * 1: Fuel
- * 2: Output
- * 3-16: Chest
+import tconstruct.tools.inventory.FurnaceContainer;
+import cpw.mods.fml.common.registry.GameRegistry;
+
+/*
+ * Slots 0: Input 1: Fuel 2: Output 3-16: Chest
  */
 
 public class FurnaceLogic extends InventoryLogic implements IActiveLogic, IFacingLogic, ISidedInventory {
+
     boolean active = false;
     public int fuel;
     public int fuelGague;
     public int progress;
     public int fuelScale = 200;
     byte direction;
-    private static final int[] slots_top = new int[] {0};
-    private static final int[] slots_bottom = new int[] {2, 1};
-    private static final int[] slots_sides = new int[] {1};
+    private static final int[] slots_top = new int[] { 0 };
+    private static final int[] slots_bottom = new int[] { 2, 1 };
+    private static final int[] slots_sides = new int[] { 1 };
 
     public FurnaceLogic() {
         super(3);
@@ -79,7 +79,7 @@ public class FurnaceLogic extends InventoryLogic implements IActiveLogic, IFacin
         boolean burning = isBurning();
         boolean updateInventory = false;
         if (fuel <= 0 && canSmelt()) {
-            fuel = fuelGague = (int) (getItemBurnTime(inventory[1]));
+            fuel = fuelGague = getItemBurnTime(inventory[1]);
             if (fuel > 0) {
                 if (inventory[1].getItem().hasContainerItem()) // Fuel slot
                 {
@@ -135,7 +135,7 @@ public class FurnaceLogic extends InventoryLogic implements IActiveLogic, IFacin
 
     public boolean canSmelt() {
         if (inventory[0] == null) // Nothing here!
-        return false;
+            return false;
         else {
             ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[0]);
             if (itemstack == null) return false;
@@ -153,7 +153,7 @@ public class FurnaceLogic extends InventoryLogic implements IActiveLogic, IFacin
     public ItemStack getResultFor(ItemStack stack) {
         ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(stack);
         if (result != null) // Only valid for food
-        return result.copy();
+            return result.copy();
 
         return null;
     }
@@ -184,12 +184,9 @@ public class FurnaceLogic extends InventoryLogic implements IActiveLogic, IFacin
                 }
             }
 
-            if (item instanceof ItemTool
-                    && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemSword
-                    && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemHoe
-                    && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
             if (item == Items.stick) return 100;
             if (item == Items.coal) return 1600;
             if (item == Items.lava_bucket) return 20000;
@@ -307,7 +304,7 @@ public class FurnaceLogic extends InventoryLogic implements IActiveLogic, IFacin
 
     @Override
     public boolean isItemValidForSlot(int par1, ItemStack par2ItemStack) {
-        return par1 == 2 ? false : (par1 == 1 ? isItemFuel(par2ItemStack) : true);
+        return par1 != 2 && (par1 != 1 || isItemFuel(par2ItemStack));
     }
 
     @Override

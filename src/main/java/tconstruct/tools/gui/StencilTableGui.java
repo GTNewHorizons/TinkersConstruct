@@ -1,34 +1,38 @@
 package tconstruct.tools.gui;
 
-import codechicken.nei.VisiblityData;
-import codechicken.nei.api.INEIGuiHandler;
-import codechicken.nei.api.TaggedInventoryArea;
-import cpw.mods.fml.common.Optional;
 import java.util.Collections;
 import java.util.List;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.TConstruct;
 import tconstruct.library.client.*;
 import tconstruct.library.crafting.StencilBuilder;
 import tconstruct.tools.inventory.PatternShaperContainer;
 import tconstruct.tools.logic.StencilTableLogic;
 import tconstruct.util.network.PatternTablePacket;
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import cpw.mods.fml.common.Optional;
 
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
-    int[] buttonsLeftRect = new int[] {Integer.MAX_VALUE, Integer.MIN_VALUE};
-    int[] buttonsRightRect = new int[] {Integer.MIN_VALUE, Integer.MIN_VALUE};
+
+    int[] buttonsLeftRect = new int[] { Integer.MAX_VALUE, Integer.MIN_VALUE };
+    int[] buttonsRightRect = new int[] { Integer.MIN_VALUE, Integer.MIN_VALUE };
     StencilTableLogic logic;
     int activeButton;
 
-    public StencilTableGui(
-            InventoryPlayer inventoryplayer, StencilTableLogic shaper, World world, int x, int y, int z) {
+    public StencilTableGui(InventoryPlayer inventoryplayer, StencilTableLogic shaper, World world, int x, int y,
+            int z) {
         super(new PatternShaperContainer(inventoryplayer, shaper));
         logic = shaper;
         activeButton = 0;
@@ -42,8 +46,8 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         fontRendererObj.drawString(StatCollector.translateToLocal("crafters.PatternShaper"), 50, 6, 0x404040);
-        fontRendererObj.drawString(
-                StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        fontRendererObj
+                .drawString(StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/patternshaper.png");
@@ -69,8 +73,8 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
         int cornerY = this.guiTop + 2;
 
         this.buttonList.clear();
-        this.buttonsLeftRect = new int[] {Integer.MAX_VALUE, Integer.MIN_VALUE};
-        this.buttonsRightRect = new int[] {Integer.MIN_VALUE, Integer.MIN_VALUE};
+        this.buttonsLeftRect = new int[] { Integer.MAX_VALUE, Integer.MIN_VALUE };
+        this.buttonsRightRect = new int[] { Integer.MIN_VALUE, Integer.MIN_VALUE };
 
         int id = 0;
         for (int iter = 0; iter < TConstructClientRegistry.stencilButtons.size(); iter++) {
@@ -115,8 +119,8 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
         if (logic.getStackInSlot(1) != null) {
             activeButton = StencilBuilder.getId(logic.getStackInSlot(1));
             setActiveButton(activeButton);
-            stack = StencilBuilder.getStencil(
-                    ((GuiButtonStencil) this.buttonList.get(activeButton)).element.stencilIndex);
+            stack = StencilBuilder
+                    .getStencil(((GuiButtonStencil) this.buttonList.get(activeButton)).element.stencilIndex);
         } else stack = null;
 
         logic.setSelectedPattern(stack);
@@ -175,18 +179,15 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
     public boolean hideItemPanelSlot(GuiContainer guiContainer, int x, int y, int w, int h) {
 
         // is it in the horizontal column of the right buttons?
-        if (x > this.guiLeft + this.xSize
-                && x < this.buttonsRightRect[0]
+        if (x > this.guiLeft + this.xSize && x < this.buttonsRightRect[0]
                 && y + h > this.guiTop
                 && y < this.buttonsRightRect[1]) {
             return true;
         }
 
         // is it in the horizontal column of the left buttons?
-        if (x + w > this.buttonsLeftRect[0] && x < this.guiLeft && y + h > this.guiTop && y < this.buttonsLeftRect[1]) {
-            return true;
-        }
-
-        return false;
+        return x + w > this.buttonsLeftRect[0] && x < this.guiLeft
+                && y + h > this.guiTop
+                && y < this.buttonsLeftRect[1];
     }
 }

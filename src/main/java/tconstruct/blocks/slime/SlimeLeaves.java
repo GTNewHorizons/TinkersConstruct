@@ -1,7 +1,7 @@
 package tconstruct.blocks.slime;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.*;
+
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -9,12 +9,15 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.world.TinkerWorld;
+import cpw.mods.fml.relauncher.*;
 
 public class SlimeLeaves extends BlockLeaves {
-    private static final String[] fastLeaves = new String[] {"slimeleaves_blue_fast"};
-    private static final String[] fancyLeaves = new String[] {"slimeleaves_blue_fancy"};
+
+    private static final String[] fastLeaves = new String[] { "slimeleaves_blue_fast" };
+    private static final String[] fancyLeaves = new String[] { "slimeleaves_blue_fancy" };
 
     @SideOnly(Side.CLIENT)
     private IIcon[] fastIcons;
@@ -98,10 +101,9 @@ public class SlimeLeaves extends BlockLeaves {
         if (!world.isRemote) {
             int dropChance = 35;
 
-            /*if ((meta & 3) == 3)
-            {
-                j1 = 40;
-            }*/
+            /*
+             * if ((meta & 3) == 3) { j1 = 40; }
+             */
 
             if (fortune > 0) {
                 dropChance -= 2 << fortune;
@@ -134,6 +136,6 @@ public class SlimeLeaves extends BlockLeaves {
 
     @Override
     public String[] func_150125_e() {
-        return new String[] {"slime"};
+        return new String[] { "slime" };
     }
 }

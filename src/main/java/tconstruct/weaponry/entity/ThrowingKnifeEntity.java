@@ -3,10 +3,12 @@ package tconstruct.weaponry.entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import tconstruct.library.entity.ProjectileBase;
 import tconstruct.weaponry.TinkerWeaponry;
 
 public class ThrowingKnifeEntity extends ProjectileBase {
+
     public ThrowingKnifeEntity(World world) {
         super(world);
     }

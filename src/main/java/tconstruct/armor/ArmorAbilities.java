@@ -1,22 +1,25 @@
 package tconstruct.armor;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.TConstruct;
 import tconstruct.armor.items.TravelGear;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.util.network.HealthUpdatePacket;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class ArmorAbilities {
-    public static List<String> stepBoostedPlayers = new ArrayList();
+
+    public static List<String> stepBoostedPlayers = new ArrayList<>();
     // ItemStack prevFeet;
     double prevMotionY;
 
@@ -39,8 +42,8 @@ public class ArmorAbilities {
         ItemStack feet = player.getCurrentArmor(0);
         if (feet != null && feet.hasTagCompound()) {
             if (feet.getItem() instanceof IModifyable && !player.isSneaking()) {
-                NBTTagCompound tag =
-                        feet.getTagCompound().getCompoundTag(((IModifyable) feet.getItem()).getBaseTagName());
+                NBTTagCompound tag = feet.getTagCompound()
+                        .getCompoundTag(((IModifyable) feet.getItem()).getBaseTagName());
                 int sole = tag.getInteger("Slimy Soles");
                 if (sole > 0) {
                     if (!player.isSneaking() && player.onGround && prevMotionY < -0.4)
@@ -49,17 +52,12 @@ public class ArmorAbilities {
             }
             prevMotionY = player.motionY;
         }
-        /* Former step height boost handling
-        if (feet != prevFeet)
-        {
-            if (prevFeet != null && prevFeet.getItem() instanceof TravelGear)
-                player.stepHeight -= 0.6f;
-            if (feet != null && feet.getItem() instanceof TravelGear)
-                player.stepHeight += 0.6f;
-            prevFeet = feet;
-        }*/
-        boolean stepBoosted =
-                stepBoostedPlayers.contains(player.getGameProfile().getName());
+        /*
+         * Former step height boost handling if (feet != prevFeet) { if (prevFeet != null && prevFeet.getItem()
+         * instanceof TravelGear) player.stepHeight -= 0.6f; if (feet != null && feet.getItem() instanceof TravelGear)
+         * player.stepHeight += 0.6f; prevFeet = feet; }
+         */
+        boolean stepBoosted = stepBoostedPlayers.contains(player.getGameProfile().getName());
         if (stepBoosted) player.stepHeight = 1.1f;
         if (!stepBoosted && feet != null && feet.getItem() instanceof TravelGear) {
             stepBoostedPlayers.add(player.getGameProfile().getName());
@@ -68,21 +66,20 @@ public class ArmorAbilities {
             player.stepHeight -= 0.6f;
         }
         // TODO: Proper minimap support
-        /*ItemStack stack = player.inventory.getStackInSlot(8);
-        if (stack != null && stack.getItem() instanceof ItemMap)
-        {
-            stack.getItem().onUpdate(stack, player.worldObj, player, 8, true);
-        }*/
+        /*
+         * ItemStack stack = player.inventory.getStackInSlot(8); if (stack != null && stack.getItem() instanceof
+         * ItemMap) { stack.getItem().onUpdate(stack, player.worldObj, player, 8, true); }
+         */
     }
 
     @SubscribeEvent
     public void dimensionChanged(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.player == null || !(event.player instanceof EntityPlayerMP)) return;
+        if (!(event.player instanceof EntityPlayerMP)) return;
 
         // this callback is only called serverside
         float oldHealth = event.player.getHealth();
         // tell the client to update its hp
-        TConstruct.packetPipeline.sendTo(
-                new HealthUpdatePacket(oldHealth), (net.minecraft.entity.player.EntityPlayerMP) event.player);
+        TConstruct.packetPipeline
+                .sendTo(new HealthUpdatePacket(oldHealth), (net.minecraft.entity.player.EntityPlayerMP) event.player);
     }
 }

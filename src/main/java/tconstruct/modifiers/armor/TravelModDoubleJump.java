@@ -1,12 +1,15 @@
 package tconstruct.modifiers.armor;
 
 import java.util.EnumSet;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.library.armor.*;
 import tconstruct.library.modifier.IModifyable;
 
 public class TravelModDoubleJump extends ArmorMod {
+
     String color = "\u00a77";
     String tooltipName = "Double-Jump";
 

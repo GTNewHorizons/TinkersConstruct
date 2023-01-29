@@ -2,6 +2,7 @@ package tconstruct.modifiers.tools;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.modifier.ItemModifier;

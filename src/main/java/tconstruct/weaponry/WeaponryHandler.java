@@ -1,9 +1,5 @@
 package tconstruct.weaponry;
 
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,6 +9,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder;
@@ -23,7 +20,6 @@ import tconstruct.library.event.SmelteryCastEvent;
 import tconstruct.library.event.ToolBuildEvent;
 import tconstruct.library.event.ToolCraftEvent;
 import tconstruct.library.tools.*;
-import tconstruct.library.tools.DualMaterialToolPart;
 import tconstruct.library.util.IToolPart;
 import tconstruct.library.weaponry.ArrowShaftMaterial;
 import tconstruct.library.weaponry.BowBaseAmmo;
@@ -36,8 +32,13 @@ import tconstruct.weaponry.ammo.BoltAmmo;
 import tconstruct.weaponry.weapons.Crossbow;
 import tconstruct.weaponry.weapons.LongBow;
 import tconstruct.weaponry.weapons.ShortBow;
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 public class WeaponryHandler {
+
     @SubscribeEvent
     public void onCrafting(PlayerEvent.ItemCraftedEvent event) {
         Item item = event.crafting.getItem();
@@ -80,15 +81,14 @@ public class WeaponryHandler {
             // the materials
             ToolMaterial head = TConstructRegistry.getMaterial(tags.getInteger("Head"));
             ArrowMaterial arrow = TConstructRegistry.getArrowMaterial(tags.getInteger("Head"));
-            ArrowShaftMaterial shaft = (ArrowShaftMaterial)
-                    TConstructRegistry.getCustomMaterial(tags.getInteger("Handle"), ArrowShaftMaterial.class);
-            FletchingMaterial fletching = (FletchingMaterial)
-                    TConstructRegistry.getCustomMaterial(tags.getInteger("Accessory"), FletchingMaterial.class);
+            ArrowShaftMaterial shaft = (ArrowShaftMaterial) TConstructRegistry
+                    .getCustomMaterial(tags.getInteger("Handle"), ArrowShaftMaterial.class);
+            FletchingMaterial fletching = (FletchingMaterial) TConstructRegistry
+                    .getCustomMaterial(tags.getInteger("Accessory"), FletchingMaterial.class);
 
             // todo: fix leaf fletching
-            if (fletching == null)
-                fletching = (FletchingMaterial) TConstructRegistry.getCustomMaterial(
-                        tags.getInteger("Accessory"), FletchlingLeafMaterial.class);
+            if (fletching == null) fletching = (FletchingMaterial) TConstructRegistry
+                    .getCustomMaterial(tags.getInteger("Accessory"), FletchlingLeafMaterial.class);
 
             // invalid materials
             if (arrow == null || shaft == null || fletching == null) {
@@ -96,8 +96,8 @@ public class WeaponryHandler {
                 return;
             }
 
-            int durability =
-                    (int) ((float) head.durability() * shaft.durabilityModifier * fletching.durabilityModifier);
+            int durability = (int) ((float) head.durability() * shaft.durabilityModifier
+                    * fletching.durabilityModifier);
             float weight = arrow.mass + shaft.weight;
             float accuracy = fletching.accuracy;
             float breakChance = shaft.fragility * arrow.breakChance + fletching.breakChance;
@@ -120,13 +120,12 @@ public class WeaponryHandler {
             ToolMaterial coreMat = TConstructRegistry.getMaterial(tags.getInteger("Handle"));
             ArrowMaterial head = TConstructRegistry.getArrowMaterial(tags.getInteger("Head"));
             ArrowMaterial core = TConstructRegistry.getArrowMaterial(tags.getInteger("Handle"));
-            FletchingMaterial fletching = (FletchingMaterial)
-                    TConstructRegistry.getCustomMaterial(tags.getInteger("Accessory"), FletchingMaterial.class);
+            FletchingMaterial fletching = (FletchingMaterial) TConstructRegistry
+                    .getCustomMaterial(tags.getInteger("Accessory"), FletchingMaterial.class);
 
             // todo: fix leaf fletching
-            if (fletching == null)
-                fletching = (FletchingMaterial) TConstructRegistry.getCustomMaterial(
-                        tags.getInteger("Accessory"), FletchlingLeafMaterial.class);
+            if (fletching == null) fletching = (FletchingMaterial) TConstructRegistry
+                    .getCustomMaterial(tags.getInteger("Accessory"), FletchlingLeafMaterial.class);
 
             // invalid materials
             if (head == null || core == null || fletching == null) {
@@ -134,8 +133,8 @@ public class WeaponryHandler {
                 return;
             }
 
-            int durability =
-                    (int) ((float) headMat.durability() * coreMat.handleDurability() * fletching.durabilityModifier);
+            int durability = (int) ((float) headMat.durability() * coreMat.handleDurability()
+                    * fletching.durabilityModifier);
             float weight = head.mass + core.mass * 1.5f;
             float accuracy = (100f + fletching.accuracy) / 2f;
             float breakChance = (fletching.breakChance * 2 + 0.15f * core.breakChance) * head.breakChance / 2f;
@@ -161,20 +160,20 @@ public class WeaponryHandler {
         NBTTagCompound tags = event.toolTag.getCompoundTag("InfiTool");
         ProjectileWeapon weapon = (ProjectileWeapon) event.tool;
 
-        int drawSpeed = 0;
-        float flightSpeed = 0;
+        int drawSpeed;
+        float flightSpeed;
 
         BowMaterial top;
         BowMaterial bottom;
         BowstringMaterial string;
 
-        boolean enchanted = false;
+        boolean enchanted;
 
         if (event.tool instanceof BowBaseAmmo) {
             top = TConstructRegistry.getBowMaterial(tags.getInteger("Head"));
             bottom = TConstructRegistry.getBowMaterial(tags.getInteger("Accessory"));
-            string = (BowstringMaterial)
-                    TConstructRegistry.getCustomMaterial(tags.getInteger("Handle"), BowstringMaterial.class);
+            string = (BowstringMaterial) TConstructRegistry
+                    .getCustomMaterial(tags.getInteger("Handle"), BowstringMaterial.class);
 
             // some materials seem to be incompatible
             if (top == null || bottom == null || string == null) {
@@ -199,8 +198,8 @@ public class WeaponryHandler {
             enchanted = tags.getInteger("Handle") == 1;
         } else if (event.tool instanceof Crossbow) {
             top = TConstructRegistry.getBowMaterial(tags.getInteger("Head"));
-            string = (BowstringMaterial)
-                    TConstructRegistry.getCustomMaterial(tags.getInteger("Accessory"), BowstringMaterial.class);
+            string = (BowstringMaterial) TConstructRegistry
+                    .getCustomMaterial(tags.getInteger("Accessory"), BowstringMaterial.class);
 
             // some materials seem to be incompatible
             if (top == null || string == null) {
@@ -246,7 +245,10 @@ public class WeaponryHandler {
         if (mat == null) return;
         Item extra = event.extraStack != null ? event.extraStack.getItem() : null;
         ToolCore tool = ToolBuilder.instance.getMatchingRecipe(
-                event.headStack.getItem(), mat.craftingItem.getItem(), event.accessoryStack.getItem(), extra);
+                event.headStack.getItem(),
+                mat.craftingItem.getItem(),
+                event.accessoryStack.getItem(),
+                extra);
 
         // it's an arrow!
         if (tool == TinkerWeaponry.arrowAmmo) event.handleStack = mat.craftingItem.copy();
@@ -260,10 +262,10 @@ public class WeaponryHandler {
         if (event.headStack.getItem() != TinkerWeaponry.partBolt) return;
 
         // is the bolt already split into 2 items?
-        if (event.accessoryStack != null
-                && event.headStack.getItem() == TinkerWeaponry.partBolt
+        if (event.accessoryStack != null && event.headStack.getItem() == TinkerWeaponry.partBolt
                 && event.handleStack.getItem() == TinkerWeaponry.partBolt
-                && event.accessoryStack.getItem() == TinkerWeaponry.fletching) return;
+                && event.accessoryStack.getItem() == TinkerWeaponry.fletching)
+            return;
 
         // split the bolt into its two parts
         ItemStack bolt1 = event.headStack.copy();
@@ -280,14 +282,8 @@ public class WeaponryHandler {
         event.accessoryStack = fletching;
     }
 
-    private void setAmmoData(
-            NBTTagCompound tags,
-            int durability,
-            float weight,
-            float breakChance,
-            float accuracy,
-            float shoddy,
-            int reinforced) {
+    private void setAmmoData(NBTTagCompound tags, int durability, float weight, float breakChance, float accuracy,
+            float shoddy, int reinforced) {
         tags.setInteger("TotalDurability", durability);
         tags.setInteger("BaseDurability", durability);
         tags.setFloat("Mass", weight);
@@ -349,28 +345,21 @@ public class WeaponryHandler {
     // high priority because we want to do these checks on unmodified stacks
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void boneanaParts(ToolBuildEvent event) {
-        if (event.headStack == null
-                || event.handleStack == null
+        if (event.headStack == null || event.handleStack == null
                 || event.accessoryStack != null
-                || event.extraStack != null) return;
+                || event.extraStack != null)
+            return;
 
         // golden carrot + bone
         if (event.headStack.getItem() == Items.golden_carrot && event.handleStack.getItem() == Items.bone) {
             // golden carrot must be named banana
-            if (!event.headStack.hasTagCompound()
-                    || !event.headStack.getTagCompound().hasKey("display")
-                    || !event.headStack
-                            .getTagCompound()
-                            .getCompoundTag("display")
-                            .hasKey("Name")
-                    || !event.headStack
-                            .getTagCompound()
-                            .getCompoundTag("display")
-                            .getString("Name")
-                            .toLowerCase()
-                            .equals("banana")) return;
-            event.name =
-                    '\u2400' + "Bonæna"; // the \u2400 is a non-printable unicode character so you can't just type it
+            if (!event.headStack.hasTagCompound() || !event.headStack.getTagCompound().hasKey("display")
+                    || !event.headStack.getTagCompound().getCompoundTag("display").hasKey("Name")
+                    || !event.headStack.getTagCompound().getCompoundTag("display").getString("Name")
+                            .equalsIgnoreCase("banana"))
+                return;
+            event.name = '\u2400' + "Bonæna"; // the \u2400 is a non-printable unicode character so you can't just type
+                                              // it
             event.headStack = new ItemStack(TinkerTools.swordBlade, 1, TinkerTools.MaterialID.Bone);
             event.handleStack = new ItemStack(TinkerTools.toolRod, 1, TinkerTools.MaterialID.Bone);
             event.accessoryStack = new ItemStack(TinkerTools.wideGuard, 1, TinkerTools.MaterialID.Bone);

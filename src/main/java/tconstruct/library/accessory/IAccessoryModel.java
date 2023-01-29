@@ -1,12 +1,15 @@
 package tconstruct.library.accessory;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import cpw.mods.fml.relauncher.*;
+
 public interface IAccessoryModel {
-    /** Similar to how armor is rendered.
+
+    /**
+     * Similar to how armor is rendered.
      *
      * @param stack
      * @param entity
@@ -14,5 +17,5 @@ public interface IAccessoryModel {
      * @return Resource location of the texture. Return null for none
      */
     @SideOnly(Side.CLIENT)
-    public ResourceLocation getWearbleTexture(Entity entity, ItemStack stack, int slot);
+    ResourceLocation getWearbleTexture(Entity entity, ItemStack stack, int slot);
 }

@@ -2,6 +2,7 @@ package tconstruct.tools;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+
 import tconstruct.library.crafting.ToolRecipe;
 import tconstruct.library.tools.ToolCore;
 

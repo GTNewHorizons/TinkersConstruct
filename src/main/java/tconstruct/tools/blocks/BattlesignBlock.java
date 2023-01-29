@@ -1,7 +1,7 @@
 package tconstruct.tools.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,8 +9,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
+
 import tconstruct.tools.logic.BattlesignLogic;
 import tconstruct.tools.model.BattlesignRender;
+import cpw.mods.fml.relauncher.*;
 
 public class BattlesignBlock extends EquipBlock {
 
@@ -27,29 +29,14 @@ public class BattlesignBlock extends EquipBlock {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean shouldSideBeRendered(
-            IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_, int p_149646_5_) {
-        return p_149646_5_ == 0 && this.minY > 0.0D
-                ? true
-                : (p_149646_5_ == 1 && this.maxY < 1.0D
-                        ? true
-                        : (p_149646_5_ == 2 && this.minZ > 0.0D
-                                ? true
-                                : (p_149646_5_ == 3 && this.maxZ < 1.0D
-                                        ? true
-                                        : (p_149646_5_ == 4 && this.minX > 0.0D
-                                                ? true
-                                                : (p_149646_5_ == 5 && this.maxX < 1.0D
-                                                        ? true
-                                                        : !(p_149646_1_
-                                                                        .getBlock(p_149646_2_, p_149646_3_, p_149646_4_)
-                                                                        .isOpaqueCube()
-                                                                && p_149646_1_
-                                                                        .getBlock(
-                                                                                p_149646_2_,
-                                                                                p_149646_3_ + 1,
-                                                                                p_149646_4_)
-                                                                        .isOpaqueCube()))))));
+    public boolean shouldSideBeRendered(IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_,
+            int p_149646_5_) {
+        return p_149646_5_ == 0 && this.minY > 0.0D || (p_149646_5_ == 1 && this.maxY < 1.0D || (p_149646_5_ == 2
+                && this.minZ > 0.0D
+                || (p_149646_5_ == 3 && this.maxZ < 1.0D || (p_149646_5_ == 4 && this.minX > 0.0D || (p_149646_5_ == 5
+                        && this.maxX < 1.0D
+                        || !(p_149646_1_.getBlock(p_149646_2_, p_149646_3_, p_149646_4_).isOpaqueCube()
+                                && p_149646_1_.getBlock(p_149646_2_, p_149646_3_ + 1, p_149646_4_).isOpaqueCube()))))));
     }
 
     @Override
@@ -58,12 +45,7 @@ public class BattlesignBlock extends EquipBlock {
     }
 
     @Override
-    public void onBlockPlacedBy(
-            World par1World,
-            int par2,
-            int par3,
-            int par4,
-            EntityLivingBase par5EntityLivingBase,
+    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase,
             ItemStack par6ItemStack) {
         super.onBlockPlacedBy(par1World, par2, par3, par4, par5EntityLivingBase, par6ItemStack);
         int i3 = MathHelper.floor_double((par5EntityLivingBase.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
@@ -106,8 +88,8 @@ public class BattlesignBlock extends EquipBlock {
     }
 
     @Override
-    public void addCollisionBoxesToList(
-            World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity entity) {
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list,
+            Entity entity) {
         setBlockBoundsBasedOnState(world, x, y, z);
 
         super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);

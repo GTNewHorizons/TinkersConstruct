@@ -1,13 +1,13 @@
 package tconstruct.items.tools;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.*;
-import tconstruct.library.*;
+
 import tconstruct.library.tools.*;
 import tconstruct.tools.TinkerTools;
 
 public class Excavator extends AOEHarvestTool {
+
     public Excavator() {
         super(2, 1, 0);
         this.setUnlocalizedName("InfiTool.Excavator");
@@ -23,9 +23,8 @@ public class Excavator extends AOEHarvestTool {
         return "shovel";
     }
 
-    static Material[] materials = {
-        Material.grass, Material.ground, Material.sand, Material.snow, Material.craftedSnow, Material.clay
-    };
+    static Material[] materials = { Material.grass, Material.ground, Material.sand, Material.snow, Material.craftedSnow,
+            Material.clay };
 
     @Override
     public Item getHeadItem() {

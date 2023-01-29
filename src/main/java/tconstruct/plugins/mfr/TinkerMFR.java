@@ -1,9 +1,9 @@
 package tconstruct.plugins.mfr;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 import mantle.pulsar.pulse.*;
 import tconstruct.TConstruct;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(
@@ -12,14 +12,15 @@ import tconstruct.TConstruct;
         modsRequired = "MineFactoryReloaded",
         forced = true)
 public class TinkerMFR {
+
     @Handler
     public void init(FMLInitializationEvent event) {
         TConstruct.logger.info(
                 "MineFactoryReloaded detected. Registering TConstruct farmables/grindables with MFR's Farming Registry.");
         MFRRegister.registerWithMFR();
         /*
-         * Perhaps TC ores should be registered as drops from the MFR Laser Drill here, but I don't know which things would be suitable for that.
-         * Syntax: FarmingRegistry.registerLaserOre(int weight, ItemStack droppedStack));
+         * Perhaps TC ores should be registered as drops from the MFR Laser Drill here, but I don't know which things
+         * would be suitable for that. Syntax: FarmingRegistry.registerLaserOre(int weight, ItemStack droppedStack));
          * Currently used weights are from about 50 (emerald) to 175 (coal).
          */
     }

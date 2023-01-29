@@ -1,16 +1,19 @@
 package tconstruct.smeltery.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
+
 import tconstruct.smeltery.model.PaneRender;
+import cpw.mods.fml.relauncher.*;
 
 public class PaneBase extends BlockStainedGlassPane {
+
     public String[] textureNames;
     public String folder;
     public IIcon[] icons;

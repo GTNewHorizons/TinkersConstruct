@@ -1,8 +1,9 @@
 package tconstruct.tools.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.Random;
+
 import mantle.blocks.abstracts.InventoryBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,11 +16,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.ToolProxyCommon;
 import tconstruct.tools.logic.*;
 import tconstruct.tools.model.FrypanRender;
+import cpw.mods.fml.relauncher.*;
 
 public class EquipBlock extends InventoryBlock {
 
@@ -32,7 +35,7 @@ public class EquipBlock extends InventoryBlock {
 
     @Override
     public String[] getTextureNames() {
-        return new String[] {"toolstation_top"};
+        return new String[] { "toolstation_top" };
     }
 
     @Override
@@ -91,12 +94,7 @@ public class EquipBlock extends InventoryBlock {
     }
 
     @Override
-    public void onBlockPlacedBy(
-            World par1World,
-            int par2,
-            int par3,
-            int par4,
-            EntityLivingBase par5EntityLivingBase,
+    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase,
             ItemStack par6ItemStack) {
         super.onBlockPlacedBy(par1World, par2, par3, par4, par5EntityLivingBase, par6ItemStack);
         int i3 = MathHelper.floor_double((par5EntityLivingBase.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
@@ -124,7 +122,7 @@ public class EquipBlock extends InventoryBlock {
     public void breakBlock(World par1World, int x, int y, int z, Block par5, int meta) {
         TileEntity te = par1World.getTileEntity(x, y, z);
 
-        if (te != null && te instanceof EquipLogic) {
+        if (te instanceof EquipLogic) {
             EquipLogic logic = (EquipLogic) te;
             for (int iter = 0; iter < logic.getSizeInventory(); ++iter) {
                 ItemStack stack = iter == 0 ? logic.getEquipmentItem() : logic.getStackInSlot(iter);
@@ -144,20 +142,19 @@ public class EquipBlock extends InventoryBlock {
                         stack.stackSize -= itemSize;
                         EntityItem entityitem = new EntityItem(
                                 par1World,
-                                (double) ((float) x + jumpX),
-                                (double) ((float) y + jumpY),
-                                (double) ((float) z + jumpZ),
+                                (float) x + jumpX,
+                                (float) y + jumpY,
+                                (float) z + jumpZ,
                                 new ItemStack(stack.getItem(), itemSize, stack.getItemDamage()));
 
                         if (stack.hasTagCompound()) {
-                            entityitem.getEntityItem().setTagCompound((NBTTagCompound)
-                                    stack.getTagCompound().copy());
+                            entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
                         }
 
                         float offset = 0.05F;
-                        entityitem.motionX = (double) ((float) rand.nextGaussian() * offset);
-                        entityitem.motionY = (double) ((float) rand.nextGaussian() * offset + 0.2F);
-                        entityitem.motionZ = (double) ((float) rand.nextGaussian() * offset);
+                        entityitem.motionX = (float) rand.nextGaussian() * offset;
+                        entityitem.motionY = (float) rand.nextGaussian() * offset + 0.2F;
+                        entityitem.motionZ = (float) rand.nextGaussian() * offset;
                         par1World.spawnEntityInWorld(entityitem);
                     }
                 }
@@ -190,9 +187,7 @@ public class EquipBlock extends InventoryBlock {
         if (te instanceof EquipLogic) {
             EquipLogic logic = (EquipLogic) te;
             ItemStack stack = logic.getEquipmentItem();
-            if (stack != null
-                    && stack.hasTagCompound()
-                    && stack.getTagCompound().hasKey("InfiTool")) {
+            if (stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("InfiTool")) {
                 NBTTagCompound tag = stack.getTagCompound().getCompoundTag("InfiTool");
 
                 if (tag != null) {

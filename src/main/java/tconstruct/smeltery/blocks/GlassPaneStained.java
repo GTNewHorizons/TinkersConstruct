@@ -1,27 +1,13 @@
 package tconstruct.smeltery.blocks;
 
 import net.minecraft.block.material.Material;
+
 import tconstruct.library.TConstructRegistry;
 
 public class GlassPaneStained extends PaneBase {
-    static String blockTextures[] = {
-        "white",
-        "orange",
-        "magenta",
-        "lightblue",
-        "yellow",
-        "lime",
-        "pink",
-        "gray",
-        "lightgray",
-        "cyan",
-        "purple",
-        "blue",
-        "brown",
-        "green",
-        "red",
-        "black"
-    };
+
+    static String[] blockTextures = { "white", "orange", "magenta", "lightblue", "yellow", "lime", "pink", "gray",
+            "lightgray", "cyan", "purple", "blue", "brown", "green", "red", "black" };
 
     public GlassPaneStained() {
         super(Material.glass, "glass/", assembleBlockTextures());

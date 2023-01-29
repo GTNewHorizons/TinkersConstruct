@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 
 public abstract class AOEHarvestTool extends HarvestTool {
+
     public int breakRadius;
     public int breakDepth;
 
@@ -58,15 +59,14 @@ public abstract class AOEHarvestTool extends HarvestTool {
                 break;
         }
 
-        for (int xPos = x - xRange; xPos <= x + xRange; xPos++)
-            for (int yPos = y - yRange; yPos <= y + yRange; yPos++)
-                for (int zPos = z - zRange; zPos <= z + zRange; zPos++) {
-                    // don't break the originally already broken block, duh
-                    if (xPos == x && yPos == y && zPos == z) continue;
+        for (int xPos = x - xRange; xPos <= x + xRange; xPos++) for (int yPos = y - yRange; yPos <= y + yRange; yPos++)
+            for (int zPos = z - zRange; zPos <= z + zRange; zPos++) {
+                // don't break the originally already broken block, duh
+                if (xPos == x && yPos == y && zPos == z) continue;
 
-                    if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
-                        breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
-                }
+                if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
+                    breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
+            }
 
         return super.onBlockStartBreak(stack, x, y, z, player);
     }

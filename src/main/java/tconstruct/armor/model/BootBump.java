@@ -3,6 +3,7 @@ package tconstruct.armor.model;
 import net.minecraft.client.model.*;
 
 public class BootBump extends ModelBiped {
+
     ModelRenderer rightBump;
     ModelRenderer leftBump;
 

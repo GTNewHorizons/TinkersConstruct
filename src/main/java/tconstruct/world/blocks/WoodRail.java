@@ -1,6 +1,5 @@
 package tconstruct.world.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.block.*;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityMinecart;
@@ -8,7 +7,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
+
 public class WoodRail extends BlockRailBase {
+
     @SideOnly(Side.CLIENT)
     private IIcon theIcon;
 
@@ -37,8 +39,7 @@ public class WoodRail extends BlockRailBase {
     }
 
     protected void func_94358_a(World par1World, int par2, int par3, int par4, int par5, int par6, Block par7) {
-        if (par7 != Blocks.air
-                && par7.canProvidePower()
+        if (par7 != Blocks.air && par7.canProvidePower()
                 && (new Rail(par1World, par2, par3, par4)).func_150650_a() == 3) {
             this.func_150052_a(par1World, par2, par3, par4, false);
         }

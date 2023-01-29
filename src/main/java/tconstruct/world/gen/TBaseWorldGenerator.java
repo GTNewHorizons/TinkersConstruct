@@ -1,17 +1,20 @@
 package tconstruct.world.gen;
 
-import cpw.mods.fml.common.IWorldGenerator;
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.*;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
+
 import tconstruct.util.config.PHConstruct;
 import tconstruct.world.TinkerWorld;
+import cpw.mods.fml.common.IWorldGenerator;
 
 public class TBaseWorldGenerator implements IWorldGenerator {
+
     public TBaseWorldGenerator() {
         copper = new WorldGenMinable(TinkerWorld.oreSlag, 3, 8, Blocks.stone);
         tin = new WorldGenMinable(TinkerWorld.oreSlag, 4, 8, Blocks.stone);
@@ -29,12 +32,7 @@ public class TBaseWorldGenerator implements IWorldGenerator {
     }
 
     @Override
-    public void generate(
-            Random random,
-            int chunkX,
-            int chunkZ,
-            World world,
-            IChunkProvider chunkGenerator,
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
             IChunkProvider chunkProvider) {
         if (world.provider.isHellWorld) {
             generateNether(random, chunkX * 16, chunkZ * 16, world);
@@ -57,7 +55,7 @@ public class TBaseWorldGenerator implements IWorldGenerator {
 
         generateUndergroundOres(random, xChunk, zChunk, world);
 
-        if (biomeName == "Extreme Hills Edge" || biomeName == "Extreme Hills") {
+        if ("Extreme Hills Edge".equals(biomeName) || "Extreme Hills".equals(biomeName)) {
             generateUndergroundOres(random, xChunk, zChunk, world);
         }
     }
@@ -133,7 +131,12 @@ public class TBaseWorldGenerator implements IWorldGenerator {
                 yPos = (PHConstruct.copperBushMaxY + PHConstruct.copperBushMinY) / 2;
                 zPos = zChunk + random.nextInt(16);
                 yPos = findAdequateLocation(
-                        world, xPos, yPos, zPos, PHConstruct.copperBushMaxY, PHConstruct.copperBushMinY);
+                        world,
+                        xPos,
+                        yPos,
+                        zPos,
+                        PHConstruct.copperBushMaxY,
+                        PHConstruct.copperBushMinY);
                 if (yPos != -1) {
                     /*
                      * CoordTuple coord = new CoordTuple(xPos, yPos, zPos);
@@ -171,7 +174,12 @@ public class TBaseWorldGenerator implements IWorldGenerator {
                 yPos = (PHConstruct.aluminumBushMaxY + PHConstruct.aluminumBushMinY) / 2;
                 zPos = zChunk + random.nextInt(16);
                 yPos = findAdequateLocation(
-                        world, xPos, yPos, zPos, PHConstruct.aluminumBushMaxY, PHConstruct.aluminumBushMinY);
+                        world,
+                        xPos,
+                        yPos,
+                        zPos,
+                        PHConstruct.aluminumBushMaxY,
+                        PHConstruct.aluminumBushMinY);
                 if (yPos != -1) {
                     /*
                      * CoordTuple coord = new CoordTuple(xPos, yPos, zPos);
@@ -250,8 +258,8 @@ public class TBaseWorldGenerator implements IWorldGenerator {
 
     void superfunGenerate(Random random, int chunkX, int chunkZ, World world) {
         /*
-         * for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++)
-         * world.setBlock(x+chunkX, 192, z+chunkZ, Block.glowStone);
+         * for (int x = 0; x < 16; x++) for (int z = 0; z < 16; z++) world.setBlock(x+chunkX, 192, z+chunkZ,
+         * Block.glowStone);
          */
 
         for (int x = 0; x < 16; x++) {
@@ -277,8 +285,7 @@ public class TBaseWorldGenerator implements IWorldGenerator {
     void generateChunkBorder(Random random, int chunkX, int chunkZ, World world) {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                if (x + chunkX == PHConstruct.worldBorderSize
-                        || x + chunkX == -PHConstruct.worldBorderSize
+                if (x + chunkX == PHConstruct.worldBorderSize || x + chunkX == -PHConstruct.worldBorderSize
                         || z + chunkZ == PHConstruct.worldBorderSize
                         || z + chunkZ == -PHConstruct.worldBorderSize) {
                     for (int y = 0; y < 256; y++) {

@@ -1,6 +1,7 @@
 package tconstruct.library.client;
 
 public class GuiElement {
+
     public final int buttonIconX;
     public final int buttonIconY;
     public final String domain;

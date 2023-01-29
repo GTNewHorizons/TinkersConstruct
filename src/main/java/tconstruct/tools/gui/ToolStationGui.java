@@ -1,13 +1,8 @@
 package tconstruct.tools.gui;
 
-import codechicken.nei.VisiblityData;
-import codechicken.nei.api.INEIGuiHandler;
-import codechicken.nei.api.TaggedInventoryArea;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.Collections;
 import java.util.List;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -16,19 +11,27 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.TConstruct;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.client.ToolGuiElement;
-import tconstruct.smeltery.inventory.ActiveContainer;
 import tconstruct.tools.inventory.ToolStationContainer;
 import tconstruct.tools.logic.ToolStationLogic;
 import tconstruct.util.network.ToolStationPacket;
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
+
     public ToolStationLogic logic;
     public ToolStationContainer toolSlots;
     public GuiTextField text;
@@ -38,9 +41,9 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     public boolean active;
     public String title, body = "";
 
-    public ToolStationGui(
-            InventoryPlayer inventoryplayer, ToolStationLogic stationlogic, World world, int x, int y, int z) {
-        super((ActiveContainer) stationlogic.getGuiContainer(inventoryplayer, world, x, y, z));
+    public ToolStationGui(InventoryPlayer inventoryplayer, ToolStationLogic stationlogic, World world, int x, int y,
+            int z) {
+        super(stationlogic.getGuiContainer(inventoryplayer, world, x, y, z));
         this.logic = stationlogic;
         toolSlots = (ToolStationContainer) inventorySlots;
         text = new GuiTextField(this.fontRendererObj, 83, 8, 30, 12);
@@ -71,8 +74,8 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         this.text.setText("");
         guiType = 0;
         setSlotType(0);
-        iconX = new int[] {0, 1, 2};
-        iconY = new int[] {13, 13, 13};
+        iconX = new int[] { 0, 1, 2 };
+        iconY = new int[] { 13, 13, 13 };
         title = "\u00A7n" + StatCollector.translateToLocal("gui.toolforge1");
         body = StatCollector.translateToLocal("gui.toolforge2");
     }
@@ -137,24 +140,24 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     void setSlotType(int type) {
         switch (type) {
             case 0:
-                slotX = new int[] {56, 38, 38}; // Repair
-                slotY = new int[] {37, 28, 46};
+                slotX = new int[] { 56, 38, 38 }; // Repair
+                slotY = new int[] { 37, 28, 46 };
                 break;
             case 1:
-                slotX = new int[] {56, 56, 56}; // Three parts
-                slotY = new int[] {19, 55, 37};
+                slotX = new int[] { 56, 56, 56 }; // Three parts
+                slotY = new int[] { 19, 55, 37 };
                 break;
             case 2:
-                slotX = new int[] {56, 56, 14}; // Two parts
-                slotY = new int[] {28, 46, 37};
+                slotX = new int[] { 56, 56, 14 }; // Two parts
+                slotY = new int[] { 28, 46, 37 };
                 break;
             case 3:
-                slotX = new int[] {38, 47, 56}; // Double head
-                slotY = new int[] {28, 46, 28};
+                slotX = new int[] { 38, 47, 56 }; // Double head
+                slotY = new int[] { 28, 46, 28 };
                 break;
             case 7:
-                slotX = new int[] {56, 56, 56}; // Three parts reverse
-                slotY = new int[] {19, 37, 55};
+                slotX = new int[] { 56, 56, 56 }; // Three parts reverse
+                slotY = new int[] { 19, 37, 55 };
                 break;
         }
         toolSlots.resetSlots(slotX, slotY);
@@ -167,14 +170,13 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     /**
-     * Draw the foreground layer for the GuiContainer (everything in front of
-     * the items)
+     * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         this.fontRendererObj.drawString(StatCollector.translateToLocal(logic.getInvName()), 116, 8, 0x000000);
-        this.fontRendererObj.drawString(
-                StatCollector.translateToLocal("container.inventory"), 118, this.ySize - 96 + 2, 0x000000);
+        this.fontRendererObj
+                .drawString(StatCollector.translateToLocal("container.inventory"), 118, this.ySize - 96 + 2, 0x000000);
         this.fontRendererObj.drawString(toolName + "_", 180, 8, 0xffffff);
 
         if (logic.isStackInSlot(0)) ToolStationGuiHelper.drawToolStats(logic.getStackInSlot(0), 294, 0);
@@ -191,8 +193,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     private static final ResourceLocation description = new ResourceLocation("tinker", "textures/gui/description.png");
 
     /**
-     * Draw the background layer for the GuiContainer (everything behind the
-     * items)
+     * Draw the background layer for the GuiContainer (everything behind the items)
      */
     @Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
@@ -214,7 +215,12 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
             this.drawTexturedModalRect(cornerX + slotX[i], this.guiTop + slotY[i], 144, 216, 18, 18);
             if (!logic.isStackInSlot(i + 1)) {
                 this.drawTexturedModalRect(
-                        cornerX + slotX[i], this.guiTop + slotY[i], 18 * iconX[i], 18 * iconY[i], 18, 18);
+                        cornerX + slotX[i],
+                        this.guiTop + slotY[i],
+                        18 * iconX[i],
+                        18 * iconY[i],
+                        18,
+                        18);
             }
         }
 
@@ -241,19 +247,12 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
 
     void updateServer(String name) {
         /*
-         * ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-         * DataOutputStream outputStream = new DataOutputStream(bos); try {
-         * outputStream.writeByte(1);
-         * outputStream.writeInt(logic.getWorld().provider.dimensionId);
-         * outputStream.writeInt(logic.xCoord);
-         * outputStream.writeInt(logic.yCoord);
-         * outputStream.writeInt(logic.zCoord); outputStream.writeUTF(name); }
-         * catch (Exception ex) { ex.printStackTrace(); }
-         *
-         * Packet250CustomPayload packet = new Packet250CustomPayload();
-         * packet.channel = "TConstruct"; packet.data = bos.toByteArray();
-         * packet.length = bos.size();
-         *
+         * ByteArrayOutputStream bos = new ByteArrayOutputStream(8); DataOutputStream outputStream = new
+         * DataOutputStream(bos); try { outputStream.writeByte(1);
+         * outputStream.writeInt(logic.getWorld().provider.dimensionId); outputStream.writeInt(logic.xCoord);
+         * outputStream.writeInt(logic.yCoord); outputStream.writeInt(logic.zCoord); outputStream.writeUTF(name); }
+         * catch (Exception ex) { ex.printStackTrace(); } Packet250CustomPayload packet = new Packet250CustomPayload();
+         * packet.channel = "TConstruct"; packet.data = bos.toByteArray(); packet.length = bos.size();
          * PacketDispatcher.sendPacketToServer(packet);
          */
 
@@ -261,23 +260,16 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     /*
-     * protected void mouseClicked(int par1, int par2, int par3) {
-     * super.mouseClicked(par1, par2, par3); text.mouseClicked(par1, par2,
-     * par3); }
+     * protected void mouseClicked(int par1, int par2, int par3) { super.mouseClicked(par1, par2, par3);
+     * text.mouseClicked(par1, par2, par3); }
      */
 
     @Override
     public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
-        if (width - xSize < 107) {
-            currentVisibility.showWidgets = false;
-        } else {
-            currentVisibility.showWidgets = true;
-        }
-
+        currentVisibility.showWidgets = width - xSize >= 107;
         if (guiLeft < 58) {
             currentVisibility.showStateButtons = false;
         }
-
         return currentVisibility;
     }
 
@@ -299,9 +291,6 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
         if (y + h - 4 < guiTop || y + 4 > guiTop + ySize) return false;
-
-        if (x - w - 4 < guiLeft - 40 || x + 4 > guiLeft + xSize + 126) return false;
-
-        return true;
+        return x - w - 4 >= guiLeft - 40 && x + 4 <= guiLeft + xSize + 126;
     }
 }

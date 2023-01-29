@@ -1,14 +1,17 @@
 package tconstruct.library.crafting;
 
 import java.util.*;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+
 import tconstruct.library.event.ModifyEvent;
 import tconstruct.library.modifier.*;
 
 public class ModifyBuilder {
+
     public static ModifyBuilder instance = new ModifyBuilder();
-    public List<ItemModifier> itemModifiers = new ArrayList<ItemModifier>();
+    public List<ItemModifier> itemModifiers = new ArrayList<>();
 
     public ItemStack modifyItem(ItemStack input, ItemStack[] modifiers) {
         ItemStack copy = input.copy(); // Prevent modifying the original
@@ -27,10 +30,8 @@ public class ModifyBuilder {
                     mod.modify(modifiers, copy);
 
                     // we do not allow negative modifiers >:(
-                    if (copy.getTagCompound()
-                                    .getCompoundTag(item.getBaseTagName())
-                                    .getInteger("Modifiers")
-                            < 0) return null;
+                    if (copy.getTagCompound().getCompoundTag(item.getBaseTagName()).getInteger("Modifiers") < 0)
+                        return null;
                 }
             }
             if (built) return copy;

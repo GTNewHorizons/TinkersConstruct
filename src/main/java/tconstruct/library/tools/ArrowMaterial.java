@@ -1,6 +1,7 @@
 package tconstruct.library.tools;
 
 public class ArrowMaterial {
+
     public final float mass;
     public final float breakChance;
 

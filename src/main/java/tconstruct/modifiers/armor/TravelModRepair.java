@@ -2,6 +2,7 @@ package tconstruct.modifiers.armor;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.armor.items.TravelGear;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.modifier.ItemModifier;

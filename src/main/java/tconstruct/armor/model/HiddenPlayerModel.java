@@ -3,6 +3,7 @@ package tconstruct.armor.model;
 import net.minecraft.client.model.ModelBiped;
 
 public class HiddenPlayerModel extends ModelBiped {
+
     public HiddenPlayerModel(float size, int slot) {
         super(size, 0, 64, 32);
 

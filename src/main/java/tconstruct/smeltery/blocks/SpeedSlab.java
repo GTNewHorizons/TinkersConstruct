@@ -1,7 +1,7 @@
 package tconstruct.smeltery.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -9,11 +9,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
 import tconstruct.blocks.SlabBase;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.TinkerSmeltery;
+import cpw.mods.fml.relauncher.*;
 
 public class SpeedSlab extends SlabBase {
+
     public SpeedSlab() {
         super(Material.rock);
         this.setCreativeTab(TConstructRegistry.blockTab);

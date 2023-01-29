@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 
 public class MetadataItemBlock extends ItemBlock {
+
     public MetadataItemBlock(Block b) {
         super(b);
         setMaxDamage(0);

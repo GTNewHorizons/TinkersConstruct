@@ -1,8 +1,9 @@
 package tconstruct.smeltery.items;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.world.WorldHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -12,8 +13,10 @@ import net.minecraft.item.*;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidFinite;
+
 import tconstruct.TConstruct;
 import tconstruct.smeltery.TinkerSmeltery;
+import cpw.mods.fml.relauncher.*;
 
 public class FilledBucket extends ItemBucket {
 
@@ -30,29 +33,20 @@ public class FilledBucket extends ItemBucket {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         float var4 = 1.0F;
         double trueX = player.prevPosX + (player.posX - player.prevPosX) * (double) var4;
-        double trueY =
-                player.prevPosY + (player.posY - player.prevPosY) * (double) var4 + 1.62D - (double) player.yOffset;
+        double trueY = player.prevPosY + (player.posY - player.prevPosY) * (double) var4
+                + 1.62D
+                - (double) player.yOffset;
         double trueZ = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) var4;
         boolean wannabeFull = false;
         MovingObjectPosition position = this.getMovingObjectPositionFromPlayer(world, player, wannabeFull);
 
-        if (position == null) {
-            return stack;
-        } else {
+        if (position != null) {
             /*
-             * FillBucketEvent event = new FillBucketEvent(player, stack, world,
-             * position); if (MinecraftForge.EVENT_BUS.post(event)) { return
-             * stack; }
-             *
-             * if (event.getResult() == Event.Result.ALLOW) { if
-             * (player.capabilities.isCreativeMode) { return stack; }
-             *
-             * if (--stack.stackSize <= 0) { return event.result; }
-             *
-             * if (!player.inventory.addItemStackToInventory(event.result)) {
-             * player.dropPlayerItem(event.result); }
-             *
-             * return stack; }
+             * FillBucketEvent event = new FillBucketEvent(player, stack, world, position); if
+             * (MinecraftForge.EVENT_BUS.post(event)) { return stack; } if (event.getResult() == Event.Result.ALLOW) {
+             * if (player.capabilities.isCreativeMode) { return stack; } if (--stack.stackSize <= 0) { return
+             * event.result; } if (!player.inventory.addItemStackToInventory(event.result)) {
+             * player.dropPlayerItem(event.result); } return stack; }
              */
 
             if (position.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
@@ -97,9 +91,8 @@ public class FilledBucket extends ItemBucket {
                     return new ItemStack(Items.bucket);
                 }
             }
-
-            return stack;
         }
+        return stack;
     }
 
     public boolean tryPlaceContainedLiquid(World world, int clickX, int clickY, int clickZ, int type) {
@@ -113,8 +106,8 @@ public class FilledBucket extends ItemBucket {
                 int metadata = 0;
                 if (TinkerSmeltery.fluidBlocks[type] instanceof BlockFluidFinite) metadata = 7;
 
-                world.setBlock(
-                        clickX, clickY, clickZ, TinkerSmeltery.fluidBlocks[type], metadata, 3); // TODO: Merge liquids
+                world.setBlock(clickX, clickY, clickZ, TinkerSmeltery.fluidBlocks[type], metadata, 3); // TODO: Merge
+                                                                                                       // liquids
             } catch (ArrayIndexOutOfBoundsException ex) {
                 TConstruct.logger.warn("AIOBE occured when placing bucket into world; " + ex);
                 return false;
@@ -153,73 +146,13 @@ public class FilledBucket extends ItemBucket {
         return getUnlocalizedName() + "." + materialNames[arr];
     }
 
-    public static final String[] materialNames = new String[] {
-        "Iron",
-        "Gold",
-        "Copper",
-        "Tin",
-        "Aluminum",
-        "Cobalt",
-        "Ardite",
-        "Bronze",
-        "AluBrass",
-        "Manyullyn",
-        "Alumite",
-        "Obsidian",
-        "Steel",
-        "Glass",
-        "Stone",
-        "Villager",
-        "Cow",
-        "Nickel",
-        "Lead",
-        "Silver",
-        "Shiny",
-        "Invar",
-        "Electrum",
-        "Ender",
-        "Slime",
-        "Glue",
-        "PigIron",
-        "Lumium",
-        "Signalum",
-        "Mithril",
-        "Enderium",
-        "Quartz"
-    };
+    public static final String[] materialNames = new String[] { "Iron", "Gold", "Copper", "Tin", "Aluminum", "Cobalt",
+            "Ardite", "Bronze", "AluBrass", "Manyullyn", "Alumite", "Obsidian", "Steel", "Glass", "Stone", "Villager",
+            "Cow", "Nickel", "Lead", "Silver", "Shiny", "Invar", "Electrum", "Ender", "Slime", "Glue", "PigIron",
+            "Lumium", "Signalum", "Mithril", "Enderium", "Quartz" };
 
-    public static final String[] textureNames = new String[] {
-        "iron",
-        "gold",
-        "copper",
-        "tin",
-        "aluminum",
-        "cobalt",
-        "ardite",
-        "bronze",
-        "alubrass",
-        "manyullyn",
-        "alumite",
-        "obsidian",
-        "steel",
-        "glass",
-        "stone",
-        "emerald",
-        "blood",
-        "nickel",
-        "lead",
-        "silver",
-        "shiny",
-        "invar",
-        "electrum",
-        "ender",
-        "slime",
-        "glue",
-        "pigiron",
-        "lumium",
-        "signalum",
-        "mithril",
-        "enderium",
-        "quartz"
-    };
+    public static final String[] textureNames = new String[] { "iron", "gold", "copper", "tin", "aluminum", "cobalt",
+            "ardite", "bronze", "alubrass", "manyullyn", "alumite", "obsidian", "steel", "glass", "stone", "emerald",
+            "blood", "nickel", "lead", "silver", "shiny", "invar", "electrum", "ender", "slime", "glue", "pigiron",
+            "lumium", "signalum", "mithril", "enderium", "quartz" };
 }

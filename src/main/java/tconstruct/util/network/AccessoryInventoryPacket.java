@@ -1,14 +1,16 @@
 package tconstruct.util.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mantle.common.network.AbstractPacket;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.TConstruct;
 import tconstruct.armor.ArmorProxyCommon;
 import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.player.TPlayerStats;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 public class AccessoryInventoryPacket extends AbstractPacket {
 

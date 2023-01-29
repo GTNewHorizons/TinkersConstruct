@@ -1,16 +1,19 @@
 package tconstruct.items.tools;
 
 import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
 import tconstruct.library.tools.*;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
 
 public class Mattock extends DualHarvestTool {
+
     public Mattock() {
         super(3);
         this.setUnlocalizedName("InfiTool.Mattock");
@@ -36,8 +39,8 @@ public class Mattock extends DualHarvestTool {
         return "shovel";
     }
 
-    static Material[] axeMaterials = {Material.wood, Material.cactus, Material.plants, Material.vine, Material.gourd};
-    static Material[] shovelMaterials = {Material.grass, Material.ground, Material.clay};
+    static Material[] axeMaterials = { Material.wood, Material.cactus, Material.plants, Material.vine, Material.gourd };
+    static Material[] shovelMaterials = { Material.grass, Material.ground, Material.clay };
 
     @Override
     public Item getHeadItem() {
@@ -83,17 +86,8 @@ public class Mattock extends DualHarvestTool {
     /* Mattock specific */
 
     @Override
-    public boolean onItemUse(
-            ItemStack stack,
-            EntityPlayer player,
-            World world,
-            int x,
-            int y,
-            int z,
-            int side,
-            float clickX,
-            float clickY,
-            float clickZ) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+            float clickX, float clickY, float clickZ) {
         NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
         if (tags.getBoolean("Broken")) return false;
 
@@ -108,9 +102,9 @@ public class Mattock extends DualHarvestTool {
     }
 
     private boolean allowCrafting(int head) {
-        int[] nonMetals = {0, 1, 3, 4, 5, 6, 7, 8, 9, 17};
-        for (int i = 0; i < nonMetals.length; i++) {
-            if (head == nonMetals[i]) return false;
+        int[] nonMetals = { 0, 1, 3, 4, 5, 6, 7, 8, 9, 17 };
+        for (int nonMetal : nonMetals) {
+            if (head == nonMetal) return false;
         }
         return true;
     }

@@ -1,10 +1,11 @@
 package tconstruct.plugins.imc;
 
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 import java.util.*;
+
 import mantle.pulsar.pulse.*;
 import tconstruct.TConstruct;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(
@@ -13,12 +14,13 @@ import tconstruct.TConstruct;
         modsRequired = "appliedenergistics2",
         forced = true)
 public class TinkerAE2 {
-    private static List<String> spatialIOLogics = Arrays.asList(
+
+    private static final List<String> spatialIOLogics = Arrays.asList(
             "EssenceExtractorLogic",
             "GolemPedestalLogic", // TODO What happened to these?
             "MultiServantLogic"); // TODO Should Mantle handle this?
 
-    private static List<String> spatialIOSmelteryLogics = Arrays.asList(
+    private static final List<String> spatialIOSmelteryLogics = Arrays.asList(
             "AdaptiveSmelteryLogic",
             "AqueductLogic",
             "CastingBasinLogic",
@@ -31,7 +33,7 @@ public class TinkerAE2 {
             "TankAirLogic",
             "TowerFurnaceLogic");
 
-    private static List<String> spatialIOToolLogics = Arrays.asList(
+    private static final List<String> spatialIOToolLogics = Arrays.asList(
             "CraftingStationLogic",
             "FrypanLogic",
             "PartBuilderLogic",

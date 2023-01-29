@@ -1,9 +1,7 @@
 package tconstruct.library.entity;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import io.netty.buffer.ByteBuf;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -18,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S2BPacketChangeGameState;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
 import tconstruct.library.ActiveToolMod;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
@@ -25,9 +24,13 @@ import tconstruct.library.tools.ToolCore;
 import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.util.Reference;
 import tconstruct.weaponry.entity.ArrowEntity;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import io.netty.buffer.ByteBuf;
 
 // have to base this on EntityArrow, otherwise minecraft does derp things because everything is handled based on class.
 public abstract class ProjectileBase extends EntityArrow implements IEntityAdditionalSpawnData {
+
     public static final String woodSound = Reference.resource("woodHit");
     public static final String stoneSound = Reference.resource("stoneHit");
 
@@ -72,23 +75,14 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         returnStack = stack;
 
         /*
-        // fix upward default angle
-        motionY = -MathHelper.sin((rotationPitch / 180F) * 3.141593F - 0.2f);
-        setArrowHeading(motionX, motionY, motionZ, speed, 0.0f);
-
-        // set better position and move it a tad so we don't hit ourselves.
-        this.setPosition(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-        */
+         * // fix upward default angle motionY = -MathHelper.sin((rotationPitch / 180F) * 3.141593F - 0.2f);
+         * setArrowHeading(motionX, motionY, motionZ, speed, 0.0f); // set better position and move it a tad so we don't
+         * hit ourselves. this.setPosition(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+         */
         /*
-        double l = Math.sqrt(motionX*motionX + motionY*motionY + motionZ*motionZ);
-        double vx = motionX/l;
-        double vy = motionY/l;
-        double vz = motionZ/l;
-
-        posX += vx*1.5f;
-        posY += vy*1.5f;
-        posZ += vz*1.5f;
-        */
+         * double l = Math.sqrt(motionX*motionX + motionY*motionY + motionZ*motionZ); double vx = motionX/l; double vy =
+         * motionY/l; double vz = motionZ/l; posX += vx*1.5f; posY += vy*1.5f; posZ += vz*1.5f;
+         */
 
         // init();
     }
@@ -119,8 +113,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
     }
 
     protected void doLivingHit(EntityLivingBase entityHit) {
-        float knockback =
-                returnStack.getTagCompound().getCompoundTag("InfiTool").getFloat("Knockback");
+        float knockback = returnStack.getTagCompound().getCompoundTag("InfiTool").getFloat("Knockback");
         if (shootingEntity instanceof EntityLivingBase)
             knockback += EnchantmentHelper.getKnockbackModifier((EntityLivingBase) shootingEntity, entityHit);
 
@@ -135,7 +128,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
                 entityHit.addVelocity(
                         this.motionX * (double) knockback * 0.6000000238418579D / horizontalSpeed,
                         0.1D,
-                        this.motionZ * (double) knockback * 0.6000000238418579D / (double) horizontalSpeed);
+                        this.motionZ * (double) knockback * 0.6000000238418579D / horizontalSpeed);
             }
         }
 
@@ -144,12 +137,11 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
             EnchantmentHelper.func_151385_b((EntityLivingBase) this.shootingEntity, entityHit);
         }
 
-        if (this.shootingEntity != null
-                && entityHit != this.shootingEntity
+        if (this.shootingEntity != null && entityHit != this.shootingEntity
                 && entityHit instanceof EntityPlayer
                 && this.shootingEntity instanceof EntityPlayerMP) {
-            ((EntityPlayerMP) this.shootingEntity)
-                    .playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(6, 0.0F));
+            ((EntityPlayerMP) this.shootingEntity).playerNetServerHandler
+                    .sendPacket(new S2BPacketChangeGameState(6, 0.0F));
         }
     }
 
@@ -162,9 +154,8 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         this.motionX = movingobjectposition.hitVec.xCoord - this.posX;
         this.motionY = movingobjectposition.hitVec.yCoord - this.posY;
         this.motionZ = movingobjectposition.hitVec.zCoord - this.posZ;
-        double speed = getStuckDepth()
-                * MathHelper.sqrt_double(
-                        this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+        double speed = getStuckDepth() * MathHelper
+                .sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
         this.posX -= this.motionX / speed * 0.05000000074505806D;
         this.posY -= this.motionY / speed * 0.05000000074505806D;
         this.posZ -= this.motionZ / speed * 0.05000000074505806D;
@@ -178,14 +169,18 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
         if (this.field_145790_g.getMaterial() != Material.air) {
             this.field_145790_g.onEntityCollidedWithBlock(
-                    this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f, this);
+                    this.worldObj,
+                    this.field_145791_d,
+                    this.field_145792_e,
+                    this.field_145789_f,
+                    this);
         }
     }
 
     public void onHitEntity(MovingObjectPosition movingobjectposition) {
         NBTTagCompound tags = returnStack.getTagCompound().getCompoundTag("InfiTool");
-        float speed = MathHelper.sqrt_double(
-                this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+        float speed = MathHelper
+                .sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
 
         // absolute distance travelled minus the current tick
         float distance = speed * (this.ticksInAir - 1);
@@ -213,8 +208,8 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
         float baseAttack = tags.getInteger("BaseAttack");
         float totalAttack = tags.getInteger("Attack");
-        float damage = speed
-                * baseAttack; // todo: potentially change this back to MathHelper.ceiling_float_int to get 1/2 heart
+        float damage = speed * baseAttack; // todo: potentially change this back to MathHelper.ceiling_float_int to get
+                                           // 1/2 heart
         // steps back
 
         // add quartz damage
@@ -232,7 +227,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         // basically we pass the base damage to all modifiers and take the highest one
         int baseDamage = 0;
         if (shotByPlayer) // prevent crashes with other things reflecting/shooting them
-        for (ActiveToolMod toolmod : TConstructRegistry.activeModifiers) {
+            for (ActiveToolMod toolmod : TConstructRegistry.activeModifiers) {
                 int dmg = toolmod.baseAttackDamage(
                         baseDamage,
                         (int) damage,
@@ -257,7 +252,8 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         // enchantments might add too
         if (shootingEntity != null && movingobjectposition.entityHit instanceof EntityLivingBase)
             bonusDamage += EnchantmentHelper.getEnchantmentModifierLiving(
-                    (EntityLivingBase) this.shootingEntity, (EntityLivingBase) movingobjectposition.entityHit);
+                    (EntityLivingBase) this.shootingEntity,
+                    (EntityLivingBase) movingobjectposition.entityHit);
         damage += bonusDamage;
 
         // ensure we still have damage
@@ -265,18 +261,17 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
         // the regular tool modifier damage stuff
         int modDamage = 0;
-        if (shotByPlayer)
-            for (ActiveToolMod mod : TConstructRegistry.activeModifiers) {
-                modDamage += mod.attackDamage(
-                        modDamage,
-                        (int) damage,
-                        ammo,
-                        returnStack.getTagCompound(),
-                        tags,
-                        returnStack,
-                        (EntityPlayer) this.shootingEntity,
-                        movingobjectposition.entityHit);
-            }
+        if (shotByPlayer) for (ActiveToolMod mod : TConstructRegistry.activeModifiers) {
+            modDamage += mod.attackDamage(
+                    modDamage,
+                    (int) damage,
+                    ammo,
+                    returnStack.getTagCompound(),
+                    tags,
+                    returnStack,
+                    (EntityPlayer) this.shootingEntity,
+                    movingobjectposition.entityHit);
+        }
         damage += modDamage;
 
         // calculate critical damaaage
@@ -323,7 +318,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
     // returns true if it was successful
     public boolean dealDamage(float damage, ToolCore ammo, NBTTagCompound tags, Entity entityHit) {
-        boolean dealtDamage = false;
+        boolean dealtDamage;
 
         // deal regular damage
         DamageSource damagesource;
@@ -356,19 +351,24 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         // If we don't have our rotation set correctly, infer it from our motion direction
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
             float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-            this.prevRotationYaw =
-                    this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
-            this.prevRotationPitch =
-                    this.rotationPitch = (float) (Math.atan2(this.motionY, (double) f) * 180.0D / Math.PI);
+            this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D
+                    / Math.PI);
+            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
         }
 
         // we previously hit something. Check if the block is still there.
         Block block = this.worldObj.getBlock(this.field_145791_d, this.field_145792_e, this.field_145789_f);
         if (block.getMaterial() != Material.air) {
             block.setBlockBoundsBasedOnState(
-                    this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
+                    this.worldObj,
+                    this.field_145791_d,
+                    this.field_145792_e,
+                    this.field_145789_f);
             AxisAlignedBB axisalignedbb = block.getCollisionBoundingBoxFromPool(
-                    this.worldObj, this.field_145791_d, this.field_145792_e, this.field_145789_f);
+                    this.worldObj,
+                    this.field_145791_d,
+                    this.field_145792_e,
+                    this.field_145789_f);
 
             // we are stuck in a block. yay.
             if (axisalignedbb != null
@@ -394,9 +394,9 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
             }
         } else {
             this.inGround = false;
-            this.motionX *= (double) (this.rand.nextFloat() * 0.2F);
-            this.motionY *= (double) (this.rand.nextFloat() * 0.2F);
-            this.motionZ *= (double) (this.rand.nextFloat() * 0.2F);
+            this.motionX *= this.rand.nextFloat() * 0.2F;
+            this.motionY *= this.rand.nextFloat() * 0.2F;
+            this.motionZ *= this.rand.nextFloat() * 0.2F;
             this.ticksInGround = 0;
             this.ticksInAir = 0;
         }
@@ -409,31 +409,27 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
         // do a raytrace from old to new position
         Vec3 curPos = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
-        Vec3 newPos =
-                Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        Vec3 newPos = Vec3
+                .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
         MovingObjectPosition movingobjectposition = this.worldObj.func_147447_a(curPos, newPos, false, true, false);
 
         // raytrace messes with the positions. get new ones!
         curPos = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
 
         // if we hit something, the collision point is our new position
-        if (movingobjectposition != null)
-            newPos = Vec3.createVectorHelper(
-                    movingobjectposition.hitVec.xCoord,
-                    movingobjectposition.hitVec.yCoord,
-                    movingobjectposition.hitVec.zCoord);
-        else
-            newPos = Vec3.createVectorHelper(
-                    this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        if (movingobjectposition != null) newPos = Vec3.createVectorHelper(
+                movingobjectposition.hitVec.xCoord,
+                movingobjectposition.hitVec.yCoord,
+                movingobjectposition.hitVec.zCoord);
+        else newPos = Vec3
+                .createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
         if (!defused) {
             // Check all the entities we on our way
             Entity entity = null;
             List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(
                     this,
-                    this.boundingBox
-                            .addCoord(this.motionX, this.motionY, this.motionZ)
-                            .expand(1.0D, 1.0D, 1.0D));
+                    this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
             double distance = 0.0D;
             float f1;
 
@@ -443,7 +439,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
                 if (ent == this.shootingEntity && this.ticksInAir < 5) continue;
 
                 f1 = 0.3F;
-                AxisAlignedBB axisalignedbb1 = ent.boundingBox.expand((double) f1, (double) f1, (double) f1);
+                AxisAlignedBB axisalignedbb1 = ent.boundingBox.expand(f1, f1, f1);
                 MovingObjectPosition movingobjectposition1 = axisalignedbb1.calculateIntercept(curPos, newPos);
 
                 // did we actually collide with the entity, or was it just really close nearby?
@@ -462,15 +458,12 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
             if (entity != null) movingobjectposition = new MovingObjectPosition(entity);
 
             // did we hit a player?
-            if (movingobjectposition != null
-                    && movingobjectposition.entityHit != null
-                    && movingobjectposition.entityHit instanceof EntityPlayer) {
+            if (movingobjectposition != null && movingobjectposition.entityHit instanceof EntityPlayer) {
                 EntityPlayer entityplayer = (EntityPlayer) movingobjectposition.entityHit;
 
                 // can we attack said player?
-                if (entityplayer.capabilities.disableDamage
-                        || this.shootingEntity instanceof EntityPlayer
-                                && !((EntityPlayer) this.shootingEntity).canAttackPlayer(entityplayer))
+                if (entityplayer.capabilities.disableDamage || this.shootingEntity instanceof EntityPlayer
+                        && !((EntityPlayer) this.shootingEntity).canAttackPlayer(entityplayer))
                     movingobjectposition = null;
 
                 // this check should probably done inside of the loop for accuracy..
@@ -593,7 +586,9 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
             if (flag) {
                 this.playSound(
-                        "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        "random.pop",
+                        0.2F,
+                        ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 player.onItemPickup(this, 1);
                 this.setDead();
             }

@@ -1,16 +1,20 @@
 package tconstruct.tools.items;
 
 import java.util.List;
+
 import mantle.items.abstracts.CraftingItem;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.util.StatCollector;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.IToolPart;
 import tconstruct.tools.TinkerTools;
 
 @Deprecated
 public class ToolPart extends CraftingItem implements IToolPart {
+
     public String partName;
 
     public ToolPart(String textureType, String name) {
@@ -25,7 +29,7 @@ public class ToolPart extends CraftingItem implements IToolPart {
         String material = "";
         if (par1ItemStack.getItemDamage() < toolTextureNames.length)
             material = toolTextureNames[par1ItemStack.getItemDamage()];
-        String name = "";
+        String name;
 
         if (StatCollector.canTranslate("toolpart." + partName + "." + material)) {
             name = StatCollector.translateToLocal("toolpart." + partName + "." + material);
@@ -47,75 +51,13 @@ public class ToolPart extends CraftingItem implements IToolPart {
         return names;
     }
 
-    public static final String[] toolMaterialNames = new String[] {
-        "Wood",
-        "Stone",
-        "Iron",
-        "Flint",
-        "Cactus",
-        "Bone",
-        "Obsidian",
-        "Netherrack",
-        "Slime",
-        "Paper",
-        "Cobalt",
-        "Ardite",
-        "Manyullyn",
-        "Copper",
-        "Bronze",
-        "Alumite",
-        "Steel",
-        "Blue Slime",
-        "Pig Iron",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "Thaumium"
-    };
+    public static final String[] toolMaterialNames = new String[] { "Wood", "Stone", "Iron", "Flint", "Cactus", "Bone",
+            "Obsidian", "Netherrack", "Slime", "Paper", "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Alumite",
+            "Steel", "Blue Slime", "Pig Iron", "", "", "", "", "", "", "", "", "", "", "", "", "Thaumium" };
 
-    public static final String[] toolTextureNames = new String[] {
-        "wood",
-        "stone",
-        "iron",
-        "flint",
-        "cactus",
-        "bone",
-        "obsidian",
-        "netherrack",
-        "slime",
-        "paper",
-        "cobalt",
-        "ardite",
-        "manyullyn",
-        "copper",
-        "bronze",
-        "alumite",
-        "steel",
-        "blueslime",
-        "pigiron",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "thaumium"
-    };
+    public static final String[] toolTextureNames = new String[] { "wood", "stone", "iron", "flint", "cactus", "bone",
+            "obsidian", "netherrack", "slime", "paper", "cobalt", "ardite", "manyullyn", "copper", "bronze", "alumite",
+            "steel", "blueslime", "pigiron", "", "", "", "", "", "", "", "", "", "", "", "", "thaumium" };
 
     @Override
     public void getSubItems(Item b, CreativeTabs tab, List list) {
@@ -126,8 +68,7 @@ public class ToolPart extends CraftingItem implements IToolPart {
 
     @Override
     public int getMaterialID(ItemStack stack) {
-        if (TConstructRegistry.toolMaterials.keySet().contains(stack.getItemDamage())) return stack.getItemDamage();
-
+        if (TConstructRegistry.toolMaterials.containsKey(stack.getItemDamage())) return stack.getItemDamage();
         return -1;
     }
 }

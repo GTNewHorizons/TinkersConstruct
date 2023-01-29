@@ -1,6 +1,7 @@
 package tconstruct.library.tools;
 
 public class BowMaterial {
+
     public final int drawspeed;
     public final float flightSpeedMax;
 

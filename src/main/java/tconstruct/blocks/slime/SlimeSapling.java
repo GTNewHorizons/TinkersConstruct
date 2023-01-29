@@ -1,7 +1,7 @@
 package tconstruct.blocks.slime;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.*;
+
 import net.minecraft.block.*;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,14 +11,17 @@ import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.gen.SlimeTreeGen;
+import cpw.mods.fml.relauncher.*;
 
 public class SlimeSapling extends BlockSapling {
+
     public IIcon[] icons;
-    public String[] textureNames = new String[] {"blue"};
+    public String[] textureNames = new String[] { "blue" };
 
     public SlimeSapling() {
         super();
@@ -85,7 +88,7 @@ public class SlimeSapling extends BlockSapling {
     public void growTree(World world, int x, int y, int z, Random random) {
         int md = world.getBlockMetadata(x, y, z) % 8;
         world.setBlock(x, y, z, Blocks.air);
-        WorldGenerator obj = null;
+        WorldGenerator obj;
 
         obj = new SlimeTreeGen(true, 5, 4, 1, 0);
 

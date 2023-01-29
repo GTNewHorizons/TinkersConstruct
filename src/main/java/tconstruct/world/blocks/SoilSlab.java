@@ -1,7 +1,7 @@
 package tconstruct.world.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -9,11 +9,14 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
+
 import tconstruct.blocks.SlabBase;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.relauncher.*;
 
 public class SoilSlab extends SlabBase {
+
     public SoilSlab() {
         super(Material.ground);
         this.setCreativeTab(TConstructRegistry.blockTab);

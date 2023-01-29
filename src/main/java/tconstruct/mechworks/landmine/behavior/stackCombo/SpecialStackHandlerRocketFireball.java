@@ -1,6 +1,7 @@
 package tconstruct.mechworks.landmine.behavior.stackCombo;
 
 import java.util.*;
+
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.*;
@@ -12,16 +13,16 @@ import net.minecraft.world.World;
 public class SpecialStackHandlerRocketFireball extends SpecialStackHandler {
 
     @Override
-    public void checkStack(
-            World par1World, int par2, int par3, int par4, Entity triggerer, ArrayList<ItemStack> stacks) {
+    public void checkStack(World par1World, int par2, int par3, int par4, Entity triggerer,
+            ArrayList<ItemStack> stacks) {
         if (stacks.isEmpty()) {
             return;
         }
 
-        if (this.arrayContainsEqualStack(stacks, new ItemStack(Items.fireworks))
-                && this.arrayContainsEqualStack(stacks, new ItemStack(Items.fire_charge))) {
-            int index0 = this.arrayIndexOfStack(stacks, new ItemStack(Items.fireworks));
-            int index1 = this.arrayIndexOfStack(stacks, new ItemStack(Items.fire_charge));
+        if (arrayContainsEqualStack(stacks, new ItemStack(Items.fireworks))
+                && arrayContainsEqualStack(stacks, new ItemStack(Items.fire_charge))) {
+            int index0 = arrayIndexOfStack(stacks, new ItemStack(Items.fireworks));
+            int index1 = arrayIndexOfStack(stacks, new ItemStack(Items.fire_charge));
             EnumFacing face = getFacing(par1World, par2, par3, par4);
 
             while (stacks.get(index0).stackSize > 0 && stacks.get(index1).stackSize > 0) {
@@ -39,11 +40,11 @@ public class SpecialStackHandlerRocketFireball extends SpecialStackHandler {
                     boolean shouldRun = true;
                     if (triggerer instanceof EntityPlayer) {
                         EntityPlayer player = (EntityPlayer) triggerer;
-                        if (player.capabilities.isCreativeMode) {
-                            // Remove the bellow comment to make the player in
-                            // creative mode not get launched
-                            // shouldRun = false;
-                        }
+                        // if (player.capabilities.isCreativeMode) {
+                        // Remove the bellow comment to make the player in
+                        // creative mode not get launched
+                        // shouldRun = false;
+                        // }
                     }
 
                     if (shouldRun) {

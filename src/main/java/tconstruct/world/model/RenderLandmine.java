@@ -1,12 +1,14 @@
 package tconstruct.world.model;
 
-import cpw.mods.fml.client.registry.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.mechworks.landmine.Helper;
+import cpw.mods.fml.client.registry.*;
 
 /**
  *
@@ -29,8 +31,8 @@ public class RenderLandmine implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean renderWorldBlock(
-            IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
+            RenderBlocks renderer) {
         if (modelId == getRenderId()) {
             renderBasedOnSide(world, x, y, z, block, modelId, renderer);
             return true;
@@ -40,8 +42,8 @@ public class RenderLandmine implements ISimpleBlockRenderingHandler {
     }
 
     @SuppressWarnings("incomplete-switch")
-    public void renderBasedOnSide(
-            IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
+    public void renderBasedOnSide(IBlockAccess world, int x, int y, int z, Block block, int modelId,
+            RenderBlocks renderer) {
         int l = world.getBlockMetadata(x, y, z);
         int i1 = l & 7;
         boolean flag = (l & 8) > 0;

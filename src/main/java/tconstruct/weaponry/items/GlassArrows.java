@@ -1,6 +1,7 @@
 package tconstruct.weaponry.items;
 
 import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -8,11 +9,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.StatCollector;
+
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.util.Reference;
 import tconstruct.weaponry.ammo.ArrowAmmo;
 
 public class GlassArrows extends ArrowAmmo {
+
     public GlassArrows() {
         super();
         this.setUnlocalizedName(Reference.prefix("glassArrows"));
@@ -29,8 +32,8 @@ public class GlassArrows extends ArrowAmmo {
         ItemStack handleStack = new ItemStack(getHandleItem(), 1, 0); // wooden shaft
         ItemStack accessoryStack = new ItemStack(getAccessoryItem(), 1, 0); // feather fletchling
 
-        ItemStack tool = ToolBuilder.instance.buildTool(
-                headStack, handleStack, accessoryStack, null, this.getLocalizedToolName());
+        ItemStack tool = ToolBuilder.instance
+                .buildTool(headStack, handleStack, accessoryStack, null, this.getLocalizedToolName());
         if (tool != null) {
             tool.getTagCompound().getCompoundTag("InfiTool").setBoolean("Built", true);
         } else return;

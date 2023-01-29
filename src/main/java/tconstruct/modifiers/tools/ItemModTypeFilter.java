@@ -1,26 +1,29 @@
 package tconstruct.modifiers.tools;
 
 import java.util.*;
+
 import net.minecraft.item.ItemStack;
+
 import tconstruct.library.modifier.ItemModifier;
 
 public abstract class ItemModTypeFilter extends ItemModifier {
+
     public final List<Integer> increase;
 
     public ItemModTypeFilter(int effect, String dataKey, ItemStack[] items, int[] values) {
         super(items, effect, dataKey);
         assert items.length == values.length : "Itemstacks and their values for tool modifiers must be the same length";
-        this.increase = new ArrayList<Integer>();
-        for (int i = 0; i < values.length; i++) {
-            increase.add(values[i]);
+        this.increase = new ArrayList<>();
+        for (int value : values) {
+            increase.add(value);
         }
     }
 
-    /** Checks to see if the inputs match the stored items
-     * Note: Filters types, doesn't care about amount
+    /**
+     * Checks to see if the inputs match the stored items Note: Filters types, doesn't care about amount
      *
      * @param input The ItemStacks to compare against
-     * @param tool Item to modify, used for restrictions
+     * @param tool  Item to modify, used for restrictions
      * @return Whether the recipe matches the input
      */
     @Override
@@ -50,8 +53,7 @@ public abstract class ItemModTypeFilter extends ItemModifier {
     public int matchingAmount(ItemStack[] input) {
         int amount = 0;
         for (ItemStack inputStack : input) {
-            if (inputStack == null) continue;
-            else {
+            if (inputStack != null) {
                 for (int iter = 0; iter < stacks.size(); iter++) {
                     ItemStack stack = (ItemStack) stacks.get(iter);
                     if (stack.getItemDamage() == Short.MAX_VALUE) {
@@ -65,15 +67,15 @@ public abstract class ItemModTypeFilter extends ItemModifier {
         return amount;
     }
 
-    /** Adds a new itemstack to the list for increases
+    /**
+     * Adds a new itemstack to the list for increases
      *
-     * @param stack ItemStack to compare against
+     * @param stack  ItemStack to compare against
      * @param amount Amount to increase
      */
     public void addStackToMatchList(ItemStack stack, int amount) {
-        if (stack == null)
-            throw new NullPointerException(
-                    "ItemStack added to " + this.getClass().getSimpleName() + " cannot be null.");
+        if (stack == null) throw new NullPointerException(
+                "ItemStack added to " + this.getClass().getSimpleName() + " cannot be null.");
         stacks.add(stack);
         increase.add(amount);
     }

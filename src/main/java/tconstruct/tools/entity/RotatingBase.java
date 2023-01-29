@@ -1,9 +1,7 @@
 package tconstruct.tools.entity;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import io.netty.buffer.ByteBuf;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
 import tconstruct.library.tools.AbilityHelper;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import io.netty.buffer.ByteBuf;
 
 @Deprecated
 public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
@@ -56,20 +58,17 @@ public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
         posZ -= MathHelper.sin((rotationYaw / 180F) * 3.141593F) * 0.16F;
         setPosition(posX, posY, posZ);
         yOffset = 0.0F;
-        motionX =
-                -MathHelper.sin((rotationYaw / 180F) * 3.141593F) * MathHelper.cos((rotationPitch / 180F) * 3.141593F);
+        motionX = -MathHelper.sin((rotationYaw / 180F) * 3.141593F)
+                * MathHelper.cos((rotationPitch / 180F) * 3.141593F);
         motionZ = MathHelper.cos((rotationYaw / 180F) * 3.141593F) * MathHelper.cos((rotationPitch / 180F) * 3.141593F);
         motionY = -MathHelper.sin((rotationPitch / 180F) * 3.141593F - 0.2f);
         setArrowHeading(motionX, motionY, motionZ, f, f1);
     }
 
     /*
-     * public void setOnGround(boolean flag) { onGround = flag;
-     * this.dataWatcher.updateObject(6, Byte.valueOf((byte) (flag == true ? 1 :
-     * 0))); }
-     *
-     * public boolean getOnGround() { return
-     * this.dataWatcher.getWatchableObjectByte(0) == 1 ? true : false; }
+     * public void setOnGround(boolean flag) { onGround = flag; this.dataWatcher.updateObject(6, Byte.valueOf((byte)
+     * (flag == true ? 1 : 0))); } public boolean getOnGround() { return this.dataWatcher.getWatchableObjectByte(0) == 1
+     * ? true : false; }
      */
 
     @Override
@@ -89,11 +88,9 @@ public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
     }
 
     /*
-     * public void returnToPlayer() { damageDagger(0, true);
-     * if(returnStack.stackSize < 1) { return; } if(returnStackSlot > 0) {
-     * mod_Infi2x2.forceAddToInv((EntityPlayer)returnsTo, returnStack,
-     * returnStackSlot, true); } else {
-     * mod_Infi2x2.addToInv((EntityPlayer)returnsTo, returnStack, true); } }
+     * public void returnToPlayer() { damageDagger(0, true); if(returnStack.stackSize < 1) { return; }
+     * if(returnStackSlot > 0) { mod_Infi2x2.forceAddToInv((EntityPlayer)returnsTo, returnStack, returnStackSlot, true);
+     * } else { mod_Infi2x2.addToInv((EntityPlayer)returnsTo, returnStack, true); } }
      */
 
     public void determineRotation() {
@@ -161,8 +158,8 @@ public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
                  * this.motionX = 0; this.motionY = 0; this.motionZ = 0;
                  */
                 /*
-                 * ticksInGround++; if (ticksInGround == 1200) { setDead(); } if
-                 * (ticksInGround == maxGroundTicks) { setDead(); }
+                 * ticksInGround++; if (ticksInGround == 1200) { setDead(); } if (ticksInGround == maxGroundTicks) {
+                 * setDead(); }
                  */
                 if (!hasHitGround) {
                     hasHitGround = true;
@@ -186,11 +183,11 @@ public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
                     movingobjectposition.hitVec.zCoord);
         }
         Entity entity = null;
-        List list = worldObj.getEntitiesWithinAABBExcludingEntity(
-                this, boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
+        List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(
+                this,
+                boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
         double d = 0.0D;
-        for (int j = 0; j < list.size(); j++) {
-            Entity entity1 = (Entity) list.get(j);
+        for (Entity entity1 : list) {
             if (!entity1.canBeCollidedWith() || entity1 == owner && ticksInAir < 5) {
                 continue;
             }
@@ -219,12 +216,19 @@ public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
         posZ += motionZ;
         float f1 = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
         rotationYaw = (float) ((Math.atan2(motionX, motionZ) * 180D) / 3.1415927410125732D);
-        for (rotationPitch = (float) ((Math.atan2(motionY, f1) * 180D) / 3.1415927410125732D);
-                rotationPitch - prevRotationPitch < -180F;
-                prevRotationPitch -= 360F) {}
-        for (; rotationPitch - prevRotationPitch >= 180F; prevRotationPitch += 360F) {}
-        for (; rotationYaw - prevRotationYaw < -180F; prevRotationYaw -= 360F) {}
-        for (; rotationYaw - prevRotationYaw >= 180F; prevRotationYaw += 360F) {}
+        rotationPitch = (float) ((Math.atan2(motionY, f1) * 180D) / 3.1415927410125732D);
+        while (rotationPitch - prevRotationPitch < -180F) {
+            prevRotationPitch -= 360F;
+        }
+        while (rotationPitch - prevRotationPitch >= 180F) {
+            prevRotationPitch += 360F;
+        }
+        while (rotationYaw - prevRotationYaw < -180F) {
+            prevRotationYaw -= 360F;
+        }
+        while (rotationYaw - prevRotationYaw >= 180F) {
+            prevRotationYaw += 360F;
+        }
         rotationPitch = prevRotationPitch + (rotationPitch - prevRotationPitch) * 0.2F;
         rotationYaw = prevRotationYaw + (rotationYaw - prevRotationYaw) * 0.2F;
         float f2 = 0.99F;
@@ -251,27 +255,20 @@ public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
         setPosition(posX, posY, posZ);
         if (!onGround) {
             prevBoomerangRotation = boomerangRotation;
-            for (boomerangRotation += 36F; boomerangRotation > 360F; boomerangRotation -= 360F) {}
+            boomerangRotation += 36F;
+            while (boomerangRotation > 360F) {
+                boomerangRotation -= 360F;
+            }
         }
     }
 
     /*
-     * public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-     * super.readEntityFromNBT(par1NBTTagCompound);
-     *
-     * if (par1NBTTagCompound.hasKey("Potion")) { this.potionDamage =
-     * ItemStack.loadItemStackFromNBT
+     * public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) { super.readEntityFromNBT(par1NBTTagCompound);
+     * if (par1NBTTagCompound.hasKey("Potion")) { this.potionDamage = ItemStack.loadItemStackFromNBT
      * (par1NBTTagCompound.getCompoundTag("Potion")); } else {
-     * this.setPotionDamage(par1NBTTagCompound.getInteger("potionValue")); }
-     *
-     * if (this.potionDamage == null) { this.setDead(); } }
-     *
-     * public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-     * super.writeEntityToNBT(par1NBTTagCompound);
-     *
-     * if (this.potionDamage != null) {
-     *
-     * } }
+     * this.setPotionDamage(par1NBTTagCompound.getInteger("potionValue")); } if (this.potionDamage == null) {
+     * this.setDead(); } } public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
+     * super.writeEntityToNBT(par1NBTTagCompound); if (this.potionDamage != null) { } }
      */
 
     @Override
@@ -280,7 +277,7 @@ public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
         tags.setShort("xTile", (short) xTile);
         tags.setShort("yTile", (short) yTile);
         tags.setShort("zTile", (short) zTile);
-        tags.setString("inTile", (String) inTile.getUnlocalizedName());
+        tags.setString("inTile", inTile.getUnlocalizedName());
         tags.setByte("shake", (byte) arrowShake);
         tags.setByte("onGround", (byte) (onGround ? 1 : 0));
         tags.setBoolean("Retrieval", doNotRetrieve);
@@ -316,7 +313,10 @@ public class RotatingBase extends Entity implements IEntityAdditionalSpawnData {
             }
             if (!doNotRetrieve) AbilityHelper.addToInv(entityplayer, returnStack, true);
             worldObj.playSoundAtEntity(
-                    this, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                    this,
+                    "random.pop",
+                    0.2F,
+                    ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             entityplayer.onItemPickup(this, 1);
             kill();
         }

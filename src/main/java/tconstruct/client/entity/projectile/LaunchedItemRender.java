@@ -1,6 +1,5 @@
 package tconstruct.client.entity.projectile;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -8,13 +7,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.*;
 import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.*;
+
 import org.lwjgl.opengl.*;
+
 import tconstruct.tools.entity.LaunchedPotion;
+import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 public class LaunchedItemRender extends Render {
-    private Item field_94151_a;
-    private int field_94150_f;
+
+    private final Item field_94151_a;
+    private final int field_94150_f;
 
     public LaunchedItemRender(Item par1Item, int par2) {
         this.field_94151_a = par1Item;
@@ -26,12 +29,10 @@ public class LaunchedItemRender extends Render {
     }
 
     /**
-     * Actually renders the given argument. This is a synthetic bridge method,
-     * always casting down its argument and then handing it off to a worker
-     * function which does the actual work. In all probabilty, the class Render
-     * is generic (Render<T extends Entity) and this method has signature public
-     * void doRender(T entity, double d, double d1, double d2, float f, float
-     * f1). But JAD is pre 1.5 so doesn't do that.
+     * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then
+     * handing it off to a worker function which does the actual work. In all probabilty, the class Render is generic
+     * (Render<T extends Entity) and this method has signature public void doRender(T entity, double d, double d1,
+     * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
      */
     @Override
     public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
@@ -80,10 +81,10 @@ public class LaunchedItemRender extends Render {
         GL11.glRotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
         par1Tessellator.startDrawingQuads();
         par1Tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        par1Tessellator.addVertexWithUV((double) (0.0F - f5), (double) (0.0F - f6), 0.0D, (double) f, (double) f3);
-        par1Tessellator.addVertexWithUV((double) (f4 - f5), (double) (0.0F - f6), 0.0D, (double) f1, (double) f3);
-        par1Tessellator.addVertexWithUV((double) (f4 - f5), (double) (f4 - f6), 0.0D, (double) f1, (double) f2);
-        par1Tessellator.addVertexWithUV((double) (0.0F - f5), (double) (f4 - f6), 0.0D, (double) f, (double) f2);
+        par1Tessellator.addVertexWithUV(0.0F - f5, 0.0F - f6, 0.0D, f, f3);
+        par1Tessellator.addVertexWithUV(f4 - f5, 0.0F - f6, 0.0D, f1, f3);
+        par1Tessellator.addVertexWithUV(f4 - f5, f4 - f6, 0.0D, f1, f2);
+        par1Tessellator.addVertexWithUV(0.0F - f5, f4 - f6, 0.0D, f, f2);
         par1Tessellator.draw();
     }
 }

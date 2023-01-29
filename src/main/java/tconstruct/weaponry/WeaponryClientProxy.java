@@ -2,16 +2,16 @@ package tconstruct.weaponry;
 
 import static tconstruct.weaponry.TinkerWeaponry.*;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import mantle.lib.client.MantleClientRegistry;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+
 import tconstruct.client.AmmoItemRenderer;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.ToolBuilder;
-import tconstruct.library.entity.ProjectileBase;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.Reference;
@@ -24,8 +24,10 @@ import tconstruct.weaponry.client.entity.ProjectileBaseRenderer;
 import tconstruct.weaponry.client.entity.ShurikenEntityRenderer;
 import tconstruct.weaponry.client.item.*;
 import tconstruct.weaponry.entity.*;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class WeaponryClientProxy extends WeaponryCommonProxy {
+
     public static AmmoItemRenderer renderer;
 
     @Override
@@ -61,7 +63,7 @@ public class WeaponryClientProxy extends WeaponryCommonProxy {
     }
 
     private void registerEntityRendering() {
-        ProjectileBaseRenderer defaultRenderer = new ProjectileBaseRenderer<ProjectileBase>();
+        ProjectileBaseRenderer defaultRenderer = new ProjectileBaseRenderer<>();
         RenderingRegistry.registerEntityRenderingHandler(ShurikenEntity.class, new ShurikenEntityRenderer());
         RenderingRegistry.registerEntityRenderingHandler(ThrowingKnifeEntity.class, defaultRenderer);
         RenderingRegistry.registerEntityRenderingHandler(JavelinEntity.class, new JavelinEntityRenderer());
@@ -73,29 +75,33 @@ public class WeaponryClientProxy extends WeaponryCommonProxy {
         ToolCore arrow = TinkerWeaponry.arrowAmmo;
         String pre = Reference.resource(arrow.getDefaultFolder()) + "/";
 
-        String[] shaft = {"wood", "bone", "reed", "blaze", null};
-        String[] fletching = {"feather", "leaf", "slime", "blueslime", "slimeleaf"};
+        String[] shaft = { "wood", "bone", "reed", "blaze", null };
+        String[] fletching = { "feather", "leaf", "slime", "blueslime", "slimeleaf" };
 
         // we register different textures for the different parts per index
         for (int i = 0; i < 5; i++) {
             String handletex = pre + shaft[i] + arrow.getIconSuffix(2);
             String acctex = pre + fletching[i] + arrow.getIconSuffix(3);
-            arrow.registerAlternatePartPaths(i, new String[] {null, null, handletex, acctex});
-            TinkerWeaponry.boltAmmo.registerAlternatePartPaths(i, new String[] {null, null, null, acctex});
+            arrow.registerAlternatePartPaths(i, new String[] { null, null, handletex, acctex });
+            TinkerWeaponry.boltAmmo.registerAlternatePartPaths(i, new String[] { null, null, null, acctex });
         }
 
         // for bolts too
         pre = Reference.resource(TinkerWeaponry.boltAmmo.getDefaultFolder()) + "/";
         for (int i = 0; i < 5; i++) {
             String acctex = pre + fletching[i] + TinkerWeaponry.boltAmmo.getIconSuffix(3);
-            TinkerWeaponry.boltAmmo.registerAlternatePartPaths(i, new String[] {null, null, null, acctex});
+            TinkerWeaponry.boltAmmo.registerAlternatePartPaths(i, new String[] { null, null, null, acctex });
         }
 
         // bowstring
-        String[] bowstringTypes = {"string", "magicfabric", "flamestring"};
+        String[] bowstringTypes = { "string", "magicfabric", "flamestring" };
         for (int bowIter = 0; bowIter < bowstringTypes.length; bowIter++) {
             TConstructClientRegistry.addAlternateMaterialRenderMapping(
-                    TinkerWeaponry.shortbow, bowIter, Reference.RESOURCE, bowstringTypes[bowIter], true);
+                    TinkerWeaponry.shortbow,
+                    bowIter,
+                    Reference.RESOURCE,
+                    bowstringTypes[bowIter],
+                    true);
         }
     }
 
@@ -118,23 +124,20 @@ public class WeaponryClientProxy extends WeaponryCommonProxy {
         // bolt
 
         // Tool Station
-        ToolCore[] tools = {shortbow, arrowAmmo, throwingknife, javelin};
-        int[][] icons = {
-            new int[] {3, 9, 1}, // shortbow
-            new int[] {7, 10, 1}, // arrow
-            new int[] {2, 1, 5}, // throwingknife
-            new int[] {1, 2, 5} // javelin
+        ToolCore[] tools = { shortbow, arrowAmmo, throwingknife, javelin };
+        int[][] icons = { new int[] { 3, 9, 1 }, // shortbow
+                new int[] { 7, 10, 1 }, // arrow
+                new int[] { 2, 1, 5 }, // throwingknife
+                new int[] { 1, 2, 5 } // javelin
         };
-        int[][] coords = {
-            new int[] {3, 10, 3, 13}, new int[] {4, 3, 4, 13}, // shortbow
-            new int[] {11, 0, 12, 13}, new int[] {3, 3, 3, 13}, // arrow
-            new int[] {7, 0, 13, 13}, new int[] {2, 3, 13, 13}, // throwingknife
-            new int[] {11, 8, 8, 13}, new int[] {3, 3, 3, 13} // javelin
+        int[][] coords = { new int[] { 3, 10, 3, 13 }, new int[] { 4, 3, 4, 13 }, // shortbow
+                new int[] { 11, 0, 12, 13 }, new int[] { 3, 3, 3, 13 }, // arrow
+                new int[] { 7, 0, 13, 13 }, new int[] { 2, 3, 13, 13 }, // throwingknife
+                new int[] { 11, 8, 8, 13 }, new int[] { 3, 3, 3, 13 } // javelin
         };
 
         for (int i = 0; i < tools.length; i++) {
-            String locString = String.format(
-                    "gui.toolstation.%s.desc", tools[i].getToolName().toLowerCase());
+            String locString = String.format("gui.toolstation.%s.desc", tools[i].getToolName().toLowerCase());
             TConstructClientRegistry.addToolButton(
                     icons[i][0],
                     icons[i][1],
@@ -148,23 +151,20 @@ public class WeaponryClientProxy extends WeaponryCommonProxy {
         }
 
         // Tool Forge
-        tools = new ToolCore[] {longbow, crossbow, boltAmmo, shuriken};
-        icons = new int[][] {
-            new int[] {8, 11, 1}, // longbow
-            new int[] {9, 12, 1}, // crossbow
-            new int[] {2, 13, 1}, // bolt
-            new int[] {4, 0, 5} // shuriken
+        tools = new ToolCore[] { longbow, crossbow, boltAmmo, shuriken };
+        icons = new int[][] { new int[] { 8, 11, 1 }, // longbow
+                new int[] { 9, 12, 1 }, // crossbow
+                new int[] { 2, 13, 1 }, // bolt
+                new int[] { 4, 0, 5 } // shuriken
         };
-        coords = new int[][] {
-            new int[] {3, 10, 3, 9}, new int[] {4, 3, 4, 2}, // longbow
-            new int[] {1, 2, 10, 9}, new int[] {4, 4, 3, 3}, // crossbow
-            new int[] {4, 12, 13, 13}, new int[] {4, 3, 13, 13}, // bolt
-            new int[] {0, 0, 0, 0}, new int[] {4, 4, 4, 4} // shuriken
+        coords = new int[][] { new int[] { 3, 10, 3, 9 }, new int[] { 4, 3, 4, 2 }, // longbow
+                new int[] { 1, 2, 10, 9 }, new int[] { 4, 4, 3, 3 }, // crossbow
+                new int[] { 4, 12, 13, 13 }, new int[] { 4, 3, 13, 13 }, // bolt
+                new int[] { 0, 0, 0, 0 }, new int[] { 4, 4, 4, 4 } // shuriken
         };
 
         for (int i = 0; i < tools.length; i++) {
-            String locString = String.format(
-                    "gui.toolstation.%s.desc", tools[i].getToolName().toLowerCase());
+            String locString = String.format("gui.toolstation.%s.desc", tools[i].getToolName().toLowerCase());
             TConstructClientRegistry.addTierTwoButton(
                     icons[i][0],
                     icons[i][1],

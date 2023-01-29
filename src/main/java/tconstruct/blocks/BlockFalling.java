@@ -1,6 +1,7 @@
 package tconstruct.blocks;
 
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -9,6 +10,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
 public class BlockFalling extends Block {
+
     public static boolean fallInstantly;
 
     public BlockFalling() {
@@ -26,8 +28,8 @@ public class BlockFalling extends Block {
     }
 
     @Override
-    public void onNeighborBlockChange(
-            World p_149695_1_, int p_149695_2_, int p_149695_3_, int p_149695_4_, Block p_149695_5_) {
+    public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_, int p_149695_3_, int p_149695_4_,
+            Block p_149695_5_) {
         p_149695_1_.scheduleBlockUpdate(p_149695_2_, p_149695_3_, p_149695_4_, this, this.tickRate(p_149695_1_));
     }
 
@@ -42,25 +44,24 @@ public class BlockFalling extends Block {
         if (func_149831_e(p_149830_1_, p_149830_2_, p_149830_3_ - 1, p_149830_4_) && p_149830_3_ >= 0) {
             byte b0 = 32;
 
-            if (!fallInstantly
-                    && p_149830_1_.checkChunksExist(
-                            p_149830_2_ - b0,
-                            p_149830_3_ - b0,
-                            p_149830_4_ - b0,
-                            p_149830_2_ + b0,
-                            p_149830_3_ + b0,
-                            p_149830_4_ + b0)) {
-                if (!p_149830_1_.isRemote) {
-                    // EntityFallingBlock entityfallingblock = new
-                    // EntityFallingBlock(p_149830_1_,
-                    // (double)((float)p_149830_2_ + 0.5F),
-                    // (double)((float)p_149830_3_ + 0.5F),
-                    // (double)((float)p_149830_4_ + 0.5F), this,
-                    // p_149830_1_.getBlockMetadata(p_149830_2_, p_149830_3_,
-                    // p_149830_4_));
-                    // this.func_149829_a(entityfallingblock);
-                    // p_149830_1_.spawnEntityInWorld(entityfallingblock);
-                }
+            if (!fallInstantly && p_149830_1_.checkChunksExist(
+                    p_149830_2_ - b0,
+                    p_149830_3_ - b0,
+                    p_149830_4_ - b0,
+                    p_149830_2_ + b0,
+                    p_149830_3_ + b0,
+                    p_149830_4_ + b0)) {
+                // if (!p_149830_1_.isRemote) {
+                // EntityFallingBlock entityfallingblock = new
+                // EntityFallingBlock(p_149830_1_,
+                // (double)((float)p_149830_2_ + 0.5F),
+                // (double)((float)p_149830_3_ + 0.5F),
+                // (double)((float)p_149830_4_ + 0.5F), this,
+                // p_149830_1_.getBlockMetadata(p_149830_2_, p_149830_3_,
+                // p_149830_4_));
+                // this.func_149829_a(entityfallingblock);
+                // p_149830_1_.spawnEntityInWorld(entityfallingblock);
+                // }
             } else {
                 p_149830_1_.setBlockToAir(p_149830_2_, p_149830_3_, p_149830_4_);
 

@@ -5,6 +5,7 @@ import net.minecraft.entity.player.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.potion.*;
+
 import tconstruct.armor.player.*;
 import tconstruct.util.config.PHConstruct;
 
@@ -74,7 +75,7 @@ public class PlayerAbilityHelper {
             entity.boundingBox.maxY = entity.boundingBox.minY + (double) entity.height;
 
             if (entity.width > f2 && !entity.worldObj.isRemote) {
-                entity.moveEntity((double) (f2 - entity.width), 0.0D, (double) (f2 - entity.width));
+                entity.moveEntity(f2 - entity.width, 0.0D, f2 - entity.width);
             }
         }
 

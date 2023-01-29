@@ -1,8 +1,7 @@
 package tconstruct.smeltery.blocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -12,10 +11,13 @@ import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.logic.CastingChannelLogic;
 import tconstruct.smeltery.model.BlockRenderCastingChannel;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * @author BluSunrize
@@ -30,7 +32,7 @@ public class CastingChannelBlock extends BlockContainer {
         setCreativeTab(TConstructRegistry.blockTab);
     }
 
-    public String[] textureNames = new String[] {"searedstone", "nether_searedstone"};
+    public String[] textureNames = new String[] { "searedstone", "nether_searedstone" };
     public IIcon[] icons;
 
     /* Rendering */
@@ -39,8 +41,8 @@ public class CastingChannelBlock extends BlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
+            float hitY, float hitZ) {
         ItemStack stack = player.getCurrentEquippedItem();
         CastingChannelLogic tile = (CastingChannelLogic) world.getTileEntity(x, y, z);
 
@@ -54,14 +56,10 @@ public class CastingChannelBlock extends BlockContainer {
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
         CastingChannelLogic tile = (CastingChannelLogic) world.getTileEntity(x, y, z);
-        float minX = 0.3125F;
-        float maxX = 0.6875F;
-        float minZ = 0.3125F;
-        float maxZ = 0.6875F;
-        minZ = 0F;
-        maxZ = 1F;
-        minX = 0F;
-        maxX = 1F;
+        float minZ = 0F;
+        float maxZ = 1F;
+        float minX = 0F;
+        float maxX = 1F;
         this.setBlockBounds(minX, 0.375F, minZ, maxX, 0.625F, maxZ);
     }
 

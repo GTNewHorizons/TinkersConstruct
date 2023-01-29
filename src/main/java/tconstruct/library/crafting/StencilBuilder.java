@@ -1,22 +1,25 @@
 package tconstruct.library.crafting;
 
 import java.util.*;
+
 import net.minecraft.item.*;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class StencilBuilder {
+
     public static StencilBuilder instance = new StencilBuilder();
 
-    public List<ItemStack> blanks =
-            new LinkedList<ItemStack>(); // i wish ItemStack would support equals so i could use a Set here...
-    public Map<Integer, ItemStack> stencils = new TreeMap<Integer, ItemStack>();
+    public List<ItemStack> blanks = new LinkedList<>(); // i wish ItemStack would support equals so i could use a Set
+                                                        // here...
+    public Map<Integer, ItemStack> stencils = new TreeMap<>();
 
     /**
      * Returns whether the given ItemStack is a blank pattern and therefore usable for stencil crafting.
      */
     public static boolean isBlank(ItemStack stack) {
-        for (ItemStack blank : instance.blanks)
-            if (OreDictionary.itemMatches(stack, blank, false)) // this has nothing to do with the oredictionary.
+        for (ItemStack blank : instance.blanks) if (OreDictionary.itemMatches(stack, blank, false)) // this has nothing
+                                                                                                    // to do with the
+                                                                                                    // oredictionary.
             return true;
 
         return false;
@@ -31,9 +34,10 @@ public class StencilBuilder {
     }
 
     public static void registerStencil(int id, ItemStack pattern) {
-        if (instance.stencils.containsKey(id))
-            throw new IllegalArgumentException("[TCon API] Stencil ID " + id + " is already occupied by "
-                    + instance.stencils.get(id).getDisplayName());
+        if (instance.stencils.containsKey(id)) throw new IllegalArgumentException(
+                "[TCon API] Stencil ID " + id
+                        + " is already occupied by "
+                        + instance.stencils.get(id).getDisplayName());
 
         instance.stencils.put(id, pattern);
     }

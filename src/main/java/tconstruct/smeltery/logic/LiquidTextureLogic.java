@@ -6,6 +6,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 public class LiquidTextureLogic extends TileEntity {
+
     int texturePos;
 
     @Override

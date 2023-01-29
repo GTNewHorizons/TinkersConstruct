@@ -1,22 +1,24 @@
 package tconstruct.util.config;
 
-import com.google.common.collect.Sets;
 import java.io.File;
 import java.util.Set;
+
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
 import tconstruct.TConstruct;
 import tconstruct.library.tools.AbilityHelper;
+
+import com.google.common.collect.Sets;
 
 public class PHConstruct {
 
     public static void initProps(File location) {
 
-        /* Here we will set up the config file for the mod
-         * First: Create a folder inside the config folder
-         * Make sure to read any old configs file if they exist
-         * Second: Create the actual config file
+        /*
+         * Here we will set up the config file for the mod First: Create a folder inside the config folder Make sure to
+         * read any old configs file if they exist Second: Create the actual config file
          */
         File mainFile = new File(location + "/TinkersConstruct.cfg");
         File legacyFile16 = new File(location + "/TinkersWorkshop.txt");
@@ -34,173 +36,124 @@ public class PHConstruct {
         Configuration config = new Configuration(mainFile);
         // config.load(); /* Load happens in the constructor */
 
-        superfunWorld =
-                config.get("Superfun", "All the world is Superfun", false).getBoolean(false);
+        superfunWorld = config.get("Superfun", "All the world is Superfun", false).getBoolean(false);
 
-        keepHunger =
-                config.get("Difficulty Changes", "Keep hunger on death", true).getBoolean(true);
-        keepLevels =
-                config.get("Difficulty Changes", "Keep levels on death", true).getBoolean(true);
-        beginnerBook =
-                config.get("Difficulty Changes", "Spawn beginner book", true).getBoolean(true);
-        deathPenality = config.get("Difficulty Changes", "Tools lose 10% durability on death", true)
-                .getBoolean(true);
-        balancedFluxModifier =
-                config.get("Difficulty Changes", "Balanced Flux Modifier", true).getBoolean(true);
+        keepHunger = config.get("Difficulty Changes", "Keep hunger on death", true).getBoolean(true);
+        keepLevels = config.get("Difficulty Changes", "Keep levels on death", true).getBoolean(true);
+        beginnerBook = config.get("Difficulty Changes", "Spawn beginner book", true).getBoolean(true);
+        deathPenality = config.get("Difficulty Changes", "Tools lose 10% durability on death", true).getBoolean(true);
+        balancedFluxModifier = config.get("Difficulty Changes", "Balanced Flux Modifier", true).getBoolean(true);
 
-        enableTWood = config.get("Difficulty Changes", "Enable mod wooden tools", true)
-                .getBoolean(true);
-        enableTStone =
-                config.get("Difficulty Changes", "Enable mod stone tools", true).getBoolean(true);
-        enableTCactus = config.get("Difficulty Changes", "Enable mod cactus tools", true)
-                .getBoolean(true);
-        enableTBone =
-                config.get("Difficulty Changes", "Enable mod bone tools", true).getBoolean(true);
-        enableTFlint =
-                config.get("Difficulty Changes", "Enable mod flint tools", true).getBoolean(true);
-        enableTNetherrack = config.get("Difficulty Changes", "Enable mod netherrack tools", true)
-                .getBoolean(true);
-        enableTSlime =
-                config.get("Difficulty Changes", "Enable mod slime tools", true).getBoolean(true);
-        enableTPaper =
-                config.get("Difficulty Changes", "Enable mod paper tools", true).getBoolean(true);
-        enableTBlueSlime = config.get("Difficulty Changes", "Enable mod blue slime tools", true)
-                .getBoolean(true);
+        enableTWood = config.get("Difficulty Changes", "Enable mod wooden tools", true).getBoolean(true);
+        enableTStone = config.get("Difficulty Changes", "Enable mod stone tools", true).getBoolean(true);
+        enableTCactus = config.get("Difficulty Changes", "Enable mod cactus tools", true).getBoolean(true);
+        enableTBone = config.get("Difficulty Changes", "Enable mod bone tools", true).getBoolean(true);
+        enableTFlint = config.get("Difficulty Changes", "Enable mod flint tools", true).getBoolean(true);
+        enableTNetherrack = config.get("Difficulty Changes", "Enable mod netherrack tools", true).getBoolean(true);
+        enableTSlime = config.get("Difficulty Changes", "Enable mod slime tools", true).getBoolean(true);
+        enableTPaper = config.get("Difficulty Changes", "Enable mod paper tools", true).getBoolean(true);
+        enableTBlueSlime = config.get("Difficulty Changes", "Enable mod blue slime tools", true).getBoolean(true);
 
-        craftMetalTools = config.get("Difficulty Changes", "Craft metals with Wood Patterns", false)
-                .getBoolean(false);
-        vanillaMetalBlocks = config.get("Difficulty Changes", "Craft vanilla metal blocks", true)
-                .getBoolean(true);
+        craftMetalTools = config.get("Difficulty Changes", "Craft metals with Wood Patterns", false).getBoolean(false);
+        vanillaMetalBlocks = config.get("Difficulty Changes", "Craft vanilla metal blocks", true).getBoolean(true);
         lavaFortuneInteraction = config.get("Difficulty Changes", "Enable Auto-Smelt and Fortune interaction", true)
                 .getBoolean(true);
-        removeGoldCastRecipes = config.get("Difficulty Changes", "Remove Gold Cast Recipes", true)
-                .getBoolean(true);
+        removeGoldCastRecipes = config.get("Difficulty Changes", "Remove Gold Cast Recipes", true).getBoolean(true);
         removeVanillaToolRecipes = config.get("Difficulty Changes", "Remove Vanilla Tool Recipes", false)
                 .getBoolean(false);
         labotimizeVanillaTools = config.get("Difficulty Changes", "Remove Vanilla Tool Effectiveness", false)
                 .getBoolean(false);
         miningLevelIncrease = config.get("Difficulty Changes", "Modifiers increase Mining Level", true)
                 .getBoolean(true);
-        denyMattock = config.get("Difficulty Changes", "Deny creation of non-metal mattocks", false)
-                .getBoolean(false);
-        craftEndstone = config.get("Difficulty Changes", "Allow creation of endstone", true)
-                .getBoolean(true);
+        denyMattock = config.get("Difficulty Changes", "Deny creation of non-metal mattocks", false).getBoolean(false);
+        craftEndstone = config.get("Difficulty Changes", "Allow creation of endstone", true).getBoolean(true);
         alternativeBoltRecipe = config.get(
-                        "Difficulty Changes",
-                        "Add alternative recipe for bolt parts: arrowhead + toolrod in a crafting grid",
-                        false)
-                .getBoolean(false);
+                "Difficulty Changes",
+                "Add alternative recipe for bolt parts: arrowhead + toolrod in a crafting grid",
+                false).getBoolean(false);
 
-        naturalSlimeSpawn = config.get("Mobs", "Blue Slime spawn chance", 1, "Set to 0 to disable")
-                .getInt(1);
+        naturalSlimeSpawn = config.get("Mobs", "Blue Slime spawn chance", 1, "Set to 0 to disable").getInt(1);
 
         ingotsPerOre = config.get(
-                        "Smeltery Output Modification",
-                        "Ingots per ore",
-                        2,
-                        "Number of ingots returned from smelting ores in the smeltery")
-                .getDouble(2);
+                "Smeltery Output Modification",
+                "Ingots per ore",
+                2,
+                "Number of ingots returned from smelting ores in the smeltery").getDouble(2);
         ingotsBronzeAlloy = config.get(
-                        "Smeltery Output Modification",
-                        "Bronze ingot return",
-                        4,
-                        "Number of ingots returned from smelting Bronze in the smeltery")
-                .getDouble(4);
+                "Smeltery Output Modification",
+                "Bronze ingot return",
+                4,
+                "Number of ingots returned from smelting Bronze in the smeltery").getDouble(4);
         ingotsAluminumBrassAlloy = config.get(
-                        "Smeltery Output Modification",
-                        "Aluminum Brass ingot return",
-                        4,
-                        "Number of ingots returned from smelting Aluminum Brass in the smeltery")
-                .getDouble(4);
+                "Smeltery Output Modification",
+                "Aluminum Brass ingot return",
+                4,
+                "Number of ingots returned from smelting Aluminum Brass in the smeltery").getDouble(4);
         ingotsAlumiteAlloy = config.get(
-                        "Smeltery Output Modification",
-                        "Alumite ingot return",
-                        3,
-                        "Number of ingots returned from smelting Alumite in the smeltery")
-                .getDouble(3);
+                "Smeltery Output Modification",
+                "Alumite ingot return",
+                3,
+                "Number of ingots returned from smelting Alumite in the smeltery").getDouble(3);
         ingotsManyullynAlloy = config.get(
-                        "Smeltery Output Modification",
-                        "Manyullyn ingot return",
-                        1,
-                        "Number of ingots returned from smelting Manyullyn in the smeltery")
-                .getDouble(1);
+                "Smeltery Output Modification",
+                "Manyullyn ingot return",
+                1,
+                "Number of ingots returned from smelting Manyullyn in the smeltery").getDouble(1);
         ingotsPigironAlloy = config.get(
-                        "Smeltery Output Modification",
-                        "Pig Iron ingot return",
-                        1,
-                        "Number of ingots returned from smelting Pig Iron in the smeltery")
-                .getDouble(1);
+                "Smeltery Output Modification",
+                "Pig Iron ingot return",
+                1,
+                "Number of ingots returned from smelting Pig Iron in the smeltery").getDouble(1);
 
         capesEnabled = config.get("Superfun", "Enable-TCon-Capes", true).getBoolean(true);
 
-        achievementsEnabled =
-                config.get("Achievements", "Enable Achievements", true).getBoolean(true);
+        achievementsEnabled = config.get("Achievements", "Enable Achievements", true).getBoolean(true);
 
         boolean ic2 = true;
         boolean xycraft = true;
         try {
-            Class c = Class.forName("ic2.core.IC2");
+            Class<?> c = Class.forName("ic2.core.IC2");
             ic2 = false;
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
 
         try {
-            Class c = Class.forName("soaryn.xycraft.core.XyCraft");
+            Class<?> c = Class.forName("soaryn.xycraft.core.XyCraft");
             xycraft = false;
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
 
         generateCopper = config.get("Worldgen Disabler", "Generate Copper", ic2).getBoolean(ic2);
         generateTin = config.get("Worldgen Disabler", "Generate Tin", ic2).getBoolean(ic2);
-        generateAluminum =
-                config.get("Worldgen Disabler", "Generate Aluminum", xycraft).getBoolean(xycraft);
+        generateAluminum = config.get("Worldgen Disabler", "Generate Aluminum", xycraft).getBoolean(xycraft);
         if (config.hasKey("worldgen disabler", "Generate Cobalt and Ardite")) {
-            generateNetherOres = config.get("Worldgen Disabler", "Generate Cobalt and Ardite", true)
-                    .getBoolean(true);
+            generateNetherOres = config.get("Worldgen Disabler", "Generate Cobalt and Ardite", true).getBoolean(true);
             generateCobalt = generateArdite = generateNetherOres;
             ConfigCategory cat = config.getCategory("worldgen disabler");
             cat.remove("Generate Cobalt and Ardite");
         } else {
-            generateCobalt =
-                    config.get("Worldgen Disabler", "Generate Cobalt", true).getBoolean(true);
-            generateArdite =
-                    config.get("Worldgen Disabler", "Generate Ardite", true).getBoolean(true);
+            generateCobalt = config.get("Worldgen Disabler", "Generate Cobalt", true).getBoolean(true);
+            generateArdite = config.get("Worldgen Disabler", "Generate Ardite", true).getBoolean(true);
         }
 
-        generateIronSurface =
-                config.get("Worldgen Disabler", "Generate Surface Iron", true).getBoolean(true);
-        generateGoldSurface =
-                config.get("Worldgen Disabler", "Generate Surface Gold", true).getBoolean(true);
-        generateCopperSurface =
-                config.get("Worldgen Disabler", "Generate Surface Copper", true).getBoolean(true);
-        generateTinSurface =
-                config.get("Worldgen Disabler", "Generate Surface Tin", true).getBoolean(true);
-        generateAluminumSurface = config.get("Worldgen Disabler", "Generate Surface Aluminum", true)
-                .getBoolean(true);
+        generateIronSurface = config.get("Worldgen Disabler", "Generate Surface Iron", true).getBoolean(true);
+        generateGoldSurface = config.get("Worldgen Disabler", "Generate Surface Gold", true).getBoolean(true);
+        generateCopperSurface = config.get("Worldgen Disabler", "Generate Surface Copper", true).getBoolean(true);
+        generateTinSurface = config.get("Worldgen Disabler", "Generate Surface Tin", true).getBoolean(true);
+        generateAluminumSurface = config.get("Worldgen Disabler", "Generate Surface Aluminum", true).getBoolean(true);
 
-        generateIronBush =
-                config.get("Worldgen Disabler", "Generate Iron Bushes", true).getBoolean(true);
-        generateGoldBush =
-                config.get("Worldgen Disabler", "Generate Gold Bushes", true).getBoolean(true);
-        generateCopperBush =
-                config.get("Worldgen Disabler", "Generate Copper Bushes", true).getBoolean(true);
-        generateTinBush =
-                config.get("Worldgen Disabler", "Generate Tin Bushes", true).getBoolean(true);
-        generateAluminumBush = config.get("Worldgen Disabler", "Generate Aluminum Bushes", true)
-                .getBoolean(true);
-        generateEssenceBush =
-                config.get("Worldgen Disabler", "Generate Essence Bushes", true).getBoolean(true);
-        addToVillages =
-                config.get("Worldgen Disabler", "Add Village Generation", true).getBoolean(true);
-        allowVillagerTrading = config.get(
-                        "Worldgen Disabler", "Enable the Tinkers Villager to trade for oreberries", true)
-                .getBoolean(true);
+        generateIronBush = config.get("Worldgen Disabler", "Generate Iron Bushes", true).getBoolean(true);
+        generateGoldBush = config.get("Worldgen Disabler", "Generate Gold Bushes", true).getBoolean(true);
+        generateCopperBush = config.get("Worldgen Disabler", "Generate Copper Bushes", true).getBoolean(true);
+        generateTinBush = config.get("Worldgen Disabler", "Generate Tin Bushes", true).getBoolean(true);
+        generateAluminumBush = config.get("Worldgen Disabler", "Generate Aluminum Bushes", true).getBoolean(true);
+        generateEssenceBush = config.get("Worldgen Disabler", "Generate Essence Bushes", true).getBoolean(true);
+        addToVillages = config.get("Worldgen Disabler", "Add Village Generation", true).getBoolean(true);
+        allowVillagerTrading = config
+                .get("Worldgen Disabler", "Enable the Tinkers Villager to trade for oreberries", true).getBoolean(true);
 
         copperuDensity = config.get("Worldgen", "Copper Underground Density", 2, "Density: Chances per chunk")
                 .getInt(2);
         tinuDensity = config.get("Worldgen", "Tin Underground Density", 2).getInt(2);
-        aluminumuDensity =
-                config.get("Worldgen", "Aluminum Underground Density", 3).getInt(3);
+        aluminumuDensity = config.get("Worldgen", "Aluminum Underground Density", 3).getInt(3);
         if (config.hasKey("worldgen", "Nether Ores Density")) {
             netherDensity = config.get("Worldgen", "Nether Ores Density", 8).getInt(8);
             cobaltDensity = arditeDensity = netherDensity;
@@ -249,36 +202,29 @@ public class PHConstruct {
 
         seaLevel = config.get("general", "Sea level", 64).getInt(64);
         tconComesFirst = config.get(
-                        "general",
-                        "Always cast TConstruct ingots",
-                        true,
-                        "You will always get a TConstruct item from casting an ingot or block.")
-                .getBoolean();
+                "general",
+                "Always cast TConstruct ingots",
+                true,
+                "You will always get a TConstruct item from casting an ingot or block.").getBoolean();
 
-        enableHealthRegen = config.get("Ultra Hardcore Changes", "Passive Health Regen", true)
-                .getBoolean(true);
+        enableHealthRegen = config.get("Ultra Hardcore Changes", "Passive Health Regen", true).getBoolean(true);
         goldAppleRecipe = config.get(
-                        "Ultra Hardcore Changes",
-                        "Change Crafting Recipes",
-                        false,
-                        "Makes recipes for gold apples, carrots, and melon potions more expensive")
-                .getBoolean(false);
-        dropPlayerHeads = config.get("Ultra Hardcore Changes", "Players drop heads on death", false)
-                .getBoolean(false);
+                "Ultra Hardcore Changes",
+                "Change Crafting Recipes",
+                false,
+                "Makes recipes for gold apples, carrots, and melon potions more expensive").getBoolean(false);
+        dropPlayerHeads = config.get("Ultra Hardcore Changes", "Players drop heads on death", false).getBoolean(false);
         uhcGhastDrops = config.get("Ultra Hardcore Changes", "Change Ghast drops to Gold Ingots", false)
                 .getBoolean(false);
-        worldBorder =
-                config.get("Ultra Hardcore Changes", "Add World Border", false).getBoolean(false);
-        worldBorderSize = config.get("Ultra Hardcore Changes", "World Border Radius", 1000)
-                .getInt(1000);
+        worldBorder = config.get("Ultra Hardcore Changes", "Add World Border", false).getBoolean(false);
+        worldBorderSize = config.get("Ultra Hardcore Changes", "World Border Radius", 1000).getInt(1000);
         freePatterns = config.get(
-                        "Ultra Hardcore Changes",
-                        "Add Patterns to Pattern Chests",
-                        false,
-                        "Gives all tier 1 patterns when pattern chest is placed")
-                .getBoolean(false);
-        AbilityHelper.necroticUHS = config.get(
-                        "Ultra Hardcore Changes", "Necrotic modifier only heals on hostile mob kills", false)
+                "Ultra Hardcore Changes",
+                "Add Patterns to Pattern Chests",
+                false,
+                "Gives all tier 1 patterns when pattern chest is placed").getBoolean(false);
+        AbilityHelper.necroticUHS = config
+                .get("Ultra Hardcore Changes", "Necrotic modifier only heals on hostile mob kills", false)
                 .getBoolean(false);
 
         // Slime pools
@@ -290,60 +236,59 @@ public class PHConstruct {
         connectedTexturesMode = conTexMode.getInt(2);
 
         // dimension blacklist
-        cfgForbiddenDim = config.get(
+        cfgForbiddenDim = config
+                .get(
                         "DimBlackList",
                         "ForbiddenDim",
                         new int[] {},
                         "Disallow Traveller's Belt ability to swap inventories for certain dimension ID's")
                 .getIntList();
         cfgDimBlackList = config.get(
-                        "DimBlackList",
-                        "SlimeIslandDimBlacklist",
-                        new int[] {},
-                        "Add dimension ID's to prevent slime islands from generating in them")
-                .getIntList();
+                "DimBlackList",
+                "SlimeIslandDimBlacklist",
+                new int[] {},
+                "Add dimension ID's to prevent slime islands from generating in them").getIntList();
         slimeIslGenDim0Only = config.get(
-                        "DimBlackList",
-                        "GenerateSlimeIslandInDim0Only",
-                        false,
-                        "True: slime islands wont generate in any ages other than overworld(if enabled); False: will generate in all non-blackisted ages")
+                "DimBlackList",
+                "GenerateSlimeIslandInDim0Only",
+                false,
+                "True: slime islands wont generate in any ages other than overworld(if enabled); False: will generate in all non-blackisted ages")
                 .getBoolean(false);
         slimeIslGenDim0 = config.get(
-                        "DimBlackList",
-                        "slimeIslGenDim0",
-                        true,
-                        "True: slime islands generate in overworld; False they do not generate")
-                .getBoolean(true);
+                "DimBlackList",
+                "slimeIslGenDim0",
+                true,
+                "True: slime islands generate in overworld; False they do not generate").getBoolean(true);
         genIslandsFlat = config.get("DimBlacklist", "genIslandsFlat", false, "Generate slime islands in flat worlds")
                 .getBoolean(false);
         genOresFlat = config.get("DimBlacklist", "genOresFlat", false, "Generate ores in flat worlds")
                 .getBoolean(false);
 
         // Experimental functionality
-        throwableSmeltery = config.get("Experimental", "Items can be thrown into smelteries", true)
-                .getBoolean(true);
-        meltableHorses = config.get("Experimental", "Allow horses to be melted down for glue", true)
-                .getBoolean(true);
+        throwableSmeltery = config.get("Experimental", "Items can be thrown into smelteries", true).getBoolean(true);
+        meltableHorses = config.get("Experimental", "Allow horses to be melted down for glue", true).getBoolean(true);
         meltableVillagers = config.get("Experimental", "Allow villagers to be melted down for emeralds", true)
                 .getBoolean(true);
         minimalTextures = config.get("Experimental", "Minimal Textures", false).getBoolean(false);
         extraBlockUpdates = config.get(
-                        "Experimental",
-                        "Send additional block updates when using AOE tools",
-                        true,
-                        "This fixes very fast tools sometimes resulting in ghost blocks, but causes a bit more network traffic. Should be fine in theory.")
+                "Experimental",
+                "Send additional block updates when using AOE tools",
+                true,
+                "This fixes very fast tools sometimes resulting in ghost blocks, but causes a bit more network traffic. Should be fine in theory.")
                 .getBoolean(true);
         heartDropBlacklist = config.get(
-                        "Experimental",
-                        "YellowHeartDropBlacklist",
-                        new String[] {"entitynpc", "entitycustomnpc"},
-                        "Entity classes listed here will not drop yellow hearts. The values are the actual class names in lowercase.")
+                "Experimental",
+                "YellowHeartDropBlacklist",
+                new String[] { "entitynpc", "entitycustomnpc" },
+                "Entity classes listed here will not drop yellow hearts. The values are the actual class names in lowercase.")
                 .getStringList();
 
-        craftingStationBlacklist = Sets.newHashSet(config.get("CraftingStationBlacklist", "tileEntities", new String[] {
-                    "wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest"
-                })
-                .getStringList());
+        craftingStationBlacklist = Sets.newHashSet(
+                config.get(
+                        "CraftingStationBlacklist",
+                        "tileEntities",
+                        new String[] { "wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest" })
+                        .getStringList());
 
         /* Save the configuration file only if it has changed */
         if (config.hasChanged()) config.save();
@@ -353,8 +298,7 @@ public class PHConstruct {
             File gtDyn = new File(location + "/GregTech/DynamicConfig.cfg");
             Configuration gtConfig = new Configuration(gtDyn);
             gtConfig.load();
-            gregtech = gtConfig.get("smelting", "tile.anvil.slightlyDamaged", false)
-                    .getBoolean(false);
+            gregtech = gtConfig.get("smelting", "tile.anvil.slightlyDamaged", false).getBoolean(false);
         }
     }
 

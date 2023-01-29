@@ -1,10 +1,12 @@
 package tconstruct.smeltery.blocks;
 
 import net.minecraft.block.material.Material;
+
 import tconstruct.library.TConstructRegistry;
 
 public class GlassPane extends PaneBase {
-    static String blockTextures[] = {"glass_clear", "soulglass", "soulglass_clear"};
+
+    static String[] blockTextures = { "glass_clear", "soulglass", "soulglass_clear" };
 
     public GlassPane() {
         super(Material.glass, "glass/", blockTextures);

@@ -1,7 +1,7 @@
 package tconstruct.armor;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import java.util.Locale;
+
 import net.minecraft.entity.boss.*;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
@@ -12,12 +12,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
+
 import tconstruct.TConstruct;
 import tconstruct.armor.items.TravelWings;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.ArmourGuiSyncPacket;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class TinkerArmorEvents {
 
@@ -27,8 +29,7 @@ public class TinkerArmorEvents {
 
         if (!event.entityLiving.worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) return;
 
-        if (TConstruct.random.nextInt(200) == 0
-                && event.entityLiving instanceof IMob
+        if (TConstruct.random.nextInt(200) == 0 && event.entityLiving instanceof IMob
                 && event.source.damageType.equals("player")) {
             ItemStack dropStack = new ItemStack(TinkerArmor.heartCanister, 1, 1);
             EntityItem entityitem = new EntityItem(
@@ -67,9 +68,8 @@ public class TinkerArmorEvents {
         if (event.entityPlayer == null) return;
 
         ItemStack glove = TPlayerStats.get(event.entityPlayer).armor.getStackInSlot(1);
-        if (event.entityPlayer
-                .worldObj
-                .isRemote) { // todo: sync extended inventory with clients so this stuff and rendering is done
+        if (event.entityPlayer.worldObj.isRemote) { // todo: sync extended inventory with clients so this stuff and
+                                                    // rendering is done
             // properly...
             if (ArmorProxyClient.armorExtended != null) glove = ArmorProxyClient.armorExtended.getStackInSlot(1);
             else glove = null;
@@ -97,8 +97,8 @@ public class TinkerArmorEvents {
     public void slimefall(LivingFallEvent event) {
         ItemStack boots = event.entityLiving.getEquipmentInSlot(1);
         if (boots != null && boots.getItem() instanceof IModifyable) {
-            NBTTagCompound tag =
-                    boots.getTagCompound().getCompoundTag(((IModifyable) boots.getItem()).getBaseTagName());
+            NBTTagCompound tag = boots.getTagCompound()
+                    .getCompoundTag(((IModifyable) boots.getItem()).getBaseTagName());
             int sole = tag.getInteger("Slimy Soles");
             if (sole > 0) {
                 event.distance /= (1 + sole);

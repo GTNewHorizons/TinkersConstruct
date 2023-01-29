@@ -1,11 +1,14 @@
 package tconstruct.modifiers.tools;
 
 import java.util.*;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.library.tools.ToolCore;
 
 public class ModPiston extends ItemModTypeFilter {
+
     String tooltipName;
     int max = 10;
 
@@ -25,7 +28,7 @@ public class ModPiston extends ItemModTypeFilter {
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
             if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input) <= max;
 
-            int keyPair[] = tags.getIntArray(key);
+            int[] keyPair = tags.getIntArray(key);
             if (keyPair[0] + matchingAmount(input) <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         }
@@ -57,7 +60,7 @@ public class ModPiston extends ItemModTypeFilter {
             tags.setInteger("Modifiers", modifiers);
             String modName = "\u00a74Knockback (" + increase + "/" + max + ")";
             int tooltipIndex = addToolTip(tool, tooltipName, modName);
-            int[] keyPair = new int[] {increase, max, tooltipIndex};
+            int[] keyPair = new int[] { increase, max, tooltipIndex };
             tags.setIntArray(key, keyPair);
         }
 
@@ -75,7 +78,7 @@ public class ModPiston extends ItemModTypeFilter {
     }
 
     public boolean validType(ToolCore tool) {
-        List list = Arrays.asList(tool.getTraits());
+        List<String> list = Arrays.asList(tool.getTraits());
         return list.contains("weapon") || list.contains("ammo");
     }
 }

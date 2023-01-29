@@ -1,8 +1,10 @@
 package tconstruct.weaponry.ammo;
 
 import java.util.List;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.CustomMaterial;
@@ -14,6 +16,7 @@ import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.TinkerWeaponry;
 
 public class BoltAmmo extends AmmoItem {
+
     public BoltAmmo() {
         super(0, "Bolts");
     }
@@ -72,7 +75,7 @@ public class BoltAmmo extends AmmoItem {
 
     @Override
     public String[] getTraits() {
-        return new String[] {"ammo", "projectile", "weapon"};
+        return new String[] { "ammo", "projectile", "weapon" };
     }
 
     @Override
@@ -80,8 +83,8 @@ public class BoltAmmo extends AmmoItem {
         if (TConstructRegistry.getArrowMaterial(id) == null) return;
 
         // dual material head: we use wooden shafts
-        ItemStack headStack = DualMaterialToolPart.createDualMaterial(
-                getHeadItem(), id, TinkerTools.MaterialID.Iron); // material shaft
+        ItemStack headStack = DualMaterialToolPart.createDualMaterial(getHeadItem(), id, TinkerTools.MaterialID.Iron); // material
+                                                                                                                       // shaft
         ItemStack handleStack = new ItemStack(getAccessoryItem(), 1, 0); // feather Fletchling
         // ItemStack accessoryStack = new ItemStack(getAccessoryItem(), 1, 0); // feather fletchling
 
@@ -107,7 +110,7 @@ public class BoltAmmo extends AmmoItem {
     @Override
     public String getAbilityNameForType(int type, int part) {
         if (part >= 2) // only head and handle have ability
-        return "";
+            return "";
         return super.getAbilityNameForType(type, part);
     }
 }

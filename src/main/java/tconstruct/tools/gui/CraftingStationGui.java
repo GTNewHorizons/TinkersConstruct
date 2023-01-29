@@ -1,12 +1,9 @@
 package tconstruct.tools.gui;
 
-import codechicken.nei.VisiblityData;
-import codechicken.nei.api.INEIGuiHandler;
-import codechicken.nei.api.TaggedInventoryArea;
-import cpw.mods.fml.common.Optional;
 import java.awt.Rectangle;
 import java.util.Collections;
 import java.util.List;
+
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -17,18 +14,25 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.tools.logic.CraftingStationLogic;
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import cpw.mods.fml.common.Optional;
 
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
+
     /*
-     * Slider/slots related.  Taken & adapted from Tinkers Construct 1.12 under the MIT License
+     * Slider/slots related. Taken & adapted from Tinkers Construct 1.12 under the MIT License
      */
     private static final ResourceLocation gui_inventory = new ResourceLocation("tinker", "textures/gui/generic.png");
 
@@ -43,8 +47,13 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     private static final GuiElementScalable sliderBackground = new GuiElementScalable(43, 8, 12, 30, 64, 64);
     private static final GuiElementScalable textBackground = new GuiElementScalable(7 + 18, 7, 18, 10, 64, 64);
 
-    private final GuiSliderWidget slider =
-            new GuiSliderWidget(sliderNormal, sliderHigh, sliderLow, sliderTop, sliderBottom, sliderBackground);
+    private final GuiSliderWidget slider = new GuiSliderWidget(
+            sliderNormal,
+            sliderHigh,
+            sliderLow,
+            sliderTop,
+            sliderBottom,
+            sliderBackground);
     private final GuiBorderWidget border = new GuiBorderWidget();
 
     private int firstSlotId;
@@ -62,7 +71,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     // Panel positions
     public String toolName;
     public GuiTextField text;
-    public String title, body = "";
+    public String title, body;
     CraftingStationLogic logic;
 
     private int craftingLeft = 0;
@@ -119,15 +128,14 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         if (logic.chest != null) {
             if (logic.chest.get() instanceof TileEntity) {
                 TileEntity te = (TileEntity) logic.chest.get();
-                if (te == null
-                        || te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord) == null
-                                && te.getWorldObj().isRemote) {
+                if (te == null || te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord) == null
+                        && te.getWorldObj().isRemote) {
                     mc.thePlayer.closeScreen();
                     return;
                 }
             }
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal(logic.chest.get().getInventoryName()), 8, 6, 0x202020);
+            this.fontRendererObj
+                    .drawString(StatCollector.translateToLocal(logic.chest.get().getInventoryName()), 8, 6, 0x202020);
         }
 
         this.fontRendererObj.drawString(
@@ -135,22 +143,22 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
                 craftingTextLeft + 8,
                 6,
                 0x202020);
-        this.fontRendererObj.drawString(
-                StatCollector.translateToLocal("container.inventory"), craftingTextLeft + 8, 72, 0x202020);
+        this.fontRendererObj
+                .drawString(StatCollector.translateToLocal("container.inventory"), craftingTextLeft + 8, 72, 0x202020);
 
         if (logic.tinkerTable) {
             if (logic.isStackInSlot(0)) // output slot = modified item
-            drawToolStats(logic.getStackInSlot(0));
+                drawToolStats(logic.getStackInSlot(0));
             else if (logic.isStackInSlot(5)) { // center slot if no output item
                 // other slots empty?
-                if (!logic.isStackInSlot(1)
-                        && !logic.isStackInSlot(2)
+                if (!logic.isStackInSlot(1) && !logic.isStackInSlot(2)
                         && !logic.isStackInSlot(3)
                         && !logic.isStackInSlot(4)
                         && !logic.isStackInSlot(6)
                         && !logic.isStackInSlot(7)
                         && !logic.isStackInSlot(8)
-                        && !logic.isStackInSlot(9)) drawToolStats(logic.getStackInSlot(5));
+                        && !logic.isStackInSlot(9))
+                    drawToolStats(logic.getStackInSlot(5));
                 else drawToolInformation();
             } else drawToolInformation();
         }
@@ -206,21 +214,18 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
                 16777215);
 
         int attack = materialEnum.attack();
-        String heart = attack == 2
-                ? StatCollector.translateToLocal("gui.partcrafter8")
+        String heart = attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                 : StatCollector.translateToLocal("gui.partcrafter9");
-        if (attack % 2 == 0)
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter10") + attack / 2 + heart,
-                    baseX,
-                    baseY + 60,
-                    0xffffff);
-        else
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter10") + attack / 2f + heart,
-                    baseX,
-                    baseY + 60,
-                    0xffffff);
+        if (attack % 2 == 0) this.fontRendererObj.drawString(
+                StatCollector.translateToLocal("gui.partcrafter10") + attack / 2 + heart,
+                baseX,
+                baseY + 60,
+                0xffffff);
+        else this.fontRendererObj.drawString(
+                StatCollector.translateToLocal("gui.partcrafter10") + attack / 2f + heart,
+                baseX,
+                baseY + 60,
+                0xffffff);
     }
 
     @Override
@@ -333,8 +338,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         final int xMod = (slider.isEnabled() ? slider.width : 0) + border.w;
         final int yMod = (shouldDrawName() ? textBackground.y : 0) + (border.h * 2);
 
-        return mouseX >= (this.chestLeft - xMod)
-                && mouseX < (chestLeft + chestWidth + xMod)
+        return mouseX >= (this.chestLeft - xMod) && mouseX < (chestLeft + chestWidth + xMod)
                 && mouseY >= (this.chestTop - yMod)
                 && mouseY < (chestTop + chestHeight + yMod);
     }
@@ -349,14 +353,13 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     protected boolean shouldDrawName() {
-        return this.logic.chest != null
-                && this.logic.chest.get().getInventoryName() != null
+        return this.logic.chest != null && this.logic.chest.get().getInventoryName() != null
                 && !this.logic.chest.get().getInventoryName().isEmpty();
     }
 
     @Override
-    public void func_146977_a /*drawSlot*/(Slot slot) {
-        if (!slot.func_111238_b /*isEnabled*/()) return;
+    public void func_146977_a /* drawSlot */(Slot slot) {
+        if (!slot.func_111238_b /* isEnabled */()) return;
 
         super.func_146977_a(slot);
     }
@@ -406,8 +409,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
             slider.disable();
         }
 
-        chestWidth = logic.invColumns * CraftingStationGui.slotElement.w
-                + 2 * border.w
+        chestWidth = logic.invColumns * CraftingStationGui.slotElement.w + 2 * border.w
                 + (slider.isEnabled() ? slider.width : 0);
 
         chestLeft = guiLeft - chestWidth;
@@ -415,8 +417,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
         // Leaving out the xSize increase by chestSize and adjusting where it's used, because otherwise it shifts both
         // the bookmarks and item panel
-        // way too far out.  If anything (mouseClick, for example) relies on xSize, you'll need to hack it like below.
-        //        xSize += guiLeft - chestLeft;
+        // way too far out. If anything (mouseClick, for example) relies on xSize, you'll need to hack it like below.
+        // xSize += guiLeft - chestLeft;
         guiLeft = chestLeft;
 
         border.setPosition(chestLeft, chestTop);

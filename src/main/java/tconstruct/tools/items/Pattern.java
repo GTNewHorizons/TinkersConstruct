@@ -1,19 +1,23 @@
 package tconstruct.tools.items;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import mantle.items.abstracts.CraftingItem;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.util.StatCollector;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder.MaterialSet;
 import tconstruct.library.util.IPattern;
+import cpw.mods.fml.relauncher.*;
 
 public class Pattern extends CraftingItem implements IPattern {
+
     public Pattern(String patternType, String folder) {
         this(patternName, getPatternNames(patternType), folder);
     }
@@ -32,34 +36,10 @@ public class Pattern extends CraftingItem implements IPattern {
         return names;
     }
 
-    private static final String[] patternName = new String[] {
-        "ingot",
-        "rod",
-        "pickaxe",
-        "shovel",
-        "axe",
-        "swordblade",
-        "largeguard",
-        "mediumguard",
-        "crossbar",
-        "binding",
-        "frypan",
-        "sign",
-        "knifeblade",
-        "chisel",
-        "largerod",
-        "toughbinding",
-        "largeplate",
-        "broadaxe",
-        "scythe",
-        "excavator",
-        "largeblade",
-        "hammerhead",
-        "fullguard",
-        "bowstring",
-        "fletching",
-        "arrowhead"
-    };
+    private static final String[] patternName = new String[] { "ingot", "rod", "pickaxe", "shovel", "axe", "swordblade",
+            "largeguard", "mediumguard", "crossbar", "binding", "frypan", "sign", "knifeblade", "chisel", "largerod",
+            "toughbinding", "largeplate", "broadaxe", "scythe", "excavator", "largeblade", "hammerhead", "fullguard",
+            "bowstring", "fletching", "arrowhead" };
 
     private static final Map<Integer, Integer> patternCosts = buildPatternCostMap();
 
@@ -73,7 +53,7 @@ public class Pattern extends CraftingItem implements IPattern {
 
     // 2 for full material, 1 for half.
     private static Map<Integer, Integer> buildPatternCostMap() {
-        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> map = new HashMap<>();
 
         map.put(0, 2);
         map.put(1, 1);
@@ -139,11 +119,11 @@ public class Pattern extends CraftingItem implements IPattern {
 
     @Override
     public int getPatternCost(ItemStack pattern) {
-        return patternCosts.containsKey(pattern.getItemDamage()) ? patternCosts.get(pattern.getItemDamage()) : 0;
+        return patternCosts.getOrDefault(pattern.getItemDamage(), 0);
     }
 
     @Override
     public ItemStack getPatternOutput(ItemStack stack, ItemStack input, MaterialSet set) {
-        return TConstructRegistry.getPartMapping((Item) this, stack.getItemDamage(), set.materialID);
+        return TConstructRegistry.getPartMapping(this, stack.getItemDamage(), set.materialID);
     }
 }

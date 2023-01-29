@@ -1,51 +1,47 @@
 package tconstruct.library.modifier;
 
 import java.util.*;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class ItemModifier {
+
     public final String key;
-    public final List stacks;
+    public final List<ItemStack> stacks;
     public final int effectIndex;
     public static Random random = new Random();
 
-    /** Default constructor
+    /**
+     * Default constructor
      *
-     * @param recipe Items to compare against when checking the modifier
-     * @param effect Render index for sprite layering
+     * @param recipe  Items to compare against when checking the modifier
+     * @param effect  Render index for sprite layering
      * @param dataKey NBT string to put on the item
      */
     public ItemModifier(ItemStack[] recipe, int effect, String dataKey) {
-        List<ItemStack> itemstacks = new ArrayList<ItemStack>();
-        for (int iter = 0; iter < recipe.length; iter++) itemstacks.add(recipe[iter]);
-        stacks = itemstacks;
+        stacks = new ArrayList<>(Arrays.asList(recipe));
         effectIndex = effect;
         key = dataKey;
     }
 
-    /** Checks to see if the inputs match the stored items
-     * Note: Works like ShapelessRecipes
+    /**
+     * Checks to see if the inputs match the stored items Note: Works like ShapelessRecipes
      *
      * @param recipe The ItemStacks to compare against
-     * @param input Item to modify, used for restrictions
+     * @param input  Item to modify, used for restrictions
      * @return Whether the recipe matches the input
      */
     public boolean matches(ItemStack[] recipe, ItemStack input) {
         if (!canModify(input, recipe)) return false;
 
-        ArrayList list = new ArrayList(this.stacks);
+        ArrayList<ItemStack> list = new ArrayList<>(this.stacks);
 
-        for (int iter = 0; iter < recipe.length; ++iter) {
-            ItemStack craftingStack = recipe[iter];
-
+        for (ItemStack craftingStack : recipe) {
             if (craftingStack != null) {
                 boolean canCraft = false;
-                Iterator iterate = list.iterator();
 
-                while (iterate.hasNext()) {
-                    ItemStack removeStack = (ItemStack) iterate.next();
-
+                for (ItemStack removeStack : list) {
                     if (craftingStack.getItem() == removeStack.getItem()
                             && (removeStack.getItemDamage() == Short.MAX_VALUE
                                     || craftingStack.getItemDamage() == removeStack.getItemDamage())) {
@@ -73,7 +69,7 @@ public abstract class ItemModifier {
     }
 
     /**
-     * @param input Tool to compare against
+     * @param input  Tool to compare against
      * @param recipe Items to modify with
      * @return Whether the tool can be modified
      */
@@ -82,10 +78,11 @@ public abstract class ItemModifier {
         return tags.getInteger("Modifiers") > 0;
     }
 
-    /** Modifies the tool. Adds nbttags, changes existing ones, ticks down modification counter, etc
+    /**
+     * Modifies the tool. Adds nbttags, changes existing ones, ticks down modification counter, etc
      *
      * @param recipe ItemStacks to pull info from
-     * @param input The tool to modify
+     * @param input  The tool to modify
      */
     public abstract void modify(ItemStack[] recipe, ItemStack input);
 
@@ -188,8 +185,8 @@ public abstract class ItemModifier {
         return ItemStack.areItemStackTagsEqual(stack1, stack2);
     }
 
-    public static NBTTagCompound getAttributeTag(
-            String attributeType, String modifierName, double amount, boolean flat, UUID uuid) {
+    public static NBTTagCompound getAttributeTag(String attributeType, String modifierName, double amount, boolean flat,
+            UUID uuid) {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setString("AttributeName", attributeType);
         tag.setString("Name", modifierName);

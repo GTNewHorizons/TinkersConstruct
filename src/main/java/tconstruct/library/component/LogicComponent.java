@@ -4,6 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public class LogicComponent {
+
     protected World world;
 
     public void setWorld(World world) {

@@ -1,21 +1,23 @@
 package tconstruct.smeltery;
 
-import cpw.mods.fml.common.eventhandler.*;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import mantle.world.WorldHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraftforge.event.entity.player.*;
+
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.tools.AbilityHelper;
-import tconstruct.smeltery.blocks.*;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
+import cpw.mods.fml.common.eventhandler.*;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
 public class TinkerSmelteryEvents {
+
     @SubscribeEvent
     public void onCrafting(ItemCraftedEvent event) {
         if (!PHConstruct.beginnerBook) {
@@ -53,12 +55,7 @@ public class TinkerSmelteryEvents {
                     if (evt.entityPlayer.capabilities.isCreativeMode) {
                         WorldHelper.setBlockToAir(evt.world, hitX, hitY, hitZ);
                     } else {
-                        if (TinkerSmeltery.fluidBlocks[id] instanceof LiquidMetalFinite) {
-                            WorldHelper.setBlockToAir(evt.world, hitX, hitY, hitZ);
-                        } else {
-                            WorldHelper.setBlockToAir(evt.world, hitX, hitY, hitZ);
-                        }
-
+                        WorldHelper.setBlockToAir(evt.world, hitX, hitY, hitZ);
                         evt.setResult(Result.ALLOW);
                         evt.result = new ItemStack(TinkerSmeltery.buckets, 1, id);
                     }

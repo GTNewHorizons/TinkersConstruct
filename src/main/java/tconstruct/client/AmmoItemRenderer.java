@@ -3,14 +3,16 @@ package tconstruct.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.library.weaponry.IAmmo;
 
 public class AmmoItemRenderer extends FlexibleToolRenderer {
     // public static FontRenderer fontRenderer;
 
     public AmmoItemRenderer() {
-        //        super(true);
+        // super(true);
         // fontRenderer = new FontRenderer(Minecraft.getMinecraft().gameSettings, new
         // ResourceLocation(Reference.RESOURCE, "textures/font/border_numbers.png"),
         // Minecraft.getMinecraft().renderEngine, false);

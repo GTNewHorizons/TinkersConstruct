@@ -1,8 +1,10 @@
 package tconstruct.library.crafting;
 
 import java.util.LinkedList;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.ToolCore;
 
@@ -11,16 +13,16 @@ import tconstruct.library.tools.ToolCore;
  */
 
 public class ToolRecipe {
-    protected LinkedList<Item> headList = new LinkedList<Item>();
-    protected LinkedList<Item> handleList = new LinkedList<Item>();
-    protected LinkedList<Item> accessoryList = new LinkedList<Item>();
-    protected LinkedList<Item> extraList = new LinkedList<Item>();
+
+    protected LinkedList<Item> headList = new LinkedList<>();
+    protected LinkedList<Item> handleList = new LinkedList<>();
+    protected LinkedList<Item> accessoryList = new LinkedList<>();
+    protected LinkedList<Item> extraList = new LinkedList<>();
     protected ToolCore result;
     protected Item toolRod = TConstructRegistry.getItem("toolRod");
 
     /*
-     * public ToolRecipe(Item head, ToolCore tool) { this(head,
-     * TContent.toolRod, null, null, tool); }
+     * public ToolRecipe(Item head, ToolCore tool) { this(head, TContent.toolRod, null, null, tool); }
      */
 
     public ToolRecipe(Item head, Item handle, ToolCore tool) {
@@ -72,8 +74,7 @@ public class ToolRecipe {
 
     public boolean validAccessory(Item input) {
         if (input == null) {
-            if (accessoryList.size() < 1) return true;
-            return false;
+            return accessoryList.size() < 1;
         }
         for (Item part : accessoryList) {
             if (part == input) return true;
@@ -84,8 +85,7 @@ public class ToolRecipe {
 
     public boolean validExtra(Item input) {
         if (input == null) {
-            if (extraList.size() < 1) return true;
-            return false;
+            return extraList.size() < 1;
         }
         for (Item part : extraList) {
             if (part == input) return true;

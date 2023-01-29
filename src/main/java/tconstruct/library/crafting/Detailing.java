@@ -1,18 +1,20 @@
 package tconstruct.library.crafting;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import java.util.*;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.library.tools.ToolCore;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Detailing {
-    public List<DetailInput> detailing = new ArrayList<DetailInput>();
+
+    public List<DetailInput> detailing = new ArrayList<>();
 
     public void addDetailing(Object input, int inputMeta, Object output, int outputMeta, ToolCore tool) {
         ItemStack iID, oID;
-        int iMeta = inputMeta, oMeta = outputMeta;
 
         if (input instanceof Block) iID = new ItemStack(((Block) input));
         else if (input instanceof Item) iID = new ItemStack(((Item) input));
@@ -24,7 +26,7 @@ public class Detailing {
         else if (output instanceof ItemStack) oID = (ItemStack) output;
         else throw new RuntimeException("Invalid detail output!");
 
-        this.addDetailing(new DetailInput(iID, iMeta, oID, oMeta), tool);
+        this.addDetailing(new DetailInput(iID, inputMeta, oID, outputMeta), tool);
     }
 
     public void addDetailing(DetailInput details, ToolCore tool) {
@@ -47,13 +49,8 @@ public class Detailing {
     }
 
     public void addShapelessToolRecipe(ItemStack par1ItemStack, Object... par2ArrayOfObj) {
-        ArrayList arraylist = new ArrayList();
-        Object[] aobject = par2ArrayOfObj;
-        int i = par2ArrayOfObj.length;
-
-        for (int j = 0; j < i; ++j) {
-            Object object1 = aobject[j];
-
+        ArrayList<ItemStack> arraylist = new ArrayList<>();
+        for (Object object1 : par2ArrayOfObj) {
             if (object1 instanceof ItemStack) {
                 arraylist.add(((ItemStack) object1).copy());
             } else if (object1 instanceof Item) {
@@ -66,13 +63,11 @@ public class Detailing {
                 arraylist.add(new ItemStack((Block) object1));
             }
         }
-
         GameRegistry.addRecipe(new ShapelessToolRecipe(par1ItemStack, arraylist));
     }
 
     public DetailInput getDetailing(Block block, int inputMeta) {
-        for (int i = 0; i < detailing.size(); i++) {
-            DetailInput detail = (DetailInput) detailing.get(i);
+        for (DetailInput detail : detailing) {
             if (Item.getItemFromBlock(block) == detail.input.getItem() && inputMeta == detail.inputMeta) {
                 return detail;
             }
@@ -80,7 +75,8 @@ public class Detailing {
         return null;
     }
 
-    public class DetailInput {
+    public static class DetailInput {
+
         public ItemStack input;
         public int inputMeta;
         public ItemStack output;

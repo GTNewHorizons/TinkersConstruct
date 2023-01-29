@@ -1,6 +1,7 @@
 package tconstruct.library.client;
 
 public class ToolGuiElement extends GuiElement {
+
     public final int slotType;
     public final int[] iconsX;
     public final int[] iconsY;

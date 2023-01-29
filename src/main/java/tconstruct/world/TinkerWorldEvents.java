@@ -1,6 +1,5 @@
 package tconstruct.world;
 
-import cpw.mods.fml.common.eventhandler.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.*;
 import net.minecraft.entity.monster.*;
@@ -11,12 +10,15 @@ import net.minecraft.potion.*;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.BonemealEvent;
+
 import tconstruct.TConstruct;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.ItemHelper;
 import tconstruct.util.config.PHConstruct;
+import cpw.mods.fml.common.eventhandler.*;
 
 public class TinkerWorldEvents {
+
     @SubscribeEvent
     public void onLivingSpawn(LivingSpawnEvent.SpecialSpawn event) {
         EntityLivingBase living = event.entityLiving;
@@ -27,7 +29,11 @@ public class TinkerWorldEvents {
             else creeper.mountEntity(living);
 
             EntityXPOrb orb = new EntityXPOrb(
-                    living.worldObj, living.posX, living.posY, living.posZ, TConstruct.random.nextInt(20) + 20);
+                    living.worldObj,
+                    living.posX,
+                    living.posY,
+                    living.posZ,
+                    TConstruct.random.nextInt(20) + 20);
             orb.mountEntity(creeper);
         }
     }
@@ -35,7 +41,7 @@ public class TinkerWorldEvents {
     public static void spawnEntityLiving(double x, double y, double z, EntityLiving entity, World world) {
         if (!world.isRemote) {
             entity.setPosition(x, y, z);
-            entity.onSpawnWithEgg((IEntityLivingData) null);
+            entity.onSpawnWithEgg(null);
             world.spawnEntityInWorld(entity);
         }
     }
@@ -45,8 +51,8 @@ public class TinkerWorldEvents {
     public void bonemealEvent(BonemealEvent event) {
         if (!event.world.isRemote) {
             if (event.block == TinkerWorld.slimeSapling) {
-                if (TinkerWorld.slimeSapling.boneFertilize(
-                        event.world, event.x, event.y, event.z, event.world.rand, event.entityPlayer))
+                if (TinkerWorld.slimeSapling
+                        .boneFertilize(event.world, event.x, event.y, event.z, event.world.rand, event.entityPlayer))
                     event.setResult(Event.Result.ALLOW);
             }
         }

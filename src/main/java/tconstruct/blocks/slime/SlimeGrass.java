@@ -1,8 +1,9 @@
 package tconstruct.blocks.slime;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.*;
+
 import mantle.blocks.MantleBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -13,14 +14,16 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 import net.minecraftforge.common.*;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.relauncher.*;
 
 public class SlimeGrass extends MantleBlock {
-    public String[] textureNames = {
-        "slimegrass_green_top", "slimedirt_blue", "slimegrass_green_blue_side", "slimegrass_green_dirt_side"
-    }; // green,
-    // purple
+
+    public String[] textureNames = { "slimegrass_green_top", "slimedirt_blue", "slimegrass_green_blue_side",
+            "slimegrass_green_dirt_side" }; // green,
+                                            // purple
     public IIcon[] icons;
 
     public SlimeGrass() {
@@ -33,7 +36,7 @@ public class SlimeGrass extends MantleBlock {
     @Override
     public int damageDropped(int meta) {
         if (meta == 1) // dirt
-        return 0;
+            return 0;
         else
             // slime dirt
             return 5;
@@ -71,8 +74,8 @@ public class SlimeGrass extends MantleBlock {
     }
 
     @Override
-    public boolean canSustainPlant(
-            IBlockAccess world, int x, int y, int z, ForgeDirection direction, IPlantable plant) {
+    public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection direction,
+            IPlantable plant) {
         EnumPlantType plantType = plant.getPlantType(world, x, y + 1, z);
         return plantType == EnumPlantType.Plains && plant.getPlant(world, x, y + 1, z) != Blocks.tallgrass;
     }
@@ -100,12 +103,12 @@ public class SlimeGrass extends MantleBlock {
                             && blockAbove != this) {
                         Block block = world.getBlock(posX, posY, posZ);
                         if (block == Blocks.dirt) {
-                            world.setBlock(posX, posY, posZ, (Block) this, 1, 3);
+                            world.setBlock(posX, posY, posZ, this, 1, 3);
                             return;
                         }
                         int blockMeta = world.getBlockMetadata(posX, posY, posZ);
                         if (block == TinkerTools.craftedSoil) {
-                            if (blockMeta == 5) world.setBlock(posX, posY, posZ, (Block) this, 0, 3);
+                            if (blockMeta == 5) world.setBlock(posX, posY, posZ, this, 0, 3);
                         }
                     }
                 }

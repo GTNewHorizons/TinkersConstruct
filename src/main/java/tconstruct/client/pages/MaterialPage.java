@@ -2,17 +2,21 @@ package tconstruct.client.pages;
 
 import mantle.client.pages.BookPage;
 import mantle.lib.client.MantleClientRegistry;
+
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.*;
 import org.w3c.dom.*;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.HarvestLevels;
 
 public class MaterialPage extends BookPage {
+
     String title;
     ItemStack[] icons;
     String iconText;
@@ -29,8 +33,7 @@ public class MaterialPage extends BookPage {
         if (nodes != null) iconText = nodes.item(0).getTextContent();
 
         nodes = element.getElementsByTagName("icon");
-        if (nodes != null)
-            icons[0] = MantleClientRegistry.getManualIcon(nodes.item(0).getTextContent());
+        if (nodes != null) icons[0] = MantleClientRegistry.getManualIcon(nodes.item(0).getTextContent());
 
         nodes = element.getElementsByTagName("toolmaterial");
         if (nodes != null && nodes.getLength() > 0)
@@ -98,17 +101,28 @@ public class MaterialPage extends BookPage {
         // renderitem.renderItemAndEffectIntoGUI(fonts, getMC().renderEngine,
         // icons[0], localWidth + 50, localHeight + 0);
         manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts, manual.getMC().renderEngine, icons[1], localWidth + 108, localHeight + 50);
+                manual.fonts,
+                manual.getMC().renderEngine,
+                icons[1],
+                localWidth + 108,
+                localHeight + 50);
         manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts, manual.getMC().renderEngine, icons[2], localWidth + 108, localHeight + 82);
+                manual.fonts,
+                manual.getMC().renderEngine,
+                icons[2],
+                localWidth + 108,
+                localHeight + 82);
         manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts, manual.getMC().renderEngine, icons[3], localWidth + 108, localHeight + 114);
+                manual.fonts,
+                manual.getMC().renderEngine,
+                icons[3],
+                localWidth + 108,
+                localHeight + 114);
         manual.renderitem.zLevel = 0;
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
-        String icon =
-                icons[1].getTooltip(manual.getMC().thePlayer, false).get((0)).toString();
+        String icon = icons[1].getTooltip(manual.getMC().thePlayer, false).get((0)).toString();
         if (isTranslatable) icon = StatCollector.translateToLocal(icon);
         int iconOffset = icon.length() > 12 ? 0 : 3;
         manual.fonts.drawSplitString(icon, localWidth + 128, localHeight + 50 + iconOffset, 52, 0);
@@ -118,9 +132,7 @@ public class MaterialPage extends BookPage {
             if (isTranslatable) icon = StatCollector.translateToLocal(icon);
             iconOffset = icon.length() > 12 ? 0 : 3;
             manual.fonts.drawSplitString(
-                    icons[2].getTooltip(manual.getMC().thePlayer, false)
-                            .get((0))
-                            .toString(),
+                    icons[2].getTooltip(manual.getMC().thePlayer, false).get((0)).toString(),
                     localWidth + 128,
                     localHeight + 82 + iconOffset,
                     52,
@@ -131,9 +143,7 @@ public class MaterialPage extends BookPage {
             if (isTranslatable) icon = StatCollector.translateToLocal(icon);
             iconOffset = icon.length() > 12 ? 0 : 3;
             manual.fonts.drawSplitString(
-                    icons[3].getTooltip(manual.getMC().thePlayer, false)
-                            .get((0))
-                            .toString(),
+                    icons[3].getTooltip(manual.getMC().thePlayer, false).get((0)).toString(),
                     localWidth + 128,
                     localHeight + 114 + iconOffset,
                     52,
@@ -141,8 +151,8 @@ public class MaterialPage extends BookPage {
         }
 
         manual.fonts.drawString(durability + ": " + material.durability(), localWidth, localHeight + 40, 0);
-        manual.fonts.drawString(
-                handleModifier + ": " + material.handleDurability() + "x", localWidth, localHeight + 50, 0);
+        manual.fonts
+                .drawString(handleModifier + ": " + material.handleDurability() + "x", localWidth, localHeight + 50, 0);
         manual.fonts.drawString(
                 fullToolDurability + ": " + (int) (material.durability() * material.handleDurability()),
                 localWidth,
@@ -151,19 +161,20 @@ public class MaterialPage extends BookPage {
 
         manual.fonts.drawString(miningSpeed + ": " + material.toolSpeed() / 100f, localWidth, localHeight + 80, 0);
         manual.fonts.drawString(
-                miningLevel + ": " + material.harvestLevel() + " ("
-                        + HarvestLevels.getHarvestLevelName(material.harvestLevel()) + ")",
+                miningLevel + ": "
+                        + material.harvestLevel()
+                        + " ("
+                        + HarvestLevels.getHarvestLevelName(material.harvestLevel())
+                        + ")",
                 localWidth,
                 localHeight + 90,
                 0);
         int attack = material.attack();
         String heart = attack == 2 ? " " + heart_ : " " + hearts;
-        if (attack % 2 == 0)
-            manual.fonts.drawString(
-                    baseAttack + ": " + material.attack() / 2 + heart, localWidth, localHeight + 100, 0);
-        else
-            manual.fonts.drawString(
-                    baseAttack + ": " + material.attack() / 2f + heart, localWidth, localHeight + 100, 0);
+        if (attack % 2 == 0) manual.fonts
+                .drawString(baseAttack + ": " + material.attack() / 2 + heart, localWidth, localHeight + 100, 0);
+        else manual.fonts
+                .drawString(baseAttack + ": " + material.attack() / 2f + heart, localWidth, localHeight + 100, 0);
 
         int offset = 0;
         String ability = material.ability();
@@ -178,17 +189,26 @@ public class MaterialPage extends BookPage {
             manual.fonts.drawString(traitReinforced, localWidth, localHeight + 120 + 10 * offset, 0);
             offset++;
             manual.fonts.drawString(
-                    reinforcedLevel + ": " + material.reinforced(), localWidth, localHeight + 120 + 10 * offset, 0);
+                    reinforcedLevel + ": " + material.reinforced(),
+                    localWidth,
+                    localHeight + 120 + 10 * offset,
+                    0);
             offset++;
         }
 
         if (material.shoddy() > 0) {
             manual.fonts.drawString(
-                    stoneboundLevel + ": " + material.shoddy(), localWidth, localHeight + 120 + 10 * offset, 0);
+                    stoneboundLevel + ": " + material.shoddy(),
+                    localWidth,
+                    localHeight + 120 + 10 * offset,
+                    0);
             offset++;
         } else if (material.shoddy() < 0) {
             manual.fonts.drawString(
-                    splinteringLevel + ": " + -material.shoddy(), localWidth, localHeight + 120 + 10 * offset, 0);
+                    splinteringLevel + ": " + -material.shoddy(),
+                    localWidth,
+                    localHeight + 120 + 10 * offset,
+                    0);
             offset++;
         }
     }

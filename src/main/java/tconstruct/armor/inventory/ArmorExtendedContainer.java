@@ -3,10 +3,12 @@ package tconstruct.armor.inventory;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.armor.player.ArmorExtended;
 import tconstruct.smeltery.inventory.ActiveContainer;
 
 public class ArmorExtendedContainer extends ActiveContainer {
+
     public InventoryPlayer invPlayer;
     public ArmorExtended armor;
 
@@ -24,13 +26,14 @@ public class ArmorExtendedContainer extends ActiveContainer {
         this.addSlotToContainer(new SlotAccessory(armor, 5, 152, 35, 10));
         this.addSlotToContainer(new SlotAccessory(armor, 6, 152, 17, 10));
         for (int playerArmor = 0; playerArmor < 4; ++playerArmor) {
-            this.addSlotToContainer(new SlotArmorCopy(
-                    this,
-                    inventoryplayer,
-                    inventoryplayer.getSizeInventory() - 1 - playerArmor,
-                    98,
-                    8 + playerArmor * 18,
-                    playerArmor));
+            this.addSlotToContainer(
+                    new SlotArmorCopy(
+                            this,
+                            inventoryplayer,
+                            inventoryplayer.getSizeInventory() - 1 - playerArmor,
+                            98,
+                            8 + playerArmor * 18,
+                            playerArmor));
         }
 
         for (int column = 0; column < 3; column++) {

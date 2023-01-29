@@ -1,14 +1,16 @@
 package tconstruct.plugins;
 
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 import mantle.pulsar.pulse.*;
+
 import net.minecraft.item.ItemStack;
+
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.modifiers.armor.AModThaumicVision;
 import tconstruct.world.TinkerWorld;
 import thaumcraft.api.ItemApi;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(
@@ -31,10 +33,10 @@ public class TinkerThaumcraft {
         FMLInterModComms.sendMessage("Thaumcraft", "harvestClickableCrop", new ItemStack(TinkerWorld.oreBerry, 1, 13));
         FMLInterModComms.sendMessage("Thaumcraft", "harvestClickableCrop", new ItemStack(TinkerWorld.oreBerry, 1, 14));
         FMLInterModComms.sendMessage("Thaumcraft", "harvestClickableCrop", new ItemStack(TinkerWorld.oreBerry, 1, 15));
-        FMLInterModComms.sendMessage(
-                "Thaumcraft", "harvestClickableCrop", new ItemStack(TinkerWorld.oreBerrySecond, 1, 12));
-        FMLInterModComms.sendMessage(
-                "Thaumcraft", "harvestClickableCrop", new ItemStack(TinkerWorld.oreBerrySecond, 1, 13));
+        FMLInterModComms
+                .sendMessage("Thaumcraft", "harvestClickableCrop", new ItemStack(TinkerWorld.oreBerrySecond, 1, 12));
+        FMLInterModComms
+                .sendMessage("Thaumcraft", "harvestClickableCrop", new ItemStack(TinkerWorld.oreBerrySecond, 1, 13));
     }
 
     private void registerModifiers() {

@@ -1,15 +1,17 @@
 package tconstruct.util.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mantle.common.network.AbstractPacket;
 import mantle.common.network.PacketUpdateTE;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
+
 import tconstruct.TConstruct;
 import tconstruct.smeltery.inventory.SmelteryContainer;
 import tconstruct.smeltery.logic.SmelteryLogic;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 public class SmelteryPacket extends AbstractPacket {
 
@@ -55,8 +57,7 @@ public class SmelteryPacket extends AbstractPacket {
         if (player.openContainer instanceof SmelteryContainer) {
             SmelteryContainer container = (SmelteryContainer) player.openContainer;
             SmelteryLogic logic = container.logic;
-            if (logic != null
-                    && logic.hasWorldObj()
+            if (logic != null && logic.hasWorldObj()
                     && logic.getWorldObj().provider.dimensionId == this.dimension
                     && logic.xCoord == this.x
                     && logic.yCoord == this.y
@@ -75,8 +76,8 @@ public class SmelteryPacket extends AbstractPacket {
 
                 NBTTagCompound data = new NBTTagCompound();
                 logic.writeToNBT(data);
-                TConstruct.packetPipeline.sendToDimension(
-                        new PacketUpdateTE(this.x, this.y, this.z, data), this.dimension);
+                TConstruct.packetPipeline
+                        .sendToDimension(new PacketUpdateTE(this.x, this.y, this.z, data), this.dimension);
             }
         }
     }

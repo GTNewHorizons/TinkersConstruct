@@ -5,12 +5,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import tconstruct.armor.TinkerArmor;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.ToolCore;
 
 public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
+
     public KingBlueSlime(World world) {
         super(world);
 
@@ -59,7 +61,11 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
                 double x = Math.cos(r);
                 double z = Math.sin(r);
                 entityslime.setLocationAndAngles(
-                        this.posX - 1d + x, this.posY + 0.5D, this.posZ - 1d + z, this.rand.nextFloat() * 360.0F, 0.0F);
+                        this.posX - 1d + x,
+                        this.posY + 0.5D,
+                        this.posZ - 1d + z,
+                        this.rand.nextFloat() * 360.0F,
+                        0.0F);
                 entityslime.motionX = x;
                 entityslime.motionY = -0.5d - rand.nextDouble();
                 entityslime.motionZ = z;
@@ -78,12 +84,12 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
 
         final ItemStack headStack = new ItemStack(tool.getHeadItem(), 1, 17);
         final ItemStack handleStack = new ItemStack(tool.getHandleItem(), 1, 17);
-        final ItemStack accessoryStack =
-                tool.getAccessoryItem() != null ? new ItemStack(tool.getAccessoryItem(), 1, 17) : null;
+        final ItemStack accessoryStack = tool.getAccessoryItem() != null ? new ItemStack(tool.getAccessoryItem(), 1, 17)
+                : null;
         final ItemStack extraStack = tool.getExtraItem() != null ? new ItemStack(tool.getExtraItem(), 1, 17) : null;
 
-        String loc = "tool." + tool.getToolName().toLowerCase()
-                + ".kingslime"; // special localization the same way as materials
+        String loc = "tool." + tool.getToolName().toLowerCase() + ".kingslime"; // special localization the same way as
+                                                                                // materials
         String name;
         if (StatCollector.canTranslate(loc)) name = StatCollector.translateToLocal(loc);
         else name = StatCollector.translateToLocal("tool.kingslimeprefix") + " " + tool.getLocalizedToolName();
@@ -107,8 +113,9 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
 
     ToolCore getValidTool() {
         ToolCore tool = TConstructRegistry.tools.get(rand.nextInt(TConstructRegistry.tools.size()));
-        /*if (tool.getExtraItem() != null)
-        tool = getValidTool();*/
+        /*
+         * if (tool.getExtraItem() != null) tool = getValidTool();
+         */
         return tool;
     }
 }

@@ -1,25 +1,28 @@
 package tconstruct.tools.items;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.books.BookData;
 import mantle.client.gui.GuiManual;
 import mantle.items.abstracts.CraftingItem;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import tconstruct.TConstruct;
 import tconstruct.achievements.TAchievements;
 import tconstruct.client.TProxyClient;
 import tconstruct.library.TConstructRegistry;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.*;
 
 public class Manual extends CraftingItem {
-    static String[] name = new String[] {"beginner", "toolstation", "smeltery", "diary", "weaponry"};
-    static String[] textureName = new String[] {
-        "tinkerbook_diary", "tinkerbook_toolstation", "tinkerbook_smeltery", "tinkerbook_blue", "tinkerbook_green"
-    };
+
+    static String[] name = new String[] { "beginner", "toolstation", "smeltery", "diary", "weaponry" };
+    static String[] textureName = new String[] { "tinkerbook_diary", "tinkerbook_toolstation", "tinkerbook_smeltery",
+            "tinkerbook_blue", "tinkerbook_green" };
 
     public Manual() {
         super(name, textureName, "", "tinker", TConstructRegistry.materialTab);

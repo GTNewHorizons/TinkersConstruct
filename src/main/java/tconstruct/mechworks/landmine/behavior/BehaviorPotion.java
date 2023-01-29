@@ -1,6 +1,7 @@
 package tconstruct.mechworks.landmine.behavior;
 
 import java.util.*;
+
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityPotion;
@@ -8,6 +9,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+
 import tconstruct.mechworks.itemblocks.ItemBlockLandmine;
 
 /**
@@ -18,13 +20,7 @@ import tconstruct.mechworks.itemblocks.ItemBlockLandmine;
 public class BehaviorPotion extends Behavior {
 
     @Override
-    public void executeLogic(
-            World par1World,
-            int par2,
-            int par3,
-            int par4,
-            ItemStack par5ItemStack,
-            Entity triggerer,
+    public void executeLogic(World par1World, int par2, int par3, int par4, ItemStack par5ItemStack, Entity triggerer,
             boolean willBlockBeRemoved) {
         if (ItemPotion.isSplash(par5ItemStack.getItemDamage())) {
             par1World.playSoundAtEntity(
@@ -46,13 +42,9 @@ public class BehaviorPotion extends Behavior {
                 Items.potionitem.onEaten(par5ItemStack, par1World, (EntityPlayer) triggerer);
             } else if (triggerer instanceof EntityLivingBase) {
                 if (!par1World.isRemote) {
-                    List list = Items.potionitem.getEffects(par5ItemStack);
-
+                    List<PotionEffect> list = Items.potionitem.getEffects(par5ItemStack);
                     if (list != null) {
-                        Iterator iterator = list.iterator();
-
-                        while (iterator.hasNext()) {
-                            PotionEffect potioneffect = (PotionEffect) iterator.next();
+                        for (PotionEffect potioneffect : list) {
                             ((EntityLivingBase) triggerer).addPotionEffect(new PotionEffect(potioneffect));
                         }
                     }

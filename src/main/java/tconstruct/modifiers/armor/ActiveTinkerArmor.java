@@ -5,17 +5,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.*;
 import net.minecraft.world.World;
+
 import tconstruct.TConstruct;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.armor.*;
 import tconstruct.library.modifier.*;
 
 public class ActiveTinkerArmor extends ActiveArmorMod {
+
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack, ArmorCore armor, ArmorPart type) {
         if (!itemStack.hasTagCompound()) return;
-        NBTTagCompound tag =
-                itemStack.getTagCompound().getCompoundTag(((IModifyable) itemStack.getItem()).getBaseTagName());
+        NBTTagCompound tag = itemStack.getTagCompound()
+                .getCompoundTag(((IModifyable) itemStack.getItem()).getBaseTagName());
         if (tag == null) return;
         if (tag.hasKey("Moss")) {
             int chance = tag.getInteger("Moss");
@@ -36,20 +38,21 @@ public class ActiveTinkerArmor extends ActiveArmorMod {
                     player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 15 * 20, 0, true));
             }
 
-            /*List list = world.getEntitiesWithinAABB(EntityItem.class, player.boundingBox.addCoord(0.0D, 0.0D, 0.0D).expand(5.0D, 5.0D, 5.0D)); //TODO: Add modifier code
-            for (int k = 0; k < list.size(); k++)
-            {
-                EntityItem entity = (EntityItem) list.get(k);
-                entity.onCollideWithPlayer(player);
-            }*/
+            /*
+             * List list = world.getEntitiesWithinAABB(EntityItem.class, player.boundingBox.addCoord(0.0D, 0.0D,
+             * 0.0D).expand(5.0D, 5.0D, 5.0D)); //TODO: Add modifier code for (int k = 0; k < list.size(); k++) {
+             * EntityItem entity = (EntityItem) list.get(k); entity.onCollideWithPlayer(player); }
+             */
         }
         if (type == ArmorPart.Chest) {
             if (player.isSneaking() && tag.getBoolean("Stealth"))
                 player.addPotionEffect(new PotionEffect(Potion.invisibility.id, 2, 0, true));
 
-            /*int sprintboost = tag.getInteger("Sprint Assist");
-            if (player.isSprinting() && sprintboost > 0)
-                player.moveEntityWithHeading(-player.moveStrafing * 0.1f * sprintboost, player.moveForward * 0.2F * sprintboost); //Max of 0-1*/
+            /*
+             * int sprintboost = tag.getInteger("Sprint Assist"); if (player.isSprinting() && sprintboost > 0)
+             * player.moveEntityWithHeading(-player.moveStrafing * 0.1f * sprintboost, player.moveForward * 0.2F *
+             * sprintboost); //Max of 0-1
+             */
         }
         if (type == ArmorPart.Feet) {
             if (player.isInWater()) {

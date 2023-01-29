@@ -1,7 +1,5 @@
 package tconstruct.achievements;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -9,12 +7,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+
 import tconstruct.items.tools.FryingPan;
 import tconstruct.library.event.ToolCraftedEvent;
 import tconstruct.library.tools.*;
 import tconstruct.tools.logic.ToolForgeLogic;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
 public class AchievementEvents {
+
     @SubscribeEvent
     public void toolCreate(ToolCraftedEvent event) {
         if (event.player != null) {
@@ -24,9 +27,7 @@ public class AchievementEvents {
                 TAchievements.triggerAchievement(event.player, "tconstruct.preparedFight");
             }
 
-            if (event.inventory != null
-                    && event.inventory instanceof ToolForgeLogic
-                    && event.tool.getItem() instanceof ToolCore
+            if (event.inventory instanceof ToolForgeLogic && event.tool.getItem() instanceof ToolCore
                     && ((ToolCore) event.tool.getItem()).durabilityTypeExtra() != 0) {
                 TAchievements.triggerAchievement(event.player, "tconstruct.proTinkerer");
             }
@@ -69,12 +70,14 @@ public class AchievementEvents {
 
     @SubscribeEvent
     public void tooltip(ItemTooltipEvent event) {
-        if (event.itemStack == null
-                || event.itemStack.getItem() == null
+        if (event.itemStack == null || event.itemStack.getItem() == null
                 || !event.itemStack.hasTagCompound()
-                || !event.itemStack.getTagCompound().hasKey("frypanKill")) return;
+                || !event.itemStack.getTagCompound().hasKey("frypanKill"))
+            return;
 
-        event.toolTip.add("" + ChatFormatting.DARK_PURPLE + ChatFormatting.ITALIC
-                + StatCollector.translateToLocal("frypankill.tooltip"));
+        event.toolTip.add(
+                "" + ChatFormatting.DARK_PURPLE
+                        + ChatFormatting.ITALIC
+                        + StatCollector.translateToLocal("frypankill.tooltip"));
     }
 }

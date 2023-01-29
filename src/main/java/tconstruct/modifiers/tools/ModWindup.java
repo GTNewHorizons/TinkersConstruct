@@ -2,17 +2,20 @@ package tconstruct.modifiers.tools;
 
 import java.util.Arrays;
 import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.library.tools.ToolCore;
 
 public class ModWindup extends ModRedstone {
+
     public ModWindup(int effect, ItemStack[] items, int[] values) {
         super(effect, items, values);
     }
 
     public boolean validType(ToolCore tool) {
-        List list = Arrays.asList(tool.getTraits());
+        List<String> list = Arrays.asList(tool.getTraits());
         return list.contains("windup");
     }
 
@@ -29,7 +32,7 @@ public class ModWindup extends ModRedstone {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int[] keyPair;
         int increase = matchingAmount(input);
-        int current = 0;
+        int current;
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);
             if (keyPair[0] % max == 0) {
@@ -52,7 +55,7 @@ public class ModWindup extends ModRedstone {
             tags.setInteger("Modifiers", modifiers);
             String modName = "\u00a74Redstone (" + increase + "/" + max + ")";
             int tooltipIndex = addToolTip(tool, tooltipName, modName);
-            keyPair = new int[] {increase, max, tooltipIndex};
+            keyPair = new int[] { increase, max, tooltipIndex };
             current = keyPair[0];
             tags.setIntArray(key, keyPair);
         }

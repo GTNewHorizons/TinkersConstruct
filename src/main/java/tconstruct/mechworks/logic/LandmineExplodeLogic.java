@@ -1,15 +1,18 @@
 package tconstruct.mechworks.logic;
 
 import java.util.*;
+
 import mantle.world.WorldHelper;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import tconstruct.mechworks.landmine.behavior.Behavior;
 
 /**
- * This logic is designed only for blocks having TileEntityLandmine as their
- * tileEntity(otherwise ClassCastException will be awarded)
+ * This logic is designed only for blocks having TileEntityLandmine as their tileEntity(otherwise ClassCastException
+ * will be awarded)
  *
  * @author fuj1n
  *
@@ -39,7 +42,7 @@ public class LandmineExplodeLogic {
         boolean isOffensive = true;
         boolean cancelDefault = false;
 
-        ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> stacks = new ArrayList<>();
         boolean hasExploded = false;
 
         if (tileEntity == null) {
@@ -73,13 +76,17 @@ public class LandmineExplodeLogic {
             }
         }
 
-        LandmineSpecialStackLogic specialStacks =
-                new LandmineSpecialStackLogic(worldObj, x, y, z, triggerer, isOffensive, stacks);
+        LandmineSpecialStackLogic specialStacks = new LandmineSpecialStackLogic(
+                worldObj,
+                x,
+                y,
+                z,
+                triggerer,
+                isOffensive,
+                stacks);
         specialStacks.handleSpecialStacks();
 
-        Iterator<ItemStack> i1 = stacks.iterator();
-        while (i1.hasNext()) {
-            ItemStack currentStack = i1.next();
+        for (ItemStack currentStack : stacks) {
             Behavior b = Behavior.getBehaviorFromStack(currentStack);
             if (b != null) {
                 if (isOffensive || !b.isOffensive(currentStack)) {

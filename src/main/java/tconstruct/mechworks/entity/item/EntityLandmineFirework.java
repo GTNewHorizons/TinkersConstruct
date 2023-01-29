@@ -1,20 +1,21 @@
 package tconstruct.mechworks.entity.item;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
 import tconstruct.util.DamageSourceFireworkExplode;
+import cpw.mods.fml.relauncher.*;
 
 public class EntityLandmineFirework extends Entity {
+
     /** The age of the firework in ticks. */
     private int fireworkAge;
 
     /**
-     * The lifetime of the firework in ticks. When the age reaches the lifetime
-     * the firework explodes.
+     * The lifetime of the firework in ticks. When the age reaches the lifetime the firework explodes.
      */
     private int lifetime;
 
@@ -47,8 +48,8 @@ public class EntityLandmineFirework extends Entity {
         return par1 < 4096.0D;
     }
 
-    public EntityLandmineFirework(
-            World par1World, double par2, double par4, double par6, ItemStack par8ItemStack, int moveDirection) {
+    public EntityLandmineFirework(World par1World, double par2, double par4, double par6, ItemStack par8ItemStack,
+            int moveDirection) {
         super(par1World);
         this.fireworkAge = 0;
         this.setSize(0.25F, 0.25F);
@@ -86,7 +87,7 @@ public class EntityLandmineFirework extends Entity {
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
             float f = MathHelper.sqrt_double(par1 * par1 + par5 * par5);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(par1, par5) * 180.0D / Math.PI);
-            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(par3, (double) f) * 180.0D / Math.PI);
+            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(par3, f) * 180.0D / Math.PI);
         }
     }
 
@@ -110,10 +111,9 @@ public class EntityLandmineFirework extends Entity {
         float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
-        for (this.rotationPitch = (float) (Math.atan2(this.motionY, (double) f) * 180.0D / Math.PI);
-                this.rotationPitch - this.prevRotationPitch < -180.0F;
-                this.prevRotationPitch -= 360.0F) {
-            ;
+        this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
+        while (this.rotationPitch - this.prevRotationPitch < -180.0F) {
+            this.prevRotationPitch -= 360.0F;
         }
 
         while (this.rotationPitch - this.prevRotationPitch >= 180.0F) {
@@ -167,7 +167,13 @@ public class EntityLandmineFirework extends Entity {
             }
 
             this.worldObj.makeFireworks(
-                    this.posX, this.posY, this.posZ, this.motionX, this.motionY, this.motionZ, nbttagcompound);
+                    this.posX,
+                    this.posY,
+                    this.posZ,
+                    this.motionX,
+                    this.motionY,
+                    this.motionZ,
+                    nbttagcompound);
         }
 
         super.handleHealthUpdate(par1);

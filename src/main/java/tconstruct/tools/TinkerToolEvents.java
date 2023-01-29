@@ -1,9 +1,7 @@
 package tconstruct.tools;
 
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -23,6 +21,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
+
 import tconstruct.TConstruct;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.TConstructRegistry;
@@ -34,14 +33,18 @@ import tconstruct.library.tools.*;
 import tconstruct.util.ItemHelper;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.MovementUpdatePacket;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
 public class TinkerToolEvents {
+
     @SubscribeEvent
     public void onCrafting(ItemCraftedEvent event) {
-        if (event.crafting == null
-                || event.player == null
+        if (event.crafting == null || event.player == null
                 || event.player.worldObj == null
-                || event.craftMatrix == null) return;
+                || event.craftMatrix == null)
+            return;
 
         Item item = event.crafting.getItem();
         if (!event.player.worldObj.isRemote) {
@@ -84,11 +87,10 @@ public class TinkerToolEvents {
 
         // check if the handle is a stick
         List<ItemStack> sticks = OreDictionary.getOres("stickWood");
-        for (ItemStack stick : sticks)
-            if (OreDictionary.itemMatches(stick, event.handleStack, false)) {
-                event.handleStack = new ItemStack(TinkerTools.toolRod, 1, 0); // wooden tool rod
-                return;
-            }
+        for (ItemStack stick : sticks) if (OreDictionary.itemMatches(stick, event.handleStack, false)) {
+            event.handleStack = new ItemStack(TinkerTools.toolRod, 1, 0); // wooden tool rod
+            return;
+        }
     }
 
     @SubscribeEvent
@@ -149,9 +151,9 @@ public class TinkerToolEvents {
     }
 
     private boolean allowCrafting(int head, int handle, int accessory) {
-        int[] nonMetals = {0, 1, 3, 4, 5, 6, 7, 8, 9, 17};
-        for (int i = 0; i < nonMetals.length; i++) {
-            if (head == nonMetals[i] || handle == nonMetals[i] || accessory == nonMetals[i]) return false;
+        int[] nonMetals = { 0, 1, 3, 4, 5, 6, 7, 8, 9, 17 };
+        for (int nonMetal : nonMetals) {
+            if (head == nonMetal || handle == nonMetal || accessory == nonMetal) return false;
         }
         return true;
     }
@@ -162,7 +164,7 @@ public class TinkerToolEvents {
         if (event.pattern.getItem() == TinkerTools.woodPattern && event.pattern.getItemDamage() == 23) {
             ItemStack result = craftBowString(event.material);
             if (result != null) {
-                event.overrideResult(new ItemStack[] {result, null});
+                event.overrideResult(new ItemStack[] { result, null });
             }
         }
 
@@ -170,7 +172,7 @@ public class TinkerToolEvents {
         if (event.pattern.getItem() == TinkerTools.woodPattern && event.pattern.getItemDamage() == 24) {
             ItemStack result = craftFletching(event.material);
             if (result != null) {
-                event.overrideResult(new ItemStack[] {result, null});
+                event.overrideResult(new ItemStack[] { result, null });
             }
         }
     }
@@ -178,15 +180,15 @@ public class TinkerToolEvents {
     public static ItemStack craftBowString(ItemStack stack) {
         if (stack.stackSize < 3) return null;
 
-        BowstringMaterial mat =
-                (BowstringMaterial) TConstructRegistry.getCustomMaterial(stack, BowstringMaterial.class);
+        BowstringMaterial mat = (BowstringMaterial) TConstructRegistry
+                .getCustomMaterial(stack, BowstringMaterial.class);
         if (mat != null) return mat.craftingItem.copy();
         return null;
     }
 
     public static ItemStack craftFletching(ItemStack stack) {
-        FletchingMaterial mat =
-                (FletchingMaterial) TConstructRegistry.getCustomMaterial(stack, FletchingMaterial.class);
+        FletchingMaterial mat = (FletchingMaterial) TConstructRegistry
+                .getCustomMaterial(stack, FletchingMaterial.class);
         // maybe it's a leaf fletchling
         if (mat == null)
             mat = (FletchingMaterial) TConstructRegistry.getCustomMaterial(stack, FletchlingLeafMaterial.class);
@@ -203,16 +205,16 @@ public class TinkerToolEvents {
             ItemStack stack = player.getCurrentEquippedItem();
             if (stack != null && stack.getItem() == TinkerTools.battlesign) {
                 // broken battlesign?
-                if (!stack.hasTagCompound()
-                        || stack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Broken")) return;
+                if (!stack.hasTagCompound() || stack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Broken"))
+                    return;
 
                 DamageSource source = event.source;
                 if (!source.isUnblockable() && !source.isMagicDamage() && !source.isExplosion()) {
                     if (source.isProjectile()) {
                         Entity projectile = source.getSourceOfDamage();
                         if (projectile == null) return;
-                        Vec3 motion =
-                                Vec3.createVectorHelper(projectile.motionX, projectile.motionY, projectile.motionZ);
+                        Vec3 motion = Vec3
+                                .createVectorHelper(projectile.motionX, projectile.motionY, projectile.motionZ);
                         Vec3 look = player.getLookVec();
 
                         // this gives a factor of how much we're looking at the incoming arrow
@@ -223,8 +225,7 @@ public class TinkerToolEvents {
                         // no damage, hooraaay
                         event.setCanceled(true);
 
-                        double speed = projectile.motionX * projectile.motionX
-                                + projectile.motionY * projectile.motionY
+                        double speed = projectile.motionX * projectile.motionX + projectile.motionY * projectile.motionY
                                 + projectile.motionZ * projectile.motionZ;
                         speed = Math.sqrt(speed);
 
@@ -235,8 +236,8 @@ public class TinkerToolEvents {
                         projectile.motionY = look.yCoord * speed;
                         projectile.motionZ = look.zCoord * speed;
 
-                        projectile.rotationYaw =
-                                (float) (Math.atan2(projectile.motionX, projectile.motionZ) * 180.0D / Math.PI);
+                        projectile.rotationYaw = (float) (Math.atan2(projectile.motionX, projectile.motionZ) * 180.0D
+                                / Math.PI);
                         projectile.rotationPitch = (float) (Math.atan2(projectile.motionY, speed) * 180.0D / Math.PI);
 
                         // send the current status to the client
@@ -250,8 +251,8 @@ public class TinkerToolEvents {
                             projectile.motionX /= -0.10000000149011612D;
                             projectile.motionY /= -0.10000000149011612D;
                             projectile.motionZ /= -0.10000000149011612D;
-                            //                            projectile.rotationYaw -= 180.0F;
-                            //                            projectile.prevRotationYaw -= 180.0F;
+                            // projectile.rotationYaw -= 180.0F;
+                            // projectile.prevRotationYaw -= 180.0F;
 
                             // not needed at the client since it gets the absolute values sent
 
@@ -285,9 +286,7 @@ public class TinkerToolEvents {
                     EntityPlayer player = (EntityPlayer) event.source.getEntity();
                     ItemStack stack = player.getCurrentEquippedItem();
                     if (stack != null && stack.hasTagCompound() && stack.getItem() instanceof ToolCore) {
-                        int beheading = stack.getTagCompound()
-                                .getCompoundTag("InfiTool")
-                                .getInteger("Beheading");
+                        int beheading = stack.getTagCompound().getCompoundTag("InfiTool").getInteger("Beheading");
                         if (stack.getItem() == TinkerTools.cleaver) beheading += 2;
                         if (beheading > 0 && TConstruct.random.nextInt(100) < beheading * 10) {
                             ItemHelper.addDrops(event, new ItemStack(Items.skull, 1, enemy.getSkeletonType()));
@@ -308,9 +307,7 @@ public class TinkerToolEvents {
                     ItemStack stack = player.getCurrentEquippedItem();
 
                     if (stack != null && stack.hasTagCompound() && stack.getItem() instanceof ToolCore) {
-                        int beheading = stack.getTagCompound()
-                                .getCompoundTag("InfiTool")
-                                .getInteger("Beheading");
+                        int beheading = stack.getTagCompound().getCompoundTag("InfiTool").getInteger("Beheading");
                         if (stack != null && stack.hasTagCompound() && stack.getItem() == TinkerTools.cleaver)
                             beheading += 2;
                         if (beheading > 0 && TConstruct.random.nextInt(100) < beheading * 10) {
@@ -318,8 +315,7 @@ public class TinkerToolEvents {
                         }
                     }
 
-                    if (stack != null
-                            && stack.hasTagCompound()
+                    if (stack != null && stack.hasTagCompound()
                             && stack.getItem() == TinkerTools.cleaver
                             && TConstruct.random.nextInt(100) < 10) {
                         ItemHelper.addDrops(event, new ItemStack(Items.skull, 1, 2));
@@ -334,9 +330,7 @@ public class TinkerToolEvents {
                     EntityPlayer player = (EntityPlayer) event.source.getEntity();
                     ItemStack stack = player.getCurrentEquippedItem();
                     if (stack != null && stack.hasTagCompound() && stack.getItem() instanceof ToolCore) {
-                        int beheading = stack.getTagCompound()
-                                .getCompoundTag("InfiTool")
-                                .getInteger("Beheading");
+                        int beheading = stack.getTagCompound().getCompoundTag("InfiTool").getInteger("Beheading");
                         if (stack.getItem() == TinkerTools.cleaver) beheading += 2;
                         if (beheading > 0 && TConstruct.random.nextInt(100) < beheading * 5) {
                             ItemHelper.addDrops(event, new ItemStack(Items.skull, 1, 4));
@@ -359,8 +353,7 @@ public class TinkerToolEvents {
                 EntityPlayer source = (EntityPlayer) event.source.getEntity();
                 ItemStack stack = source.getCurrentEquippedItem();
                 if (stack != null && stack.hasTagCompound() && stack.getItem() instanceof ToolCore) {
-                    int beheading =
-                            stack.getTagCompound().getCompoundTag("InfiTool").getInteger("Beheading");
+                    int beheading = stack.getTagCompound().getCompoundTag("InfiTool").getInteger("Beheading");
                     if (stack.getItem() == TinkerTools.cleaver) beheading += 2;
                     if (beheading > 0 && TConstruct.random.nextInt(100) < beheading * 50) {
                         ItemStack dropStack = new ItemStack(Items.skull, 1, 3);
@@ -408,8 +401,8 @@ public class TinkerToolEvents {
         boolean damaged = false;
         for (EntityItem drop : event.drops) {
             // we're only interested in tools
-            if (!(drop.getEntityItem().getItem() instanceof ToolCore)
-                    || !drop.getEntityItem().hasTagCompound()) continue;
+            if (!(drop.getEntityItem().getItem() instanceof ToolCore) || !drop.getEntityItem().hasTagCompound())
+                continue;
 
             // damage tools by 10% of their total durability!
             NBTTagCompound tags = drop.getEntityItem().getTagCompound().getCompoundTag("InfiTool");

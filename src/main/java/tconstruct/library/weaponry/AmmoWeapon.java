@@ -1,27 +1,28 @@
 package tconstruct.library.weaponry;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.client.CrosshairType;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.InterfaceList({
-    @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon")
-})
+        @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon") })
 /**
- * Throwing weapons that utilize the ammo system on themselves.
- * Throwing knifes etc.
+ * Throwing weapons that utilize the ammo system on themselves. Throwing knifes etc.
  */
 public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, IAccuracy, IWindup {
+
     public AmmoWeapon(int baseDamage, String name) {
         super(baseDamage, name);
     }
@@ -43,22 +44,14 @@ public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, 
     }
 
     @Override
-    public boolean onItemUse(
-            ItemStack stack,
-            EntityPlayer player,
-            World world,
-            int x,
-            int y,
-            int z,
-            int side,
-            float clickX,
-            float clickY,
-            float clickZ) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+            float clickX, float clickY, float clickZ) {
         return false;
     }
 
     /**
-     * How long it takes to "ready" the weapon. To reach the point, where holding the right mouse button any longer doesn't have an impact.
+     * How long it takes to "ready" the weapon. To reach the point, where holding the right mouse button any longer
+     * doesn't have an impact.
      */
     @Override
     public int getWindupTime(ItemStack itemStack) {
@@ -105,7 +98,7 @@ public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, 
 
     @Override
     public String[] getTraits() {
-        return new String[] {"weapon", "thrown", "ammo", "windup"};
+        return new String[] { "weapon", "thrown", "ammo", "windup" };
     }
 
     @Override
@@ -129,10 +122,11 @@ public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, 
         if (!player.capabilities.isCreativeMode) this.consumeAmmo(1, stack);
     }
 
-    protected abstract Entity createProjectile(
-            ItemStack reference, World world, EntityPlayer player, float accuracy, int time);
+    protected abstract Entity createProjectile(ItemStack reference, World world, EntityPlayer player, float accuracy,
+            int time);
 
-    /** used for displaying the damage, return the value used for pseed in createProjectile/ProjectileBase constructor
+    /**
+     * used for displaying the damage, return the value used for pseed in createProjectile/ProjectileBase constructor
      */
     public abstract float getProjectileSpeed();
 
@@ -167,8 +161,8 @@ public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, 
 
     @Override
     @Optional.Method(modid = "battlegear2")
-    public boolean offhandAttackEntity(
-            PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem, ItemStack offhandItem) {
+    public boolean offhandAttackEntity(PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem,
+            ItemStack offhandItem) {
         return true;
     }
 
@@ -195,9 +189,8 @@ public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, 
     @Optional.Method(modid = "battlegear2")
     public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
         if (offhand == null) return true;
-        return (mainhand != null
-                        && mainhand.getItem() != TinkerTools.cleaver
-                        && mainhand.getItem() != TinkerTools.battleaxe)
+        return (mainhand != null && mainhand.getItem() != TinkerTools.cleaver
+                && mainhand.getItem() != TinkerTools.battleaxe)
                 && (offhand.getItem() != TinkerTools.cleaver && offhand.getItem() != TinkerTools.battleaxe);
     }
 }

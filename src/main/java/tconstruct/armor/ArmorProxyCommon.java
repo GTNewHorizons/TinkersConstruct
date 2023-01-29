@@ -1,15 +1,17 @@
 package tconstruct.armor;
 
-import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import tconstruct.TConstruct;
 import tconstruct.armor.inventory.*;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.common.TProxyCommon;
+import cpw.mods.fml.common.network.IGuiHandler;
 
 public class ArmorProxyCommon implements IGuiHandler {
+
     public static final int inventoryGui = 100;
     public static final int armorGuiID = 101;
     public static final int knapsackGuiID = 102;

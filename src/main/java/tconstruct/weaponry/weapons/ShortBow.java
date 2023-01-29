@@ -1,7 +1,5 @@
 package tconstruct.weaponry.weapons;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,11 +7,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
 import tconstruct.library.weaponry.BowBaseAmmo;
 import tconstruct.weaponry.TinkerWeaponry;
 import tconstruct.weaponry.ammo.ArrowAmmo;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ShortBow extends BowBaseAmmo {
+
     public ShortBow() {
         super(0, "Shortbow");
     }
@@ -29,8 +31,8 @@ public class ShortBow extends BowBaseAmmo {
     }
 
     @Override
-    protected Entity createProjectile(
-            ItemStack arrows, World world, EntityPlayer player, float speed, float accuracy, float windup) {
+    protected Entity createProjectile(ItemStack arrows, World world, EntityPlayer player, float speed, float accuracy,
+            float windup) {
         if (arrows.getItem() instanceof ArrowAmmo) {
             // modify accuraccy of the arrow depending on its accuraccy and weight
             NBTTagCompound tags = arrows.getTagCompound().getCompoundTag("InfiTool");

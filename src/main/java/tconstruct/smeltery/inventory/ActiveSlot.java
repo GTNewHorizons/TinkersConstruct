@@ -3,6 +3,7 @@ package tconstruct.smeltery.inventory;
 import net.minecraft.inventory.*;
 
 public class ActiveSlot extends Slot {
+
     protected boolean active;
     public int activeSlotNumber;
 

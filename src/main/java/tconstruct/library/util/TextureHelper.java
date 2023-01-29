@@ -1,12 +1,14 @@
 package tconstruct.library.util;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 // Stolen from CofHLib RegistryUtil
 public final class TextureHelper {
+
     private TextureHelper() {}
 
     @SideOnly(Side.CLIENT)
@@ -32,7 +34,7 @@ public final class TextureHelper {
         int i = texture.indexOf(':');
 
         if (i > 0) {
-            texture = texture.substring(0, i) + ":textures/blocks/" + texture.substring(i + 1, texture.length());
+            texture = texture.substring(0, i) + ":textures/blocks/" + texture.substring(i + 1);
         } else {
             texture = "textures/blocks/" + texture;
         }
@@ -45,7 +47,7 @@ public final class TextureHelper {
         int i = texture.indexOf(':');
 
         if (i > 0) {
-            texture = texture.substring(0, i) + ":textures/items/" + texture.substring(i + 1, texture.length());
+            texture = texture.substring(0, i) + ":textures/items/" + texture.substring(i + 1);
         } else {
             texture = "textures/items/" + texture;
         }

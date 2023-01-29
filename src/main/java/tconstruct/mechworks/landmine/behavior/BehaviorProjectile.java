@@ -16,13 +16,7 @@ import net.minecraft.world.World;
 public class BehaviorProjectile extends Behavior {
 
     @Override
-    public void executeLogic(
-            World par1World,
-            int par2,
-            int par3,
-            int par4,
-            ItemStack par5ItemStack,
-            Entity triggerer,
+    public void executeLogic(World par1World, int par2, int par3, int par4, ItemStack par5ItemStack, Entity triggerer,
             boolean willBlockBeRemoved) {
         IProjectile entity = null;
 
@@ -47,9 +41,9 @@ public class BehaviorProjectile extends Behavior {
         }
 
         entity.setThrowableHeading(
-                (double) enumfacing.getFrontOffsetX(),
-                (double) ((float) enumfacing.getFrontOffsetY() + 0.1F),
-                (double) enumfacing.getFrontOffsetZ(),
+                enumfacing.getFrontOffsetX(),
+                (float) enumfacing.getFrontOffsetY() + 0.1F,
+                enumfacing.getFrontOffsetZ(),
                 1.1F,
                 6.0F);
         par1World.spawnEntityInWorld((Entity) entity);

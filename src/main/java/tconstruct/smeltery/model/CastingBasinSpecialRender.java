@@ -1,19 +1,22 @@
 package tconstruct.smeltery.model;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.library.ItemBlocklike;
 import tconstruct.smeltery.logic.CastingBasinLogic;
 import tconstruct.tools.entity.FancyEntityItem;
+import cpw.mods.fml.relauncher.*;
 
 /* Special renderer, only used for drawing tools */
 
 @SideOnly(Side.CLIENT)
 public class CastingBasinSpecialRender extends TileEntitySpecialRenderer {
+
     @Override
     public void renderTileEntityAt(TileEntity logic, double var2, double var4, double var6, float var8) {
         this.render((CastingBasinLogic) logic, var2, var4, var6, var8);

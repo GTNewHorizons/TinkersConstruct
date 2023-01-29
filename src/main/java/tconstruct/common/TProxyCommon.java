@@ -1,11 +1,14 @@
 package tconstruct.common;
 
-import cpw.mods.fml.common.network.IGuiHandler;
 import java.util.HashMap;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.network.IGuiHandler;
+
 public class TProxyCommon implements IGuiHandler {
+
     public void initialize() {}
 
     @Override
@@ -22,8 +25,8 @@ public class TProxyCommon implements IGuiHandler {
         return null;
     }
 
-    private static HashMap<Integer, IGuiHandler> serverGuiHandlers = new HashMap<Integer, IGuiHandler>();
-    private static HashMap<Integer, IGuiHandler> clientGuiHandlers = new HashMap<Integer, IGuiHandler>();
+    private static final HashMap<Integer, IGuiHandler> serverGuiHandlers = new HashMap<>();
+    private static final HashMap<Integer, IGuiHandler> clientGuiHandlers = new HashMap<>();
 
     public static void registerServerGuiHandler(int gui, IGuiHandler handler) {
         serverGuiHandlers.put(gui, handler);

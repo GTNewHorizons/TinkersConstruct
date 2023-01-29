@@ -1,10 +1,7 @@
 package tconstruct.library.tools;
 
-import cofh.api.energy.IEnergyContainerItem;
-import cofh.core.item.IEqualityOverrideItem;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.*;
 import java.util.*;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,6 +11,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
 import tconstruct.library.*;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.*;
@@ -22,35 +20,33 @@ import tconstruct.tools.TinkerTools;
 import tconstruct.tools.entity.FancyEntityItem;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.weaponry.TinkerWeaponry;
+import cofh.api.energy.IEnergyContainerItem;
+import cofh.core.item.IEqualityOverrideItem;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.*;
 
 /**
  * NBTTags Main tag - InfiTool
  *
  * @see ToolBuilder
  *
- * Required: Head: Base and render tag, above the handle Handle: Base and
- * render tag, bottom layer
+ *      Required: Head: Base and render tag, above the handle Handle: Base and render tag, bottom layer
  *
- * Damage: Replacement for metadata MaxDamage: ItemStacks only read
- * setMaxDamage() Broken: Represents whether the tool is broken (boolean)
- * Attack: How much damage a mob will take MiningSpeed: The speed at which
- * a tool mines
+ *      Damage: Replacement for metadata MaxDamage: ItemStacks only read setMaxDamage() Broken: Represents whether the
+ *      tool is broken (boolean) Attack: How much damage a mob will take MiningSpeed: The speed at which a tool mines
  *
- * Others: Accessory: Base and tag, above head. Sword guards, binding, etc
- * Effects: Render tag, top layer. Fancy effects like moss or diamond edge.
- * Render order: Handle > Head > Accessory > Effect1 > Effect2 > Effect3 >
- * etc Unbreaking: Reinforced in-game, 10% chance to not use durability per
- * level Stonebound: Mines faster as the tool takes damage, but has less
- * attack Spiny: Opposite of stonebound
+ *      Others: Accessory: Base and tag, above head. Sword guards, binding, etc Effects: Render tag, top layer. Fancy
+ *      effects like moss or diamond edge. Render order: Handle > Head > Accessory > Effect1 > Effect2 > Effect3 > etc
+ *      Unbreaking: Reinforced in-game, 10% chance to not use durability per level Stonebound: Mines faster as the tool
+ *      takes damage, but has less attack Spiny: Opposite of stonebound
  *
- * Modifiers have their own tags.
+ *      Modifiers have their own tags.
  * @see ItemModifier
  */
-@Optional.InterfaceList({
-    @Optional.Interface(modid = "CoFHAPI|energy", iface = "cofh.api.energy.IEnergyContainerItem"),
-    @Optional.Interface(modid = "CoFHCore", iface = "cofh.core.item.IEqualityOverrideItem")
-})
+@Optional.InterfaceList({ @Optional.Interface(modid = "CoFHAPI|energy", iface = "cofh.api.energy.IEnergyContainerItem"),
+        @Optional.Interface(modid = "CoFHCore", iface = "cofh.core.item.IEqualityOverrideItem") })
 public abstract class ToolCore extends Item implements IEnergyContainerItem, IEqualityOverrideItem, IModifyable {
+
     protected Random random = new Random();
     protected int damageVsEntity;
     public static IIcon blankSprite;
@@ -79,8 +75,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     }
 
     /**
-     * Determines crafting behavior with regards to durability 0: None 1: Adds
-     * handle modifier 2: Averages part with the rest of the tool (head)
+     * Determines crafting behavior with regards to durability 0: None 1: Adds handle modifier 2: Averages part with the
+     * rest of the tool (head)
      *
      * @return type
      */
@@ -110,20 +106,20 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     /* Rendering */
 
-    public HashMap<Integer, IIcon> headIcons = new HashMap<Integer, IIcon>();
-    public HashMap<Integer, IIcon> brokenIcons = new HashMap<Integer, IIcon>();
-    public HashMap<Integer, IIcon> handleIcons = new HashMap<Integer, IIcon>();
-    public HashMap<Integer, IIcon> accessoryIcons = new HashMap<Integer, IIcon>();
-    public HashMap<Integer, IIcon> effectIcons = new HashMap<Integer, IIcon>();
-    public HashMap<Integer, IIcon> extraIcons = new HashMap<Integer, IIcon>();
+    public HashMap<Integer, IIcon> headIcons = new HashMap<>();
+    public HashMap<Integer, IIcon> brokenIcons = new HashMap<>();
+    public HashMap<Integer, IIcon> handleIcons = new HashMap<>();
+    public HashMap<Integer, IIcon> accessoryIcons = new HashMap<>();
+    public HashMap<Integer, IIcon> effectIcons = new HashMap<>();
+    public HashMap<Integer, IIcon> extraIcons = new HashMap<>();
 
     // Not liking this
-    public HashMap<Integer, String> headStrings = new HashMap<Integer, String>();
-    public HashMap<Integer, String> brokenPartStrings = new HashMap<Integer, String>();
-    public HashMap<Integer, String> handleStrings = new HashMap<Integer, String>();
-    public HashMap<Integer, String> accessoryStrings = new HashMap<Integer, String>();
-    public HashMap<Integer, String> effectStrings = new HashMap<Integer, String>();
-    public HashMap<Integer, String> extraStrings = new HashMap<Integer, String>();
+    public HashMap<Integer, String> headStrings = new HashMap<>();
+    public HashMap<Integer, String> brokenPartStrings = new HashMap<>();
+    public HashMap<Integer, String> handleStrings = new HashMap<>();
+    public HashMap<Integer, String> accessoryStrings = new HashMap<>();
+    public HashMap<Integer, String> effectStrings = new HashMap<>();
+    public HashMap<Integer, String> extraStrings = new HashMap<>();
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -155,8 +151,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     public abstract String getDefaultFolder();
 
     /**
-     * Returns the COMPLETE resource path.
-     * Example: tinker:broadsword
+     * Returns the COMPLETE resource path. Example: tinker:broadsword
      *
      * @return
      */
@@ -192,16 +187,12 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         emptyIcon = iconRegister.registerIcon("tinker:blankface");
     }
 
-    protected void addIcons(
-            HashMap<Integer, String> textures,
-            HashMap<Integer, IIcon> icons,
-            IIconRegister iconRegister,
-            String standard,
-            boolean defaultOnly) {
+    protected void addIcons(HashMap<Integer, String> textures, HashMap<Integer, IIcon> icons,
+            IIconRegister iconRegister, String standard, boolean defaultOnly) {
         icons.clear();
 
         if (!defaultOnly) // compatibility mode: no specific textures
-        for (Map.Entry<Integer, String> entry : textures.entrySet()) {
+            for (Map.Entry<Integer, String> entry : textures.entrySet()) {
                 if (TextureHelper.itemTextureExists(entry.getValue()))
                     icons.put(entry.getKey(), iconRegister.registerIcon(entry.getValue()));
             }
@@ -272,13 +263,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
                 else color = "\u00a76";
             }
 
-            String energy = new StringBuilder()
-                    .append(color)
-                    .append(tags.getInteger("Energy"))
-                    .append("/")
-                    .append(getMaxEnergyStored(stack))
-                    .append(" RF")
-                    .toString();
+            String energy = color + tags.getInteger("Energy") + "/" + getMaxEnergyStored(stack) + " RF";
             list.add(energy);
         }
         if (tags.hasKey("InfiTool")) {
@@ -322,13 +307,12 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
                         if (!tipName.equals("")) {
                             // let's see if we can translate it somehow
                             // strip color information
-                            String locString =
-                                    "modifier.tooltip." + EnumChatFormatting.getTextWithoutFormattingCodes(tipName);
+                            String locString = "modifier.tooltip."
+                                    + EnumChatFormatting.getTextWithoutFormattingCodes(tipName);
                             locString = locString.replace(" ", "");
-                            if (StatCollector.canTranslate(locString))
-                                tipName = tipName.replace(
-                                        EnumChatFormatting.getTextWithoutFormattingCodes(tipName),
-                                        StatCollector.translateToLocal(locString));
+                            if (StatCollector.canTranslate(locString)) tipName = tipName.replace(
+                                    EnumChatFormatting.getTextWithoutFormattingCodes(tipName),
+                                    StatCollector.translateToLocal(locString));
 
                             list.add(tipName);
                         }
@@ -338,8 +322,10 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         }
         list.add("");
         int attack = (int) (tags.getCompoundTag("InfiTool").getInteger("Attack") * this.getDamageModifier());
-        list.add("\u00A79+" + attack + " "
-                + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
+        list.add(
+                "\u00A79+" + attack
+                        + " "
+                        + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
     }
 
     public static String getStyleForType(int type) {
@@ -439,11 +425,10 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     @Override
     public void getSubItems(Item id, CreativeTabs tab, List list) {
-        Iterator iter = TConstructRegistry.toolMaterials.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry pairs = (Map.Entry) iter.next();
-            tconstruct.library.tools.ToolMaterial material = (tconstruct.library.tools.ToolMaterial) pairs.getValue();
-            buildTool((Integer) pairs.getKey(), ToolBuilder.defaultToolName(material, this), list);
+        for (Map.Entry<Integer, tconstruct.library.tools.ToolMaterial> integerToolMaterialEntry : TConstructRegistry.toolMaterials
+                .entrySet()) {
+            tconstruct.library.tools.ToolMaterial material = integerToolMaterialEntry.getValue();
+            buildTool(integerToolMaterialEntry.getKey(), ToolBuilder.defaultToolName(material, this), list);
         }
     }
 
@@ -504,8 +489,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     }
 
     @Override
-    public boolean onBlockDestroyed(
-            ItemStack itemstack, World world, Block block, int x, int y, int z, EntityLivingBase player) {
+    public boolean onBlockDestroyed(ItemStack itemstack, World world, Block block, int x, int y, int z,
+            EntityLivingBase player) {
         if (!itemstack.hasTagCompound()) return false;
 
         // callbacks!
@@ -574,8 +559,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
                     case 0:
                         return getCorrectColor(stack, renderPass, tags, "Handle", handleIcons);
                     case 1:
-                        return tags.getBoolean("Broken")
-                                ? getCorrectColor(stack, renderPass, tags, "Head", brokenIcons)
+                        return tags.getBoolean("Broken") ? getCorrectColor(stack, renderPass, tags, "Head", brokenIcons)
                                 : getCorrectColor(stack, renderPass, tags, "Head", headIcons);
                     case 2:
                         return getCorrectColor(stack, renderPass, tags, "Accessory", accessoryIcons);
@@ -587,13 +571,13 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         return super.getColorFromItemStack(stack, renderPass);
     }
 
-    protected int getCorrectColor(
-            ItemStack stack, int renderPass, NBTTagCompound tags, String key, Map<Integer, IIcon> map) {
+    protected int getCorrectColor(ItemStack stack, int renderPass, NBTTagCompound tags, String key,
+            Map<Integer, IIcon> map) {
         // custom coloring
         if (tags.hasKey(key + "Color")) return tags.getInteger(key + "Color");
 
         // custom texture?
-        Integer matId = tags.getInteger("Render" + key);
+        int matId = tags.getInteger("Render" + key);
         if (map.containsKey(matId)) return super.getColorFromItemStack(stack, renderPass);
 
         // color default texture with material color
@@ -612,13 +596,13 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         boolean used = false;
         int hotbarSlot = player.inventory.currentItem;
         int itemSlot = hotbarSlot == 0 ? 8 : hotbarSlot + 1;
-        ItemStack nearbyStack = null;
+        ItemStack nearbyStack;
 
         if (hotbarSlot < 8) {
             nearbyStack = player.inventory.getStackInSlot(itemSlot);
             if (nearbyStack != null) {
                 Item item = nearbyStack.getItem();
-                if (item instanceof ItemPotion && ((ItemPotion) item).isSplash(nearbyStack.getItemDamage())) {
+                if (item instanceof ItemPotion && ItemPotion.isSplash(nearbyStack.getItemDamage())) {
                     nearbyStack = item.onItemRightClick(nearbyStack, world, player);
                     if (nearbyStack.stackSize < 1) {
                         nearbyStack = null;
@@ -747,9 +731,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         NBTTagCompound tags = container.getTagCompound();
         if (tags == null || !tags.hasKey("Energy")) return 0;
         int energy = tags.getInteger("Energy");
-        int energyReceived = tags.hasKey("EnergyReceiveRate")
-                ? tags.getInteger("EnergyReceiveRate")
-                : this.maxReceive; // backup value
+        int energyReceived = tags.hasKey("EnergyReceiveRate") ? tags.getInteger("EnergyReceiveRate") : this.maxReceive; // backup
+                                                                                                                        // value
         int maxEnergy = tags.hasKey("EnergyMax") ? tags.getInteger("EnergyMax") : this.capacity; // backup value
 
         // calculate how much we can receive
@@ -771,8 +754,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
             return 0;
         }
         int energy = tags.getInteger("Energy");
-        int energyExtracted = tags.hasKey("EnergyExtractionRate")
-                ? tags.getInteger("EnergyExtractionRate")
+        int energyExtracted = tags.hasKey("EnergyExtractionRate") ? tags.getInteger("EnergyExtractionRate")
                 : this.maxExtract; // backup value
 
         // calculate how much we can extract

@@ -1,13 +1,16 @@
 package tconstruct.tools.model;
 
-import cpw.mods.fml.client.registry.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.*;
 import net.minecraft.world.IBlockAccess;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.client.registry.*;
 
 public class TableRender implements ISimpleBlockRenderingHandler {
+
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
@@ -35,8 +38,8 @@ public class TableRender implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean renderWorldBlock(
-            IBlockAccess world, int x, int y, int z, Block block, int modelID, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
+            RenderBlocks renderer) {
         if (modelID == model) {
             int metadata = world.getBlockMetadata(x, y, z);
             // until we get the new model.. finally...

@@ -1,8 +1,9 @@
 package tconstruct.tools.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.blocks.abstracts.InventorySlab;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,13 +15,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.*;
 import tconstruct.tools.logic.*;
 import tconstruct.util.config.PHConstruct;
+import cpw.mods.fml.relauncher.*;
 
 public class CraftingSlab extends InventorySlab {
+
     public CraftingSlab(Material material) {
         super(material);
         this.setCreativeTab(TConstructRegistry.blockTab);
@@ -31,28 +35,11 @@ public class CraftingSlab extends InventorySlab {
     /* Rendering */
     @Override
     public String[] getTextureNames() {
-        String[] textureNames = {
-            "craftingstation_top",
-            "craftingstation_slab_side",
-            "craftingstation_bottom",
-            "toolstation_top",
-            "toolstation_slab_side",
-            "toolstation_bottom",
-            "partbuilder_oak_top",
-            "partbuilder_slab_side",
-            "partbuilder_oak_bottom",
-            "stenciltable_oak_top",
-            "stenciltable_slab_side",
-            "stenciltable_oak_bottom",
-            "patternchest_top",
-            "patternchest_slab_side",
-            "patternchest_bottom",
-            "toolforge_top",
-            "toolforge_slab_side",
-            "toolforge_top"
-        };
-
-        return textureNames;
+        return new String[] { "craftingstation_top", "craftingstation_slab_side", "craftingstation_bottom",
+                "toolstation_top", "toolstation_slab_side", "toolstation_bottom", "partbuilder_oak_top",
+                "partbuilder_slab_side", "partbuilder_oak_bottom", "stenciltable_oak_top", "stenciltable_slab_side",
+                "stenciltable_oak_bottom", "patternchest_top", "patternchest_slab_side", "patternchest_bottom",
+                "toolforge_top", "toolforge_slab_side", "toolforge_top" };
     }
 
     @Override
@@ -76,14 +63,13 @@ public class CraftingSlab extends InventorySlab {
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
         int metadata = world.getBlockMetadata(x, y, z);
-        if (metadata == 5)
-            return AxisAlignedBB.getBoundingBox(
-                    (double) x + this.minX,
-                    (double) y + this.minY,
-                    (double) z + this.minZ,
-                    (double) x + this.maxX,
-                    (double) y + this.maxY - 0.125,
-                    (double) z + this.maxZ);
+        if (metadata == 5) return AxisAlignedBB.getBoundingBox(
+                (double) x + this.minX,
+                (double) y + this.minY,
+                (double) z + this.minZ,
+                (double) x + this.maxX,
+                (double) y + this.maxY - 0.125,
+                (double) z + this.maxZ);
         return AxisAlignedBB.getBoundingBox(
                 (double) x + this.minX,
                 (double) y + this.minY,
@@ -220,8 +206,12 @@ public class CraftingSlab extends InventorySlab {
                     double d0 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
                     double d1 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
                     double d2 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-                    EntityItem entityitem =
-                            new EntityItem(world, (double) x + d0, (double) y + d1, (double) z + d2, chest);
+                    EntityItem entityitem = new EntityItem(
+                            world,
+                            (double) x + d0,
+                            (double) y + d1,
+                            (double) z + d2,
+                            chest);
                     entityitem.delayBeforeCanPickup = 10;
                     world.spawnEntityInWorld(entityitem);
                 }

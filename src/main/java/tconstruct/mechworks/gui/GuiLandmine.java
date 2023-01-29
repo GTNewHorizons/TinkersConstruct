@@ -1,11 +1,14 @@
 package tconstruct.mechworks.gui;
 
 import java.util.List;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.mechworks.inventory.ContainerLandmine;
 import tconstruct.mechworks.landmine.behavior.Behavior;
 
@@ -27,7 +30,7 @@ public class GuiLandmine extends GuiContainer {
 
     @Override
     protected void renderToolTip(ItemStack par1ItemStack, int par2, int par3) {
-        List list = par1ItemStack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
+        List<String> list = par1ItemStack.getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
 
         Behavior b = Behavior.getBehaviorFromStack(par1ItemStack);
         if (b != null) {

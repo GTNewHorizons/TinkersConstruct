@@ -1,13 +1,15 @@
 package tconstruct.weaponry.entity;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import tconstruct.library.entity.ProjectileBase;
 import tconstruct.weaponry.TinkerWeaponry;
+import io.netty.buffer.ByteBuf;
 
 public class JavelinEntity extends ProjectileBase {
+
     public int roll = 0;
 
     public JavelinEntity(World world) {

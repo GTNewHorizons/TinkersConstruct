@@ -1,20 +1,24 @@
 package tconstruct.smeltery.model;
 
-import cpw.mods.fml.client.registry.*;
 import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.client.BlockSkinRenderHelper;
 import tconstruct.smeltery.logic.CastingChannelLogic;
+import cpw.mods.fml.client.registry.*;
 
 /**
  * @author BluSunrize
  */
 public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
+
     public static int renderID = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
@@ -45,8 +49,8 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean renderWorldBlock(
-            IBlockAccess world, int x, int y, int z, Block block, int modelID, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
+            RenderBlocks renderer) {
         if (modelID == renderID) {
             CastingChannelLogic tile = (CastingChannelLogic) world.getTileEntity(x, y, z);
 
@@ -55,7 +59,6 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
             if (!outputs.contains(ForgeDirection.DOWN)) // CentrePiece, floor is removed if tank below is found
             {
                 renderer.setRenderBounds(0.3125D, 0.375D, 0.3125D, 0.6875D, 0.5D, 0.6875D);
-                renderer.renderStandardBlock(block, x, y, z);
             } else
             // "Guiding Borders" when tank below is found
             {
@@ -66,8 +69,8 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
                 renderer.setRenderBounds(0.3125D, 0.125D, 0.3125D, 0.375D, 0.5D, 0.6875D);
                 renderer.renderStandardBlock(block, x, y, z);
                 renderer.setRenderBounds(0.625D, 0.125D, 0.3125D, 0.6875D, 0.5D, 0.6875D);
-                renderer.renderStandardBlock(block, x, y, z);
             }
+            renderer.renderStandardBlock(block, x, y, z);
             if (outputs.contains(ForgeDirection.NORTH)) // Channel to Z-
             {
                 renderer.setRenderBounds(0.3125D, 0.375D, 0D, 0.6875D, 0.5D, 0.3125D);
@@ -75,13 +78,12 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
                 renderer.setRenderBounds(0.3125D, 0.5D, 0D, 0.375D, 0.625D, 0.3125D);
                 renderer.renderStandardBlock(block, x, y, z);
                 renderer.setRenderBounds(0.625D, 0.5D, 0D, 0.6875D, 0.625D, 0.3125D);
-                renderer.renderStandardBlock(block, x, y, z);
             } else
             // Wall to Z-
             {
                 renderer.setRenderBounds(0.375D, 0.5D, 0.3125D, 0.625D, 0.625D, 0.375D);
-                renderer.renderStandardBlock(block, x, y, z);
             }
+            renderer.renderStandardBlock(block, x, y, z);
 
             if (outputs.contains(ForgeDirection.SOUTH)) // Channel to Z+
             {
@@ -90,13 +92,12 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
                 renderer.setRenderBounds(0.3125D, 0.5D, 0.6875D, 0.375D, 0.625D, 1D);
                 renderer.renderStandardBlock(block, x, y, z);
                 renderer.setRenderBounds(0.625D, 0.5D, 0.6875D, 0.6875D, 0.625D, 1D);
-                renderer.renderStandardBlock(block, x, y, z);
             } else
             // Wall to Z+
             {
                 renderer.setRenderBounds(0.375D, 0.5D, 0.625D, 0.625D, 0.625D, 0.6875D);
-                renderer.renderStandardBlock(block, x, y, z);
             }
+            renderer.renderStandardBlock(block, x, y, z);
 
             if (outputs.contains(ForgeDirection.WEST)) // Channel to X-
             {
@@ -105,13 +106,12 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
                 renderer.setRenderBounds(0D, 0.5D, 0.3125D, 0.375D, 0.625D, 0.375D);
                 renderer.renderStandardBlock(block, x, y, z);
                 renderer.setRenderBounds(0D, 0.5D, 0.625D, 0.375D, 0.625D, 0.6875D);
-                renderer.renderStandardBlock(block, x, y, z);
             } else
             // Wall to X-
             {
                 renderer.setRenderBounds(0.3125D, 0.5D, 0.3125D, 0.375D, 0.625D, 0.6875D);
-                renderer.renderStandardBlock(block, x, y, z);
             }
+            renderer.renderStandardBlock(block, x, y, z);
 
             if (outputs.contains(ForgeDirection.EAST)) // Channel to X+
             {
@@ -120,13 +120,12 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
                 renderer.setRenderBounds(0.625D, 0.5D, 0.3125D, 1D, 0.625D, 0.375D);
                 renderer.renderStandardBlock(block, x, y, z);
                 renderer.setRenderBounds(0.625D, 0.5D, 0.625D, 1D, 0.625D, 0.6875D);
-                renderer.renderStandardBlock(block, x, y, z);
             } else
             // Wall to X+
             {
                 renderer.setRenderBounds(0.625D, 0.5D, 0.3125D, 0.6875D, 0.625D, 0.6875D);
-                renderer.renderStandardBlock(block, x, y, z);
             }
+            renderer.renderStandardBlock(block, x, y, z);
             FluidTankInfo tankMain = tile.getTankInfo(null)[0];
             if (tankMain.fluid != null) {
                 float liquidAmount = (float) tankMain.fluid.amount / (float) tankMain.capacity * 0.125f;
@@ -151,27 +150,20 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
     private double[] getRenderboundsForLiquid(ForgeDirection dir) {
         switch (dir) {
             case NORTH:
-                return new double[] {0.375, 0, 0.625, 0.375};
+                return new double[] { 0.375, 0, 0.625, 0.375 };
             case SOUTH:
-                return new double[] {0.375, 0.625, 0.625, 1};
+                return new double[] { 0.375, 0.625, 0.625, 1 };
             case WEST:
-                return new double[] {0, 0.375, 0.375, 0.625};
+                return new double[] { 0, 0.375, 0.375, 0.625 };
             case EAST:
-                return new double[] {0.625, 0.375, 1, 0.625};
+                return new double[] { 0.625, 0.375, 1, 0.625 };
             default:
                 return null;
         }
     }
 
-    private void renderLiquidPart(
-            IBlockAccess world,
-            int x,
-            int y,
-            int z,
-            Block block,
-            RenderBlocks renderer,
-            FluidStack fluidStack,
-            boolean useFlowingTexture) {
+    private void renderLiquidPart(IBlockAccess world, int x, int y, int z, Block block, RenderBlocks renderer,
+            FluidStack fluidStack, boolean useFlowingTexture) {
         int color = block.colorMultiplier(world, x, y, z);
         float red = (color >> 16 & 0xFF) / 255.0F;
         float green = (color >> 8 & 0xFF) / 255.0F;
@@ -179,28 +171,26 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
         Fluid fluid = fluidStack.getFluid();
         if (fluid.canBePlacedInWorld() && !useFlowingTexture)
             BlockSkinRenderHelper.renderMetadataBlock(fluid.getBlock(), 0, x, y, z, renderer, world);
-        else if (useFlowingTexture)
-            BlockSkinRenderHelper.renderLiquidBlock(
-                    fluid.getFlowingIcon(),
-                    fluid.getFlowingIcon(),
-                    x,
-                    y,
-                    z,
-                    renderer,
-                    world,
-                    false,
-                    fluid.getColor(fluidStack));
-        else
-            BlockSkinRenderHelper.renderLiquidBlock(
-                    fluid.getStillIcon(),
-                    fluid.getFlowingIcon(),
-                    x,
-                    y,
-                    z,
-                    renderer,
-                    world,
-                    false,
-                    fluid.getColor(fluidStack));
+        else if (useFlowingTexture) BlockSkinRenderHelper.renderLiquidBlock(
+                fluid.getFlowingIcon(),
+                fluid.getFlowingIcon(),
+                x,
+                y,
+                z,
+                renderer,
+                world,
+                false,
+                fluid.getColor(fluidStack));
+        else BlockSkinRenderHelper.renderLiquidBlock(
+                fluid.getStillIcon(),
+                fluid.getFlowingIcon(),
+                x,
+                y,
+                z,
+                renderer,
+                world,
+                false,
+                fluid.getColor(fluidStack));
     }
 
     private void renderStandardBlock(Block block, int meta, RenderBlocks renderer) {

@@ -1,14 +1,15 @@
 package tconstruct.plugins.nei;
 
-import codechicken.lib.gui.GuiDraw;
-import codechicken.nei.PositionedStack;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.CastingRecipe;
 import tconstruct.library.crafting.PatternBuilder;
@@ -22,6 +23,8 @@ import tconstruct.library.util.HarvestLevels;
 import tconstruct.library.util.IToolPart;
 import tconstruct.tools.items.ToolPart;
 import tconstruct.util.config.PHConstruct;
+import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.PositionedStack;
 
 public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
 
@@ -33,7 +36,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
         public ArrowMaterial arrowMaterial;
 
         public CachedToolMaterialsRecipe(List<ItemStack> toolParts, int materialID) {
-            this.toolParts = new ArrayList<PositionedStack>();
+            this.toolParts = new ArrayList<>();
             for (ItemStack stack : toolParts) {
                 this.toolParts.add(new PositionedStack(stack, 10, 10));
             }
@@ -41,7 +44,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
         }
 
         public CachedToolMaterialsRecipe(List<ItemStack> toolParts, int materialID, boolean arrowBow) {
-            this.toolParts = new ArrayList<PositionedStack>();
+            this.toolParts = new ArrayList<>();
             for (ItemStack stack : toolParts) {
                 this.toolParts.add(new PositionedStack(stack, 10, 10));
             }
@@ -89,8 +92,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
 
     @Override
     public void loadTransferRects() {
-        this.transferRects.add(
-                new RecipeTransferRect(new Rectangle(10, 30, 16, 16), this.getRecipeID(), new Object[0]));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(10, 30, 16, 16), this.getRecipeID()));
     }
 
     @Override
@@ -130,8 +132,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                     60,
                     0x404040,
                     false);
-            String heart = crecipe.material.attack == 2
-                    ? StatCollector.translateToLocal("gui.partcrafter8")
+            String heart = crecipe.material.attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                     : StatCollector.translateToLocal("gui.partcrafter9");
             if (crecipe.material.attack() % 2 == 0) {
                 GuiDraw.drawString(
@@ -214,7 +215,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
         if (outputId.equals(this.getRecipeID())) {
             ToolMaterial mat;
             for (int matID : TConstructRegistry.toolMaterials.keySet()) {
-                List<ItemStack> toolParts = new ArrayList<ItemStack>();
+                List<ItemStack> toolParts = new ArrayList<>();
 
                 mat = TConstructRegistry.toolMaterials.get(matID);
                 for (ItemKey key : PatternBuilder.instance.materials) {
@@ -230,8 +231,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                     }
                 }
                 if (!PHConstruct.craftMetalTools) {
-                    for (CastingRecipe recipe :
-                            TConstructRegistry.getTableCasting().getCastingRecipes()) {
+                    for (CastingRecipe recipe : TConstructRegistry.getTableCasting().getCastingRecipes()) {
                         ItemStack castResult = recipe.getResult();
                         if (castResult.getItem() instanceof IToolPart) {
                             if (((IToolPart) castResult.getItem()).getMaterialID(castResult) == matID) {

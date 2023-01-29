@@ -1,13 +1,16 @@
 package tconstruct.plugins.nei;
 
-import codechicken.lib.gui.GuiDraw;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.CastingRecipe;
 import tconstruct.library.crafting.LiquidCasting;
+import codechicken.lib.gui.GuiDraw;
 
 public class RecipeHandlerCastingBasin extends RecipeHandlerCastingBase {
 
@@ -27,7 +30,7 @@ public class RecipeHandlerCastingBasin extends RecipeHandlerCastingBase {
     public List<CastingRecipe> getCastingRecipes() {
         LiquidCasting casting = TConstructRegistry.getBasinCasting();
         if (casting == null) {
-            return new ArrayList<CastingRecipe>();
+            return new ArrayList<>();
         }
         return casting.getCastingRecipes();
     }

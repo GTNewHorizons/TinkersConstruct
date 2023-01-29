@@ -1,10 +1,12 @@
 package tconstruct.tools.client;
 
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.tools.entity.DaggerEntity;
 import tconstruct.weaponry.client.entity.ProjectileBaseRenderer;
 
 public class DaggerEntityRenderer extends ProjectileBaseRenderer<DaggerEntity> {
+
     @Override
     public void customRendering(DaggerEntity entity, double x, double y, double z, float p_76986_8_, float p_76986_9_) {
 

@@ -5,7 +5,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.tools.logic.BattlesignLogic;
 
 public class BattlesignTesr extends TileEntitySpecialRenderer {
@@ -39,19 +41,17 @@ public class BattlesignTesr extends TileEntitySpecialRenderer {
                 break;
         }
 
-        String strings[] = te.getText();
+        String[] strings = te.getText();
 
         if (strings != null && strings.length > 0) {
-            float lum = calcLuminance(te.getWorldObj()
-                    .getBlock(te.xCoord, te.yCoord, te.zCoord)
-                    .colorMultiplier(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord));
+            float lum = calcLuminance(
+                    te.getWorldObj().getBlock(te.xCoord, te.yCoord, te.zCoord)
+                            .colorMultiplier(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord));
 
             for (int i = 0; i < strings.length; i++) {
                 fr.drawString(
-                        (lum >= 35F
-                                        ? EnumChatFormatting.BLACK
-                                        : lum >= 31F ? EnumChatFormatting.GRAY : EnumChatFormatting.WHITE)
-                                + strings[i],
+                        (lum >= 35F ? EnumChatFormatting.BLACK
+                                : lum >= 31F ? EnumChatFormatting.GRAY : EnumChatFormatting.WHITE) + strings[i],
                         -fr.getStringWidth(strings[i]) / 2 + 40,
                         10 * i,
                         0);

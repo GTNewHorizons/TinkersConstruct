@@ -1,15 +1,18 @@
 package tconstruct.world.gen;
 
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
 
 public class SlimeTreeGen extends WorldGenerator {
+
     public final int minTreeHeight;
     public final int treeHeightRange;
     public final int metaWood;
@@ -44,7 +47,7 @@ public class SlimeTreeGen extends WorldGenerator {
             if (isSoil) {
                 // TODO Fix this for 1.7
                 // if (!checkClear(world, xPos, yPos, zPos, height))
-                //    return false;
+                // return false;
 
                 soil.onPlantGrow(world, xPos, yPos - 1, zPos, xPos, yPos, zPos);
                 placeCanopy(world, random, xPos, yPos, zPos, height);
@@ -65,9 +68,9 @@ public class SlimeTreeGen extends WorldGenerator {
             for (int xPos = range; xPos <= range; xPos++) {
                 for (int zPos = range; zPos <= range; zPos++) {
                     Block blockID = world.getBlock(x + xPos, y + yPos, z + zPos);
-                    if (blockID != null
-                            && blockID != TinkerWorld.slimeSapling
-                            && !blockID.isLeaves(world, x + xPos, y + yPos, z + zPos)) return false;
+                    if (blockID != null && blockID != TinkerWorld.slimeSapling
+                            && !blockID.isLeaves(world, x + xPos, y + yPos, z + zPos))
+                        return false;
                 }
             }
         }
@@ -109,26 +112,66 @@ public class SlimeTreeGen extends WorldGenerator {
         this.setBlockAndMetadata(world, xPos, yPos + height - 4, zPos - 3, TinkerWorld.slimeLeaves, this.metaLeaves);
         this.setBlockAndMetadata(world, xPos, yPos + height - 4, zPos + 3, TinkerWorld.slimeLeaves, this.metaLeaves);
         this.setBlockAndMetadata(
-                world, xPos + 2, yPos + height - 4, zPos + 2, TinkerWorld.slimeLeaves, this.metaLeaves);
+                world,
+                xPos + 2,
+                yPos + height - 4,
+                zPos + 2,
+                TinkerWorld.slimeLeaves,
+                this.metaLeaves);
         this.setBlockAndMetadata(
-                world, xPos + 2, yPos + height - 4, zPos - 2, TinkerWorld.slimeLeaves, this.metaLeaves);
+                world,
+                xPos + 2,
+                yPos + height - 4,
+                zPos - 2,
+                TinkerWorld.slimeLeaves,
+                this.metaLeaves);
         this.setBlockAndMetadata(
-                world, xPos - 2, yPos + height - 4, zPos + 2, TinkerWorld.slimeLeaves, this.metaLeaves);
+                world,
+                xPos - 2,
+                yPos + height - 4,
+                zPos + 2,
+                TinkerWorld.slimeLeaves,
+                this.metaLeaves);
         this.setBlockAndMetadata(
-                world, xPos - 2, yPos + height - 4, zPos - 2, TinkerWorld.slimeLeaves, this.metaLeaves);
+                world,
+                xPos - 2,
+                yPos + height - 4,
+                zPos - 2,
+                TinkerWorld.slimeLeaves,
+                this.metaLeaves);
 
         this.setBlockAndMetadata(world, xPos + 3, yPos + height - 5, zPos, TinkerWorld.slimeLeaves, this.metaLeaves);
         this.setBlockAndMetadata(world, xPos - 3, yPos + height - 5, zPos, TinkerWorld.slimeLeaves, this.metaLeaves);
         this.setBlockAndMetadata(world, xPos, yPos + height - 5, zPos - 3, TinkerWorld.slimeLeaves, this.metaLeaves);
         this.setBlockAndMetadata(world, xPos, yPos + height - 5, zPos + 3, TinkerWorld.slimeLeaves, this.metaLeaves);
         this.setBlockAndMetadata(
-                world, xPos + 2, yPos + height - 5, zPos + 2, TinkerWorld.slimeLeaves, this.metaLeaves);
+                world,
+                xPos + 2,
+                yPos + height - 5,
+                zPos + 2,
+                TinkerWorld.slimeLeaves,
+                this.metaLeaves);
         this.setBlockAndMetadata(
-                world, xPos + 2, yPos + height - 5, zPos - 2, TinkerWorld.slimeLeaves, this.metaLeaves);
+                world,
+                xPos + 2,
+                yPos + height - 5,
+                zPos - 2,
+                TinkerWorld.slimeLeaves,
+                this.metaLeaves);
         this.setBlockAndMetadata(
-                world, xPos - 2, yPos + height - 5, zPos + 2, TinkerWorld.slimeLeaves, this.metaLeaves);
+                world,
+                xPos - 2,
+                yPos + height - 5,
+                zPos + 2,
+                TinkerWorld.slimeLeaves,
+                this.metaLeaves);
         this.setBlockAndMetadata(
-                world, xPos - 2, yPos + height - 5, zPos - 2, TinkerWorld.slimeLeaves, this.metaLeaves);
+                world,
+                xPos - 2,
+                yPos + height - 5,
+                zPos - 2,
+                TinkerWorld.slimeLeaves,
+                this.metaLeaves);
     }
 
     void placeDiamondLayer(World world, int xPos, int yPos, int zPos, int range) {

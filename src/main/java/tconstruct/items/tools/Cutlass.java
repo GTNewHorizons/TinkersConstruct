@@ -1,10 +1,12 @@
 package tconstruct.items.tools;
 
 import net.minecraft.item.Item;
+
 import tconstruct.library.tools.Weapon;
 import tconstruct.tools.TinkerTools;
 
 public class Cutlass extends Weapon {
+
     public Cutlass() {
         super(4);
         this.setUnlocalizedName("InfiTool.Cutlass");

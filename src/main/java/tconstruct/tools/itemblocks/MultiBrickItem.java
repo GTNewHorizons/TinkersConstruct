@@ -1,32 +1,21 @@
 package tconstruct.tools.itemblocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.blocks.abstracts.MultiItemBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
+import cpw.mods.fml.relauncher.*;
+
 public class MultiBrickItem extends MultiItemBlock {
-    static String blockTypes[] = {
-        "obsidian",
-        "sandstone",
-        "netherrack",
-        "stone.refined",
-        "iron",
-        "gold",
-        "lapis",
-        "diamond",
-        "redstone",
-        "bone",
-        "slime",
-        "blueslime",
-        "endstone",
-        "obsidian.ingot",
-        "stone.road",
-        "stone.refined.road"
-    };
+
+    static String[] blockTypes = { "obsidian", "sandstone", "netherrack", "stone.refined", "iron", "gold", "lapis",
+            "diamond", "redstone", "bone", "slime", "blueslime", "endstone", "obsidian.ingot", "stone.road",
+            "stone.refined.road" };
 
     public MultiBrickItem(Block b) {
         super(b, "block.brick", blockTypes);

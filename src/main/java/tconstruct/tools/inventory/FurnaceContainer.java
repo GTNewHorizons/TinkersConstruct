@@ -1,15 +1,17 @@
 package tconstruct.tools.inventory;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
+
 import tconstruct.tools.logic.FurnaceLogic;
+import cpw.mods.fml.relauncher.*;
 
 public class FurnaceContainer extends Container {
-    private FurnaceLogic furnace;
+
+    private final FurnaceLogic furnace;
     private int lastCookTime;
     private int lastBurnTime;
     private int lastItemBurnTime;
@@ -47,8 +49,8 @@ public class FurnaceContainer extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-        for (int i = 0; i < this.crafters.size(); ++i) {
-            ICrafting icrafting = (ICrafting) this.crafters.get(i);
+        for (Object crafter : this.crafters) {
+            ICrafting icrafting = (ICrafting) crafter;
 
             if (this.lastCookTime != this.furnace.progress) {
                 icrafting.sendProgressBarUpdate(this, 0, this.furnace.progress);
@@ -90,8 +92,7 @@ public class FurnaceContainer extends Container {
     }
 
     /**
-     * Called when a player shift-clicks on a slot. You must override this or
-     * you will crash when someone does that.
+     * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
     @Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
@@ -129,7 +130,7 @@ public class FurnaceContainer extends Container {
             }
 
             if (itemstack1.stackSize == 0) {
-                slot.putStack((ItemStack) null);
+                slot.putStack(null);
             } else {
                 slot.onSlotChanged();
             }

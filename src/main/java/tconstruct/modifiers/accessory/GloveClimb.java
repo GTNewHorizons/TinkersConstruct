@@ -2,6 +2,7 @@ package tconstruct.modifiers.accessory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.library.modifier.ItemModifier;
 
 /* Adds a boolean NBTTag */

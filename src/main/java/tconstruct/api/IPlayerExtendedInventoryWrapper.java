@@ -4,7 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 
 public interface IPlayerExtendedInventoryWrapper {
-    public IInventory getKnapsackInventory(EntityPlayer player);
 
-    public IInventory getAccessoryInventory(EntityPlayer player);
+    IInventory getKnapsackInventory(EntityPlayer player);
+
+    IInventory getAccessoryInventory(EntityPlayer player);
 }

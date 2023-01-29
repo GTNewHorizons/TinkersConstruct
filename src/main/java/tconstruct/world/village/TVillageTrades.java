@@ -1,18 +1,20 @@
 package tconstruct.world.village;
 
-import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 import java.util.*;
+
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.*;
+
 import tconstruct.mechworks.TinkerMechworks;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
+import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 
 public class TVillageTrades implements IVillageTradeHandler {
 
-    private final List<ItemStack> allowedIngredients = new ArrayList<ItemStack>();
+    private final List<ItemStack> allowedIngredients = new ArrayList<>();
     private final int max = 17;
     private final int min = 7;
 

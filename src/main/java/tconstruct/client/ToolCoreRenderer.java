@@ -6,11 +6,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.*;
+
 import tconstruct.TConstruct;
 import tconstruct.library.tools.ToolCore;
 
 public class ToolCoreRenderer implements IItemRenderer {
+
     private final boolean isEntity;
     private final boolean noEntityTranslation;
 
@@ -33,13 +36,12 @@ public class ToolCoreRenderer implements IItemRenderer {
 
         switch (type) {
             case ENTITY:
+            case INVENTORY:
                 return true;
             case EQUIPPED:
                 GL11.glTranslatef(0.03f, 0F, -0.09375F);
             case EQUIPPED_FIRST_PERSON:
                 return !isEntity;
-            case INVENTORY:
-                return true;
             default:
                 TConstruct.logger.warn("[TCon] Unhandled render case!");
             case FIRST_PERSON_MAP:
@@ -67,19 +69,17 @@ public class ToolCoreRenderer implements IItemRenderer {
         // (requires more logic rewrite than it sounds like)
 
         IIcon[] tempParts = new IIcon[iconParts];
-        label:
-        {
+        label: {
             if (!isInventory && ent instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) ent;
                 ItemStack itemInUse = player.getItemInUse();
                 if (itemInUse != null) {
                     int useCount = player.getItemInUseCount();
-                    for (int i = iconParts; i-- > 0; )
-                        tempParts[i] = tool.getIcon(item, i, player, itemInUse, useCount);
+                    for (int i = iconParts; i-- > 0;) tempParts[i] = tool.getIcon(item, i, player, itemInUse, useCount);
                     break label;
                 }
             }
-            for (int i = iconParts; i-- > 0; ) tempParts[i] = tool.getIcon(item, i);
+            for (int i = iconParts; i-- > 0;) tempParts[i] = tool.getIcon(item, i);
         }
 
         int count = 0;
@@ -165,9 +165,8 @@ public class ToolCoreRenderer implements IItemRenderer {
                     GL11.glTranslatef(0, -4 / 16f, 0);
                     break;
                 case ENTITY:
-                    if (!noEntityTranslation)
-                        GL11.glTranslatef(
-                                -0.5f, 0f, depth); // correction of the rotation point when items lie on the ground
+                    if (!noEntityTranslation) GL11.glTranslatef(-0.5f, 0f, depth); // correction of the rotation point
+                                                                                   // when items lie on the ground
                     break;
                 default:
             }

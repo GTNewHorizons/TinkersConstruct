@@ -1,12 +1,14 @@
 package tconstruct.smeltery.model;
 
-import cpw.mods.fml.client.registry.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
+
 import tconstruct.util.ItemHelper;
+import cpw.mods.fml.client.registry.*;
 
 public class PaneRender implements ISimpleBlockRenderingHandler {
+
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
@@ -18,8 +20,8 @@ public class PaneRender implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean renderWorldBlock(
-            IBlockAccess world, int x, int y, int z, Block block, int modelID, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
+            RenderBlocks renderer) {
         if (modelID == model) {
             // renderer.setOverrideBlockTexture(((PaneBase)block).getIcon(0, world.getBlockMetadata(x,y,z)));
             return renderer.renderBlockStainedGlassPane(block, x, y, z);

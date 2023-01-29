@@ -1,6 +1,7 @@
 package tconstruct.mechworks.landmine.behavior;
 
 import java.util.*;
+
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.*;
@@ -8,6 +9,7 @@ import net.minecraft.item.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import tconstruct.mechworks.landmine.*;
 
 /**
@@ -17,8 +19,8 @@ import tconstruct.mechworks.landmine.*;
  */
 public abstract class Behavior {
 
-    public static HashMap<LandmineStack, Behavior> behaviorsListItems = new HashMap<LandmineStack, Behavior>();
-    public static HashMap<LandmineStack, Behavior> behaviorsListBlocks = new HashMap<LandmineStack, Behavior>();
+    public static HashMap<LandmineStack, Behavior> behaviorsListItems = new HashMap<>();
+    public static HashMap<LandmineStack, Behavior> behaviorsListBlocks = new HashMap<>();
     protected static Behavior defaultBehavior;
 
     public static Behavior dummy = new BehaviorDummy();
@@ -51,16 +53,13 @@ public abstract class Behavior {
 
         // Make sure the part below this comment is executed last(to avoid
         // conflicts)
-        Iterator i1 = Block.blockRegistry.iterator();
-        while (i1.hasNext()) {
-            Object ob = i1.next();
-            if (ob != null && ob instanceof Block) {
+        for (Object ob : Block.blockRegistry) {
+            if (ob instanceof Block) {
                 Block b = (Block) ob;
-                if (b.getMaterial().isOpaque()
-                        && b.renderAsNormalBlock()
+                if (b.getMaterial().isOpaque() && b.renderAsNormalBlock()
                         && !b.canProvidePower()
                         && !(b instanceof ITileEntityProvider)
-                        && !behaviorsListBlocks.containsKey(new ItemStack(b))) {
+                        && !behaviorsListBlocks.containsKey(new LandmineStack(b))) {
                     addBehavior(new LandmineStack(b), blockThrow);
                 }
             }
@@ -75,30 +74,23 @@ public abstract class Behavior {
         if (par1ItemStack.getItem() instanceof ItemBlock) {
             if (!behaviorsListBlocks.isEmpty()) {
                 for (int i = 0; i < behaviorsListBlocks.size(); i++) {
-                    LandmineStack st =
-                            (LandmineStack) behaviorsListBlocks.keySet().toArray()[i];
+                    LandmineStack st = (LandmineStack) behaviorsListBlocks.keySet().toArray()[i];
                     if (st.equals(par1ItemStack)) {
                         return (Behavior) behaviorsListBlocks.values().toArray()[i];
                     }
                 }
-                return null;
-            } else {
-                return null;
             }
         } else {
             if (!behaviorsListItems.isEmpty()) {
                 for (int i = 0; i < behaviorsListItems.size(); i++) {
-                    LandmineStack st =
-                            (LandmineStack) behaviorsListItems.keySet().toArray()[i];
+                    LandmineStack st = (LandmineStack) behaviorsListItems.keySet().toArray()[i];
                     if (st.equals(par1ItemStack)) {
                         return (Behavior) behaviorsListItems.values().toArray()[i];
                     }
                 }
-                return null;
-            } else {
-                return null;
             }
         }
+        return null;
     }
 
     public static Behavior getDefaulBehavior() {
@@ -117,14 +109,8 @@ public abstract class Behavior {
         }
     }
 
-    public abstract void executeLogic(
-            World par1World,
-            int par2,
-            int par3,
-            int par4,
-            ItemStack par5ItemStack,
-            Entity triggerer,
-            boolean willBlockBeRemoved);
+    public abstract void executeLogic(World par1World, int par2, int par3, int par4, ItemStack par5ItemStack,
+            Entity triggerer, boolean willBlockBeRemoved);
 
     public int getStackLimit(ItemStack par1ItemStack) {
         return 1;
@@ -141,8 +127,6 @@ public abstract class Behavior {
         ForgeDirection dir = Helper.convertMetaToForgeOrientation(par1World.getBlockMetadata(par2, par3, par4));
 
         switch (dir) {
-            case DOWN:
-                return EnumFacing.UP;
             case UP:
                 return EnumFacing.DOWN;
             case WEST:
@@ -153,6 +137,7 @@ public abstract class Behavior {
                 return EnumFacing.NORTH;
             case NORTH:
                 return EnumFacing.SOUTH;
+            case DOWN:
             default:
                 return EnumFacing.UP;
         }
@@ -174,7 +159,7 @@ public abstract class Behavior {
         return true;
     }
 
-    public static final int arrayIndexOfStack(ArrayList<ItemStack> stacks, ItemStack item) {
+    public static int arrayIndexOfStack(ArrayList<ItemStack> stacks, ItemStack item) {
         Iterator<ItemStack> i1 = stacks.iterator();
 
         int index = 0;
@@ -190,16 +175,12 @@ public abstract class Behavior {
         return -1;
     }
 
-    public static final boolean arrayContainsEqualStack(ArrayList<ItemStack> stacks, ItemStack item) {
-        Iterator<ItemStack> i1 = stacks.iterator();
-
-        while (i1.hasNext()) {
-            ItemStack stack = i1.next();
+    public static boolean arrayContainsEqualStack(ArrayList<ItemStack> stacks, ItemStack item) {
+        for (ItemStack stack : stacks) {
             if (stack.isItemEqual(item)) {
                 return true;
             }
         }
-
         return false;
     }
 

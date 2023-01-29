@@ -1,15 +1,17 @@
 package tconstruct.armor.items;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.library.accessory.*;
+import cpw.mods.fml.relauncher.*;
 
 public class TravelGlove extends AccessoryCore implements IAccessoryModel {
+
     public TravelGlove() {
         super("travelgear/travel_glove");
     }
@@ -44,6 +46,6 @@ public class TravelGlove extends AccessoryCore implements IAccessoryModel {
 
     @Override
     public String[] getTraits() {
-        return new String[] {"accessory", "glove"};
+        return new String[] { "accessory", "glove" };
     }
 }

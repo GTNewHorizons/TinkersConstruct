@@ -1,8 +1,9 @@
 package tconstruct.library.weaponry;
 
-import cpw.mods.fml.common.Loader;
 import java.util.List;
+
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -12,14 +13,17 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.BowstringMaterial;
 import tconstruct.library.tools.CustomMaterial;
 import tconstruct.weaponry.ammo.ArrowAmmo;
 import tconstruct.weaponry.entity.ArrowEntity;
+import cpw.mods.fml.common.Loader;
 
 public abstract class BowBaseAmmo extends ProjectileWeapon {
+
     public BowBaseAmmo(int baseDamage, String name) {
         super(baseDamage, name);
     }
@@ -96,24 +100,20 @@ public abstract class BowBaseAmmo extends ProjectileWeapon {
         // no tinker arrow
         if (!(stack.getItem() instanceof ArrowAmmo)) return false;
         // no ammo left
-        if (((IAmmo) stack.getItem()).getAmmoCount(stack) <= 0) return false;
-
-        return true;
+        return ((IAmmo) stack.getItem()).getAmmoCount(stack) > 0;
     }
 
     private boolean checkVanillaArrow(ItemStack stack) {
         // null
         if (stack == null) return false;
         // no arrow
-        if (!(stack.getItem() == Items.arrow)) return false;
+        return stack.getItem() == Items.arrow;
         // inventory shouldn't contain stacksize 0 items so we don't have to check that.
-
-        return true;
     }
 
     @Override
-    protected Entity createProjectile(
-            ItemStack arrows, World world, EntityPlayer player, float speed, float accuracy, float windup) {
+    protected Entity createProjectile(ItemStack arrows, World world, EntityPlayer player, float speed, float accuracy,
+            float windup) {
         EntityArrow arrow;
 
         if (arrows.getItem() == Items.arrow) {
@@ -133,8 +133,8 @@ public abstract class BowBaseAmmo extends ProjectileWeapon {
     }
 
     @Override
-    public void playFiringSound(
-            World world, EntityPlayer player, ItemStack weapon, ItemStack ammo, float speed, float accuracy) {
+    public void playFiringSound(World world, EntityPlayer player, ItemStack weapon, ItemStack ammo, float speed,
+            float accuracy) {
         world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + speed * 0.5F);
     }
 
@@ -148,8 +148,8 @@ public abstract class BowBaseAmmo extends ProjectileWeapon {
         ItemStack accessoryStack = getPartAmount() > 2 ? new ItemStack(getAccessoryItem(), 1, id) : null;
         ItemStack extraStack = getPartAmount() > 3 ? new ItemStack(getExtraItem(), 1, id) : null;
 
-        ItemStack tool = ToolBuilder.instance.buildTool(
-                new ItemStack(getHeadItem(), 1, id), handleStack, accessoryStack, extraStack, "");
+        ItemStack tool = ToolBuilder.instance
+                .buildTool(new ItemStack(getHeadItem(), 1, id), handleStack, accessoryStack, extraStack, "");
         if (tool != null) {
             tool.getTagCompound().getCompoundTag("InfiTool").setBoolean("Built", true);
             list.add(tool);
@@ -171,6 +171,6 @@ public abstract class BowBaseAmmo extends ProjectileWeapon {
 
     @Override
     public String[] getTraits() {
-        return new String[] {"weapon", "bow", "windup"};
+        return new String[] { "weapon", "bow", "windup" };
     }
 }

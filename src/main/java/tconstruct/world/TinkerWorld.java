@@ -1,12 +1,8 @@
 package tconstruct.world;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 import mantle.pulsar.pulse.*;
 import mantle.utils.RecipeRemover;
+
 import net.minecraft.block.*;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.material.Material;
@@ -20,6 +16,7 @@ import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.*;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.oredict.*;
+
 import tconstruct.TConstruct;
 import tconstruct.armor.TinkerArmor;
 import tconstruct.blocks.SlabBase;
@@ -41,10 +38,16 @@ import tconstruct.world.entity.*;
 import tconstruct.world.gen.*;
 import tconstruct.world.itemblocks.*;
 import tconstruct.world.items.*;
+import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(id = "Tinkers' World", description = "Ores, slime islands, essence berries, and the like.", forced = true)
 public class TinkerWorld {
+
     @Instance("TinkerWorld")
     public static TinkerWorld instance;
 
@@ -109,9 +112,7 @@ public class TinkerWorld {
         TinkerWorld.barricadeSpruce = new BarricadeBlock(Blocks.log, 1).setBlockName("trap.barricade.spruce");
         TinkerWorld.barricadeBirch = new BarricadeBlock(Blocks.log, 2).setBlockName("trap.barricade.birch");
         TinkerWorld.barricadeJungle = new BarricadeBlock(Blocks.log, 3).setBlockName("trap.barricade.jungle");
-        TinkerWorld.slimeExplosive = new SlimeExplosive()
-                .setHardness(0.0F)
-                .setStepSound(Block.soundTypeGrass)
+        TinkerWorld.slimeExplosive = new SlimeExplosive().setHardness(0.0F).setStepSound(Block.soundTypeGrass)
                 .setBlockName("explosive.slime");
 
         // Slime
@@ -121,41 +122,28 @@ public class TinkerWorld {
         if (!FluidRegistry.registerFluid(TinkerWorld.blueSlimeFluid))
             TinkerWorld.blueSlimeFluid = FluidRegistry.getFluid("slime.blue");
         TinkerWorld.slimePool = new SlimeFluid(TinkerWorld.blueSlimeFluid, Material.water)
-                .setCreativeTab(TConstructRegistry.blockTab)
-                .setStepSound(TinkerWorld.slimeStep)
+                .setCreativeTab(TConstructRegistry.blockTab).setStepSound(TinkerWorld.slimeStep)
                 .setBlockName("liquid.slime");
         GameRegistry.registerBlock(TinkerWorld.slimePool, "liquid.slime");
         TinkerWorld.blueSlimeFluid.setBlock(TinkerWorld.slimePool);
 
         // Slime Islands
-        TinkerWorld.slimeGel = new SlimeGel()
-                .setStepSound(TinkerWorld.slimeStep)
-                .setLightOpacity(0)
+        TinkerWorld.slimeGel = new SlimeGel().setStepSound(TinkerWorld.slimeStep).setLightOpacity(0)
                 .setBlockName("slime.gel");
         TinkerWorld.slimeGel.setHarvestLevel("axe", 0, 1);
-        TinkerWorld.slimeGrass = new SlimeGrass()
-                .setStepSound(Block.soundTypeGrass)
-                .setLightOpacity(0)
+        TinkerWorld.slimeGrass = new SlimeGrass().setStepSound(Block.soundTypeGrass).setLightOpacity(0)
                 .setBlockName("slime.grass");
-        TinkerWorld.slimeTallGrass =
-                new SlimeTallGrass().setStepSound(Block.soundTypeGrass).setBlockName("slime.grass.tall");
-        TinkerWorld.slimeLeaves = (SlimeLeaves) new SlimeLeaves()
-                .setStepSound(TinkerWorld.slimeStep)
-                .setLightOpacity(0)
+        TinkerWorld.slimeTallGrass = new SlimeTallGrass().setStepSound(Block.soundTypeGrass)
+                .setBlockName("slime.grass.tall");
+        TinkerWorld.slimeLeaves = (SlimeLeaves) new SlimeLeaves().setStepSound(TinkerWorld.slimeStep).setLightOpacity(0)
                 .setBlockName("slime.leaves");
-        TinkerWorld.slimeSapling = (SlimeSapling)
-                new SlimeSapling().setStepSound(TinkerWorld.slimeStep).setBlockName("slime.sapling");
-        TinkerWorld.slimeChannel = new ConveyorBase(Material.water, "greencurrent")
-                .setHardness(0.3f)
-                .setStepSound(TinkerWorld.slimeStep)
-                .setBlockName("slime.channel");
-        TinkerWorld.bloodChannel = new ConveyorBase(Material.water, "liquid_cow")
-                .setHardness(0.3f)
-                .setStepSound(TinkerWorld.slimeStep)
-                .setBlockName("blood.channel");
-        TinkerWorld.slimePad = new SlimePad(Material.cloth)
-                .setStepSound(TinkerWorld.slimeStep)
-                .setHardness(0.3f)
+        TinkerWorld.slimeSapling = (SlimeSapling) new SlimeSapling().setStepSound(TinkerWorld.slimeStep)
+                .setBlockName("slime.sapling");
+        TinkerWorld.slimeChannel = new ConveyorBase(Material.water, "greencurrent").setHardness(0.3f)
+                .setStepSound(TinkerWorld.slimeStep).setBlockName("slime.channel");
+        TinkerWorld.bloodChannel = new ConveyorBase(Material.water, "liquid_cow").setHardness(0.3f)
+                .setStepSound(TinkerWorld.slimeStep).setBlockName("blood.channel");
+        TinkerWorld.slimePad = new SlimePad(Material.cloth).setStepSound(TinkerWorld.slimeStep).setHardness(0.3f)
                 .setBlockName("slime.pad");
 
         // Decoration
@@ -166,29 +154,23 @@ public class TinkerWorld {
         TinkerTools.multiBrickMetal = new MultiBrickMetal().setBlockName("Decoration.BrickMetal");
 
         // Ores
-        String[] berryOres = new String[] {
-            "berry_iron",
-            "berry_gold",
-            "berry_copper",
-            "berry_tin",
-            "berry_iron_ripe",
-            "berry_gold_ripe",
-            "berry_copper_ripe",
-            "berry_tin_ripe"
-        };
-        TinkerWorld.oreBerry = (OreberryBush)
-                new OreberryBush(berryOres, 0, 4, new String[] {"oreIron", "oreGold", "oreCopper", "oreTin"})
-                        .setBlockName("ore.berries.one");
-        String[] berryOresTwo = new String[] {
-            "berry_aluminum", "berry_essence", "", "", "berry_aluminum_ripe", "berry_essence_ripe", "", ""
-        };
-        TinkerWorld.oreBerrySecond =
-                (OreberryBush) new OreberryBushEssence(berryOresTwo, 4, 2, new String[] {"oreAluminum", "oreSilver"})
-                        .setBlockName("ore.berries.two");
+        String[] berryOres = new String[] { "berry_iron", "berry_gold", "berry_copper", "berry_tin", "berry_iron_ripe",
+                "berry_gold_ripe", "berry_copper_ripe", "berry_tin_ripe" };
+        TinkerWorld.oreBerry = (OreberryBush) new OreberryBush(
+                berryOres,
+                0,
+                4,
+                new String[] { "oreIron", "oreGold", "oreCopper", "oreTin" }).setBlockName("ore.berries.one");
+        String[] berryOresTwo = new String[] { "berry_aluminum", "berry_essence", "", "", "berry_aluminum_ripe",
+                "berry_essence_ripe", "", "" };
+        TinkerWorld.oreBerrySecond = (OreberryBush) new OreberryBushEssence(
+                berryOresTwo,
+                4,
+                2,
+                new String[] { "oreAluminum", "oreSilver" }).setBlockName("ore.berries.two");
 
-        String[] oreTypes = new String[] {
-            "nether_slag", "nether_cobalt", "nether_ardite", "ore_copper", "ore_tin", "ore_aluminum", "ore_slag"
-        };
+        String[] oreTypes = new String[] { "nether_slag", "nether_cobalt", "nether_ardite", "ore_copper", "ore_tin",
+                "ore_aluminum", "ore_slag" };
         TinkerWorld.oreSlag = new MetalOre(Material.rock, 10.0F, oreTypes).setBlockName("tconstruct.stoneore");
         TinkerWorld.oreSlag.setHarvestLevel("pickaxe", 4, 1);
         TinkerWorld.oreSlag.setHarvestLevel("pickaxe", 4, 2);
@@ -204,10 +186,8 @@ public class TinkerWorld {
         TinkerWorld.oreGravel.setHarvestLevel("shovel", 1, 4);
         TinkerWorld.oreGravel.setHarvestLevel("shovel", 4, 5);
         // Rail
-        TinkerWorld.woodenRail = new WoodRail()
-                .setStepSound(Block.soundTypeWood)
-                .setCreativeTab(TConstructRegistry.blockTab)
-                .setBlockName("rail.wood");
+        TinkerWorld.woodenRail = new WoodRail().setStepSound(Block.soundTypeWood)
+                .setCreativeTab(TConstructRegistry.blockTab).setBlockName("rail.wood");
 
         GameRegistry.registerBlock(TinkerWorld.meatBlock, HamboneItemBlock.class, "MeatBlock");
         OreDictionary.registerOre("hambone", new ItemStack(TinkerWorld.meatBlock));
@@ -243,10 +223,10 @@ public class TinkerWorld {
         GameRegistry.registerBlock(TinkerWorld.stoneTorch, "decoration.stonetorch");
         GameRegistry.registerBlock(TinkerWorld.stoneLadder, "decoration.stoneladder");
         GameRegistry.registerBlock(TinkerTools.multiBrick, MultiBrickItem.class, "decoration.multibrick");
-        GameRegistry.registerBlock(
-                TinkerTools.multiBrickFancy, MultiBrickFancyItem.class, "decoration.multibrickfancy");
-        GameRegistry.registerBlock(
-                TinkerTools.multiBrickMetal, MultiBrickMetalItem.class, "decoration.multibrickmetal");
+        GameRegistry
+                .registerBlock(TinkerTools.multiBrickFancy, MultiBrickFancyItem.class, "decoration.multibrickfancy");
+        GameRegistry
+                .registerBlock(TinkerTools.multiBrickMetal, MultiBrickMetalItem.class, "decoration.multibrickmetal");
 
         // Ores
         GameRegistry.registerBlock(TinkerWorld.oreBerry, OreberryBushItem.class, "ore.berries.one");
@@ -258,9 +238,7 @@ public class TinkerWorld {
         GameRegistry.registerBlock(TinkerWorld.woodenRail, "rail.wood");
 
         // Items
-        goldHead = new GoldenHead(4, 1.2F, false)
-                .setAlwaysEdible()
-                .setPotionEffect(Potion.regeneration.id, 10, 0, 1.0F)
+        goldHead = new GoldenHead(4, 1.2F, false).setAlwaysEdible().setPotionEffect(Potion.regeneration.id, 10, 0, 1.0F)
                 .setUnlocalizedName("goldenhead");
         GameRegistry.registerItem(goldHead, "goldHead");
 
@@ -268,11 +246,11 @@ public class TinkerWorld {
         TinkerWorld.oreBerries = new OreBerries().setUnlocalizedName("oreberry");
         GameRegistry.registerItem(TinkerWorld.strangeFood, "strangeFood");
         GameRegistry.registerItem(TinkerWorld.oreBerries, "oreBerries");
-        String[] oreberries = {"Iron", "Gold", "Copper", "Tin", "Aluminum", "Essence"};
+        String[] oreberries = { "Iron", "Gold", "Copper", "Tin", "Aluminum", "Essence" };
 
         for (int i = 0; i < oreberries.length; i++) {
-            TConstructRegistry.addItemStackToDirectory(
-                    "oreberry" + oreberries[i], new ItemStack(TinkerWorld.oreBerries, 1, i));
+            TConstructRegistry
+                    .addItemStackToDirectory("oreberry" + oreberries[i], new ItemStack(TinkerWorld.oreBerries, 1, i));
         }
         TConstructRegistry.addItemStackToDirectory("blueSlimeFood", new ItemStack(TinkerWorld.strangeFood, 1, 0));
 
@@ -378,8 +356,8 @@ public class TinkerWorld {
     }
 
     private void craftingTableRecipes() {
-        String[] patBlock = {"###", "###", "###"};
-        String[] patSurround = {"###", "#m#", "###"};
+        String[] patBlock = { "###", "###", "###" };
+        String[] patSurround = { "###", "#m#", "###" };
 
         // Metal conversion Recipes
         GameRegistry.addRecipe(
@@ -492,8 +470,8 @@ public class TinkerWorld {
                 'm',
                 new ItemStack(TinkerWorld.metalBlock, 1, 9)); // Steel
 
-        GameRegistry.addRecipe(
-                new ItemStack(Items.iron_ingot), patBlock, '#', new ItemStack(TinkerTools.materials, 1, 19)); // Iron
+        GameRegistry
+                .addRecipe(new ItemStack(Items.iron_ingot), patBlock, '#', new ItemStack(TinkerTools.materials, 1, 19)); // Iron
         GameRegistry.addRecipe(
                 new ItemStack(TinkerTools.materials, 1, 9),
                 patBlock,
@@ -550,8 +528,7 @@ public class TinkerWorld {
                 '#',
                 new ItemStack(TinkerTools.materials, 1, 33)); // Steel
 
-        GameRegistry.addRecipe(
-                new ItemStack(TinkerTools.materials, 9, 19), "m", 'm', new ItemStack(Items.iron_ingot)); // Iron
+        GameRegistry.addRecipe(new ItemStack(TinkerTools.materials, 9, 19), "m", 'm', new ItemStack(Items.iron_ingot)); // Iron
         GameRegistry.addRecipe(
                 new ItemStack(TinkerTools.materials, 9, 20),
                 "m",
@@ -610,34 +587,20 @@ public class TinkerWorld {
                 'm',
                 new ItemStack(TinkerTools.materials, 1, 16)); // Steel
 
-        String[] dyeTypes = {
-            "dyeBlack",
-            "dyeRed",
-            "dyeGreen",
-            "dyeBrown",
-            "dyeBlue",
-            "dyePurple",
-            "dyeCyan",
-            "dyeLightGray",
-            "dyeGray",
-            "dyePink",
-            "dyeLime",
-            "dyeYellow",
-            "dyeLightBlue",
-            "dyeMagenta",
-            "dyeOrange",
-            "dyeWhite"
-        };
-        String color = "";
+        String[] dyeTypes = { "dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan",
+                "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange",
+                "dyeWhite" };
+        String color;
         for (int i = 0; i < 16; i++) {
             color = dyeTypes[15 - i];
-            GameRegistry.addRecipe(new ShapedOreRecipe(
-                    new ItemStack(Blocks.wool, 8, i),
-                    patSurround,
-                    'm',
-                    color,
-                    '#',
-                    new ItemStack(Blocks.wool, 1, Short.MAX_VALUE)));
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(Blocks.wool, 8, i),
+                            patSurround,
+                            'm',
+                            color,
+                            '#',
+                            new ItemStack(Blocks.wool, 1, Short.MAX_VALUE)));
         }
 
         // Jack o'Latern Recipe - Stone Torch
@@ -650,43 +613,72 @@ public class TinkerWorld {
                 's',
                 new ItemStack(TinkerWorld.stoneTorch));
         // Stone Torch Recipe
-        GameRegistry.addRecipe(new ShapedOreRecipe(
-                new ItemStack(TinkerWorld.stoneTorch, 4),
-                "p",
-                "w",
-                'p',
-                new ItemStack(Items.coal, 1, Short.MAX_VALUE),
-                'w',
-                "rodStone"));
+        GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                        new ItemStack(TinkerWorld.stoneTorch, 4),
+                        "p",
+                        "w",
+                        'p',
+                        new ItemStack(Items.coal, 1, Short.MAX_VALUE),
+                        'w',
+                        "rodStone"));
         // Stone Ladder Recipe
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(new ItemStack(TinkerWorld.stoneLadder, 3), "w w", "www", "w w", 'w', "rodStone"));
         // Wooden Rail Recipe
-        GameRegistry.addRecipe(new ShapedOreRecipe(
-                new ItemStack(TinkerWorld.woodenRail, 4, 0), "b b", "bxb", "b b", 'b', "plankWood", 'x', "stickWood"));
+        GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                        new ItemStack(TinkerWorld.woodenRail, 4, 0),
+                        "b b",
+                        "bxb",
+                        "b b",
+                        'b',
+                        "plankWood",
+                        'x',
+                        "stickWood"));
         // Stonesticks Recipes
         GameRegistry.addRecipe(new ItemStack(TinkerTools.toolRod, 4, 1), "c", "c", 'c', new ItemStack(Blocks.stone));
-        GameRegistry.addRecipe(
-                new ItemStack(TinkerTools.toolRod, 2, 1), "c", "c", 'c', new ItemStack(Blocks.cobblestone));
+        GameRegistry
+                .addRecipe(new ItemStack(TinkerTools.toolRod, 2, 1), "c", "c", 'c', new ItemStack(Blocks.cobblestone));
         //
         ItemStack aluBrass = new ItemStack(TinkerTools.materials, 1, 14);
         // Clock Recipe - Vanilla alternative
-        GameRegistry.addRecipe(new ShapedOreRecipe(
-                new ItemStack(Items.clock), " i ", "iri", " i ", 'i', aluBrass, 'r', "dustRedstone"));
+        GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                        new ItemStack(Items.clock),
+                        " i ",
+                        "iri",
+                        " i ",
+                        'i',
+                        aluBrass,
+                        'r',
+                        "dustRedstone"));
         // Gold Pressure Plate - Vanilla alternative
         // todo: temporarily disabled due to light weighted pressure plate being smeltable to gold
         // GameRegistry.addRecipe(new ItemStack(Blocks.light_weighted_pressure_plate, 0, 1), "ii", 'i', aluBrass);
 
         // Ultra hardcore recipes
-        GameRegistry.addRecipe(new ShapedOreRecipe(
-                new ItemStack(goldHead), patSurround, '#', "ingotGold", 'm', new ItemStack(Items.skull, 1, 3)));
+        GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                        new ItemStack(goldHead),
+                        patSurround,
+                        '#',
+                        "ingotGold",
+                        'm',
+                        new ItemStack(Items.skull, 1, 3)));
 
         // Wool Slab Recipes
         for (int sc = 0; sc <= 7; sc++) {
             GameRegistry.addRecipe(
-                    new ItemStack(TinkerWorld.woolSlab1, 6, sc), "www", 'w', new ItemStack(Blocks.wool, 1, sc));
+                    new ItemStack(TinkerWorld.woolSlab1, 6, sc),
+                    "www",
+                    'w',
+                    new ItemStack(Blocks.wool, 1, sc));
             GameRegistry.addRecipe(
-                    new ItemStack(TinkerWorld.woolSlab2, 6, sc), "www", 'w', new ItemStack(Blocks.wool, 1, sc + 8));
+                    new ItemStack(TinkerWorld.woolSlab2, 6, sc),
+                    "www",
+                    'w',
+                    new ItemStack(Blocks.wool, 1, sc + 8));
 
             GameRegistry.addShapelessRecipe(
                     new ItemStack(Blocks.wool, 1, sc),
@@ -700,50 +692,78 @@ public class TinkerWorld {
         GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Blocks.wool, 1, 0), "slabCloth", "slabCloth"));
         // Trap Recipes
         GameRegistry.addRecipe(
-                new ItemStack(TinkerWorld.punji, 5, 0), "b b", " b ", "b b", 'b', new ItemStack(Items.reeds));
+                new ItemStack(TinkerWorld.punji, 5, 0),
+                "b b",
+                " b ",
+                "b b",
+                'b',
+                new ItemStack(Items.reeds));
         GameRegistry.addRecipe(
-                new ItemStack(TinkerWorld.barricadeSpruce, 1, 0), "b", "b", 'b', new ItemStack(Blocks.log, 1, 1));
+                new ItemStack(TinkerWorld.barricadeSpruce, 1, 0),
+                "b",
+                "b",
+                'b',
+                new ItemStack(Blocks.log, 1, 1));
         GameRegistry.addRecipe(
-                new ItemStack(TinkerWorld.barricadeBirch, 1, 0), "b", "b", 'b', new ItemStack(Blocks.log, 1, 2));
+                new ItemStack(TinkerWorld.barricadeBirch, 1, 0),
+                "b",
+                "b",
+                'b',
+                new ItemStack(Blocks.log, 1, 2));
         GameRegistry.addRecipe(
-                new ItemStack(TinkerWorld.barricadeJungle, 1, 0), "b", "b", 'b', new ItemStack(Blocks.log, 1, 3));
+                new ItemStack(TinkerWorld.barricadeJungle, 1, 0),
+                "b",
+                "b",
+                'b',
+                new ItemStack(Blocks.log, 1, 3));
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(new ItemStack(TinkerWorld.barricadeOak, 1, 0), "b", "b", 'b', "logWood"));
 
         // Slime Recipes
         GameRegistry.addRecipe(new ItemStack(TinkerWorld.slimeGel, 1, 0), "##", "##", '#', TinkerWorld.strangeFood);
         GameRegistry.addRecipe(
-                new ItemStack(TinkerWorld.strangeFood, 4, 0), "#", '#', new ItemStack(TinkerWorld.slimeGel, 1, 0));
+                new ItemStack(TinkerWorld.strangeFood, 4, 0),
+                "#",
+                '#',
+                new ItemStack(TinkerWorld.slimeGel, 1, 0));
         GameRegistry.addRecipe(new ItemStack(TinkerWorld.slimeGel, 1, 1), "##", "##", '#', Items.slime_ball);
-        GameRegistry.addRecipe(
-                new ItemStack(Items.slime_ball, 4, 0), "#", '#', new ItemStack(TinkerWorld.slimeGel, 1, 1));
+        GameRegistry
+                .addRecipe(new ItemStack(Items.slime_ball, 4, 0), "#", '#', new ItemStack(TinkerWorld.slimeGel, 1, 1));
         // slimeExplosive
         GameRegistry.addShapelessRecipe(new ItemStack(TinkerWorld.slimeExplosive, 1, 0), Items.slime_ball, Blocks.tnt);
         GameRegistry.addShapelessRecipe(
-                new ItemStack(TinkerWorld.slimeExplosive, 1, 2), TinkerWorld.strangeFood, Blocks.tnt);
+                new ItemStack(TinkerWorld.slimeExplosive, 1, 2),
+                TinkerWorld.strangeFood,
+                Blocks.tnt);
         GameRegistry.addRecipe(
                 new ShapelessOreRecipe(new ItemStack(TinkerWorld.slimeExplosive, 1, 0), "slimeball", Blocks.tnt));
 
-        GameRegistry.addRecipe(new ShapelessOreRecipe(
-                new ItemStack(TinkerWorld.slimeChannel, 1, 0),
-                new ItemStack(TinkerWorld.slimeGel, 1, Short.MAX_VALUE),
-                "dustRedstone"));
-        GameRegistry.addRecipe(new ShapelessOreRecipe(
-                new ItemStack(TinkerWorld.bloodChannel, 1, 0),
-                new ItemStack(TinkerWorld.strangeFood, 1, 1),
-                new ItemStack(TinkerWorld.strangeFood, 1, 1),
-                new ItemStack(TinkerWorld.strangeFood, 1, 1),
-                new ItemStack(TinkerWorld.strangeFood, 1, 1),
-                "dustRedstone"));
-        GameRegistry.addRecipe(new ShapelessOreRecipe(
-                new ItemStack(TinkerWorld.slimeChannel, 1, 0),
-                "slimeball",
-                "slimeball",
-                "slimeball",
-                "slimeball",
-                "dustRedstone"));
-        GameRegistry.addRecipe(new ShapelessOreRecipe(
-                new ItemStack(TinkerWorld.slimePad, 1, 0), TinkerWorld.slimeChannel, "slimeball"));
+        GameRegistry.addRecipe(
+                new ShapelessOreRecipe(
+                        new ItemStack(TinkerWorld.slimeChannel, 1, 0),
+                        new ItemStack(TinkerWorld.slimeGel, 1, Short.MAX_VALUE),
+                        "dustRedstone"));
+        GameRegistry.addRecipe(
+                new ShapelessOreRecipe(
+                        new ItemStack(TinkerWorld.bloodChannel, 1, 0),
+                        new ItemStack(TinkerWorld.strangeFood, 1, 1),
+                        new ItemStack(TinkerWorld.strangeFood, 1, 1),
+                        new ItemStack(TinkerWorld.strangeFood, 1, 1),
+                        new ItemStack(TinkerWorld.strangeFood, 1, 1),
+                        "dustRedstone"));
+        GameRegistry.addRecipe(
+                new ShapelessOreRecipe(
+                        new ItemStack(TinkerWorld.slimeChannel, 1, 0),
+                        "slimeball",
+                        "slimeball",
+                        "slimeball",
+                        "slimeball",
+                        "dustRedstone"));
+        GameRegistry.addRecipe(
+                new ShapelessOreRecipe(
+                        new ItemStack(TinkerWorld.slimePad, 1, 0),
+                        TinkerWorld.slimeChannel,
+                        "slimeball"));
 
         GameRegistry.addRecipe(
                 new ItemStack(TinkerWorld.meatBlock),
@@ -757,63 +777,65 @@ public class TinkerWorld {
     }
 
     private void addRecipesForFurnace() {
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.craftedSoil, 1, 3),
-                        new ItemStack(TinkerTools.craftedSoil, 1, 4),
-                        0.2f); // Concecrated
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.craftedSoil, 1, 3),
+                new ItemStack(TinkerTools.craftedSoil, 1, 4),
+                0.2f); // Concecrated
         // Soil
 
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.craftedSoil, 1, 0),
-                        new ItemStack(TinkerTools.materials, 1, 1),
-                        2f); // Slime
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.craftedSoil, 1, 1),
-                        new ItemStack(TinkerTools.materials, 1, 2),
-                        2f); // Seared brick item
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.craftedSoil, 1, 2),
-                        new ItemStack(TinkerTools.materials, 1, 17),
-                        2f); // Blue Slime
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.craftedSoil, 1, 6),
-                        new ItemStack(TinkerTools.materials, 1, 37),
-                        2f); // Nether seared
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.craftedSoil, 1, 0),
+                new ItemStack(TinkerTools.materials, 1, 1),
+                2f); // Slime
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.craftedSoil, 1, 1),
+                new ItemStack(TinkerTools.materials, 1, 2),
+                2f); // Seared brick item
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.craftedSoil, 1, 2),
+                new ItemStack(TinkerTools.materials, 1, 17),
+                2f); // Blue Slime
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.craftedSoil, 1, 6),
+                new ItemStack(TinkerTools.materials, 1, 37),
+                2f); // Nether seared
         // brick
 
         // FurnaceRecipes.smelting().func_151394_a(new ItemStack(TRepo.oreSlag,
         // 1, new ItemStack(TRepo.materials, 1, 3), 3f);
         // FurnaceRecipes.smelting().func_151394_a(new ItemStack(TRepo.oreSlag,
         // 2, new ItemStack(TRepo.materials, 1, 4), 3f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreSlag, 1, 3), new ItemStack(TinkerTools.materials, 1, 9), 0.5f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreSlag, 1, 4), new ItemStack(TinkerTools.materials, 1, 10), 0.5f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreSlag, 1, 5), new ItemStack(TinkerTools.materials, 1, 11), 0.5f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreSlag, 1, 3),
+                new ItemStack(TinkerTools.materials, 1, 9),
+                0.5f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreSlag, 1, 4),
+                new ItemStack(TinkerTools.materials, 1, 10),
+                0.5f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreSlag, 1, 5),
+                new ItemStack(TinkerTools.materials, 1, 11),
+                0.5f);
 
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreBerries, 1, 0), new ItemStack(TinkerTools.materials, 1, 19), 0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreBerries, 1, 0),
+                new ItemStack(TinkerTools.materials, 1, 19),
+                0.2f);
         FurnaceRecipes.smelting()
                 .func_151394_a(new ItemStack(TinkerWorld.oreBerries, 1, 1), new ItemStack(Items.gold_nugget), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreBerries, 1, 2), new ItemStack(TinkerTools.materials, 1, 20), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreBerries, 1, 3), new ItemStack(TinkerTools.materials, 1, 21), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreBerries, 1, 4), new ItemStack(TinkerTools.materials, 1, 22), 0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreBerries, 1, 2),
+                new ItemStack(TinkerTools.materials, 1, 20),
+                0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreBerries, 1, 3),
+                new ItemStack(TinkerTools.materials, 1, 21),
+                0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreBerries, 1, 4),
+                new ItemStack(TinkerTools.materials, 1, 22),
+                0.2f);
         // FurnaceRecipes.smelting().func_151394_a(new
         // ItemStack(TRepo.oreBerries, 5, new ItemStack(TRepo.materials, 1, 23),
         // 0.2f);
@@ -822,31 +844,39 @@ public class TinkerWorld {
                 .func_151394_a(new ItemStack(TinkerWorld.oreGravel, 1, 0), new ItemStack(Items.iron_ingot), 0.2f);
         FurnaceRecipes.smelting()
                 .func_151394_a(new ItemStack(TinkerWorld.oreGravel, 1, 1), new ItemStack(Items.gold_ingot), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreGravel, 1, 2), new ItemStack(TinkerTools.materials, 1, 9), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreGravel, 1, 3), new ItemStack(TinkerTools.materials, 1, 10), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerWorld.oreGravel, 1, 4), new ItemStack(TinkerTools.materials, 1, 11), 0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreGravel, 1, 2),
+                new ItemStack(TinkerTools.materials, 1, 9),
+                0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreGravel, 1, 3),
+                new ItemStack(TinkerTools.materials, 1, 10),
+                0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerWorld.oreGravel, 1, 4),
+                new ItemStack(TinkerTools.materials, 1, 11),
+                0.2f);
 
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.materials, 1, 38), new ItemStack(TinkerTools.materials, 1, 4), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.materials, 1, 39), new ItemStack(TinkerTools.materials, 1, 3), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.materials, 1, 40), new ItemStack(TinkerTools.materials, 1, 11), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.materials, 1, 41), new ItemStack(TinkerTools.materials, 1, 5), 0.2f);
-        FurnaceRecipes.smelting()
-                .func_151394_a(
-                        new ItemStack(TinkerTools.materials, 1, 42), new ItemStack(TinkerTools.materials, 1, 14), 0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.materials, 1, 38),
+                new ItemStack(TinkerTools.materials, 1, 4),
+                0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.materials, 1, 39),
+                new ItemStack(TinkerTools.materials, 1, 3),
+                0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.materials, 1, 40),
+                new ItemStack(TinkerTools.materials, 1, 11),
+                0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.materials, 1, 41),
+                new ItemStack(TinkerTools.materials, 1, 5),
+                0.2f);
+        FurnaceRecipes.smelting().func_151394_a(
+                new ItemStack(TinkerTools.materials, 1, 42),
+                new ItemStack(TinkerTools.materials, 1, 14),
+                0.2f);
     }
 
     public void oreRegistry() {
@@ -924,10 +954,18 @@ public class TinkerWorld {
         RecipeRemover.removeShapedRecipe(new ItemStack(Items.magma_cream));
         RecipeRemover.removeShapedRecipe(new ItemStack(Items.lead));
         GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Blocks.sticky_piston), "slimeball", Blocks.piston));
+        GameRegistry
+                .addRecipe(new ShapelessOreRecipe(new ItemStack(Items.magma_cream), "slimeball", Items.blaze_powder));
         GameRegistry.addRecipe(
-                new ShapelessOreRecipe(new ItemStack(Items.magma_cream), "slimeball", Items.blaze_powder));
-        GameRegistry.addRecipe(new ShapedOreRecipe(
-                new ItemStack(Items.lead, 2), "ss ", "sS ", "  s", 's', Items.string, 'S', "slimeball"));
+                new ShapedOreRecipe(
+                        new ItemStack(Items.lead, 2),
+                        "ss ",
+                        "sS ",
+                        "  s",
+                        's',
+                        Items.string,
+                        'S',
+                        "slimeball"));
     }
 
     public static void ensureOreIsRegistered(String oreName, ItemStack is) {
@@ -947,28 +985,18 @@ public class TinkerWorld {
                 .addItem(new WeightedRandomChestContent(new ItemStack(TinkerArmor.heartCanister, 1, 1), 1, 1, 10));
 
         TinkerWorld.tinkerHouseChest = new ChestGenHooks("TinkerHouse", new WeightedRandomChestContent[0], 3, 27);
-        TinkerWorld.tinkerHouseChest.addItem(
-                new WeightedRandomChestContent(new ItemStack(TinkerArmor.heartCanister, 1, 1), 1, 1, 1));
-        int[] validTypes = {0, 1, 2, 3, 4, 5, 6, 8, 9, 13, 14, 17};
-        Item[] partTypes = {
-            TinkerTools.pickaxeHead,
-            TinkerTools.shovelHead,
-            TinkerTools.hatchetHead,
-            TinkerTools.binding,
-            TinkerTools.swordBlade,
-            TinkerTools.wideGuard,
-            TinkerTools.handGuard,
-            TinkerTools.crossbar,
-            TinkerTools.knifeBlade,
-            TinkerTools.frypanHead,
-            TinkerTools.signHead,
-            TinkerTools.chiselHead
-        };
+        TinkerWorld.tinkerHouseChest
+                .addItem(new WeightedRandomChestContent(new ItemStack(TinkerArmor.heartCanister, 1, 1), 1, 1, 1));
+        int[] validTypes = { 0, 1, 2, 3, 4, 5, 6, 8, 9, 13, 14, 17 };
+        Item[] partTypes = { TinkerTools.pickaxeHead, TinkerTools.shovelHead, TinkerTools.hatchetHead,
+                TinkerTools.binding, TinkerTools.swordBlade, TinkerTools.wideGuard, TinkerTools.handGuard,
+                TinkerTools.crossbar, TinkerTools.knifeBlade, TinkerTools.frypanHead, TinkerTools.signHead,
+                TinkerTools.chiselHead };
 
-        for (int partIter = 0; partIter < partTypes.length; partIter++) {
-            for (int typeIter = 0; typeIter < validTypes.length; typeIter++) {
-                TinkerWorld.tinkerHouseChest.addItem(new WeightedRandomChestContent(
-                        new ItemStack(partTypes[partIter], 1, validTypes[typeIter]), 1, 1, 15));
+        for (Item partType : partTypes) {
+            for (int validType : validTypes) {
+                TinkerWorld.tinkerHouseChest
+                        .addItem(new WeightedRandomChestContent(new ItemStack(partType, 1, validType), 1, 1, 15));
             }
         }
 
@@ -977,7 +1005,7 @@ public class TinkerWorld {
             TinkerWorld.tinkerHousePatterns.addItem(
                     new WeightedRandomChestContent(new ItemStack(TinkerTools.woodPattern, 1, i + 1), 1, 3, 20));
         }
-        TinkerWorld.tinkerHousePatterns.addItem(
-                new WeightedRandomChestContent(new ItemStack(TinkerTools.woodPattern, 1, 22), 1, 3, 40));
+        TinkerWorld.tinkerHousePatterns
+                .addItem(new WeightedRandomChestContent(new ItemStack(TinkerTools.woodPattern, 1, 22), 1, 3, 40));
     }
 }

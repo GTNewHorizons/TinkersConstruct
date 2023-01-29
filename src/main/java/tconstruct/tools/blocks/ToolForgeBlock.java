@@ -1,8 +1,9 @@
 package tconstruct.tools.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.blocks.abstracts.InventoryBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,12 +15,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.ToolProxyCommon;
 import tconstruct.tools.logic.ToolForgeLogic;
 import tconstruct.tools.model.TableRender;
 import tconstruct.world.TinkerWorld;
+import cpw.mods.fml.relauncher.*;
 
 public class ToolForgeBlock extends InventoryBlock {
 
@@ -30,22 +33,9 @@ public class ToolForgeBlock extends InventoryBlock {
         this.setStepSound(Block.soundTypeMetal);
     }
 
-    String[] textureNames = {
-        "toolforge_iron",
-        "toolforge_gold",
-        "toolforge_diamond",
-        "toolforge_emerald",
-        "toolforge_cobalt",
-        "toolforge_ardite",
-        "toolforge_manyullyn",
-        "toolforge_copper",
-        "toolforge_bronze",
-        "toolforge_tin",
-        "toolforge_aluminum",
-        "toolforge_alubrass",
-        "toolforge_alumite",
-        "toolforge_steel"
-    };
+    String[] textureNames = { "toolforge_iron", "toolforge_gold", "toolforge_diamond", "toolforge_emerald",
+            "toolforge_cobalt", "toolforge_ardite", "toolforge_manyullyn", "toolforge_copper", "toolforge_bronze",
+            "toolforge_tin", "toolforge_aluminum", "toolforge_alubrass", "toolforge_alumite", "toolforge_steel" };
 
     /* Rendering */
     @Override

@@ -1,12 +1,14 @@
 package tconstruct.world.gen;
 
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
 public class PlantGen extends WorldGenerator {
+
     /** The ID of the plant block used in this plant generator. */
     public final Block plant;
 
@@ -39,8 +41,7 @@ public class PlantGen extends WorldGenerator {
             int posY = clumped ? y + random.nextInt(ySize) - random.nextInt(ySize) : y + random.nextInt(ySize);
             int posZ = clumped ? z + random.nextInt(zSize) - random.nextInt(zSize) : z + random.nextInt(zSize);
 
-            if (world.getBlock(posX, posY, posZ) == Blocks.air
-                    && (!world.provider.hasNoSky || posY < 127)
+            if (world.getBlock(posX, posY, posZ) == Blocks.air && (!world.provider.hasNoSky || posY < 127)
                     && this.plant.canBlockStay(world, posX, posY, posZ)) {
                 world.setBlock(posX, posY, posZ, this.plant, this.metadata, 2);
             }

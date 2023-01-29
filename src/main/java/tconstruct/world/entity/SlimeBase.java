@@ -15,9 +15,11 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+
 import tconstruct.world.TinkerWorld;
 
 public abstract class SlimeBase extends EntityLiving implements IMob {
+
     public float sizeOffset;
     public float sizeFactor;
     public float sizeHeight;
@@ -78,16 +80,14 @@ public abstract class SlimeBase extends EntityLiving implements IMob {
     }
 
     /**
-     * Indicates weather the slime is able to damage the player (based upon the
-     * slime's size)
+     * Indicates weather the slime is able to damage the player (based upon the slime's size)
      */
     protected boolean canDamagePlayer() {
         return this.getSlimeSize() > 1;
     }
 
     /**
-     * Gets the amount of damage dealt to the player when "attacked" by the
-     * slime.
+     * Gets the amount of damage dealt to the player when "attacked" by the slime.
      */
     protected int getAttackStrength() {
         return this.getSlimeSize();
@@ -120,18 +120,16 @@ public abstract class SlimeBase extends EntityLiving implements IMob {
         this.motionY = 0.05 * getSlimeSize() + 0.37;
 
         if (this.isPotionActive(Potion.jump)) {
-            this.motionY +=
-                    (double) ((float) (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
+            this.motionY += (float) (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F;
         }
 
         if (this.isSprinting()) {
             float f = this.rotationYaw * 0.017453292F;
-            this.motionX -= (double) (MathHelper.sin(f) * 0.2F);
-            this.motionZ += (double) (MathHelper.cos(f) * 0.2F);
+            this.motionX -= MathHelper.sin(f) * 0.2F;
+            this.motionZ += MathHelper.cos(f) * 0.2F;
         }
 
-        if (!(this instanceof IBossDisplayData)
-                && this.getBrightness(1.0F) > 0.9F
+        if (!(this instanceof IBossDisplayData) && this.getBrightness(1.0F) > 0.9F
                 && rand.nextInt(5) == 0
                 && this.worldObj.canBlockSeeTheSky(
                         MathHelper.floor_double(this.posX),
@@ -151,8 +149,7 @@ public abstract class SlimeBase extends EntityLiving implements IMob {
      */
     @Override
     public void onUpdate() {
-        if (!this.worldObj.isRemote
-                && this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL
+        if (!this.worldObj.isRemote && this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL
                 && this.getSlimeSize() > 0) {
             this.isDead = true;
         }
@@ -310,10 +307,9 @@ public abstract class SlimeBase extends EntityLiving implements IMob {
     public boolean getCanSpawnHere() {
         // needs free space
         if (!this.worldObj.checkNoEntityCollision(this.boundingBox)
-                || !this.worldObj
-                        .getCollidingBoundingBoxes(this, this.boundingBox)
-                        .isEmpty()
-                || this.worldObj.isAnyLiquid(this.boundingBox)) return false;
+                || !this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty()
+                || this.worldObj.isAnyLiquid(this.boundingBox))
+            return false;
 
         int x = MathHelper.floor_double(this.posX);
         int y = MathHelper.floor_double(this.boundingBox.minY);

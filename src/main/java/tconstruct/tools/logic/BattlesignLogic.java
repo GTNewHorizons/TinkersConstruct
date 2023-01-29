@@ -7,11 +7,12 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
 
-/* Slots
- * 0: Battlesign item
+/*
+ * Slots 0: Battlesign item
  */
 
 public class BattlesignLogic extends EquipLogic {
+
     protected String[] text;
 
     public BattlesignLogic() {
@@ -76,9 +77,7 @@ public class BattlesignLogic extends EquipLogic {
     public S35PacketUpdateTileEntity getDescriptionPacket() {
         NBTTagCompound compound = new NBTTagCompound();
         this.writeToNBT(compound);
-
-        S35PacketUpdateTileEntity packet = new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, compound);
-        return packet;
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, compound);
     }
 
     @Override

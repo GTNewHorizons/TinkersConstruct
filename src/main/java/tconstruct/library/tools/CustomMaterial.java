@@ -1,10 +1,12 @@
 package tconstruct.library.tools;
 
 import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class CustomMaterial {
+
     public final int materialID;
     public final int value;
     public final ItemStack input;

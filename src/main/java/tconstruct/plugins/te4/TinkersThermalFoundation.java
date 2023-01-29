@@ -1,10 +1,8 @@
 package tconstruct.plugins.te4;
 
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import mantle.pulsar.pulse.Handler;
 import mantle.pulsar.pulse.Pulse;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -12,11 +10,15 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.FluidType;
 import tconstruct.library.crafting.Smeltery;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.world.TinkerWorld;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(TinkersThermalFoundation.TF_MOD_ID)
 @Pulse(
@@ -25,6 +27,7 @@ import tconstruct.world.TinkerWorld;
         modsRequired = TinkersThermalFoundation.TF_MOD_ID,
         forced = true)
 public class TinkersThermalFoundation {
+
     static final String TF_MOD_ID = "ThermalFoundation";
 
     @Handler
@@ -55,33 +58,32 @@ public class TinkersThermalFoundation {
         Smeltery.addSmelteryFuel(pyrotheumFluid, 5000, 70); // pyrotheum lasts 3.5 seconds per 15 mb
 
         // liquid redstone
-        for (ItemStack stack : OreDictionary.getOres("blockRedstone"))
-            Smeltery.addMelting(
-                    stack,
-                    Block.getBlockFromItem(stack.getItem()),
-                    stack.getItemDamage(),
-                    3000,
-                    new FluidStack(redstoneFluid, 900));
-        for (ItemStack stack : OreDictionary.getOres("dustRedstone"))
-            Smeltery.addMelting(
-                    stack, Blocks.redstone_block, stack.getItemDamage(), 2500, new FluidStack(redstoneFluid, 100));
+        for (ItemStack stack : OreDictionary.getOres("blockRedstone")) Smeltery.addMelting(
+                stack,
+                Block.getBlockFromItem(stack.getItem()),
+                stack.getItemDamage(),
+                3000,
+                new FluidStack(redstoneFluid, 900));
+        for (ItemStack stack : OreDictionary.getOres("dustRedstone")) Smeltery.addMelting(
+                stack,
+                Blocks.redstone_block,
+                stack.getItemDamage(),
+                2500,
+                new FluidStack(redstoneFluid, 100));
 
         // liquid glowstone
-        for (ItemStack stack : OreDictionary.getOres("glowstone"))
-            Smeltery.addMelting(
-                    stack,
-                    Block.getBlockFromItem(stack.getItem()),
-                    stack.getItemDamage(),
-                    3000,
-                    new FluidStack(glowstoneFluid, 1000));
-        for (ItemStack stack : OreDictionary.getOres("dustGlowstone"))
-            Smeltery.addMelting(
-                    stack, Blocks.glowstone, stack.getItemDamage(), 2500, new FluidStack(glowstoneFluid, 250));
+        for (ItemStack stack : OreDictionary.getOres("glowstone")) Smeltery.addMelting(
+                stack,
+                Block.getBlockFromItem(stack.getItem()),
+                stack.getItemDamage(),
+                3000,
+                new FluidStack(glowstoneFluid, 1000));
+        for (ItemStack stack : OreDictionary.getOres("dustGlowstone")) Smeltery
+                .addMelting(stack, Blocks.glowstone, stack.getItemDamage(), 2500, new FluidStack(glowstoneFluid, 250));
 
         // liquid pyrotheum
-        for (ItemStack stack : OreDictionary.getOres("dustPyrotheum"))
-            Smeltery.addMelting(
-                    stack, Blocks.glowstone, stack.getItemDamage(), 1299, new FluidStack(pyrotheumFluid, 100));
+        for (ItemStack stack : OreDictionary.getOres("dustPyrotheum")) Smeltery
+                .addMelting(stack, Blocks.glowstone, stack.getItemDamage(), 1299, new FluidStack(pyrotheumFluid, 100));
 
         // liquid cryotheum
         for (ItemStack stack : OreDictionary.getOres("dustCryotheum"))
@@ -134,6 +136,11 @@ public class TinkersThermalFoundation {
         if (stack == null || stack.getItem() == null) stack = new ItemStack(TinkerWorld.metalBlock);
 
         FluidType.registerFluidType(
-                name, Block.getBlockFromItem(stack.getItem()), stack.getItemDamage(), temp, fluid, false);
+                name,
+                Block.getBlockFromItem(stack.getItem()),
+                stack.getItemDamage(),
+                temp,
+                fluid,
+                false);
     }
 }

@@ -1,14 +1,15 @@
 package tconstruct.weaponry.client;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+
 import tconstruct.library.weaponry.BowBaseAmmo;
 import tconstruct.library.weaponry.IWindup;
-import tconstruct.weaponry.TinkerWeaponry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class RenderEventHandler {
+
     @SubscribeEvent
     public void onAimZoom(FOVUpdateEvent event) {
         if (!event.entity.isUsingItem()) return;
@@ -18,15 +19,15 @@ public class RenderEventHandler {
         ItemStack weapon = event.entity.getItemInUse();
         IWindup item = (IWindup) weapon.getItem();
 
-        if (item.zoomOnWindup(weapon))
-            event.newfov = event.fov
-                    / (event.fov + (item.getZoom(weapon) - 1.0f) * item.getWindupProgress(weapon, event.entity));
+        if (item.zoomOnWindup(weapon)) event.newfov = event.fov
+                / (event.fov + (item.getZoom(weapon) - 1.0f) * item.getWindupProgress(weapon, event.entity));
     }
 
     @SubscribeEvent
     public void onRenderPlayer(RenderPlayerEvent.Pre event) {
-        if (event.entityPlayer.getCurrentEquippedItem() != null
-                && event.entityPlayer.getCurrentEquippedItem().getItem() == TinkerWeaponry.javelin) {}
+        // if (event.entityPlayer.getCurrentEquippedItem() != null &&
+        // event.entityPlayer.getCurrentEquippedItem().getItem() == TinkerWeaponry.javelin) {
+        // }
 
         if (event.entityPlayer.getItemInUse() == null) return;
 

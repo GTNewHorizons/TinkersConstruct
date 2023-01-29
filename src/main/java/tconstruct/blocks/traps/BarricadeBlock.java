@@ -1,7 +1,7 @@
 package tconstruct.blocks.traps;
 
-import cpw.mods.fml.relauncher.*;
 import mantle.blocks.MantleBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -10,10 +10,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.world.model.BarricadeRender;
+import cpw.mods.fml.relauncher.*;
 
 public class BarricadeBlock extends MantleBlock {
+
     Block modelBlock;
     int modelMeta;
 
@@ -63,15 +66,13 @@ public class BarricadeBlock extends MantleBlock {
     public void harvestBlock(World world, EntityPlayer player, int x, int y, int z, int meta) {
         if (meta % 4 > 0) {
             world.setBlock(x, y, z, this, meta - 1, 3);
-            dropBlockAsItem(world, x, y, z, new ItemStack(this));
-        } else {
-            dropBlockAsItem(world, x, y, z, new ItemStack(this));
         }
+        dropBlockAsItem(world, x, y, z, new ItemStack(this));
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7,
+            float par8, float par9) {
         ItemStack stack = player.getCurrentEquippedItem();
         if ((stack != null) && (stack.getItem() == Item.getItemFromBlock(this)) && (!player.isSneaking())) {
             int meta = world.getBlockMetadata(x, y, z);

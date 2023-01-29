@@ -1,6 +1,5 @@
 package tconstruct.armor.items;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -10,11 +9,14 @@ import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
+
 public class TArmorBase extends ItemArmor
 // implements ISpecialArmor
 {
+
     IIcon[] icons;
-    String[] iconNames = {"wood_boots"};
+    String[] iconNames = { "wood_boots" };
 
     // static Minecraft mc = Minecraft.getMinecraft();
     // private ModelBiped modelArmor;
@@ -33,21 +35,15 @@ public class TArmorBase extends ItemArmor
     public void onArmorTickUpdate(World world, EntityPlayer player, ItemStack itemStack) {}
 
     /**
-     * Called by RenderBiped and RenderPlayer to determine the armor texture
-     * that should be use for the currently equiped item. This will only be
-     * called on instances of ItemArmor.
+     * Called by RenderBiped and RenderPlayer to determine the armor texture that should be use for the currently
+     * equiped item. This will only be called on instances of ItemArmor.
      *
      * Returning null from this function will use the default value.
      *
-     * @param stack
-     *            ItemStack for the equpt armor
-     * @param entity
-     *            The entity wearing the armor
-     * @param slot
-     *            The slot the armor is in
-     * @param layer
-     *            The render layer, either 1 or 2, 2 is only used for CLOTH
-     *            armor by default
+     * @param stack  ItemStack for the equpt armor
+     * @param entity The entity wearing the armor
+     * @param slot   The slot the armor is in
+     * @param layer  The render layer, either 1 or 2, 2 is only used for CLOTH armor by default
      * @return Path of texture to bind, or null to use default
      */
     @Override
@@ -59,12 +55,9 @@ public class TArmorBase extends ItemArmor
     /**
      * Override this method to have an item handle its own armor rendering.
      *
-     * @param entityLiving
-     *            The entity wearing the armor
-     * @param itemStack
-     *            The itemStack to render the model of
-     * @param armorSlot
-     *            0=head, 1=torso, 2=legs, 3=feet
+     * @param entityLiving The entity wearing the armor
+     * @param itemStack    The itemStack to render the model of
+     * @param armorSlot    0=head, 1=torso, 2=legs, 3=feet
      *
      * @return A ModelBiped to render instead of the default
      */
@@ -97,17 +90,11 @@ public class TArmorBase extends ItemArmor
     }
 
     /*
-     * @Override public ArmorProperties getProperties (EntityLiving player,
-     * ItemStack armor, DamageSource source, double damage, int slot) { // TODO
-     * Auto-generated method stub return null; }
-     *
-     * @Override public int getArmorDisplay (EntityPlayer player, ItemStack
-     * armor, int slot) { // TODO Auto-generated method stub return 0; }
-     *
-     * @Override public void damageArmor (EntityLiving entity, ItemStack stack,
-     * DamageSource source, int damage, int slot) { // TODO Auto-generated
-     * method stub
-     *
-     * }
+     * @Override public ArmorProperties getProperties (EntityLiving player, ItemStack armor, DamageSource source, double
+     * damage, int slot) { // TODO Auto-generated method stub return null; }
+     * @Override public int getArmorDisplay (EntityPlayer player, ItemStack armor, int slot) { // TODO Auto-generated
+     * method stub return 0; }
+     * @Override public void damageArmor (EntityLiving entity, ItemStack stack, DamageSource source, int damage, int
+     * slot) { // TODO Auto-generated method stub }
      */
 }

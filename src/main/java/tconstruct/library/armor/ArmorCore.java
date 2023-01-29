@@ -1,8 +1,8 @@
 package tconstruct.library.armor;
 
-import cpw.mods.fml.relauncher.*;
 import java.text.DecimalFormat;
 import java.util.List;
+
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -12,15 +12,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.modifier.*;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.entity.FancyEntityItem;
+import cpw.mods.fml.relauncher.*;
 
 public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IModifyable {
+
     public final ArmorPart armorPart;
     private static final IBehaviorDispenseItem dispenserBehavior = new BehaviorDispenseArmorCopy();
     public final int baseProtection;
@@ -64,7 +66,7 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
 
     @Override
     public String[] getTraits() {
-        return new String[] {"armor"};
+        return new String[] { "armor" };
     }
 
     @Override
@@ -73,9 +75,8 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
         ItemStack itemstack1 = player.getCurrentArmor(i);
 
         if (itemstack1 == null) {
-            player.setCurrentItemOrArmor(
-                    i + 1,
-                    stack.copy()); // Forge: Vanilla bug fix associated with fixed setCurrentItemOrArmor indexs for
+            player.setCurrentItemOrArmor(i + 1, stack.copy()); // Forge: Vanilla bug fix associated with fixed
+                                                               // setCurrentItemOrArmor indexs for
             // players.
             stack.stackSize = 0;
         }
@@ -103,12 +104,13 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
-        this.itemIcon = iconRegister.registerIcon("tinker:" + textureFolder + "/" + textureName
-                + (this.armorType == 0
-                        ? "helmet"
-                        : this.armorType == 1
-                                ? "chestplate"
-                                : this.armorType == 2 ? "pants" : this.armorType == 3 ? "boots" : "helmet"));
+        this.itemIcon = iconRegister.registerIcon(
+                "tinker:" + textureFolder
+                        + "/"
+                        + textureName
+                        + (this.armorType == 0 ? "helmet"
+                                : this.armorType == 1 ? "chestplate"
+                                        : this.armorType == 2 ? "pants" : this.armorType == 3 ? "boots" : "helmet"));
         registerModifiers(iconRegister);
     }
 
@@ -157,8 +159,8 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
 
     // ISpecialArmor overrides
     @Override
-    public ArmorProperties getProperties(
-            EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
+    public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage,
+            int slot) {
         // Priority, absorbRatio, max
         if (!armor.hasTagCompound() || source.isUnblockable()) return new ArmorProperties(0, 0, 0);
 
@@ -180,9 +182,7 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
         float ratio = currentDurability / maxDurability;
         double base = tags.getDouble("BaseDefense");
         double max = tags.getDouble("MaxDefense");
-        double current = (max - base) * ratio + base;
-
-        return current;
+        return (max - base) * ratio + base;
     }
 
     @Override
@@ -210,8 +210,8 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
     }
 
     protected int combinedArmorDisplay(EntityPlayer player, ItemStack legs) {
-        ItemStack[] armors =
-                new ItemStack[] {player.getCurrentArmor(3), player.getCurrentArmor(2), legs, player.getCurrentArmor(0)};
+        ItemStack[] armors = new ItemStack[] { player.getCurrentArmor(3), player.getCurrentArmor(2), legs,
+                player.getCurrentArmor(0) };
         int types = 0;
         int max = 0;
         int damage = 0;
@@ -347,7 +347,7 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
         return tags.getCompoundTag(getBaseTagName()).getInteger("Damage");
     }
 
-    private DecimalFormat df = new DecimalFormat("##.#");
+    private final DecimalFormat df = new DecimalFormat("##.#");
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -373,10 +373,9 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
                 // strip color information
                 String locString = "modifier.tooltip." + EnumChatFormatting.getTextWithoutFormattingCodes(tipName);
                 locString = locString.replace(" ", "");
-                if (StatCollector.canTranslate(locString))
-                    tipName = tipName.replace(
-                            EnumChatFormatting.getTextWithoutFormattingCodes(tipName),
-                            StatCollector.translateToLocal(locString));
+                if (StatCollector.canTranslate(locString)) tipName = tipName.replace(
+                        EnumChatFormatting.getTextWithoutFormattingCodes(tipName),
+                        StatCollector.translateToLocal(locString));
                 if (!tipName.equals("")) list.add(tipName);
             } else displayToolTips = false;
         }

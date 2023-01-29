@@ -65,7 +65,7 @@ public class TileEntityLandmine extends TileEntity implements IInventory {
         this.inventory = new ItemStack[this.getSizeInventory()];
 
         for (int i = 0; i < nbttaglist.tagCount(); ++i) {
-            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbttaglist.getCompoundTagAt(i);
+            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
             byte b0 = nbttagcompound1.getByte("Slot");
 
             if (b0 >= 0 && b0 < this.inventory.length) {
@@ -110,16 +110,14 @@ public class TileEntityLandmine extends TileEntity implements IInventory {
                 if (inventory[par1].stackSize <= par2) {
                     itemstack = inventory[par1];
                     inventory[par1] = null;
-                    return itemstack;
                 } else {
                     itemstack = inventory[par1].splitStack(par2);
 
                     if (inventory[par1].stackSize == 0) {
                         inventory[par1] = null;
                     }
-
-                    return itemstack;
                 }
+                return itemstack;
             } else {
                 return null;
             }
@@ -167,11 +165,9 @@ public class TileEntityLandmine extends TileEntity implements IInventory {
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer) {
-        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this
-                ? false
-                : par1EntityPlayer.getDistanceSq(
-                                (double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D)
-                        <= 64.0D;
+        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) == this && par1EntityPlayer
+                .getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D)
+                <= 64.0D;
     }
 
     @Override
@@ -188,15 +184,16 @@ public class TileEntityLandmine extends TileEntity implements IInventory {
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-        // Should automatic camo insertion be allowed.
-        if (i == 3) {
-            return false;
-        } else {
-            // Here for mDiyo to decide if he wants automation for
-            // insertion/extraction of the items to be an option.
-            // Would be useful for building automated mine laying machines.
-            return false;
-        }
+        //// Should automatic camo insertion be allowed.
+        // if (i == 3) {
+        // return false;
+        // } else {
+        // // Here for mDiyo to decide if he wants automation for
+        // // insertion/extraction of the items to be an option.
+        // // Would be useful for building automated mine laying machines.
+        // return false;
+        // }
+        return false;
     }
 
     public void setSoundPlayed() {

@@ -1,8 +1,7 @@
 package tconstruct.gadgets.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,11 +13,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
 import tconstruct.TConstruct;
 import tconstruct.gadgets.TinkerGadgets;
 import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.util.network.MovementUpdatePacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemSlimeSling extends Item {
 
@@ -28,8 +30,7 @@ public class ItemSlimeSling extends Item {
     }
 
     /**
-     * Called whenever this item is equipped and the right mouse button is pressed.
-     * Args: itemStack, world, entityPlayer
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
     @Override
     public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn) {

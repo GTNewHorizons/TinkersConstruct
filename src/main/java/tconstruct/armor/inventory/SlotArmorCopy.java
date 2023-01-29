@@ -1,20 +1,20 @@
 package tconstruct.armor.inventory;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 
+import cpw.mods.fml.relauncher.*;
+
 public class SlotArmorCopy extends Slot {
+
     /**
-     * The armor type that can be placed on that slot, it uses the same values
-     * of armorType field on ItemArmor.
+     * The armor type that can be placed on that slot, it uses the same values of armorType field on ItemArmor.
      */
     final int armorType;
 
     /**
-     * The parent class of this clot, ContainerPlayer, SlotArmor is a Anon inner
-     * class.
+     * The parent class of this clot, ContainerPlayer, SlotArmor is a Anon inner class.
      */
     final Container parent;
 
@@ -25,8 +25,8 @@ public class SlotArmorCopy extends Slot {
     }
 
     /**
-     * Returns the maximum stack size for a given slot (usually the same as
-     * getInventoryStackLimit(), but 1 in the case of armor slots)
+     * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the case
+     * of armor slots)
      */
     @Override
     public int getSlotStackLimit() {
@@ -34,8 +34,7 @@ public class SlotArmorCopy extends Slot {
     }
 
     /**
-     * Check if the stack is a valid item for this slot. Always true beside for
-     * the armor slots.
+     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
      */
     @Override
     public boolean isItemValid(ItemStack par1ItemStack) {

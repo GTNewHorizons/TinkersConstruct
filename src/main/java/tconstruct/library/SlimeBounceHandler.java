@@ -1,32 +1,29 @@
 package tconstruct.library;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import java.util.IdentityHashMap;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+
 import tconstruct.gadgets.TinkerGadgets;
 import tconstruct.gadgets.item.ItemSlimeBoots;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /** Logic for entities bouncing */
 public class SlimeBounceHandler {
 
     public static final float SQRT_2 = sqrt(2.0F);
-    private static final float[] SIN_TABLE = new float[65536];
     private static final double FRAC_BIAS;
     private static final double[] ASINE_TAB;
     private static final double[] COS_TAB;
-    public static final IdentityHashMap<EntityLivingBase, BounceInfo> BOUNCING_ENTITIES =
-            new IdentityHashMap<EntityLivingBase, BounceInfo>();
+    public static final IdentityHashMap<EntityLivingBase, BounceInfo> BOUNCING_ENTITIES = new IdentityHashMap<>();
 
     static {
-        for (int i = 0; i < 65536; ++i) {
-            SIN_TABLE[i] = (float) Math.sin(i * Math.PI * 2.0D / 65536.0D);
-        }
         FRAC_BIAS = Double.longBitsToDouble(4805340802404319232L);
         ASINE_TAB = new double[257];
         COS_TAB = new double[257];
@@ -59,8 +56,7 @@ public class SlimeBounceHandler {
     }
 
     /**
-     * Causes the entity to bounce, needed because the fall event will reset motion
-     * afterwards
+     * Causes the entity to bounce, needed because the fall event will reset motion afterwards
      *
      * @param entity Entity to bounce
      * @param bounce Bounce amount
@@ -257,6 +253,7 @@ public class SlimeBounceHandler {
 
     /** Data class to keep track of bouncing info for an entity */
     private static class BounceInfo {
+
         /** Velocity the entity should have, unused if 0 */
         private double bounce;
         /** Time to update the entities velocity */

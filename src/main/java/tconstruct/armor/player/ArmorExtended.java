@@ -1,12 +1,8 @@
 package tconstruct.armor.player;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.relauncher.Side;
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -16,15 +12,21 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
 import tconstruct.library.accessory.IHealthAccessory;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
 
 public class ArmorExtended implements IInventory {
+
     public ItemStack[] inventory = new ItemStack[7];
     public WeakReference<EntityPlayer> parent;
     public UUID globalID = UUID.fromString("B243BE32-DC1B-4C53-8D13-8752D5C69D5B");
 
     public void init(EntityPlayer player) {
-        parent = new WeakReference<EntityPlayer>(player);
+        parent = new WeakReference<>(player);
     }
 
     @Override
@@ -105,8 +107,7 @@ public class ArmorExtended implements IInventory {
         recalculateHealth(player, stats);
 
         /*
-         * if (inventory[2] == null && stats.knapsack != null) {
-         * stats.knapsack.unequipItems(); }
+         * if (inventory[2] == null && stats.knapsack != null) { stats.knapsack.unequipItems(); }
          */
     }
 
@@ -126,14 +127,13 @@ public class ArmorExtended implements IInventory {
 
             int healthChange = bonusHP - prevHealth;
             if (healthChange != 0) {
-                IAttributeInstance attributeinstance =
-                        player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+                IAttributeInstance attributeinstance = player.getAttributeMap()
+                        .getAttributeInstance(SharedMonsterAttributes.maxHealth);
                 try {
                     attributeinstance.removeModifier(attributeinstance.getModifier(globalID));
-                } catch (Exception e) {
-                }
-                attributeinstance.applyModifier(
-                        new AttributeModifier(globalID, "tconstruct.heartCanister", bonusHP, 0));
+                } catch (Exception ignored) {}
+                attributeinstance
+                        .applyModifier(new AttributeModifier(globalID, "tconstruct.heartCanister", bonusHP, 0));
             }
         } else if (parent != null && parent.get() != null) {
             int prevHealth = stats.bonusHealth;
@@ -141,12 +141,11 @@ public class ArmorExtended implements IInventory {
             stats.bonusHealth = bonusHP;
             int healthChange = bonusHP - prevHealth;
             if (healthChange != 0) {
-                IAttributeInstance attributeinstance =
-                        player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+                IAttributeInstance attributeinstance = player.getAttributeMap()
+                        .getAttributeInstance(SharedMonsterAttributes.maxHealth);
                 try {
                     attributeinstance.removeModifier(attributeinstance.getModifier(globalID));
-                } catch (Exception e) {
-                }
+                } catch (Exception ignored) {}
             }
         }
     }
@@ -186,7 +185,7 @@ public class ArmorExtended implements IInventory {
         if (tagCompound != null) {
             NBTTagList tagList = tagCompound.getTagList("Inventory", 10);
             for (int i = 0; i < tagList.tagCount(); ++i) {
-                NBTTagCompound nbttagcompound = (NBTTagCompound) tagList.getCompoundTagAt(i);
+                NBTTagCompound nbttagcompound = tagList.getCompoundTagAt(i);
                 int j = nbttagcompound.getByte("Slot") & 255;
                 ItemStack itemstack = ItemStack.loadItemStackFromNBT(nbttagcompound);
 
@@ -248,11 +247,11 @@ public class ArmorExtended implements IInventory {
     @Override
     public void closeInventory() {}
 
-    public void writeInventoryToStream(ByteBuf os) throws IOException {
-        for (int i = 0; i < inventory.length; i++) ByteBufUtils.writeItemStack(os, inventory[i]);
+    public void writeInventoryToStream(ByteBuf os) {
+        for (ItemStack itemStack : inventory) ByteBufUtils.writeItemStack(os, itemStack);
     }
 
-    public void readInventoryFromStream(ByteBuf is) throws IOException {
+    public void readInventoryFromStream(ByteBuf is) {
         for (int i = 0; i < inventory.length; i++) inventory[i] = ByteBufUtils.readItemStack(is);
     }
 }

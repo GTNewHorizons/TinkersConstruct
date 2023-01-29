@@ -1,13 +1,15 @@
 package tconstruct.weaponry.entity;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import tconstruct.library.entity.ProjectileBase;
 import tconstruct.weaponry.TinkerWeaponry;
+import io.netty.buffer.ByteBuf;
 
 public class ShurikenEntity extends ProjectileBase {
+
     public int spin = 0;
     public int rollAngle = 0;
 
@@ -48,8 +50,8 @@ public class ShurikenEntity extends ProjectileBase {
 
     @Override
     protected double getGravity() {
-        return (this.ticksExisted / 8)
-                * 0.018d; // integer division. so the first 20 ticks it will have no gravity at all.
+        return (this.ticksExisted / 8) * 0.018d; // integer division. so the first 20 ticks it will have no gravity at
+                                                 // all.
     }
 
     @Override

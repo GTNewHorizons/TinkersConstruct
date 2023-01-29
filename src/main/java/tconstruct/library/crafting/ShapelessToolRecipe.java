@@ -1,19 +1,25 @@
 package tconstruct.library.crafting;
 
 import java.util.*;
+
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
+
 import tconstruct.TConstruct;
 import tconstruct.library.tools.ToolCore;
 
 public class ShapelessToolRecipe extends ShapelessRecipes {
+
     static {
         RecipeSorter.register(
-                TConstruct.modID + ":" + "toolrecipe", ShapelessToolRecipe.class, RecipeSorter.Category.SHAPELESS, "");
+                TConstruct.modID + ":" + "toolrecipe",
+                ShapelessToolRecipe.class,
+                RecipeSorter.Category.SHAPELESS,
+                "");
     }
 
     public ShapelessToolRecipe(ItemStack par1ItemStack, List par2List) {
@@ -22,7 +28,7 @@ public class ShapelessToolRecipe extends ShapelessRecipes {
 
     @Override
     public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World) {
-        ArrayList arraylist = new ArrayList(this.recipeItems);
+        ArrayList<ItemStack> arraylist = new ArrayList<>(this.recipeItems);
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
@@ -30,11 +36,8 @@ public class ShapelessToolRecipe extends ShapelessRecipes {
 
                 if (itemstack != null) {
                     boolean flag = false;
-                    Iterator iterator = arraylist.iterator();
 
-                    while (iterator.hasNext()) {
-                        ItemStack itemstack1 = (ItemStack) iterator.next();
-
+                    for (ItemStack itemstack1 : arraylist) {
                         // TConstruct.logger.info("Rawr! "+itemstack1.getItemDamage());
                         if (itemstack.getItem() == itemstack1.getItem()) {
                             if (itemstack.getItem() instanceof ToolCore) {
@@ -43,7 +46,8 @@ public class ShapelessToolRecipe extends ShapelessRecipes {
 
                                 flag = true;
                             } else if ((itemstack1.getItemDamage() == Short.MAX_VALUE
-                                    || itemstack.getItemDamage() == itemstack1.getItemDamage())) flag = true;
+                                    || itemstack.getItemDamage() == itemstack1.getItemDamage()))
+                                flag = true;
 
                             arraylist.remove(itemstack1);
                             break;

@@ -1,7 +1,7 @@
 package tconstruct.smeltery.logic;
 
-import cpw.mods.fml.common.eventhandler.Event;
 import mantle.blocks.abstracts.InventoryLogic;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -13,13 +13,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.*;
 import tconstruct.library.event.*;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.library.util.IPattern;
+import cpw.mods.fml.common.eventhandler.Event;
 
 public abstract class CastingBlockLogic extends InventoryLogic implements IFluidTank, IFluidHandler, ISidedInventory {
+
     public FluidStack liquid;
     protected int maxCastingDelay = 0;
     protected int castingDelay = 0;
@@ -37,7 +40,7 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
     }
 
     public int updateCapacity() // Only used to initialize
-            {
+    {
         ItemStack inv = inventory[0];
         int ret = TConstruct.ingotLiquidValue;
         int rec = liquidCasting.getCastingAmount(this.liquid, inv);
@@ -105,7 +108,7 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
     /* Tank stuff */
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        return new FluidTankInfo[] {getInfo()};
+        return new FluidTankInfo[] { getInfo() };
     }
 
     @Override
@@ -219,9 +222,15 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
         // Reset liquid if emptied
         if (liquid.amount <= 0) liquid = null;
 
-        if (doDrain)
-            FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(
-                    drained, this.worldObj, this.xCoord, this.yCoord, this.zCoord, this, used));
+        if (doDrain) FluidEvent.fireEvent(
+                new FluidEvent.FluidDrainingEvent(
+                        drained,
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord,
+                        this.zCoord,
+                        this,
+                        used));
 
         return drained;
     }
@@ -240,13 +249,17 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
         // put stuff in?
         if (!isStackInSlot(0) && !isStackInSlot(1)) {
             ItemStack stack = player.inventory.decrStackSize(player.inventory.currentItem, stackSizeLimit);
-            SmelteryEvent.ItemInsertedIntoCasting event =
-                    new SmelteryEvent.ItemInsertedIntoCasting(this, xCoord, yCoord, zCoord, stack, player);
+            SmelteryEvent.ItemInsertedIntoCasting event = new SmelteryEvent.ItemInsertedIntoCasting(
+                    this,
+                    xCoord,
+                    yCoord,
+                    zCoord,
+                    stack,
+                    player);
             MinecraftForge.EVENT_BUS.post(event);
             if (!event.isCanceled()) setInventorySlotContents(0, event.item);
-            else
-                player.inventory.addItemStackToInventory(
-                        stack); // should never return false, since the itemstack was taken from the inventory
+            else player.inventory.addItemStackToInventory(stack); // should never return false, since the itemstack was
+                                                                  // taken from the inventory
         }
         // take stuff out.
         else {
@@ -259,7 +272,12 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
             // we therefore spill the whole contents on extraction
 
             SmelteryEvent.ItemRemovedFromCasting event = new SmelteryEvent.ItemRemovedFromCasting(
-                    this, xCoord, yCoord, zCoord, getStackInSlot(slot), player);
+                    this,
+                    xCoord,
+                    yCoord,
+                    zCoord,
+                    getStackInSlot(slot),
+                    player);
             MinecraftForge.EVENT_BUS.post(event);
 
             // try to transfer thes tack to the player inventory
@@ -280,7 +298,7 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        return new int[] {0, 1};
+        return new int[] { 0, 1 };
     }
 
     @Override
@@ -333,7 +351,7 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
     /* NBT, Updating */
     @Override
     public void markDirty() // Isn't actually called?
-            {
+    {
         super.markDirty();
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
         needsUpdate = true;

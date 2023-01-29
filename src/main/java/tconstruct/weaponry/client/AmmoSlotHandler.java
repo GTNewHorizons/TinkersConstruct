@@ -1,14 +1,16 @@
 package tconstruct.weaponry.client;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+
 import tconstruct.library.weaponry.ProjectileWeapon;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class AmmoSlotHandler {
+
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
         if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR) return;
@@ -26,11 +28,10 @@ public class AmmoSlotHandler {
 
         // check if it's in the inventory
         int slot = -1;
-        for (int i = 0; i < 9; i++)
-            if (player.inventory.mainInventory[i] == ammo) {
-                slot = i;
-                break;
-            }
+        for (int i = 0; i < 9; i++) if (player.inventory.mainInventory[i] == ammo) {
+            slot = i;
+            break;
+        }
 
         // not in the hotbar
         if (slot == -1) return;

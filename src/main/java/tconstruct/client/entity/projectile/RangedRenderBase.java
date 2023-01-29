@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 
 public abstract class RangedRenderBase extends Render {
+
     public RangedRenderBase() {}
 
     @Override

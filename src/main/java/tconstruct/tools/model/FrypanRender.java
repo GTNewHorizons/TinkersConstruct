@@ -1,11 +1,13 @@
 package tconstruct.tools.model;
 
-import cpw.mods.fml.client.registry.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
+import cpw.mods.fml.client.registry.*;
+
 public class FrypanRender implements ISimpleBlockRenderingHandler {
+
     public static int frypanModelID = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
@@ -14,8 +16,8 @@ public class FrypanRender implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean renderWorldBlock(
-            IBlockAccess world, int x, int y, int z, Block block, int modelID, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
+            RenderBlocks renderer) {
         renderer.setRenderBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
         renderer.renderStandardBlock(block, x, y, z);
         renderer.setRenderBounds(0.0F, 0.125F, 0.0F, 0.125F, 0.25F, 1.0F);

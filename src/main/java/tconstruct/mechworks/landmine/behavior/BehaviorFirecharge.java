@@ -1,12 +1,14 @@
 package tconstruct.mechworks.landmine.behavior;
 
 import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
 import tconstruct.mechworks.itemblocks.ItemBlockLandmine;
 
 /**
@@ -17,13 +19,7 @@ import tconstruct.mechworks.itemblocks.ItemBlockLandmine;
 public class BehaviorFirecharge extends Behavior {
 
     @Override
-    public void executeLogic(
-            World par1World,
-            int par2,
-            int par3,
-            int par4,
-            ItemStack par5ItemStack,
-            Entity triggerer,
+    public void executeLogic(World par1World, int par2, int par3, int par4, ItemStack par5ItemStack, Entity triggerer,
             boolean willBlockBeRemoved) {
         EnumFacing face = getFacing(par1World, par2, par3, par4);
 
@@ -41,9 +37,8 @@ public class BehaviorFirecharge extends Behavior {
 
             for (int i = par2 - 2; i <= (par2 + 2); i++) {
                 for (int j = par4 - 2; j <= (par4 + 2); j++) {
-                    if ((par1World.getBlock(i, par3, j) == null
-                                    || (par1World.getBlock(i, par3, j) != null
-                                            && par1World.getBlock(i, par3, j).isReplaceable(par1World, i, par3, j)))
+                    if ((par1World.getBlock(i, par3, j) == null || (par1World.getBlock(i, par3, j) != null
+                            && par1World.getBlock(i, par3, j).isReplaceable(par1World, i, par3, j)))
                             && ItemBlockLandmine.getRandom().nextInt(5) == 0
                             && Blocks.fire.canPlaceBlockAt(par1World, i, par3, j)) {
                         par1World.setBlock(i, par3, j, Blocks.fire);

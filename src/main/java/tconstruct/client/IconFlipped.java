@@ -4,6 +4,7 @@ import net.minecraft.util.IIcon;
 
 // required to fix Mojansg bugs...
 public class IconFlipped extends net.minecraft.client.renderer.IconFlipped {
+
     private final IIcon baseIcon;
     private final boolean flipV;
 

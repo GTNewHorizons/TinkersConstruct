@@ -6,12 +6,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.potion.*;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
 import tconstruct.blocks.TConstructBlock;
 
 public class SoilBlock extends TConstructBlock {
-    static String[] soilTypes = new String[] {
-        "slimesand", "grout", "slimesandblue", "graveyardsoil", "consecratedsoil", "slimedirt_blue", "nether_grout"
-    };
+
+    static String[] soilTypes = new String[] { "slimesand", "grout", "slimesandblue", "graveyardsoil",
+            "consecratedsoil", "slimedirt_blue", "nether_grout" };
 
     public SoilBlock() {
         super(Material.ground, 3.0F, soilTypes);
@@ -26,8 +27,8 @@ public class SoilBlock extends TConstructBlock {
                 if (metadata == 3) {
                     ((EntityLivingBase) entity).heal(1);
                 } else if (metadata == 4) {
-                    ((EntityLivingBase) entity).attackEntityFrom(DamageSource.magic, 1);
-                    ((EntityLivingBase) entity).setFire(1);
+                    entity.attackEntityFrom(DamageSource.magic, 1);
+                    entity.setFire(1);
                 }
             }
         }
@@ -52,9 +53,8 @@ public class SoilBlock extends TConstructBlock {
     }
 
     /*
-     * public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y,
-     * int z) { this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F); if
-     * (world.getBlockMetadata(x, y, z) >= 3) { this.setBlockBounds(0.0F, 0.0F,
-     * 0.0F, 1.0F, 0.875F, 1.0F); } }
+     * public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) { this.setBlockBounds(0.0F, 0.0F,
+     * 0.0F, 1.0F, 1.0F, 1.0F); if (world.getBlockMetadata(x, y, z) >= 3) { this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F,
+     * 0.875F, 1.0F); } }
      */
 }

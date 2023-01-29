@@ -1,26 +1,29 @@
 package tconstruct.client.entity.item;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.mechworks.entity.item.ExplosivePrimed;
 import tconstruct.world.TinkerWorld;
+import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 public class ExplosiveRender extends Render {
-    private RenderBlocks blockRenderer = new RenderBlocks();
+
+    private final RenderBlocks blockRenderer = new RenderBlocks();
 
     public ExplosiveRender() {
         this.shadowSize = 0.5F;
     }
 
-    public void renderPrimedTNT(
-            ExplosivePrimed par1EntityTNTPrimed, double par2, double par4, double par6, float par8, float par9) {
+    public void renderPrimedTNT(ExplosivePrimed par1EntityTNTPrimed, double par2, double par4, double par6, float par8,
+            float par9) {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) par2, (float) par4, (float) par6);
         float f2;
@@ -67,8 +70,7 @@ public class ExplosiveRender extends Render {
     }
 
     /**
-     * Returns the location of an entity's texture. Doesn't seem to be called
-     * unless you call Render.bindEntityTexture.
+     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     @Override
     protected ResourceLocation getEntityTexture(Entity par1Entity) {
@@ -76,12 +78,10 @@ public class ExplosiveRender extends Render {
     }
 
     /**
-     * Actually renders the given argument. This is a synthetic bridge method,
-     * always casting down its argument and then handing it off to a worker
-     * function which does the actual work. In all probabilty, the class Render
-     * is generic (Render<T extends Entity) and this method has signature public
-     * void doRender(T entity, double d, double d1, double d2, float f, float
-     * f1). But JAD is pre 1.5 so doesn't do that.
+     * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then
+     * handing it off to a worker function which does the actual work. In all probabilty, the class Render is generic
+     * (Render<T extends Entity) and this method has signature public void doRender(T entity, double d, double d1,
+     * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
      */
     @Override
     public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {

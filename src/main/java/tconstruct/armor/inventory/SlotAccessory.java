@@ -2,9 +2,11 @@ package tconstruct.armor.inventory;
 
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
+
 import tconstruct.library.accessory.IAccessory;
 
 public class SlotAccessory extends Slot {
+
     private final int slotID;
     private final int slotStackLimit;
 
@@ -27,8 +29,6 @@ public class SlotAccessory extends Slot {
      */
     public boolean isItemValid(ItemStack par1ItemStack) {
         Item item = (par1ItemStack == null ? null : par1ItemStack.getItem());
-        return item != null
-                && (item instanceof IAccessory)
-                && ((IAccessory) item).canEquipAccessory(par1ItemStack, this.slotID);
+        return (item instanceof IAccessory) && ((IAccessory) item).canEquipAccessory(par1ItemStack, this.slotID);
     }
 }

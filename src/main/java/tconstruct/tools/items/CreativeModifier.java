@@ -1,16 +1,18 @@
 package tconstruct.tools.items;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.*;
 import tconstruct.library.tools.ToolCore;
+import cpw.mods.fml.relauncher.*;
 
 public class CreativeModifier extends Item {
 
@@ -48,7 +50,7 @@ public class CreativeModifier extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         if (stack.hasTagCompound()) {
-            String targetLock = "None";
+            String targetLock;
             targetLock = stack.getTagCompound().getString("TargetLock");
             targetLock = StatCollector.translateToLocal("infitool." + targetLock.toLowerCase());
             list.add(StatCollector.translateToLocal("creativeModLock.tooltip") + targetLock);

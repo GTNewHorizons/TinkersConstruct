@@ -1,9 +1,8 @@
 package tconstruct.library.tools;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.*;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -12,13 +11,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.*;
 
 @Optional.InterfaceList({
-    @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon"),
-    @Optional.Interface(modid = "ZeldaItemAPI", iface = "zeldaswordskills.api.item.ISword"),
-    @Optional.Interface(modid = "DynamicSkillsAPI", iface = "dynamicswordskills.api.ISword")
-})
+        @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon"),
+        @Optional.Interface(modid = "ZeldaItemAPI", iface = "zeldaswordskills.api.item.ISword"),
+        @Optional.Interface(modid = "DynamicSkillsAPI", iface = "dynamicswordskills.api.ISword") })
 public abstract class Weapon extends ToolCore
         implements IBattlegearWeapon, zeldaswordskills.api.item.ISword, dynamicswordskills.api.ISword {
 
@@ -40,8 +41,8 @@ public abstract class Weapon extends ToolCore
 
         if (stack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Broken")) return 0.1f;
 
-        for (int i = 0; i < web.length; i++) {
-            if (web[i] == block.getMaterial()) {
+        for (Material material : web) {
+            if (material == block.getMaterial()) {
                 return effectiveSpeed();
             }
         }
@@ -49,8 +50,7 @@ public abstract class Weapon extends ToolCore
     }
 
     /**
-     * returns the action that specifies what animation to play when the items
-     * is being used
+     * returns the action that specifies what animation to play when the items is being used
      */
     @Override
     public EnumAction getItemUseAction(ItemStack par1ItemStack) {
@@ -66,8 +66,7 @@ public abstract class Weapon extends ToolCore
     }
 
     /**
-     * Called whenever this item is equipped and the right mouse button is
-     * pressed. Args: itemStack, world, entityPlayer
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
@@ -76,17 +75,8 @@ public abstract class Weapon extends ToolCore
     }
 
     @Override
-    public boolean onItemUse(
-            ItemStack stack,
-            EntityPlayer player,
-            World world,
-            int x,
-            int y,
-            int z,
-            int side,
-            float clickX,
-            float clickY,
-            float clickZ) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+            float clickX, float clickY, float clickZ) {
         return false;
     }
 
@@ -95,8 +85,8 @@ public abstract class Weapon extends ToolCore
      */
     @Override
     public boolean canHarvestBlock(Block block, ItemStack is) {
-        for (int i = 0; i < web.length; i++) {
-            if (block.getMaterial() == web[i]) return true;
+        for (Material material : web) {
+            if (block.getMaterial() == material) return true;
         }
         return super.canHarvestBlock(block, is);
     }
@@ -121,10 +111,10 @@ public abstract class Weapon extends ToolCore
 
     @Override
     public String[] getTraits() {
-        return new String[] {"weapon", "melee"};
+        return new String[] { "weapon", "melee" };
     }
 
-    public static Material[] web = new Material[] {Material.web, Material.cloth, Material.coral, Material.cake};
+    public static Material[] web = new Material[] { Material.web, Material.cloth, Material.coral, Material.cake };
     public static Material[] none = new Material[0];
 
     /*---- Battlegear Support START ----*/
@@ -143,8 +133,8 @@ public abstract class Weapon extends ToolCore
 
     @Override
     @Optional.Method(modid = "battlegear2")
-    public boolean offhandAttackEntity(
-            PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem, ItemStack offhandItem) {
+    public boolean offhandAttackEntity(PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem,
+            ItemStack offhandItem) {
         return true;
     }
 
@@ -171,9 +161,8 @@ public abstract class Weapon extends ToolCore
     public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
         if (offhand == null) return true;
 
-        return (mainhand != null
-                        && mainhand.getItem() != TinkerTools.cleaver
-                        && mainhand.getItem() != TinkerTools.battleaxe)
+        return (mainhand != null && mainhand.getItem() != TinkerTools.cleaver
+                && mainhand.getItem() != TinkerTools.battleaxe)
                 && (offhand.getItem() != TinkerTools.cleaver && offhand.getItem() != TinkerTools.battleaxe);
     }
 

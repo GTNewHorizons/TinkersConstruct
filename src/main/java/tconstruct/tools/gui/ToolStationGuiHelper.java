@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+
 import tconstruct.library.accessory.AccessoryCore;
 import tconstruct.library.armor.ArmorCore;
 import tconstruct.library.modifier.IModifyable;
@@ -22,6 +24,7 @@ import tconstruct.library.weaponry.IAmmo;
 import tconstruct.library.weaponry.ProjectileWeapon;
 
 public final class ToolStationGuiHelper {
+
     // non-instantiable
     private ToolStationGuiHelper() {}
 
@@ -40,12 +43,11 @@ public final class ToolStationGuiHelper {
     }
 
     public static void drawToolStats(ItemStack stack, int x, int y) {
-        String name = stack.getItem() instanceof ToolCore
-                ? ((ToolCore) stack.getItem()).getLocalizedToolName()
+        String name = stack.getItem() instanceof ToolCore ? ((ToolCore) stack.getItem()).getLocalizedToolName()
                 : stack.getDisplayName();
         Item item = stack.getItem();
         NBTTagCompound tags = stack.getTagCompound();
-        Collection<String> categories = new LinkedList<String>();
+        Collection<String> categories = new LinkedList<>();
 
         // initialize drawing variables
         xPos = x;
@@ -147,8 +149,7 @@ public final class ToolStationGuiHelper {
                             EnumChatFormatting.getTextWithoutFormattingCodes(tipName),
                             StatCollector.translateToLocal(locString));
                     // re-add the X/Y
-                    if (bracket > 0)
-                        tipName += " " + tags.getString(tooltip + tipNum).substring(bracket);
+                    if (bracket > 0) tipName += " " + tags.getString(tooltip + tipNum).substring(bracket);
                 }
                 write("- " + tipName);
                 tipNum++;
@@ -162,13 +163,13 @@ public final class ToolStationGuiHelper {
 
         write(StatCollector.translateToLocal("gui.toolstation14") + df.format(mineSpeed));
         if (stoneboundSpeed != 0) {
-            String bloss = stoneboundSpeed > 0
-                    ? StatCollector.translateToLocal("gui.toolstation4")
+            String bloss = stoneboundSpeed > 0 ? StatCollector.translateToLocal("gui.toolstation4")
                     : StatCollector.translateToLocal("gui.toolstation5");
             write(bloss + df.format(stoneboundSpeed));
         }
-        write(StatCollector.translateToLocal("gui.toolstation15")
-                + HarvestLevels.getHarvestLevelName(tags.getInteger("HarvestLevel")));
+        write(
+                StatCollector.translateToLocal("gui.toolstation15")
+                        + HarvestLevels.getHarvestLevelName(tags.getInteger("HarvestLevel")));
     }
 
     private static void drawDualHarvestStats(ToolCore tool, NBTTagCompound tags) {
@@ -179,15 +180,16 @@ public final class ToolStationGuiHelper {
         write(StatCollector.translateToLocal("gui.toolstation12"));
         write("- " + df.format(mineSpeed) + ", " + df.format(mineSpeed2));
         if (stoneboundSpeed != 0) {
-            String bloss = stoneboundSpeed > 0
-                    ? StatCollector.translateToLocal("gui.toolstation4")
+            String bloss = stoneboundSpeed > 0 ? StatCollector.translateToLocal("gui.toolstation4")
                     : StatCollector.translateToLocal("gui.toolstation5");
             write(bloss + df.format(stoneboundSpeed));
         }
 
         write(StatCollector.translateToLocal("gui.toolstation13"));
-        write("- " + HarvestLevels.getHarvestLevelName(tags.getInteger("HarvestLevel")) + ", "
-                + HarvestLevels.getHarvestLevelName(tags.getInteger("HarvestLevel2")));
+        write(
+                "- " + HarvestLevels.getHarvestLevelName(tags.getInteger("HarvestLevel"))
+                        + ", "
+                        + HarvestLevels.getHarvestLevelName(tags.getInteger("HarvestLevel2")));
     }
 
     private static void drawWeaponStats(ToolCore tool, NBTTagCompound tags) {
@@ -201,18 +203,15 @@ public final class ToolStationGuiHelper {
 
         if (attack < 1) attack = 1;
 
-        String heart = attack == 2
-                ? StatCollector.translateToLocal("gui.partcrafter8")
+        String heart = attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                 : StatCollector.translateToLocal("gui.partcrafter9");
         if (attack % 2 == 0) write(StatCollector.translateToLocal("gui.toolstation3") + attack / 2 + heart);
         else write(StatCollector.translateToLocal("gui.toolstation3") + df.format(attack / 2f) + heart);
 
         if (stoneboundDamage != 0) {
-            heart = stoneboundDamage == 2
-                    ? StatCollector.translateToLocal("gui.partcrafter8")
+            heart = stoneboundDamage == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                     : StatCollector.translateToLocal("gui.partcrafter9");
-            String bloss = stoneboundDamage > 0
-                    ? StatCollector.translateToLocal("gui.toolstation4")
+            String bloss = stoneboundDamage > 0 ? StatCollector.translateToLocal("gui.toolstation4")
                     : StatCollector.translateToLocal("gui.toolstation5");
             write(bloss + df.format(stoneboundDamage / 2f) + heart);
         }
@@ -227,8 +226,7 @@ public final class ToolStationGuiHelper {
 
         int attack = (int) attackf;
 
-        String heart = attack == 2
-                ? StatCollector.translateToLocal("gui.partcrafter8")
+        String heart = attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                 : StatCollector.translateToLocal("gui.partcrafter9");
         if (attack % 2 == 0) write(StatCollector.translateToLocal("gui.toolstation23") + attack / 2 + heart);
         else write(StatCollector.translateToLocal("gui.toolstation23") + df.format(attack / 2f) + heart);
@@ -269,8 +267,10 @@ public final class ToolStationGuiHelper {
         double protection = armor.getProtection(stack);
         double maxProtection = tags.getDouble("MaxDefense");
 
-        write(StatCollector.translateToLocal("gui.toolstation20") + df.format(protection) + "/"
-                + df.format(maxProtection));
+        write(
+                StatCollector.translateToLocal("gui.toolstation20") + df.format(protection)
+                        + "/"
+                        + df.format(maxProtection));
     }
 
     private static void drawAccessoryStats(AccessoryCore core, NBTTagCompound tags) {
@@ -282,12 +282,14 @@ public final class ToolStationGuiHelper {
     }
 
     /**
-     * Renders the specified text to the screen, center-aligned.
-     * Copied out of GUI
+     * Renders the specified text to the screen, center-aligned. Copied out of GUI
      */
-    public static void drawCenteredString(
-            FontRenderer p_73732_1_, String p_73732_2_, int p_73732_3_, int p_73732_4_, int p_73732_5_) {
+    public static void drawCenteredString(FontRenderer p_73732_1_, String p_73732_2_, int p_73732_3_, int p_73732_4_,
+            int p_73732_5_) {
         p_73732_1_.drawStringWithShadow(
-                p_73732_2_, p_73732_3_ - p_73732_1_.getStringWidth(p_73732_2_) / 2, p_73732_4_, p_73732_5_);
+                p_73732_2_,
+                p_73732_3_ - p_73732_1_.getStringWidth(p_73732_2_) / 2,
+                p_73732_4_,
+                p_73732_5_);
     }
 }

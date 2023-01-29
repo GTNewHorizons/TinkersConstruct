@@ -5,16 +5,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
+
 import tconstruct.library.tools.DualMaterialToolPart;
 import tconstruct.library.util.IToolPart;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.Reference;
 
 public class AlternateBoltRecipe implements IRecipe {
+
     static {
         // register the recipe with the recipesorter
-        RecipeSorter.register(
-                Reference.MOD_ID + ":part", AlternateBoltRecipe.class, RecipeSorter.Category.SHAPELESS, "");
+        RecipeSorter
+                .register(Reference.MOD_ID + ":part", AlternateBoltRecipe.class, RecipeSorter.Category.SHAPELESS, "");
     }
 
     private ItemStack outputPart;

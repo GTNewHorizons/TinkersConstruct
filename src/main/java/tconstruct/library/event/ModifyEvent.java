@@ -1,13 +1,15 @@
 package tconstruct.library.event;
 
-import cpw.mods.fml.common.eventhandler.Cancelable;
-import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.modifier.ItemModifier;
+import cpw.mods.fml.common.eventhandler.Cancelable;
+import cpw.mods.fml.common.eventhandler.Event;
 
 @Cancelable
 public class ModifyEvent extends Event {
+
     public final ItemModifier modifier;
     public final IModifyable item;
     public final ItemStack itemStack;

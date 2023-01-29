@@ -3,12 +3,15 @@ package tconstruct.armor.gui;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.*;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.armor.inventory.KnapsackContainer;
 import tconstruct.armor.player.KnapsackInventory;
 import tconstruct.client.tabs.*;
 
 public class KnapsackGui extends InventoryEffectRenderer {
+
     public InventoryPlayer inv;
     public KnapsackInventory stats;
 
@@ -44,8 +47,8 @@ public class KnapsackGui extends InventoryEffectRenderer {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         fontRendererObj.drawString(StatCollector.translateToLocal("inventory.knapsack"), 8, 6, 0x404040);
-        fontRendererObj.drawString(
-                StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        fontRendererObj
+                .drawString(StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/knapsack.png");
@@ -60,9 +63,7 @@ public class KnapsackGui extends InventoryEffectRenderer {
     }
 
     /*
-     * protected void keyTyped(char par1, int par2) { if (par2 ==
-     * TControls.armorKey.keyCode) { this.mc.thePlayer.closeScreen(); }
-     *
-     * super.keyTyped(par1, par2); }
+     * protected void keyTyped(char par1, int par2) { if (par2 == TControls.armorKey.keyCode) {
+     * this.mc.thePlayer.closeScreen(); } super.keyTyped(par1, par2); }
      */
 }

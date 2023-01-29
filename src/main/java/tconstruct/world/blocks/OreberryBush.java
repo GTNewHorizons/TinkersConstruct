@@ -1,7 +1,7 @@
 package tconstruct.world.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.*;
+
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -15,19 +15,22 @@ import net.minecraft.util.*;
 import net.minecraft.world.*;
 import net.minecraftforge.common.*;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.model.OreberryRender;
+import cpw.mods.fml.relauncher.*;
 
 public class OreberryBush extends BlockLeavesBase implements IPlantable {
+
     Random random;
     public IIcon[] fastIcons;
     public IIcon[] fancyIcons;
     public String[] textureNames;
     public String[] oreTypes;
     public int itemMeat;
-    private int subitems;
+    private final int subitems;
 
     public OreberryBush(String[] textureNames, int meta, int sub, String[] oreTypes) {
         super(Material.leaves, false);
@@ -51,7 +54,7 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
         this.fancyIcons = new IIcon[textureNames.length];
 
         for (int i = 0; i < this.fastIcons.length; i++) {
-            if (textureNames[i] != "") {
+            if (!"".equals(textureNames[i])) {
                 this.fastIcons[i] = iconRegister.registerIcon("tinker:crops/" + textureNames[i] + "_fast");
                 this.fancyIcons[i] = iconRegister.registerIcon("tinker:crops/" + textureNames[i] + "_fancy");
             }
@@ -104,7 +107,12 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
                     (double) z + 0.875D);
         } else {
             return AxisAlignedBB.getBoundingBox(
-                    x + 0.0625, y, z + 0.0625, (double) x + 0.9375D, (double) y + 0.9375D, (double) z + 0.9375D);
+                    x + 0.0625,
+                    y,
+                    z + 0.0625,
+                    (double) x + 0.9375D,
+                    (double) y + 0.9375D,
+                    (double) z + 0.9375D);
         }
     }
 
@@ -167,8 +175,8 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
 
     /* Right-click harvests berries */
     @Override
-    public boolean onBlockActivated(
-            World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7,
+            float par8, float par9) {
         return harvest(world, x, y, z, player);
     }
 
@@ -179,7 +187,8 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
 
             world.setBlock(x, y, z, this, meta - 4, 3);
             AbilityHelper.spawnItemAtPlayer(
-                    player, new ItemStack(TinkerWorld.oreBerries, random.nextInt(3) + 1, meta % 4 + itemMeat));
+                    player,
+                    new ItemStack(TinkerWorld.oreBerries, random.nextInt(3) + 1, meta % 4 + itemMeat));
         }
 
         return false;
@@ -231,10 +240,9 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
                     world.setBlock(x, y, z, this, meta + 4, 3);
                 }
             }
-            /*else if (meta < 8)
-            {
-            	world.setBlock(x, y, z, blockID, meta + 4, 3);
-            }*/
+            /*
+             * else if (meta < 8) { world.setBlock(x, y, z, blockID, meta + 4, 3); }
+             */
         }
     }
 

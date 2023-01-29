@@ -1,9 +1,7 @@
 package tconstruct.gadgets.item;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.I18n;
@@ -23,14 +21,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+
 import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.armor.ArmorPart;
 import tconstruct.tools.entity.FancyEntityItem;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
 
-    public static ArmorMaterial SLIME_MATERIAL = EnumHelper.addArmorMaterial("SLIME", 100, new int[] {0, 0, 0, 0}, 0);
+    public static ArmorMaterial SLIME_MATERIAL = EnumHelper.addArmorMaterial("SLIME", 100, new int[] { 0, 0, 0, 0 }, 0);
 
     public final ArmorPart armorPart;
     protected final String textureFolder;
@@ -61,14 +63,13 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
         ItemStack itemstack = playerIn.getEquipmentInSlot(slot);
         if (itemstack == null) {
             playerIn.setCurrentItemOrArmor(slot, itemStackIn.copy());
-            itemStackIn.stackSize--;
         } else {
             itemstack = itemstack.copy();
             playerIn.setCurrentItemOrArmor(1, itemStackIn.copy());
             // playerIn.setCurrentItemOrArmor(0, itemstack);
             playerIn.entityDropItem(itemstack, 0);
-            itemStackIn.stackSize--;
         }
+        itemStackIn.stackSize--;
         return itemStackIn;
     }
 
@@ -179,17 +180,13 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
 
     // ISpecialArmor overrides
     @Override
-    public ArmorProperties getProperties(
-            EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
+    public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage,
+            int slot) {
         return new ArmorProperties(0, armor.getItemDamage() / 100, 100);
     }
 
     @Override
-    public void damageArmor(EntityLivingBase entity, ItemStack armor, DamageSource source, int damage, int slot) {
-        if (source == DamageSource.fall) {
-            return;
-        }
-    }
+    public void damageArmor(EntityLivingBase entity, ItemStack armor, DamageSource source, int damage, int slot) {}
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -222,10 +219,9 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         list.add("Boooounce!");
-        list.add("Hold "
-                + (I18n.format(
-                        Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyDescription(), new Object[0]))
-                + " to stop bouncing.");
+        list.add(
+                "Hold " + (I18n.format(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyDescription()))
+                        + " to stop bouncing.");
     }
 
     /* Prevent armor from dying */

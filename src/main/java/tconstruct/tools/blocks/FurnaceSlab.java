@@ -1,19 +1,22 @@
 package tconstruct.tools.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.Random;
+
 import mantle.blocks.abstracts.InventorySlab;
 import mantle.blocks.iface.*;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.ToolProxyCommon;
 import tconstruct.tools.logic.FurnaceLogic;
+import cpw.mods.fml.relauncher.*;
 
 public class FurnaceSlab extends InventorySlab {
 
@@ -25,9 +28,8 @@ public class FurnaceSlab extends InventorySlab {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        switch (metadata % 8) {
-            case 0:
-                return new FurnaceLogic();
+        if (metadata % 8 == 0) {
+            return new FurnaceLogic();
         }
         return null;
     }
@@ -44,9 +46,7 @@ public class FurnaceSlab extends InventorySlab {
 
     @Override
     public String[] getTextureNames() {
-        String[] textureNames = {"furnaceslab_front", "furnaceslab_front_active", "furnaceslab_side", "furnace_top"};
-
-        return textureNames;
+        return new String[] { "furnaceslab_front", "furnaceslab_front_active", "furnaceslab_side", "furnace_top" };
     }
 
     @Override
@@ -99,9 +99,8 @@ public class FurnaceSlab extends InventorySlab {
 
     @Override
     public TileEntity createNewTileEntity(World var1, int metadata) {
-        switch (metadata % 8) {
-            case 0:
-                return new FurnaceLogic();
+        if (metadata % 8 == 0) {
+            return new FurnaceLogic();
         }
         return null;
     }

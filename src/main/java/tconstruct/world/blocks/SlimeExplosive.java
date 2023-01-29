@@ -1,8 +1,9 @@
 package tconstruct.world.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.world.WorldHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,8 +14,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
+
 import tconstruct.blocks.TConstructBlock;
 import tconstruct.mechworks.entity.item.ExplosivePrimed;
+import cpw.mods.fml.relauncher.*;
 
 public class SlimeExplosive extends TConstructBlock {
 
@@ -24,7 +27,7 @@ public class SlimeExplosive extends TConstructBlock {
 
     static String[] getTextureNames() {
         String[] names = new String[6];
-        String[] types = new String[] {"green", "blue"};
+        String[] types = new String[] { "green", "blue" };
         for (int i = 0; i < 2; i++) {
             names[i * 3 + 0] = "sdx_bottom_" + types[i];
             names[i * 3 + 1] = "sdx_side_" + types[i];
@@ -69,9 +72,9 @@ public class SlimeExplosive extends TConstructBlock {
         if (!par1World.isRemote) {
             ExplosivePrimed entitytntprimed = new ExplosivePrimed(
                     par1World,
-                    (double) ((float) par2 + 0.5F),
-                    (double) ((float) par3 + 0.5F),
-                    (double) ((float) par4 + 0.5F),
+                    (float) par2 + 0.5F,
+                    (float) par3 + 0.5F,
+                    (float) par4 + 0.5F,
                     par5Explosion.getExplosivePlacedBy());
             entitytntprimed.fuse = par1World.rand.nextInt(entitytntprimed.fuse / 4) + entitytntprimed.fuse / 8;
             par1World.spawnEntityInWorld(entitytntprimed);
@@ -80,18 +83,18 @@ public class SlimeExplosive extends TConstructBlock {
 
     @Override
     public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {
-        this.primeTnt(par1World, par2, par3, par4, par5, (EntityLivingBase) null);
+        this.primeTnt(par1World, par2, par3, par4, par5, null);
     }
 
-    public void primeTnt(
-            World par1World, int par2, int par3, int par4, int par5, EntityLivingBase par6EntityLivingBase) {
+    public void primeTnt(World par1World, int par2, int par3, int par4, int par5,
+            EntityLivingBase par6EntityLivingBase) {
         if (!par1World.isRemote) {
             if ((par5 % 2) == 1) {
                 ExplosivePrimed entitytntprimed = new ExplosivePrimed(
                         par1World,
-                        (double) ((float) par2 + 0.5F),
-                        (double) ((float) par3 + 0.5F),
-                        (double) ((float) par4 + 0.5F),
+                        (float) par2 + 0.5F,
+                        (float) par3 + 0.5F,
+                        (float) par4 + 0.5F,
                         par6EntityLivingBase);
                 par1World.spawnEntityInWorld(entitytntprimed);
                 par1World.playSoundAtEntity(entitytntprimed, "random.fuse", 1.0F, 1.0F);
@@ -100,16 +103,8 @@ public class SlimeExplosive extends TConstructBlock {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World par1World,
-            int par2,
-            int par3,
-            int par4,
-            EntityPlayer par5EntityPlayer,
-            int par6,
-            float par7,
-            float par8,
-            float par9) {
+    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer,
+            int par6, float par7, float par8, float par9) {
         if (par5EntityPlayer.getCurrentEquippedItem() != null
                 && par5EntityPlayer.getCurrentEquippedItem().getItem() == Items.flint_and_steel) {
             this.primeTnt(par1World, par2, par3, par4, 1, par5EntityPlayer);

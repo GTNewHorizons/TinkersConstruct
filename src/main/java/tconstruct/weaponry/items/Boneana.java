@@ -1,17 +1,20 @@
 package tconstruct.weaponry.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+
 import tconstruct.items.tools.Broadsword;
 import tconstruct.util.Reference;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class Boneana extends Broadsword {
+
     private IIcon brokenIcon;
 
     @Override

@@ -1,10 +1,12 @@
 package tconstruct.library.event;
 
-import cpw.mods.fml.common.eventhandler.Cancelable;
-import cpw.mods.fml.common.eventhandler.Event;
 import mantle.blocks.abstracts.InventoryLogic;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
+import cpw.mods.fml.common.eventhandler.Cancelable;
+import cpw.mods.fml.common.eventhandler.Event;
 
 public class SmelteryEvent extends Event {
 
@@ -20,13 +22,14 @@ public class SmelteryEvent extends Event {
 
     @Cancelable
     public static class ItemInsertedIntoCasting extends SmelteryEvent {
+
         /** Item that will be inserted into the casting block */
         public ItemStack item;
 
         public EntityPlayer player;
 
-        public ItemInsertedIntoCasting(
-                InventoryLogic component, int x, int y, int z, ItemStack item, EntityPlayer player) {
+        public ItemInsertedIntoCasting(InventoryLogic component, int x, int y, int z, ItemStack item,
+                EntityPlayer player) {
             super(component, x, y, z);
             this.item = item;
             this.player = player;
@@ -34,13 +37,14 @@ public class SmelteryEvent extends Event {
     }
 
     public static class ItemRemovedFromCasting extends SmelteryEvent {
+
         /** Item that will be returned to the player */
         public ItemStack item;
 
         public EntityPlayer player;
 
-        public ItemRemovedFromCasting(
-                InventoryLogic component, int x, int y, int z, ItemStack item, EntityPlayer player) {
+        public ItemRemovedFromCasting(InventoryLogic component, int x, int y, int z, ItemStack item,
+                EntityPlayer player) {
             super(component, x, y, z);
             this.item = item;
             this.player = player;

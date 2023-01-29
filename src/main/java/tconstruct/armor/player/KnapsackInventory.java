@@ -1,9 +1,7 @@
 package tconstruct.armor.player;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import io.netty.buffer.ByteBuf;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,12 +10,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
+
 public class KnapsackInventory implements IInventory {
+
     public ItemStack[] inventory = new ItemStack[27];
     public WeakReference<EntityPlayer> parent;
 
     public void init(EntityPlayer player) {
-        parent = new WeakReference<EntityPlayer>(player);
+        parent = new WeakReference<>(player);
     }
 
     @Override
@@ -121,7 +123,7 @@ public class KnapsackInventory implements IInventory {
 
         NBTTagList tagList = tagCompound.getTagList("Knapsack", 10);
         for (int i = 0; i < tagList.tagCount(); ++i) {
-            NBTTagCompound nbttagcompound = (NBTTagCompound) tagList.getCompoundTagAt(i);
+            NBTTagCompound nbttagcompound = tagList.getCompoundTagAt(i);
             int j = nbttagcompound.getByte("Slot") & 255;
             ItemStack itemstack = ItemStack.loadItemStackFromNBT(nbttagcompound);
 
@@ -171,11 +173,11 @@ public class KnapsackInventory implements IInventory {
     @Override
     public void closeInventory() {}
 
-    public void writeInventoryToStream(ByteBuf os) throws IOException {
+    public void writeInventoryToStream(ByteBuf os) {
         for (int i = 0; i < 27; i++) ByteBufUtils.writeItemStack(os, inventory[i]);
     }
 
-    public void readInventoryFromStream(ByteBuf is) throws IOException {
+    public void readInventoryFromStream(ByteBuf is) {
         for (int i = 0; i < 27; i++) inventory[i] = ByteBufUtils.readItemStack(is);
     }
 }

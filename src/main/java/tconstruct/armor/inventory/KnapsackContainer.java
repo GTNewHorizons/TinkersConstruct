@@ -3,9 +3,11 @@ package tconstruct.armor.inventory;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.armor.player.KnapsackInventory;
 
 public class KnapsackContainer extends Container {
+
     public KnapsackInventory backpack;
     public int progress = 0;
     public int fuel = 0;
@@ -55,7 +57,7 @@ public class KnapsackContainer extends Container {
             }
 
             if (slotStack.stackSize == 0) {
-                slot.putStack((ItemStack) null);
+                slot.putStack(null);
             } else {
                 slot.onSlotChanged();
             }

@@ -2,10 +2,9 @@ package tconstruct.tools;
 
 import static tconstruct.tools.TinkerTools.*;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mantle.client.MProxyClient;
 import mantle.lib.client.MantleClientRegistry;
+
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.*;
@@ -15,7 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.common.MinecraftForge;
-import tconstruct.TConstruct;
+
 import tconstruct.client.FlexibleToolRenderer;
 import tconstruct.client.entity.projectile.*;
 import tconstruct.client.pages.*;
@@ -31,8 +30,11 @@ import tconstruct.tools.gui.*;
 import tconstruct.tools.logic.*;
 import tconstruct.tools.model.*;
 import tconstruct.weaponry.TinkerWeaponry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ToolProxyClient extends ToolProxyCommon {
+
     @Override
     public void initialize() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -50,8 +52,8 @@ public class ToolProxyClient extends ToolProxyCommon {
         RenderingRegistry.registerBlockHandler(new FrypanRender());
         RenderingRegistry.registerBlockHandler(new BattlesignRender());
 
-        RenderingRegistry.registerEntityRenderingHandler(
-                LaunchedPotion.class, new LaunchedItemRender(Items.potionitem, 16384));
+        RenderingRegistry
+                .registerEntityRenderingHandler(LaunchedPotion.class, new LaunchedItemRender(Items.potionitem, 16384));
         RenderingRegistry.registerEntityRenderingHandler(DaggerEntity.class, new DaggerEntityRenderer());
         // RenderingRegistry.registerEntityRenderingHandler(DaggerEntity.class, new DaggerRenderCustom());
         // RenderingRegistry.registerEntityRenderingHandler(ArrowEntity.class, new ArrowRenderCustom());
@@ -335,13 +337,33 @@ public class ToolProxyClient extends ToolProxyCommon {
                 null);
         MantleClientRegistry.registerManualSmallRecipe("blankpattern", pattern, plank, stick, stick, plank);
         MantleClientRegistry.registerManualSmallRecipe(
-                "toolstation", new ItemStack(TinkerTools.toolStationWood, 1, 0), null, pattern, null, workbench);
+                "toolstation",
+                new ItemStack(TinkerTools.toolStationWood, 1, 0),
+                null,
+                pattern,
+                null,
+                workbench);
         MantleClientRegistry.registerManualSmallRecipe(
-                "partcrafter", new ItemStack(TinkerTools.toolStationWood, 1, 1), null, pattern, null, log);
+                "partcrafter",
+                new ItemStack(TinkerTools.toolStationWood, 1, 1),
+                null,
+                pattern,
+                null,
+                log);
         MantleClientRegistry.registerManualSmallRecipe(
-                "patternchest", new ItemStack(TinkerTools.toolStationWood, 1, 5), null, pattern, null, chest);
+                "patternchest",
+                new ItemStack(TinkerTools.toolStationWood, 1, 5),
+                null,
+                pattern,
+                null,
+                chest);
         MantleClientRegistry.registerManualSmallRecipe(
-                "stenciltable", new ItemStack(TinkerTools.toolStationWood, 1, 10), null, pattern, null, plank);
+                "stenciltable",
+                new ItemStack(TinkerTools.toolStationWood, 1, 10),
+                null,
+                pattern,
+                null,
+                plank);
 
         MantleClientRegistry.registerManualLargeRecipe(
                 "toolforge",
@@ -357,11 +379,26 @@ public class ToolProxyClient extends ToolProxyCommon {
                 ironblock); // TODO: Alternate recipe for Smeltery disabled
 
         MantleClientRegistry.registerManualLargeRecipe(
-                "slimymud", slimyMud, null, slimeball, slimeball, null, slimeball, slimeball, null, dirt, sand);
-        MantleClientRegistry.registerManualFurnaceRecipe(
-                "slimecrystal", new ItemStack(TinkerTools.materials, 1, 1), slimyMud);
+                "slimymud",
+                slimyMud,
+                null,
+                slimeball,
+                slimeball,
+                null,
+                slimeball,
+                slimeball,
+                null,
+                dirt,
+                sand);
+        MantleClientRegistry
+                .registerManualFurnaceRecipe("slimecrystal", new ItemStack(TinkerTools.materials, 1, 1), slimyMud);
         MantleClientRegistry.registerManualSmallRecipe(
-                "paperstack", new ItemStack(TinkerTools.materials, 1, 0), paper, paper, paper, paper);
+                "paperstack",
+                new ItemStack(TinkerTools.materials, 1, 0),
+                paper,
+                paper,
+                paper,
+                paper);
         MantleClientRegistry.registerManualLargeRecipe(
                 "mossball",
                 new ItemStack(TinkerTools.materials, 1, 6),
@@ -428,46 +465,63 @@ public class ToolProxyClient extends ToolProxyCommon {
         TConstructClientRegistry.registerManualModifier("diamondmod", ironpick.copy(), new ItemStack(Items.diamond));
         TConstructClientRegistry.registerManualModifier("emeraldmod", ironpick.copy(), new ItemStack(Items.emerald));
         TConstructClientRegistry.registerManualModifier(
-                "redstonemod", ironpick.copy(), new ItemStack(Items.redstone), new ItemStack(Blocks.redstone_block));
+                "redstonemod",
+                ironpick.copy(),
+                new ItemStack(Items.redstone),
+                new ItemStack(Blocks.redstone_block));
+        TConstructClientRegistry
+                .registerManualModifier("lavacrystalmod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 7));
         TConstructClientRegistry.registerManualModifier(
-                "lavacrystalmod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 7));
+                "lapismod",
+                ironpick.copy(),
+                new ItemStack(Items.dye, 1, 4),
+                new ItemStack(Blocks.lapis_block));
+        TConstructClientRegistry
+                .registerManualModifier("mossmod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 6));
         TConstructClientRegistry.registerManualModifier(
-                "lapismod", ironpick.copy(), new ItemStack(Items.dye, 1, 4), new ItemStack(Blocks.lapis_block));
+                "quartzmod",
+                ironlongsword.copy(),
+                new ItemStack(Items.quartz),
+                new ItemStack(Blocks.quartz_block));
+        TConstructClientRegistry
+                .registerManualModifier("blazemod", ironlongsword.copy(), new ItemStack(Items.blaze_powder));
         TConstructClientRegistry.registerManualModifier(
-                "mossmod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 6));
-        TConstructClientRegistry.registerManualModifier(
-                "quartzmod", ironlongsword.copy(), new ItemStack(Items.quartz), new ItemStack(Blocks.quartz_block));
-        TConstructClientRegistry.registerManualModifier(
-                "blazemod", ironlongsword.copy(), new ItemStack(Items.blaze_powder));
-        TConstructClientRegistry.registerManualModifier(
-                "necroticmod", ironlongsword.copy(), new ItemStack(TinkerTools.materials, 1, 8));
-        TConstructClientRegistry.registerManualModifier(
-                "silkymod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 26));
-        TConstructClientRegistry.registerManualModifier(
-                "reinforcedmod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 43));
+                "necroticmod",
+                ironlongsword.copy(),
+                new ItemStack(TinkerTools.materials, 1, 8));
+        TConstructClientRegistry
+                .registerManualModifier("silkymod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 26));
+        TConstructClientRegistry
+                .registerManualModifier("reinforcedmod", ironpick.copy(), new ItemStack(TinkerTools.materials, 1, 43));
 
+        TConstructClientRegistry
+                .registerManualModifier("pistonmod", ironlongsword.copy(), new ItemStack(Blocks.piston));
         TConstructClientRegistry.registerManualModifier(
-                "pistonmod", ironlongsword.copy(), new ItemStack(Blocks.piston));
-        TConstructClientRegistry.registerManualModifier(
-                "beheadingmod", ironlongsword.copy(), new ItemStack(Items.ender_pearl), new ItemStack(Blocks.obsidian));
-        TConstructClientRegistry.registerManualModifier(
-                "spidermod", ironlongsword.copy(), new ItemStack(Items.fermented_spider_eye));
-        TConstructClientRegistry.registerManualModifier(
-                "smitemod", ironlongsword.copy(), new ItemStack(TinkerTools.craftedSoil, 1, 4));
+                "beheadingmod",
+                ironlongsword.copy(),
+                new ItemStack(Items.ender_pearl),
+                new ItemStack(Blocks.obsidian));
+        TConstructClientRegistry
+                .registerManualModifier("spidermod", ironlongsword.copy(), new ItemStack(Items.fermented_spider_eye));
+        TConstructClientRegistry
+                .registerManualModifier("smitemod", ironlongsword.copy(), new ItemStack(TinkerTools.craftedSoil, 1, 4));
 
         TConstructClientRegistry.registerManualModifier("fluxmod", ironpick.copy(), new ItemStack(Blocks.dirt));
         TConstructClientRegistry.registerManualModifier("fluxmod2", ironpick.copy(), new ItemStack(Blocks.dirt));
 
         TConstructClientRegistry.registerManualModifier(
-                "tier1free", ironpick.copy(), new ItemStack(Items.diamond), new ItemStack(Blocks.gold_block));
+                "tier1free",
+                ironpick.copy(),
+                new ItemStack(Items.diamond),
+                new ItemStack(Blocks.gold_block));
         TConstructClientRegistry.registerManualModifier(
                 "tier1.5free",
                 ironpick.copy(),
                 new ItemStack(Items.golden_apple, 1, 1),
                 new ItemStack(Blocks.diamond_block));
         TConstructClientRegistry.registerManualModifier("tier2free", ironpick.copy(), new ItemStack(Items.nether_star));
-        TConstructClientRegistry.registerManualModifier(
-                "creativefree", ironpick.copy(), new ItemStack(TinkerTools.creativeModifier));
+        TConstructClientRegistry
+                .registerManualModifier("creativefree", ironpick.copy(), new ItemStack(TinkerTools.creativeModifier));
 
         TConstructClientRegistry.registerManualSmeltery(
                 "brownstone",
@@ -512,28 +566,48 @@ public class ToolProxyClient extends ToolProxyCommon {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if (ID == ToolProxyCommon.toolStationID)
-            return new ToolStationGui(
-                    player.inventory, (ToolStationLogic) world.getTileEntity(x, y, z), world, x, y, z);
-        if (ID == ToolProxyCommon.partBuilderID)
-            return new PartCrafterGui(
-                    player.inventory, (PartBuilderLogic) world.getTileEntity(x, y, z), world, x, y, z);
-        if (ID == ToolProxyCommon.patternChestID)
-            return new PatternChestGui(
-                    player.inventory, (PatternChestLogic) world.getTileEntity(x, y, z), world, x, y, z);
+        if (ID == ToolProxyCommon.toolStationID) return new ToolStationGui(
+                player.inventory,
+                (ToolStationLogic) world.getTileEntity(x, y, z),
+                world,
+                x,
+                y,
+                z);
+        if (ID == ToolProxyCommon.partBuilderID) return new PartCrafterGui(
+                player.inventory,
+                (PartBuilderLogic) world.getTileEntity(x, y, z),
+                world,
+                x,
+                y,
+                z);
+        if (ID == ToolProxyCommon.patternChestID) return new PatternChestGui(
+                player.inventory,
+                (PatternChestLogic) world.getTileEntity(x, y, z),
+                world,
+                x,
+                y,
+                z);
         if (ID == ToolProxyCommon.frypanGuiID)
             return new FrypanGui(player.inventory, (FrypanLogic) world.getTileEntity(x, y, z), world, x, y, z);
         if (ID == ToolProxyCommon.battlesignTextID)
             return new BattlesignGui((BattlesignLogic) world.getTileEntity(x, y, z));
 
-        if (ID == ToolProxyCommon.stencilTableID)
-            return new StencilTableGui(
-                    player.inventory, (StencilTableLogic) world.getTileEntity(x, y, z), world, x, y, z);
+        if (ID == ToolProxyCommon.stencilTableID) return new StencilTableGui(
+                player.inventory,
+                (StencilTableLogic) world.getTileEntity(x, y, z),
+                world,
+                x,
+                y,
+                z);
         if (ID == ToolProxyCommon.toolForgeID)
             return new ToolForgeGui(player.inventory, (ToolForgeLogic) world.getTileEntity(x, y, z), world, x, y, z);
-        if (ID == ToolProxyCommon.craftingStationID)
-            return new CraftingStationGui(
-                    player.inventory, (CraftingStationLogic) world.getTileEntity(x, y, z), world, x, y, z);
+        if (ID == ToolProxyCommon.craftingStationID) return new CraftingStationGui(
+                player.inventory,
+                (CraftingStationLogic) world.getTileEntity(x, y, z),
+                world,
+                x,
+                y,
+                z);
 
         if (ID == ToolProxyCommon.furnaceID)
             return new FurnaceGui(player.inventory, (FurnaceLogic) world.getTileEntity(x, y, z));
@@ -543,44 +617,41 @@ public class ToolProxyClient extends ToolProxyCommon {
 
     @SubscribeEvent
     public void onSound(SoundLoadEvent event) {
-        try {
-            /*
-             * SoundManager soundmanager = event.manager;
-             * soundmanager.addSound("tinker:frypan_hit.ogg");
-             * soundmanager.addSound("tinker:little_saw.ogg");
-             * soundmanager.addSound("tinker:launcher_clank.ogg");
-             * TConstruct.logger.info("Successfully loaded sounds.");
-             */
-        } catch (Exception e) {
-            TConstruct.logger.error("Failed to register one or more sounds");
-        }
+        // try {
+        /*
+         * SoundManager soundmanager = event.manager; soundmanager.addSound("tinker:frypan_hit.ogg");
+         * soundmanager.addSound("tinker:little_saw.ogg"); soundmanager.addSound("tinker:launcher_clank.ogg");
+         * TConstruct.logger.info("Successfully loaded sounds.");
+         */
+        // } catch (Exception e) {
+        // TConstruct.logger.error("Failed to register one or more sounds");
+        // }
 
         MinecraftForge.EVENT_BUS.unregister(this);
     }
 
     void addStencilButtons() {
-        int[][] icons = {
-            {0, 3}, // tool rod
-            {1, 3}, // binding
-            {8, 3}, // large tool rod
-            {9, 3}, // large binding
-            {0, 2}, // pickaxe head
-            {3, 2}, // shovel head
-            {2, 2}, // hatchet head
-            {8, 2}, // scythe
-            {11, 2}, // hammer head
-            {10, 2}, // excavator head
-            {6, 2}, // lumberaxe head
-            {9, 2}, // large plate
-            {}, {4, 2}, // frying pan
-            {5, 2}, // battlesign
-            {7, 3}, // chisel
-            {}, {7, 2}, // knifeblade
-            {1, 2}, // swordblade
-            {6, 3}, // cleaver blade
-            {}, {4, 3}, // crossbar
-            {3, 3}, // small guard
-            {2, 3}, // wide guard
+        int[][] icons = { { 0, 3 }, // tool rod
+                { 1, 3 }, // binding
+                { 8, 3 }, // large tool rod
+                { 9, 3 }, // large binding
+                { 0, 2 }, // pickaxe head
+                { 3, 2 }, // shovel head
+                { 2, 2 }, // hatchet head
+                { 8, 2 }, // scythe
+                { 11, 2 }, // hammer head
+                { 10, 2 }, // excavator head
+                { 6, 2 }, // lumberaxe head
+                { 9, 2 }, // large plate
+                {}, { 4, 2 }, // frying pan
+                { 5, 2 }, // battlesign
+                { 7, 3 }, // chisel
+                {}, { 7, 2 }, // knifeblade
+                { 1, 2 }, // swordblade
+                { 6, 3 }, // cleaver blade
+                {}, { 4, 3 }, // crossbar
+                { 3, 3 }, // small guard
+                { 2, 3 }, // wide guard
         };
 
         int i = 0;
@@ -596,84 +667,66 @@ public class ToolProxyClient extends ToolProxyCommon {
         TConstructClientRegistry.addStencilButton(xButton, yButton, index, "tinker", "textures/gui/icons.png");
     }
 
-    static int[][] itemIconsT1 = {
-        new int[] {1, 4, 0}, // Pickaxe
-        new int[] {2, 5, 0}, // Shovel
-        new int[] {2, 6, 0}, // Hatchet
-        new int[] {3, 8, 0}, // Mattock
-        new int[] {1, 0, 1}, // Broadsword
-        new int[] {1, 1, 1}, // Longsword
-        new int[] {1, 2, 1}, // Rapier
-        new int[] {1, 5, 1}, // Dagger
-        new int[] {2, 3, 1}, // Frying pan
-        new int[] {2, 4, 1}, // Battlesign
-        new int[] {2, 6, 1} // Chisel
+    static int[][] itemIconsT1 = { new int[] { 1, 4, 0 }, // Pickaxe
+            new int[] { 2, 5, 0 }, // Shovel
+            new int[] { 2, 6, 0 }, // Hatchet
+            new int[] { 3, 8, 0 }, // Mattock
+            new int[] { 1, 0, 1 }, // Broadsword
+            new int[] { 1, 1, 1 }, // Longsword
+            new int[] { 1, 2, 1 }, // Rapier
+            new int[] { 1, 5, 1 }, // Dagger
+            new int[] { 2, 3, 1 }, // Frying pan
+            new int[] { 2, 4, 1 }, // Battlesign
+            new int[] { 2, 6, 1 } // Chisel
     };
 
-    static int[][] iconCoordsT1 = {
-        new int[] {0, 0, 1, 13}, new int[] {2, 3, 3, 13}, // Pickaxe
-        new int[] {3, 0, 13, 13}, new int[] {2, 3, 13, 13}, // Shovel
-        new int[] {2, 0, 13, 13}, new int[] {2, 3, 13, 13}, // Hatchet
-        new int[] {2, 0, 3, 13}, new int[] {2, 3, 2, 13}, // Mattock
-        new int[] {1, 0, 2, 13}, new int[] {2, 3, 3, 13}, // Broadsword
-        new int[] {1, 0, 3, 13}, new int[] {2, 3, 3, 13}, // Longsword
-        new int[] {1, 0, 4, 13}, new int[] {2, 3, 3, 13}, // Rapier
-        new int[] {7, 0, 4, 13}, new int[] {2, 3, 3, 13}, // Dagger
-        new int[] {4, 0, 13, 13}, new int[] {2, 3, 13, 13}, // Frying Pan
-        new int[] {5, 0, 13, 13}, new int[] {2, 3, 13, 13}, // Battlesign
-        new int[] {7, 0, 13, 13}, new int[] {3, 3, 13, 13} // Chisel
+    static int[][] iconCoordsT1 = { new int[] { 0, 0, 1, 13 }, new int[] { 2, 3, 3, 13 }, // Pickaxe
+            new int[] { 3, 0, 13, 13 }, new int[] { 2, 3, 13, 13 }, // Shovel
+            new int[] { 2, 0, 13, 13 }, new int[] { 2, 3, 13, 13 }, // Hatchet
+            new int[] { 2, 0, 3, 13 }, new int[] { 2, 3, 2, 13 }, // Mattock
+            new int[] { 1, 0, 2, 13 }, new int[] { 2, 3, 3, 13 }, // Broadsword
+            new int[] { 1, 0, 3, 13 }, new int[] { 2, 3, 3, 13 }, // Longsword
+            new int[] { 1, 0, 4, 13 }, new int[] { 2, 3, 3, 13 }, // Rapier
+            new int[] { 7, 0, 4, 13 }, new int[] { 2, 3, 3, 13 }, // Dagger
+            new int[] { 4, 0, 13, 13 }, new int[] { 2, 3, 13, 13 }, // Frying Pan
+            new int[] { 5, 0, 13, 13 }, new int[] { 2, 3, 13, 13 }, // Battlesign
+            new int[] { 7, 0, 13, 13 }, new int[] { 3, 3, 13, 13 } // Chisel
     };
 
-    static int[][] itemIconsT2 = {
-        new int[] {
-            6, 13, 0,
-        }, // Hammer
-        new int[] {
-            5, 11, 0,
-        }, // Lumberaxe
-        new int[] {
-            5, 12, 0,
-        }, // Excavator
-        new int[] {
-            4, 10, 0,
-        }, // Scythe
-        new int[] {
-            5, 7, 1,
-        }, // Cleaver
-        new int[] {
-            5, 8, 1,
-        }, // Battleaxe
+    static int[][] itemIconsT2 = { new int[] { 6, 13, 0, }, // Hammer
+            new int[] { 5, 11, 0, }, // Lumberaxe
+            new int[] { 5, 12, 0, }, // Excavator
+            new int[] { 4, 10, 0, }, // Scythe
+            new int[] { 5, 7, 1, }, // Cleaver
+            new int[] { 5, 8, 1, }, // Battleaxe
     };
 
-    static int[][] iconCoordsT2 = {
-        new int[] {11, 8, 9, 9}, new int[] {2, 3, 2, 2}, // Hammer
-        new int[] {6, 8, 9, 9}, new int[] {2, 3, 2, 3}, // Lumberaxe
-        new int[] {10, 8, 9, 9}, new int[] {2, 3, 2, 3}, // Excavator
-        new int[] {8, 8, 9, 8}, new int[] {2, 3, 3, 3}, // Scythe
-        new int[] {6, 8, 9, 8}, new int[] {3, 3, 2, 3}, // Cleaver
-        new int[] {6, 8, 6, 9}, new int[] {2, 3, 2, 3}, // Battleaxe
+    static int[][] iconCoordsT2 = { new int[] { 11, 8, 9, 9 }, new int[] { 2, 3, 2, 2 }, // Hammer
+            new int[] { 6, 8, 9, 9 }, new int[] { 2, 3, 2, 3 }, // Lumberaxe
+            new int[] { 10, 8, 9, 9 }, new int[] { 2, 3, 2, 3 }, // Excavator
+            new int[] { 8, 8, 9, 8 }, new int[] { 2, 3, 3, 3 }, // Scythe
+            new int[] { 6, 8, 9, 8 }, new int[] { 3, 3, 2, 3 }, // Cleaver
+            new int[] { 6, 8, 6, 9 }, new int[] { 2, 3, 2, 3 }, // Battleaxe
     };
 
     void addToolButtons() {
-        final ToolCore[] tier1Tools = {
-            pickaxe, shovel, hatchet, mattock, broadsword, longsword, rapier, dagger, frypan, battlesign, chisel
-        };
-        final ToolCore[] tier2Tools = {hammer, lumberaxe, excavator, scythe, cleaver, battleaxe};
+        final ToolCore[] tier1Tools = { pickaxe, shovel, hatchet, mattock, broadsword, longsword, rapier, dagger,
+                frypan, battlesign, chisel };
+        final ToolCore[] tier2Tools = { hammer, lumberaxe, excavator, scythe, cleaver, battleaxe };
 
         // repair
         addToolButton(
                 0,
                 3,
                 0,
-                new int[] {0, 1, 2, 13},
-                new int[] {13, 13, 13, 13},
+                new int[] { 0, 1, 2, 13 },
+                new int[] { 13, 13, 13, 13 },
                 StatCollector.translateToLocal("gui.toolforge1"),
                 "gui.toolforge2");
 
         // tier 1 tools
         for (int i = 0; i < tier1Tools.length; i++) {
-            String locString = String.format(
-                    "gui.toolstation.%s.desc", tier1Tools[i].getToolName().toLowerCase());
+            String locString = String.format("gui.toolstation.%s.desc", tier1Tools[i].getToolName().toLowerCase());
             addToolButton(
                     itemIconsT1[i][0],
                     itemIconsT1[i][1],
@@ -686,8 +739,7 @@ public class ToolProxyClient extends ToolProxyCommon {
 
         // tier 2 tools
         for (int i = 0; i < tier2Tools.length; i++) {
-            String locString = String.format(
-                    "gui.toolstation.%s.desc", tier2Tools[i].getToolName().toLowerCase());
+            String locString = String.format("gui.toolstation.%s.desc", tier2Tools[i].getToolName().toLowerCase());
             addTierTwoButton(
                     itemIconsT2[i][0],
                     itemIconsT2[i][1],
@@ -700,62 +752,44 @@ public class ToolProxyClient extends ToolProxyCommon {
     }
 
     void addToolButton(int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons, String title, String body) {
-        TConstructClientRegistry.addToolButton(new ToolGuiElement(
-                slotType, xButton, yButton, xIcons, yIcons, title, body, "tinker", "textures/gui/icons.png"));
+        TConstructClientRegistry.addToolButton(
+                new ToolGuiElement(
+                        slotType,
+                        xButton,
+                        yButton,
+                        xIcons,
+                        yIcons,
+                        title,
+                        body,
+                        "tinker",
+                        "textures/gui/icons.png"));
     }
 
-    void addTierTwoButton(
-            int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons, String title, String body) {
-        TConstructClientRegistry.addTierTwoButton(new ToolGuiElement(
-                slotType, xButton, yButton, xIcons, yIcons, title, body, "tinker", "textures/gui/icons.png"));
+    void addTierTwoButton(int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons, String title,
+            String body) {
+        TConstructClientRegistry.addTierTwoButton(
+                new ToolGuiElement(
+                        slotType,
+                        xButton,
+                        yButton,
+                        xIcons,
+                        yIcons,
+                        title,
+                        body,
+                        "tinker",
+                        "textures/gui/icons.png"));
     }
 
     void addToolRenderMappings() {
-        String[] partTypes = {
-            "wood",
-            "stone",
-            "iron",
-            "flint",
-            "cactus",
-            "bone",
-            "obsidian",
-            "netherrack",
-            "slime",
-            "paper",
-            "cobalt",
-            "ardite",
-            "manyullyn",
-            "copper",
-            "bronze",
-            "alumite",
-            "steel",
-            "blueslime",
-            "pigiron"
-        };
-        String[] effectTypes = {
-            "diamond",
-            "emerald",
-            "redstone",
-            "piston",
-            "moss",
-            "ice",
-            "lava",
-            "blaze",
-            "necrotic",
-            "flux",
-            "lapis",
-            "quartz",
-            "silk",
-            "beheading",
-            "smite",
-            "spider",
-            "reinforced",
-            "flux"
-        };
-        int[] universalEffects = {0, 1, 4, 9, 16};
-        int[] weaponEffects = {3, 5, 7, 13, 14, 15};
-        int[] harvestEffects = {2};
-        int[] nonUtility = {6, 8, 10, 11, 12};
+        String[] partTypes = { "wood", "stone", "iron", "flint", "cactus", "bone", "obsidian", "netherrack", "slime",
+                "paper", "cobalt", "ardite", "manyullyn", "copper", "bronze", "alumite", "steel", "blueslime",
+                "pigiron" };
+        String[] effectTypes = { "diamond", "emerald", "redstone", "piston", "moss", "ice", "lava", "blaze", "necrotic",
+                "flux", "lapis", "quartz", "silk", "beheading", "smite", "spider", "reinforced", "flux" };
+        int[] universalEffects = { 0, 1, 4, 9, 16 };
+        int[] weaponEffects = { 3, 5, 7, 13, 14, 15 };
+        int[] harvestEffects = { 2 };
+        int[] nonUtility = { 6, 8, 10, 11, 12 };
 
         for (int partIter = 0; partIter < partTypes.length; partIter++) {
             TConstructClientRegistry.addMaterialRenderMapping(partIter, "tinker", partTypes[partIter], true);

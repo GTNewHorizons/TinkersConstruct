@@ -1,15 +1,17 @@
 package tconstruct.library.crafting;
 
 import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
 
 public class DryingRackRecipes {
-    public static ArrayList<DryingRecipe> recipes = new ArrayList<DryingRecipe>();
+
+    public static ArrayList<DryingRecipe> recipes = new ArrayList<>();
 
     public static void addDryingRecipe(Object input, int time, Object output) {
-        ItemStack inputItem = null;
-        ItemStack outputItem = null;
+        ItemStack inputItem;
+        ItemStack outputItem;
 
         if (input instanceof ItemStack) inputItem = (ItemStack) input;
         else if (input instanceof Item) inputItem = new ItemStack((Item) input, 1, 0);
@@ -41,6 +43,7 @@ public class DryingRackRecipes {
     }
 
     public static class DryingRecipe {
+
         public final int time;
         public final ItemStack input;
         public final ItemStack result;

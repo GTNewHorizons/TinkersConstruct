@@ -6,6 +6,7 @@ import net.minecraft.util.StatCollector;
  * Dynamic substitute for an enum. It carries a lot of information
  */
 public class ToolMaterial {
+
     public final String materialName;
     public final int harvestLevel;
     public final int durability;
@@ -26,61 +27,25 @@ public class ToolMaterial {
     public String ability;
 
     @Deprecated
-    public ToolMaterial(
-            String name,
-            String displayName,
-            int level,
-            int durability,
-            int speed,
-            int damage,
-            float handle,
-            int reinforced,
-            float stonebound,
-            String style,
-            String ability) {
+    public ToolMaterial(String name, String displayName, int level, int durability, int speed, int damage, float handle,
+            int reinforced, float stonebound, String style, String ability) {
         this(name, level, durability, speed, damage, handle, reinforced, stonebound, style, 0xFFFFFF);
     }
 
     @Deprecated
-    public ToolMaterial(
-            String name,
-            int level,
-            int durability,
-            int speed,
-            int damage,
-            float handle,
-            int reinforced,
-            float stonebound,
-            String style,
-            String ability) {
+    public ToolMaterial(String name, int level, int durability, int speed, int damage, float handle, int reinforced,
+            float stonebound, String style, String ability) {
         this(name, level, durability, speed, damage, handle, reinforced, stonebound, style, 0xFFFFFF);
     }
 
     @Deprecated
-    public ToolMaterial(
-            String name,
-            int level,
-            int durability,
-            int speed,
-            int damage,
-            float handle,
-            int reinforced,
-            float stonebound,
-            String style) {
+    public ToolMaterial(String name, int level, int durability, int speed, int damage, float handle, int reinforced,
+            float stonebound, String style) {
         this(name, level, durability, speed, damage, handle, reinforced, stonebound, style, 0xFFFFFF);
     }
 
-    public ToolMaterial(
-            String name,
-            int level,
-            int durability,
-            int speed,
-            int damage,
-            float handle,
-            int reinforced,
-            float stonebound,
-            String style,
-            int primaryColor) {
+    public ToolMaterial(String name, int level, int durability, int speed, int damage, float handle, int reinforced,
+            float stonebound, String style, int primaryColor) {
         this(
                 name,
                 "material." + name.toLowerCase().replaceAll(" ", ""),
@@ -95,18 +60,8 @@ public class ToolMaterial {
                 primaryColor);
     }
 
-    public ToolMaterial(
-            String name,
-            String localizationString,
-            int level,
-            int durability,
-            int speed,
-            int damage,
-            float handle,
-            int reinforced,
-            float stonebound,
-            String style,
-            int primaryColor) {
+    public ToolMaterial(String name, String localizationString, int level, int durability, int speed, int damage,
+            float handle, int reinforced, float stonebound, String style, int primaryColor) {
         this.materialName = name;
         this.harvestLevel = level;
         this.durability = durability;
@@ -176,8 +131,8 @@ public class ToolMaterial {
     }
 
     /**
-     * Returns the ability of the tool to display.
-     * ONLY USE THIS FOR DISPLAY PURPOSES. It is not data you can rely on. Use the material-ids for that.
+     * Returns the ability of the tool to display. ONLY USE THIS FOR DISPLAY PURPOSES. It is not data you can rely on.
+     * Use the material-ids for that.
      */
     public String ability() {
         if (StatCollector.canTranslate(String.format("%s.ability", localizationString)))

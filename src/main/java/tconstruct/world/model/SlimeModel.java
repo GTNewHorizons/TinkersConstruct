@@ -1,11 +1,13 @@
 package tconstruct.world.model;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.model.*;
 import net.minecraft.entity.Entity;
 
+import cpw.mods.fml.relauncher.*;
+
 @SideOnly(Side.CLIENT)
 public class SlimeModel extends ModelBase {
+
     /** The slime's bodies, both the inside box and the outside box */
     ModelRenderer slimeBodies;
 

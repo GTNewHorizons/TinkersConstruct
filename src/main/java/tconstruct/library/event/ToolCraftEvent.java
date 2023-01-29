@@ -1,15 +1,18 @@
 package tconstruct.library.event;
 
-import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import tconstruct.library.tools.*;
 
-/* This event fires after all of the other construction. The resulting nbttag is added to the tool
- * Note: The tag is the base tag. toolTag.getCompoundTag("InfiTool") will have all of the tool's data.
+import tconstruct.library.tools.*;
+import cpw.mods.fml.common.eventhandler.Event;
+
+/*
+ * This event fires after all of the other construction. The resulting nbttag is added to the tool Note: The tag is the
+ * base tag. toolTag.getCompoundTag("InfiTool") will have all of the tool's data.
  */
 
 public class ToolCraftEvent extends Event {
+
     public final ToolCore tool;
     public final NBTTagCompound toolTag;
     public final ToolMaterial[] materials;
@@ -23,6 +26,7 @@ public class ToolCraftEvent extends Event {
 
     @HasResult
     public static class NormalTool extends ToolCraftEvent {
+
         public NormalTool(ToolCore tool, NBTTagCompound toolTag, ToolMaterial[] materials) {
             super(tool, toolTag, materials);
         }
@@ -30,8 +34,8 @@ public class ToolCraftEvent extends Event {
         /**
          * Fires just before the tool is put together
          *
-         * Result is significant: DEFAULT: Allows tool to be crafted normally
-         * ALLOW: Uses resultStack instead DENY: Stops tool crafting altogether
+         * Result is significant: DEFAULT: Allows tool to be crafted normally ALLOW: Uses resultStack instead DENY:
+         * Stops tool crafting altogether
          */
         public void overrideResult(ItemStack result) {
             resultStack = result;

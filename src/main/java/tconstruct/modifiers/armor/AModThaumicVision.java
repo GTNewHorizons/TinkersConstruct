@@ -1,22 +1,25 @@
 package tconstruct.modifiers.armor;
 
 import java.util.EnumSet;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
+
 import tconstruct.armor.TinkerArmor;
 import tconstruct.library.armor.ArmorMod;
 import tconstruct.library.armor.ArmorPart;
 
 public class AModThaumicVision extends ArmorMod {
+
     private final AModBoolean thaumicSensesMod;
     private final AModBoolean thaumicVisionMod;
 
     private final Item thaumometer;
 
     public AModThaumicVision(ItemStack thaumometer) {
-        super(-1, "", EnumSet.of(ArmorPart.Head), new ItemStack[] {thaumometer});
+        super(-1, "", EnumSet.of(ArmorPart.Head), new ItemStack[] { thaumometer });
         // super(effect, "Thaumic Vision", EnumSet.of(ArmorPart.Head), new ItemStack[]{},
         // EnumChatFormatting.DARK_PURPLE.toString(), "Thaumic Vision");
 
@@ -83,18 +86,15 @@ public class AModThaumicVision extends ArmorMod {
         // fix the effect display
         NBTTagCompound tags = input.getTagCompound().getCompoundTag(getTagName(input));
         int i = 1;
-        for (; i <= 6; i++)
-            if (tags.getInteger("Effect" + i) == -1) {
-                tags.setInteger("Effect" + i, effect);
-                break;
-            }
+        for (; i <= 6; i++) if (tags.getInteger("Effect" + i) == -1) {
+            tags.setInteger("Effect" + i, effect);
+            break;
+        }
     }
 
     private boolean hasThaumicSenses(ItemStack stack) {
-        return stack != null
-                && stack.hasTagCompound()
-                && stack.getTagCompound()
-                        .getCompoundTag(TinkerArmor.travelGoggles.getBaseTagName())
+        return stack != null && stack.hasTagCompound()
+                && stack.getTagCompound().getCompoundTag(TinkerArmor.travelGoggles.getBaseTagName())
                         .getBoolean(thaumicSensesMod.key);
     }
 

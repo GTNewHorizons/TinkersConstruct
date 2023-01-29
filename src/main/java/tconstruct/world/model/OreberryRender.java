@@ -1,17 +1,19 @@
 package tconstruct.world.model;
 
-import cpw.mods.fml.client.registry.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
+
 import tconstruct.util.ItemHelper;
+import cpw.mods.fml.client.registry.*;
 
 public class OreberryRender implements ISimpleBlockRenderingHandler {
+
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
-    public boolean renderWorldBlock(
-            IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
+            RenderBlocks renderer) {
 
         if (modelId == model) {
             int md = world.getBlockMetadata(x, y, z);

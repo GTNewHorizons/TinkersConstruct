@@ -1,7 +1,7 @@
 package tconstruct.items.tools;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,14 +9,17 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.BowstringMaterial;
 import tconstruct.library.tools.CustomMaterial;
 import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.TinkerWeaponry;
+import cpw.mods.fml.relauncher.*;
 
 @Deprecated
 public class Shortbow extends BowBase {
+
     public Shortbow() {
         super();
         this.setUnlocalizedName("InfiTool.Shortbow");
@@ -76,7 +79,7 @@ public class Shortbow extends BowBase {
 
     @Override
     public String[] getTraits() {
-        return new String[] {"weapon", "ranged", "bow"};
+        return new String[] { "weapon", "ranged", "bow" };
     }
 
     @Override
@@ -110,13 +113,7 @@ public class Shortbow extends BowBase {
                 else color = "\u00a76";
             }
 
-            String energy = new StringBuilder()
-                    .append(color)
-                    .append(tags.getInteger("Energy"))
-                    .append("/")
-                    .append(getMaxEnergyStored(stack))
-                    .append(" RF")
-                    .toString();
+            String energy = color + tags.getInteger("Energy") + "/" + getMaxEnergyStored(stack) + " RF";
             list.add(energy);
         }
         if (tags.hasKey("InfiTool")) {
@@ -163,16 +160,17 @@ public class Shortbow extends BowBase {
             }
         }
         list.add("");
-        list.add("\u00A79+" + tags.getCompoundTag("InfiTool").getInteger("Attack") + " "
-                + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
+        list.add(
+                "\u00A79+" + tags.getCompoundTag("InfiTool").getInteger("Attack")
+                        + " "
+                        + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
     }
 
     public String getBowstringName(int type) {
         switch (type) {
-            case 0:
-                return "";
             case 1:
                 return "\u00A7bEnchanted";
+            case 0:
             default:
                 return "";
         }

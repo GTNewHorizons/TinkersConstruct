@@ -1,13 +1,14 @@
 package tconstruct.weaponry.client.entity;
 
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.weaponry.entity.ShurikenEntity;
 
 public class ShurikenEntityRenderer extends ProjectileBaseRenderer<ShurikenEntity> {
 
     @Override
-    public void customRendering(
-            ShurikenEntity entity, double x, double y, double z, float p_76986_8_, float p_76986_9_) {
+    public void customRendering(ShurikenEntity entity, double x, double y, double z, float p_76986_8_,
+            float p_76986_9_) {
         // make it smaller
         GL11.glScalef(0.6F, 0.6F, 0.6F);
 

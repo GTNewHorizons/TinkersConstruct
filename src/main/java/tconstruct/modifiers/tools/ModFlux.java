@@ -1,17 +1,20 @@
 package tconstruct.modifiers.tools;
 
-import cofh.api.energy.IEnergyContainerItem;
 import java.util.ArrayList;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.util.config.PHConstruct;
+import cofh.api.energy.IEnergyContainerItem;
 
 /* TE3 support */
 
 public class ModFlux extends ModBoolean {
-    public ArrayList<ItemStack> batteries = new ArrayList<ItemStack>();
+
+    public ArrayList<ItemStack> batteries = new ArrayList<>();
     public int modifiersRequired = 1; // LALALALA totally not hidden IguanaTweaks Support LALALALA
 
     public ModFlux() {
@@ -28,17 +31,16 @@ public class ModFlux extends ModBoolean {
 
         ItemStack foundBattery = null;
         // try to find the battery in the input
-        for (ItemStack stack : input)
-            for (ItemStack battery : batteries) {
-                if (stack == null) continue;
-                if (stack.getItem() != battery.getItem()) continue;
-                if (!(stack.getItem() instanceof IEnergyContainerItem)) continue;
-                // we don't allow multiple batteries to be added
-                if (foundBattery != null) return false;
+        for (ItemStack stack : input) for (ItemStack battery : batteries) {
+            if (stack == null) continue;
+            if (stack.getItem() != battery.getItem()) continue;
+            if (!(stack.getItem() instanceof IEnergyContainerItem)) continue;
+            // we don't allow multiple batteries to be added
+            if (foundBattery != null) return false;
 
-                // battery found, gogogo
-                foundBattery = stack;
-            }
+            // battery found, gogogo
+            foundBattery = stack;
+        }
 
         // no battery present
         if (foundBattery == null) return false;
@@ -46,10 +48,11 @@ public class ModFlux extends ModBoolean {
         int maxEnergy = ((IEnergyContainerItem) foundBattery.getItem()).getMaxEnergyStored(foundBattery);
 
         // battery too big for our tool?
-        if (PHConstruct.balancedFluxModifier
-                && tags.getInteger("TotalDurability")
-                        < maxEnergy / 1000) // durability needs to be at least 1/1000th of the charge
-        return false;
+        if (PHConstruct.balancedFluxModifier && tags.getInteger("TotalDurability") < maxEnergy / 1000) // durability
+                                                                                                       // needs to be at
+                                                                                                       // least 1/1000th
+                                                                                                       // of the charge
+            return false;
 
         // check if we already have a flux modifier
         if (tags.getBoolean(key)) {
@@ -62,10 +65,9 @@ public class ModFlux extends ModBoolean {
                     > ((ToolCore) tool.getItem()).getMaxEnergyStored(tool);
         }
         // otherwise check if we have enough modfiers
-        else if (tags.getInteger("Modifiers") < modifiersRequired) return false;
+        else return tags.getInteger("Modifiers") >= modifiersRequired;
 
         // all requirements satisfied!
-        return true;
     }
 
     @Override
@@ -84,15 +86,14 @@ public class ModFlux extends ModBoolean {
 
         // find the battery in the input
         ItemStack inputBattery = null;
-        for (ItemStack stack : input)
-            for (ItemStack battery : batteries) {
-                if (stack == null) continue;
-                if (stack.getItem() != battery.getItem()) continue;
-                if (!(stack.getItem() instanceof IEnergyContainerItem)) continue;
+        for (ItemStack stack : input) for (ItemStack battery : batteries) {
+            if (stack == null) continue;
+            if (stack.getItem() != battery.getItem()) continue;
+            if (!(stack.getItem() instanceof IEnergyContainerItem)) continue;
 
-                // we're guaranteed to only find one battery because more are prevented above
-                inputBattery = stack;
-            }
+            // we're guaranteed to only find one battery because more are prevented above
+            inputBattery = stack;
+        }
 
         // get the energy interface
         IEnergyContainerItem energyContainer = (IEnergyContainerItem) inputBattery.getItem();

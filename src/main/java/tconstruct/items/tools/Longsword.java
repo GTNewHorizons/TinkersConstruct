@@ -1,16 +1,18 @@
 package tconstruct.items.tools;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
 import tconstruct.library.tools.Weapon;
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.relauncher.*;
 
 public class Longsword extends Weapon {
+
     public Longsword() {
         super(4);
         this.setUnlocalizedName("InfiTool.Longsword");
@@ -37,21 +39,13 @@ public class Longsword extends Weapon {
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int useCount) {
         /*
-         * if (player.onGround) { int time = this.getMaxItemUseDuration(stack) -
-         * useCount; if (time > 5) { player.addExhaustion(0.2F);
-         * player.setSprinting(true);
-         *
-         * float speed = 0.05F * time; if (speed > 0.925f) speed = 0.925f;
-         *
-         * float increase = (float) (0.02 * time + 0.2); if (increase > 0.56f)
-         * increase = 0.56f; player.motionY += increase + speed/3;
-         *
-         * player.motionX = (double) (-MathHelper.sin(player.rotationYaw /
-         * 180.0F * (float) Math.PI) * MathHelper.cos(player.rotationPitch /
-         * 180.0F * (float) Math.PI) * speed); player.motionZ = (double)
-         * (MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI) *
-         * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI) *
-         * speed); } }
+         * if (player.onGround) { int time = this.getMaxItemUseDuration(stack) - useCount; if (time > 5) {
+         * player.addExhaustion(0.2F); player.setSprinting(true); float speed = 0.05F * time; if (speed > 0.925f) speed
+         * = 0.925f; float increase = (float) (0.02 * time + 0.2); if (increase > 0.56f) increase = 0.56f;
+         * player.motionY += increase + speed/3; player.motionX = (double) (-MathHelper.sin(player.rotationYaw / 180.0F
+         * * (float) Math.PI) * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI) * speed); player.motionZ
+         * = (double) (MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI) *
+         * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI) * speed); } }
          */
         int time = this.getMaxItemUseDuration(stack) - useCount;
         if (time > 5) {
@@ -64,12 +58,12 @@ public class Longsword extends Weapon {
 
             float speed = 0.05F * time;
             if (speed > 0.925f) speed = 0.925f;
-            player.motionX = (double) (-MathHelper.sin(player.rotationYaw / 180.0F * (float) Math.PI)
+            player.motionX = -MathHelper.sin(player.rotationYaw / 180.0F * (float) Math.PI)
                     * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI)
-                    * speed);
-            player.motionZ = (double) (MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI)
+                    * speed;
+            player.motionZ = MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI)
                     * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI)
-                    * speed);
+                    * speed;
         }
     }
 

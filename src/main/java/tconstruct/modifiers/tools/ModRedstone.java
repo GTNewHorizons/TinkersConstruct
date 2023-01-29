@@ -1,12 +1,15 @@
 package tconstruct.modifiers.tools;
 
 import java.util.*;
+
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
+
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.tools.ToolCore;
 
 public class ModRedstone extends ItemModTypeFilter {
+
     public String tooltipName;
     public int max = 50;
 
@@ -26,7 +29,7 @@ public class ModRedstone extends ItemModTypeFilter {
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
             if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input) <= max;
 
-            int keyPair[] = tags.getIntArray(key);
+            int[] keyPair = tags.getIntArray(key);
 
             if (keyPair[0] + matchingAmount(input) <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
@@ -40,7 +43,7 @@ public class ModRedstone extends ItemModTypeFilter {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int[] keyPair;
         int increase = matchingAmount(input);
-        int current = 0;
+        int current;
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);
             if (keyPair[0] % max == 0) {
@@ -63,7 +66,7 @@ public class ModRedstone extends ItemModTypeFilter {
             tags.setInteger("Modifiers", modifiers);
             String modName = "\u00a74Redstone (" + increase + "/" + max + ")";
             int tooltipIndex = addToolTip(tool, tooltipName, modName);
-            keyPair = new int[] {increase, max, tooltipIndex};
+            keyPair = new int[] { increase, max, tooltipIndex };
             current = keyPair[0];
             tags.setIntArray(key, keyPair);
         }
@@ -80,7 +83,7 @@ public class ModRedstone extends ItemModTypeFilter {
         miningSpeed += (increase * boost);
         tags.setInteger("MiningSpeed", miningSpeed);
 
-        String[] type = {"MiningSpeed2", "MiningSpeedHandle", "MiningSpeedExtra"};
+        String[] type = { "MiningSpeed2", "MiningSpeedHandle", "MiningSpeedExtra" };
 
         for (int i = 0; i < 3; i++) {
             if (tags.hasKey(type[i])) {
@@ -103,7 +106,7 @@ public class ModRedstone extends ItemModTypeFilter {
     }
 
     public boolean validType(ToolCore tool) {
-        List list = Arrays.asList(tool.getTraits());
+        List<String> list = Arrays.asList(tool.getTraits());
 
         // handled by the windup modifier
         if (list.contains("windup")) return false;

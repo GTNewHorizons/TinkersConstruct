@@ -1,7 +1,7 @@
 package tconstruct.items.tools;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,12 +10,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.*;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.*;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.logic.EquipLogic;
 
 public class FryingPan extends Weapon {
+
     public FryingPan() {
         super(2);
         this.setUnlocalizedName("InfiTool.FryPan");
@@ -68,7 +70,7 @@ public class FryingPan extends Weapon {
         tags.setInteger("BaseDurability", Integer.MAX_VALUE / 100);
         tags.setInteger("MiningSpeed", Integer.MAX_VALUE / 100);
 
-        int[] keyPair = new int[] {Integer.MAX_VALUE / 100, 0, 0};
+        int[] keyPair = new int[] { Integer.MAX_VALUE / 100, 0, 0 };
         tags.setIntArray("Blaze", keyPair);
         tags.setInteger("Necrotic", Integer.MAX_VALUE / 100);
         tags.setInteger("Effect1", 7);
@@ -78,17 +80,8 @@ public class FryingPan extends Weapon {
     }
 
     @Override
-    public boolean onItemUse(
-            ItemStack stack,
-            EntityPlayer player,
-            World world,
-            int x,
-            int y,
-            int z,
-            int side,
-            float clickX,
-            float clickY,
-            float clickZ) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+            float clickX, float clickY, float clickZ) {
         if (side == 0 || !player.isSneaking()) {
             return false;
         } else if (!world.getBlock(x, y, z).getMaterial().isSolid()) {
@@ -122,7 +115,12 @@ public class FryingPan extends Weapon {
                 world.setBlock(x, y, z, TinkerTools.heldItemBlock, 0, 3);
                 TinkerTools.heldItemBlock.onBlockPlacedBy(world, x, y, z, player, stack);
                 world.playSoundEffect(
-                        x, y, z, "tinker:frypan_hit", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 0.65F);
+                        x,
+                        y,
+                        z,
+                        "tinker:frypan_hit",
+                        1.0F,
+                        (random.nextFloat() - random.nextFloat()) * 0.2F + 0.65F);
 
                 EquipLogic logic = (EquipLogic) world.getTileEntity(x, y, z);
                 logic.setEquipmentItem(stack);

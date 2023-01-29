@@ -2,9 +2,11 @@ package tconstruct.world.entity;
 
 import net.minecraft.item.Item;
 import net.minecraft.world.*;
+
 import tconstruct.world.TinkerWorld;
 
 public class BlueSlime extends SlimeBase {
+
     public BlueSlime(World world) {
         super(world);
     }

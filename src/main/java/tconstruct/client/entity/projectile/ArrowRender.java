@@ -1,8 +1,9 @@
 package tconstruct.client.entity.projectile;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.Random;
+
 import mantle.blocks.BlockUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -11,18 +12,22 @@ import net.minecraft.client.renderer.texture.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+
 import org.lwjgl.opengl.*;
+
 import tconstruct.tools.entity.ArrowEntity;
+import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 @Deprecated
 public class ArrowRender extends Render {
-    private static final ResourceLocation RES_ITEM_GLINT =
-            new ResourceLocation("textures/misc/enchanted_item_glint.png");
-    private RenderBlocks itemRenderBlocks = new RenderBlocks();
+
+    private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation(
+            "textures/misc/enchanted_item_glint.png");
+    private final RenderBlocks itemRenderBlocks = new RenderBlocks();
 
     /** The RNG used in RenderItem (for bobbing itemstacks on the ground) */
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public boolean renderWithColor = true;
 
@@ -39,8 +44,8 @@ public class ArrowRender extends Render {
     /**
      * Renders the item
      */
-    public void doRenderItem(
-            ArrowEntity par1ArrowEntity, double par2, double par4, double par6, float par8, float par9) {
+    public void doRenderItem(ArrowEntity par1ArrowEntity, double par2, double par4, double par6, float par8,
+            float par9) {
         this.bindEntityTexture(par1ArrowEntity);
         this.random.setSeed(187L);
         ItemStack itemstack = par1ArrowEntity.getEntityItem();
@@ -58,13 +63,11 @@ public class ArrowRender extends Render {
             float f6;
             int i;
 
-            Block block = null;
+            Block block;
             block = BlockUtils.getBlockFromItem(itemstack.getItem());
 
-            if (itemstack.getItemSpriteNumber() == 0
-                    && block != null
-                    && RenderBlocks.renderItemIn3d(
-                            BlockUtils.getBlockFromItem(itemstack.getItem()).getRenderType())) {
+            if (itemstack.getItemSpriteNumber() == 0 && block != null
+                    && RenderBlocks.renderItemIn3d(BlockUtils.getBlockFromItem(itemstack.getItem()).getRenderType())) {
                 GL11.glRotatef(f3, 0.0F, 1.0F, 0.0F);
 
                 float f7 = 0.25F;
@@ -136,33 +139,33 @@ public class ArrowRender extends Render {
     }
 
     protected ResourceLocation func_110796_a(ArrowEntity par1ArrowEntity) {
-        return this.renderManager.renderEngine.getResourceLocation(
-                par1ArrowEntity.getEntityItem().getItemSpriteNumber());
+        return this.renderManager.renderEngine
+                .getResourceLocation(par1ArrowEntity.getEntityItem().getItemSpriteNumber());
     }
 
     /**
      * Renders a dropped item
      */
-    private void renderDroppedItem(
-            ArrowEntity par1ArrowEntity, IIcon par2Icon, int par3, float par4, float par5, float par6, float par7) {
+    private void renderDroppedItem(ArrowEntity par1ArrowEntity, IIcon par2Icon, int par3, float par4, float par5,
+            float par6, float par7) {
         renderDroppedItem(par1ArrowEntity, par2Icon, par3, par4, par5, par6, par7, 0);
     }
 
-    private void renderDroppedItem(
-            ArrowEntity arrow, IIcon par2Icon, int par3, float par4, float par5, float par6, float par7, int pass) {
+    private void renderDroppedItem(ArrowEntity arrow, IIcon par2Icon, int par3, float par4, float par5, float par6,
+            float par7, int pass) {
         Tessellator tessellator = Tessellator.instance;
 
         if (par2Icon == null) {
             TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
-            ResourceLocation resourcelocation =
-                    texturemanager.getResourceLocation(arrow.getEntityItem().getItemSpriteNumber());
+            ResourceLocation resourcelocation = texturemanager
+                    .getResourceLocation(arrow.getEntityItem().getItemSpriteNumber());
             par2Icon = ((TextureMap) texturemanager.getTexture(resourcelocation)).getAtlasSprite("missingno");
         }
 
-        float f4 = ((IIcon) par2Icon).getMinU();
-        float f5 = ((IIcon) par2Icon).getMaxU();
-        float f6 = ((IIcon) par2Icon).getMinV();
-        float f7 = ((IIcon) par2Icon).getMaxV();
+        float f4 = par2Icon.getMinU();
+        float f5 = par2Icon.getMaxU();
+        float f6 = par2Icon.getMinV();
+        float f7 = par2Icon.getMaxV();
         float f8 = 1.0F;
         float f9 = 0.5F;
         float f10 = 0.25F;
@@ -216,8 +219,8 @@ public class ArrowRender extends Render {
                     f6,
                     f4,
                     f7,
-                    ((IIcon) par2Icon).getIconWidth(),
-                    ((IIcon) par2Icon).getIconHeight(),
+                    par2Icon.getIconWidth(),
+                    par2Icon.getIconHeight(),
                     f12);
 
             if (itemstack.hasEffect(pass)) {
@@ -260,12 +263,10 @@ public class ArrowRender extends Render {
     }
 
     /**
-     * Actually renders the given argument. This is a synthetic bridge method,
-     * always casting down its argument and then handing it off to a worker
-     * function which does the actual work. In all probabilty, the class Render
-     * is generic (Render<T extends Entity) and this method has signature public
-     * void doRender(T entity, double d, double d1, double d2, float f, float
-     * f1). But JAD is pre 1.5 so doesn't do that.
+     * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then
+     * handing it off to a worker function which does the actual work. In all probabilty, the class Render is generic
+     * (Render<T extends Entity) and this method has signature public void doRender(T entity, double d, double d1,
+     * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
      */
     @Override
     public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {

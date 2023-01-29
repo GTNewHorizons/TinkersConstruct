@@ -6,12 +6,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
 import tconstruct.library.weaponry.BowBaseAmmo;
 import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.TinkerWeaponry;
 import tconstruct.weaponry.ammo.ArrowAmmo;
 
 public class LongBow extends BowBaseAmmo {
+
     public LongBow() {
         super(0, "Longbow");
     }
@@ -32,8 +34,8 @@ public class LongBow extends BowBaseAmmo {
     }
 
     @Override
-    protected Entity createProjectile(
-            ItemStack arrows, World world, EntityPlayer player, float speed, float accuracy, float windup) {
+    protected Entity createProjectile(ItemStack arrows, World world, EntityPlayer player, float speed, float accuracy,
+            float windup) {
         if (arrows.getItem() instanceof ArrowAmmo) {
             // modify accuraccy of the arrow depending on its accuraccy and weight
             NBTTagCompound tags = arrows.getTagCompound().getCompoundTag("InfiTool");

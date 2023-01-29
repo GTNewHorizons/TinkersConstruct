@@ -1,13 +1,15 @@
 package tconstruct.armor.modelblock;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.blocks.logic.DryingRackLogic;
 import tconstruct.tools.entity.FancyEntityItem;
+import cpw.mods.fml.relauncher.*;
 
 /* Special renderer, only used for drawing tools */
 

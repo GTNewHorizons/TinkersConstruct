@@ -1,17 +1,20 @@
 package tconstruct.tools.logic;
 
 import mantle.blocks.abstracts.InventoryLogic;
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
 import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.util.IPattern;
 import tconstruct.tools.inventory.*;
 
 public class PartBuilderLogic extends InventoryLogic implements ISidedInventory {
+
     boolean craftedTop;
     boolean craftedBottom;
 
@@ -32,7 +35,7 @@ public class PartBuilderLogic extends InventoryLogic implements ISidedInventory 
             for (int zPos = z - 1; zPos <= z + 1; zPos++) {
                 for (int yPos = y - 1; yPos <= y + 1; yPos++) {
                     TileEntity tile = world.getTileEntity(xPos, yPos, zPos);
-                    if (tile != null && tile instanceof PatternChestLogic && (x == xPos || z == zPos))
+                    if (tile instanceof PatternChestLogic && (x == xPos || z == zPos))
                         return new PartCrafterChestContainer(inventoryplayer, this, (PatternChestLogic) tile);
                 }
             }
@@ -66,8 +69,7 @@ public class PartBuilderLogic extends InventoryLogic implements ISidedInventory 
                 }
             }
 
-            if (inventory[4] != null || inventory[5] != null) craftedTop = true;
-            else craftedTop = false;
+            craftedTop = inventory[4] != null || inventory[5] != null;
         }
 
         if (!craftedTop) buildTopPart();
@@ -84,8 +86,7 @@ public class PartBuilderLogic extends InventoryLogic implements ISidedInventory 
                 }
             }
 
-            if (inventory[6] != null || inventory[7] != null) craftedBottom = true;
-            else craftedBottom = false;
+            craftedBottom = inventory[6] != null || inventory[7] != null;
         }
 
         if (!craftedBottom) buildBottomPart();

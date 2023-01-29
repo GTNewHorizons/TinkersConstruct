@@ -2,13 +2,16 @@ package tconstruct.client.pages;
 
 import mantle.client.pages.BookPage;
 import mantle.lib.client.MantleClientRegistry;
+
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+
 import org.lwjgl.opengl.*;
 import org.w3c.dom.*;
 
 public class BlockCastPage extends BookPage {
+
     String text;
     ItemStack[] icons;
 
@@ -18,8 +21,7 @@ public class BlockCastPage extends BookPage {
         if (nodes != null) text = nodes.item(0).getTextContent();
 
         nodes = element.getElementsByTagName("recipe");
-        if (nodes != null)
-            icons = MantleClientRegistry.getRecipeIcons(nodes.item(0).getTextContent());
+        if (nodes != null) icons = MantleClientRegistry.getRecipeIcons(nodes.item(0).getTextContent());
     }
 
     @Override
@@ -34,20 +36,31 @@ public class BlockCastPage extends BookPage {
         manual.renderitem.zLevel = 100;
 
         manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts, manual.getMC().renderEngine, icons[0], (localWidth + 138) / 2, (localHeight + 110) / 2);
+                manual.fonts,
+                manual.getMC().renderEngine,
+                icons[0],
+                (localWidth + 138) / 2,
+                (localHeight + 110) / 2);
         manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts, manual.getMC().renderEngine, icons[1], (localWidth + 70) / 2, (localHeight + 74) / 2);
+                manual.fonts,
+                manual.getMC().renderEngine,
+                icons[1],
+                (localWidth + 70) / 2,
+                (localHeight + 74) / 2);
         manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts, manual.getMC().renderEngine, icons[2], (localWidth + 70) / 2, (localHeight + 110) / 2);
+                manual.fonts,
+                manual.getMC().renderEngine,
+                icons[2],
+                (localWidth + 70) / 2,
+                (localHeight + 110) / 2);
 
-        if (icons[0].stackSize > 1)
-            manual.renderitem.renderItemOverlayIntoGUI(
-                    manual.fonts,
-                    manual.getMC().renderEngine,
-                    icons[0],
-                    (localWidth + 106) / 2,
-                    (localHeight + 74) / 2,
-                    String.valueOf(icons[0].stackSize));
+        if (icons[0].stackSize > 1) manual.renderitem.renderItemOverlayIntoGUI(
+                manual.fonts,
+                manual.getMC().renderEngine,
+                icons[0],
+                (localWidth + 106) / 2,
+                (localHeight + 74) / 2,
+                String.valueOf(icons[0].stackSize));
 
         manual.renderitem.zLevel = 0;
         GL11.glScalef(0.5F, 0.5F, 0.5F);

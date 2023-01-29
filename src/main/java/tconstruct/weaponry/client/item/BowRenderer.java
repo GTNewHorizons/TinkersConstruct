@@ -6,7 +6,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.client.FlexibleToolRenderer;
 import tconstruct.library.weaponry.IWindup;
 import tconstruct.library.weaponry.ProjectileWeapon;
@@ -15,6 +17,7 @@ import tconstruct.weaponry.ammo.ArrowAmmo;
 import tconstruct.weaponry.entity.ArrowEntity;
 
 public class BowRenderer extends FlexibleToolRenderer {
+
     private static final ArrowEntity dummy = new ArrowEntity(null);
 
     @Override
@@ -48,8 +51,9 @@ public class BowRenderer extends FlexibleToolRenderer {
             GL11.glTranslatef(progress * -0.1f, progress * -0.125f, 0.0F);
 
             // we're crazy, so.. render the arrow =D
-            ItemStack ammo = ((ProjectileWeapon) item.getItem())
-                    .searchForAmmo(player, item); // we know it's a projectile weapon, it's a bow!
+            ItemStack ammo = ((ProjectileWeapon) item.getItem()).searchForAmmo(player, item); // we know it's a
+                                                                                              // projectile weapon, it's
+                                                                                              // a bow!
             if (ammo != null) {
                 if (ammo.getItem() == Items.arrow) dummy.returnStack = ArrowAmmo.vanillaArrow;
                 else dummy.returnStack = ammo;
@@ -74,8 +78,9 @@ public class BowRenderer extends FlexibleToolRenderer {
             }
         } else if (type == ItemRenderType.EQUIPPED && player.isUsingItem()) {
             // we're crazy, so.. render the arrow =D
-            ItemStack ammo = ((ProjectileWeapon) item.getItem())
-                    .searchForAmmo(player, item); // we know it's a projectile weapon, it's a bow!
+            ItemStack ammo = ((ProjectileWeapon) item.getItem()).searchForAmmo(player, item); // we know it's a
+                                                                                              // projectile weapon, it's
+                                                                                              // a bow!
             if (ammo != null) {
                 if (ammo.getItem() == Items.arrow || !(ammo.getItem() instanceof ArrowAmmo))
                     dummy.returnStack = ArrowAmmo.vanillaArrow;

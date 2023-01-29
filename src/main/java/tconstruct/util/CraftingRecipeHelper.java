@@ -1,11 +1,13 @@
 package tconstruct.util;
 
 import java.util.*;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.*;
 
 public class CraftingRecipeHelper {
+
     public static void removeShapedRecipes(List<ItemStack> removelist) {
         for (ItemStack stack : removelist) removeShapedRecipe(stack);
     }
@@ -52,32 +54,30 @@ public class CraftingRecipeHelper {
     }
 
     public static void addShapedRecipeFirst(List recipeList, ItemStack itemstack, Object... objArray) {
-        String var3 = "";
+        StringBuilder var3 = new StringBuilder();
         int var4 = 0;
         int var5 = 0;
         int var6 = 0;
 
         if (objArray[var4] instanceof String[]) {
             String[] var7 = ((String[]) objArray[var4++]);
-
-            for (int var8 = 0; var8 < var7.length; ++var8) {
-                String var9 = var7[var8];
+            for (String var9 : var7) {
                 ++var6;
                 var5 = var9.length();
-                var3 = var3 + var9;
+                var3.append(var9);
             }
         } else {
             while (objArray[var4] instanceof String) {
                 String var11 = (String) objArray[var4++];
                 ++var6;
                 var5 = var11.length();
-                var3 = var3 + var11;
+                var3.append(var11);
             }
         }
 
-        HashMap var12;
+        HashMap<Character, ItemStack> var12;
 
-        for (var12 = new HashMap(); var4 < objArray.length; var4 += 2) {
+        for (var12 = new HashMap<>(); var4 < objArray.length; var4 += 2) {
             Character var13 = (Character) objArray[var4];
             ItemStack var14 = null;
 
@@ -97,8 +97,8 @@ public class CraftingRecipeHelper {
         for (int var16 = 0; var16 < var5 * var6; ++var16) {
             char var10 = var3.charAt(var16);
 
-            if (var12.containsKey(Character.valueOf(var10))) {
-                var15[var16] = ((ItemStack) var12.get(Character.valueOf(var10))).copy();
+            if (var12.containsKey(var10)) {
+                var15[var16] = ((ItemStack) var12.get(var10)).copy();
             } else {
                 var15[var16] = null;
             }

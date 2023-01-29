@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.armor.inventory.SlotOnlyTake;
 import tconstruct.library.util.IPattern;
 import tconstruct.smeltery.inventory.ActiveContainer;
@@ -13,6 +14,7 @@ import tconstruct.tools.logic.PartBuilderLogic;
 import tconstruct.tools.logic.PatternChestLogic;
 
 public class PartCrafterChestContainer extends ActiveContainer {
+
     protected PatternChestLogic patternLogic;
     protected InventoryPlayer invPlayer;
     protected PartBuilderLogic logic;
@@ -20,23 +22,19 @@ public class PartCrafterChestContainer extends ActiveContainer {
     protected Slot[] inventory;
     public boolean largeInventory;
 
-    public PartCrafterChestContainer(
-            InventoryPlayer inventoryplayer, PartBuilderLogic partLogic, PatternChestLogic pLogic) {
+    public PartCrafterChestContainer(InventoryPlayer inventoryplayer, PartBuilderLogic partLogic,
+            PatternChestLogic pLogic) {
         logic = partLogic;
         patternLogic = pLogic;
         largeInventory = true;
 
-        inventory = new Slot[] {
-            new SlotPattern(partLogic, 0, 156, 27),
-            new SlotPattern(partLogic, 1, 156, 45),
-            new Slot(partLogic, 2, 174, 27),
-            new Slot(partLogic, 3, 174, 45),
-            new SlotOnlyTake(partLogic, 4, 218, 27),
-            new SlotOnlyTake(partLogic, 5, 236, 27),
-            new SlotOnlyTake(partLogic, 6, 218, 45),
-            new SlotOnlyTake(partLogic, 7, 236, 45)
-        };
-        for (int iter = 0; iter < inventory.length; iter++) this.addSlotToContainer(inventory[iter]);
+        inventory = new Slot[] { new SlotPattern(partLogic, 0, 156, 27), new SlotPattern(partLogic, 1, 156, 45),
+                new Slot(partLogic, 2, 174, 27), new Slot(partLogic, 3, 174, 45),
+                new SlotOnlyTake(partLogic, 4, 218, 27), new SlotOnlyTake(partLogic, 5, 236, 27),
+                new SlotOnlyTake(partLogic, 6, 218, 45), new SlotOnlyTake(partLogic, 7, 236, 45) };
+        for (Slot slot : inventory) {
+            this.addSlotToContainer(slot);
+        }
 
         /* Holder inventory */
         for (int column = 0; column < 5; column++) {

@@ -1,14 +1,17 @@
 package tconstruct.plugins.nei;
 
+import java.awt.Rectangle;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+
+import org.lwjgl.opengl.GL11;
+
+import tconstruct.library.crafting.DryingRackRecipes;
+import tconstruct.library.crafting.DryingRackRecipes.DryingRecipe;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
-import java.awt.Rectangle;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-import org.lwjgl.opengl.GL11;
-import tconstruct.library.crafting.DryingRackRecipes;
-import tconstruct.library.crafting.DryingRackRecipes.DryingRecipe;
 
 public class RecipeHandlerDryingRack extends RecipeHandlerBase {
 
@@ -47,8 +50,7 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
 
     @Override
     public void loadTransferRects() {
-        this.transferRects.add(
-                new RecipeTransferRect(new Rectangle(68, 20, 22, 15), this.getRecipeID(), new Object[0]));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(68, 20, 22, 15), this.getRecipeID()));
     }
 
     @Override

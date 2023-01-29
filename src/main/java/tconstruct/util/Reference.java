@@ -3,6 +3,7 @@ package tconstruct.util;
 import tconstruct.TConstruct;
 
 public final class Reference {
+
     private Reference() {}
 
     public static final String MOD_ID = TConstruct.modID;

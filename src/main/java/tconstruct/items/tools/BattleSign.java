@@ -1,16 +1,18 @@
 package tconstruct.items.tools;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.world.World;
+
 import tconstruct.TConstruct;
 import tconstruct.library.tools.Weapon;
 import tconstruct.tools.*;
 import tconstruct.tools.logic.EquipLogic;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.*;
 
 public class BattleSign extends Weapon {
+
     public BattleSign() {
         super(1);
         this.setUnlocalizedName("InfiTool.Battlesign");
@@ -68,17 +70,8 @@ public class BattleSign extends Weapon {
     }
 
     @Override
-    public boolean onItemUse(
-            ItemStack stack,
-            EntityPlayer player,
-            World world,
-            int x,
-            int y,
-            int z,
-            int side,
-            float clickX,
-            float clickY,
-            float clickZ) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+            float clickX, float clickY, float clickZ) {
         if (side == 0 || !player.isSneaking()) {
             return false;
         } else if (!world.getBlock(x, y, z).getMaterial().isSolid()) {

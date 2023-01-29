@@ -1,13 +1,16 @@
 package tconstruct.armor.modelblock;
 
-import cpw.mods.fml.client.registry.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.*;
 import net.minecraft.world.IBlockAccess;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.util.ItemHelper;
+import cpw.mods.fml.client.registry.*;
 
 public class DryingRackRender implements ISimpleBlockRenderingHandler {
+
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
@@ -19,8 +22,8 @@ public class DryingRackRender implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean renderWorldBlock(
-            IBlockAccess world, int x, int y, int z, Block block, int modelID, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
+            RenderBlocks renderer) {
         if (modelID == model) {
             int metadata = world.getBlockMetadata(x, y, z);
             if (metadata == 0) {

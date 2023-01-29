@@ -1,7 +1,7 @@
 package tconstruct.world.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import mantle.blocks.MantleBlock;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.*;
@@ -9,10 +9,13 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.world.model.SlimeChannelRender;
+import cpw.mods.fml.relauncher.*;
 
 public class ConveyorBase extends MantleBlock {
+
     String texturename;
 
     public ConveyorBase(Material material, String name) {
@@ -82,8 +85,7 @@ public class ConveyorBase extends MantleBlock {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
         int face = MathHelper.floor_double((double) (entity.rotationYaw * 8.0F / 360.0F) + 0.5D)
-                        + (entity.isSneaking() ? 4 : 0)
-                & 7;
+                + (entity.isSneaking() ? 4 : 0) & 7;
         int meta = world.getBlockMetadata(x, y, z) & 8;
         world.setBlockMetadataWithNotify(x, y, z, face | meta, 2);
     }
@@ -119,7 +121,7 @@ public class ConveyorBase extends MantleBlock {
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        String[] textureNames = new String[] {texturename, texturename + "_flow"};
+        String[] textureNames = new String[] { texturename, texturename + "_flow" };
         this.icons = new IIcon[textureNames.length];
 
         for (int i = 0; i < this.icons.length; ++i) {

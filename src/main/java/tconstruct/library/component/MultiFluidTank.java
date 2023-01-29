@@ -1,12 +1,15 @@
 package tconstruct.library.component;
 
 import java.util.*;
+
 import net.minecraft.nbt.*;
 import net.minecraftforge.fluids.*;
+
 import tconstruct.library.crafting.Smeltery;
 
 public class MultiFluidTank extends LogicComponent implements IFluidTank {
-    public ArrayList<FluidStack> fluidlist = new ArrayList<FluidStack>();
+
+    public ArrayList<FluidStack> fluidlist = new ArrayList<>();
     protected int maxLiquid;
     protected int currentLiquid;
 
@@ -63,9 +66,8 @@ public class MultiFluidTank extends LogicComponent implements IFluidTank {
 
             if (doFill) {
                 if (addFluidToTank(resource, false)) {
-                    ArrayList alloys = Smeltery.mixMetals(fluidlist);
-                    for (int al = 0; al < alloys.size(); al++) {
-                        FluidStack liquid = (FluidStack) alloys.get(al);
+                    ArrayList<FluidStack> alloys = Smeltery.mixMetals(fluidlist);
+                    for (FluidStack liquid : alloys) {
                         addFluidToTank(liquid, true);
                     }
                 }
@@ -78,7 +80,6 @@ public class MultiFluidTank extends LogicComponent implements IFluidTank {
         if (fluidlist.size() == 0) {
             fluidlist.add(liquid.copy());
             currentLiquid += liquid.amount;
-            return true;
         } else {
             if (liquid.amount + currentLiquid > maxLiquid) return false;
 
@@ -99,8 +100,8 @@ public class MultiFluidTank extends LogicComponent implements IFluidTank {
                 if (first) fluidlist.add(0, liquid.copy());
                 else fluidlist.add(liquid.copy());
             }
-            return true;
         }
+        return true;
     }
 
     @Override
@@ -136,7 +137,7 @@ public class MultiFluidTank extends LogicComponent implements IFluidTank {
         fluidlist.clear();
 
         for (int iter = 0; iter < liquidTag.tagCount(); iter++) {
-            NBTTagCompound nbt = (NBTTagCompound) liquidTag.getCompoundTagAt(iter);
+            NBTTagCompound nbt = liquidTag.getCompoundTagAt(iter);
             FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
             if (fluid != null) fluidlist.add(fluid);
         }

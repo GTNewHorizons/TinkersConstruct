@@ -2,9 +2,10 @@ package tconstruct.world.blocks;
 
 import static net.minecraftforge.common.util.ForgeDirection.*;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.Random;
+
 import mantle.blocks.MantleBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -12,7 +13,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
+
 public class StoneTorch extends MantleBlock {
+
     public StoneTorch() {
         super(Material.circuits);
         this.setCreativeTab(CreativeTabs.tabDecorations);
@@ -20,8 +24,8 @@ public class StoneTorch extends MantleBlock {
     }
 
     /**
-     * Returns a bounding box from the pool of bounding boxes (this means this
-     * box can change after the pool has been cleared to be reused)
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
      */
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
@@ -29,9 +33,8 @@ public class StoneTorch extends MantleBlock {
     }
 
     /**
-     * Is this block (a) opaque and (b) a full 1m cube? This determines whether
-     * or not to render the shared face of two adjacent blocks and also whether
-     * the player can attach torches, redstone wire, etc to this block.
+     * Is this block (a) opaque and (b) a full 1m cube? This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
      */
     @Override
     public boolean isOpaqueCube() {
@@ -39,8 +42,7 @@ public class StoneTorch extends MantleBlock {
     }
 
     /**
-     * If this block doesn't render as an ordinary block it will return False
-     * (examples: signs, buttons, stairs, etc)
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
      */
     @Override
     public boolean renderAsNormalBlock() {
@@ -59,7 +61,7 @@ public class StoneTorch extends MantleBlock {
      * Gets if we can place a torch on a block.
      */
     private boolean canPlaceTorchOn(World par1World, int par2, int par3, int par4) {
-        if (par1World.doesBlockHaveSolidTopSurface(par1World, par2, par3, par4)) {
+        if (World.doesBlockHaveSolidTopSurface(par1World, par2, par3, par4)) {
             return true;
         } else {
             Block b = par1World.getBlock(par2, par3, par4);
@@ -68,8 +70,7 @@ public class StoneTorch extends MantleBlock {
     }
 
     /**
-     * Checks to see if its valid to put this block at the specified
-     * coordinates. Args: world, x, y, z
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
     @Override
     public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4) {
@@ -81,12 +82,11 @@ public class StoneTorch extends MantleBlock {
     }
 
     /**
-     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z,
-     * side, hitX, hitY, hitZ, block metadata
+     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
      */
     @Override
-    public int onBlockPlaced(
-            World par1World, int par2, int par3, int par4, int par5, float par6, float par7, float par8, int par9) {
+    public int onBlockPlaced(World par1World, int par2, int par3, int par4, int par5, float par6, float par7,
+            float par8, int par9) {
         int j1 = par9;
 
         if (par5 == 1 && this.canPlaceTorchOn(par1World, par2, par3 - 1, par4)) {
@@ -146,9 +146,8 @@ public class StoneTorch extends MantleBlock {
     }
 
     /**
-     * Lets the block know when one of its neighbor changes. Doesn't know which
-     * neighbor changed (coordinates passed are their own) Args: x, y, z,
-     * neighbor blockID
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
      */
     @Override
     public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, Block par5) {
@@ -193,13 +192,12 @@ public class StoneTorch extends MantleBlock {
     }
 
     /**
-     * Tests if the block can remain at its current location and will drop as an
-     * item if it is unable to stay. Returns True if it can stay and False if it
-     * drops. Args: world, x, y, z
+     * Tests if the block can remain at its current location and will drop as an item if it is unable to stay. Returns
+     * True if it can stay and False if it drops. Args: world, x, y, z
      */
     protected boolean dropTorchIfCantStay(World par1World, int par2, int par3, int par4) {
         if (!this.canPlaceBlockAt(par1World, par2, par3, par4)) {
-            if (par1World.getBlock(par2, par3, par4) == (Block) this) {
+            if (par1World.getBlock(par2, par3, par4) == this) {
                 this.dropBlockAsItem(par1World, par2, par3, par4, par1World.getBlockMetadata(par2, par3, par4), 0);
                 par1World.setBlockToAir(par2, par3, par4);
                 // WorldHelper.setBlockToAir(par1World, par2, par3, par4);
@@ -212,12 +210,12 @@ public class StoneTorch extends MantleBlock {
     }
 
     /**
-     * Ray traces through the blocks collision from start vector to end vector
-     * returning a ray trace hit. Args: world, x, y, z, startVec, endVec
+     * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
+     * x, y, z, startVec, endVec
      */
     @Override
-    public MovingObjectPosition collisionRayTrace(
-            World par1World, int par2, int par3, int par4, Vec3 par5Vec3, Vec3 par6Vec3) {
+    public MovingObjectPosition collisionRayTrace(World par1World, int par2, int par3, int par4, Vec3 par5Vec3,
+            Vec3 par6Vec3) {
         int l = par1World.getBlockMetadata(par2, par3, par4) & 7;
         float f = 0.15F;
 
@@ -244,9 +242,9 @@ public class StoneTorch extends MantleBlock {
      */
     public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random) {
         int meta = par1World.getBlockMetadata(par2, par3, par4);
-        double d0 = (double) ((float) par2 + 0.5F);
-        double d1 = (double) ((float) par3 + 0.7F);
-        double d2 = (double) ((float) par4 + 0.5F);
+        double d0 = (float) par2 + 0.5F;
+        double d1 = (float) par3 + 0.7F;
+        double d2 = (float) par4 + 0.5F;
         double d3 = 0.2199999988079071D;
         double d4 = 0.27000001072883606D;
 

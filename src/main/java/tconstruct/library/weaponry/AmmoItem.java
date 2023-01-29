@@ -1,22 +1,24 @@
 package tconstruct.library.weaponry;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
 
 @Optional.InterfaceList({
-    @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon")
-})
+        @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon") })
 public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IAmmo {
+
     public AmmoItem(int baseDamage, String name) {
         super(baseDamage);
         this.setCreativeTab(TConstructRegistry.weaponryTab);
@@ -161,8 +163,8 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
 
     @Override
     @Optional.Method(modid = "battlegear2")
-    public boolean offhandAttackEntity(
-            PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem, ItemStack offhandItem) {
+    public boolean offhandAttackEntity(PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem,
+            ItemStack offhandItem) {
         event.cancelParent = false;
         event.swingOffhand = false;
         event.shouldAttack = false;
@@ -193,9 +195,8 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
     @Optional.Method(modid = "battlegear2")
     public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
         if (offhand == null) return true;
-        return (mainhand != null
-                        && mainhand.getItem() != TinkerTools.cleaver
-                        && mainhand.getItem() != TinkerTools.battleaxe)
+        return (mainhand != null && mainhand.getItem() != TinkerTools.cleaver
+                && mainhand.getItem() != TinkerTools.battleaxe)
                 && (offhand.getItem() != TinkerTools.cleaver && offhand.getItem() != TinkerTools.battleaxe);
     }
 }

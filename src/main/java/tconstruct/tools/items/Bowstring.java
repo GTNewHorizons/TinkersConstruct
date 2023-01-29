@@ -1,15 +1,19 @@
 package tconstruct.tools.items;
 
-import cpw.mods.fml.common.Loader;
 import java.util.List;
+
 import mantle.items.abstracts.CraftingItem;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.IToolPart;
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.common.Loader;
 
 public class Bowstring extends CraftingItem implements IToolPart {
+
     public Bowstring() {
         super(toolMaterialNames, buildTextureNames("_bowstring"), "parts/", "tinker", TConstructRegistry.materialTab);
         this.setHasSubtypes(true);
@@ -25,9 +29,9 @@ public class Bowstring extends CraftingItem implements IToolPart {
         return names;
     }
 
-    public static final String[] toolMaterialNames = new String[] {"string", "enchantedfabric", "flamestring"};
+    public static final String[] toolMaterialNames = new String[] { "string", "enchantedfabric", "flamestring" };
 
-    public static final String[] toolTextureNames = new String[] {"string", "magicfabric", "flamestring"};
+    public static final String[] toolTextureNames = new String[] { "string", "magicfabric", "flamestring" };
 
     @Override
     public int getMaterialID(ItemStack stack) {

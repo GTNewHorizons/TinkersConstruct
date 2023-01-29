@@ -5,12 +5,15 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.*;
+
 import tconstruct.armor.inventory.ArmorExtendedContainer;
 import tconstruct.armor.player.ArmorExtended;
 import tconstruct.client.tabs.*;
 
 public class ArmorExtendedGui extends InventoryEffectRenderer {
+
     public InventoryPlayer inv;
     public ArmorExtended stats;
 
@@ -120,10 +123,10 @@ public class ArmorExtendedGui extends InventoryEffectRenderer {
         GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
         RenderHelper.enableStandardItemLighting();
         GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-((float) Math.atan((double) (par5 / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
-        par0Minecraft.thePlayer.renderYawOffset = (float) Math.atan((double) (par4 / 40.0F)) * 20.0F;
-        par0Minecraft.thePlayer.rotationYaw = (float) Math.atan((double) (par4 / 40.0F)) * 40.0F;
-        par0Minecraft.thePlayer.rotationPitch = -((float) Math.atan((double) (par5 / 40.0F))) * 20.0F;
+        GL11.glRotatef(-((float) Math.atan(par5 / 40.0F)) * 20.0F, 1.0F, 0.0F, 0.0F);
+        par0Minecraft.thePlayer.renderYawOffset = (float) Math.atan(par4 / 40.0F) * 20.0F;
+        par0Minecraft.thePlayer.rotationYaw = (float) Math.atan(par4 / 40.0F) * 40.0F;
+        par0Minecraft.thePlayer.rotationPitch = -((float) Math.atan(par5 / 40.0F)) * 20.0F;
         par0Minecraft.thePlayer.rotationYawHead = par0Minecraft.thePlayer.rotationYaw;
         GL11.glTranslatef(0.0F, par0Minecraft.thePlayer.yOffset, 0.0F);
         RenderManager.instance.playerViewY = 180.0F;
@@ -140,9 +143,7 @@ public class ArmorExtendedGui extends InventoryEffectRenderer {
     }
 
     /*
-     * protected void keyTyped(char par1, int par2) { if (par2 ==
-     * TControls.armorKey.keyCode) { this.mc.thePlayer.closeScreen(); }
-     *
-     * super.keyTyped(par1, par2); }
+     * protected void keyTyped(char par1, int par2) { if (par2 == TControls.armorKey.keyCode) {
+     * this.mc.thePlayer.closeScreen(); } super.keyTyped(par1, par2); }
      */
 }

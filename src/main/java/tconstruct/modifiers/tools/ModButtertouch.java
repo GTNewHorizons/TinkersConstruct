@@ -1,9 +1,11 @@
 package tconstruct.modifiers.tools;
 
 import java.util.*;
+
 import net.minecraft.enchantment.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
+
 import tconstruct.library.tools.ToolCore;
 
 public class ModButtertouch extends ModBoolean {
@@ -57,39 +59,39 @@ public class ModButtertouch extends ModBoolean {
     }
 
     public void addEnchantment(ItemStack tool, Enchantment enchant, int level) // TODO: Move this to ItemModifier
-            {
+    {
         NBTTagList tags = new NBTTagList();
-        Map enchantMap = EnchantmentHelper.getEnchantments(tool);
-        Iterator iterator = enchantMap.keySet().iterator();
+        Map<Integer, Integer> enchantMap = EnchantmentHelper.getEnchantments(tool);
+        Iterator<Map.Entry<Integer, Integer>> iterator = enchantMap.entrySet().iterator();
         int index;
         int lvl;
         boolean hasEnchant = false;
         while (iterator.hasNext()) {
             NBTTagCompound enchantTag = new NBTTagCompound();
-            index = ((Integer) iterator.next()).intValue();
-            lvl = (Integer) enchantMap.get(index);
+            final Map.Entry<Integer, Integer> next = iterator.next();
+            index = next.getKey();
+            lvl = next.getValue();
             if (index == enchant.effectId) {
                 hasEnchant = true;
                 enchantTag.setShort("id", (short) index);
-                enchantTag.setShort("lvl", (short) ((byte) level));
-                tags.appendTag(enchantTag);
+                enchantTag.setShort("lvl", (byte) level);
             } else {
                 enchantTag.setShort("id", (short) index);
-                enchantTag.setShort("lvl", (short) ((byte) lvl));
-                tags.appendTag(enchantTag);
+                enchantTag.setShort("lvl", (byte) lvl);
             }
+            tags.appendTag(enchantTag);
         }
         if (!hasEnchant) {
             NBTTagCompound enchantTag = new NBTTagCompound();
             enchantTag.setShort("id", (short) enchant.effectId);
-            enchantTag.setShort("lvl", (short) ((byte) level));
+            enchantTag.setShort("lvl", (byte) level);
             tags.appendTag(enchantTag);
         }
         tool.stackTagCompound.setTag("ench", tags);
     }
 
     public boolean validType(ToolCore tool) {
-        List list = Arrays.asList(tool.getTraits());
+        List<String> list = Arrays.asList(tool.getTraits());
         return list.contains("weapon") || list.contains("harvest");
     }
 }

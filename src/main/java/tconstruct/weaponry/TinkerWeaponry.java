@@ -2,16 +2,12 @@ package tconstruct.weaponry;
 
 import static tconstruct.tools.TinkerTools.MaterialID;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import java.util.Map;
 import java.util.Random;
+
 import mantle.pulsar.pulse.Handler;
 import mantle.pulsar.pulse.Pulse;
+
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.init.Blocks;
@@ -23,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.*;
@@ -55,6 +52,12 @@ import tconstruct.weaponry.items.WeaponryPattern;
 import tconstruct.weaponry.items.WeaponryPatternClay;
 import tconstruct.weaponry.weapons.*;
 import tconstruct.world.TinkerWorld;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(TConstruct.modID)
 @Pulse(
@@ -62,6 +65,7 @@ import tconstruct.world.TinkerWorld;
         description = "The main core of the mod! All of the tools, the tables, and the patterns are here.",
         pulsesRequired = "Tinkers' Tools")
 public class TinkerWeaponry {
+
     @SidedProxy(
             clientSide = "tconstruct.weaponry.WeaponryClientProxy",
             serverSide = "tconstruct.weaponry.WeaponryCommonProxy")
@@ -124,14 +128,14 @@ public class TinkerWeaponry {
         ItemStack redstoneItem = new ItemStack(Items.redstone);
         ItemStack redstoneBlock = new ItemStack(Blocks.redstone_block);
         ModifyBuilder.registerModifier(
-                new ModWindup(2, new ItemStack[] {redstoneItem, redstoneBlock}, new int[] {1, 9}));
+                new ModWindup(2, new ItemStack[] { redstoneItem, redstoneBlock }, new int[] { 1, 9 }));
         ModifyBuilder.registerModifier(new ModAmmoRestock());
 
         modAttack = new ModAttack(
                 "Quartz",
                 11,
-                new ItemStack[] {new ItemStack(Items.quartz), new ItemStack(Blocks.quartz_block, 1, Short.MAX_VALUE)},
-                new int[] {1, 4},
+                new ItemStack[] { new ItemStack(Items.quartz), new ItemStack(Blocks.quartz_block, 1, Short.MAX_VALUE) },
+                new int[] { 1, 4 },
                 true);
         ModifyBuilder.registerModifier(modAttack);
 
@@ -149,8 +153,8 @@ public class TinkerWeaponry {
 
         // "vanilla" bolt:
         // iron-tipped wood-shaft with feather fletching
-        ItemStack headStack = DualMaterialToolPart.createDualMaterial(
-                boltAmmo.getHeadItem(), TinkerTools.MaterialID.Wood, TinkerTools.MaterialID.Iron);
+        ItemStack headStack = DualMaterialToolPart
+                .createDualMaterial(boltAmmo.getHeadItem(), TinkerTools.MaterialID.Wood, TinkerTools.MaterialID.Iron);
         ItemStack handleStack = new ItemStack(boltAmmo.getAccessoryItem(), 1, 0); // feather fletchling
 
         ItemStack tool = ToolBuilder.instance.buildTool(headStack, handleStack, null, null, "");
@@ -231,26 +235,22 @@ public class TinkerWeaponry {
         PatternBuilder.instance.addToolPattern(woodPattern);
 
         // todo: integrate into tcon
-        int[] nonMetals = {0, 1, 3, 4, 5, 6, 7, 8, 9, 17};
-        int[] liquidDamage = new int[] {2, 13, 10, 11, 12, 14, 15, 6, 16, 18};
-        patternOutputs = new Item[] {partShuriken, partCrossbowLimb, partCrossbowBody, partBowLimb};
+        int[] nonMetals = { 0, 1, 3, 4, 5, 6, 7, 8, 9, 17 };
+        int[] liquidDamage = new int[] { 2, 13, 10, 11, 12, 14, 15, 6, 16, 18 };
+        patternOutputs = new Item[] { partShuriken, partCrossbowLimb, partCrossbowBody, partBowLimb };
 
         // register part crafting
         if (PHConstruct.craftMetalTools) {
-            for (int m = 0; m < patternOutputs.length; m++)
-                for (int i = 0; i < 18; i++)
-                    TConstructRegistry.addPartMapping(woodPattern, m, i, new ItemStack(patternOutputs[m], 1, i));
+            for (int m = 0; m < patternOutputs.length; m++) for (int i = 0; i < 18; i++)
+                TConstructRegistry.addPartMapping(woodPattern, m, i, new ItemStack(patternOutputs[m], 1, i));
         } else {
-            for (int m = 0; m < patternOutputs.length; m++)
-                for (int nonMetal : nonMetals)
-                    TConstructRegistry.addPartMapping(
-                            woodPattern, m, nonMetal, new ItemStack(patternOutputs[m], 1, nonMetal));
+            for (int m = 0; m < patternOutputs.length; m++) for (int nonMetal : nonMetals) TConstructRegistry
+                    .addPartMapping(woodPattern, m, nonMetal, new ItemStack(patternOutputs[m], 1, nonMetal));
         }
 
         // arrowhead is still integrated in tinkertools.. bla n stuff
-        for (int nonMetal : nonMetals)
-            TConstructRegistry.addPartMapping(
-                    TinkerTools.woodPattern, 25, nonMetal, new ItemStack(arrowhead, 1, nonMetal));
+        for (int nonMetal : nonMetals) TConstructRegistry
+                .addPartMapping(TinkerTools.woodPattern, 25, nonMetal, new ItemStack(arrowhead, 1, nonMetal));
 
         // register part casting
         if (TConstruct.pulsar.isPulseLoaded("Tinkers' Smeltery")) {
@@ -265,13 +265,12 @@ public class TinkerWeaponry {
                         new ItemStack(patternOutputs[i], 1, Short.MAX_VALUE),
                         false,
                         50);
-                if (!PHConstruct.removeGoldCastRecipes)
-                    tableCasting.addCastingRecipe(
-                            cast,
-                            new FluidStack(TinkerSmeltery.moltenGoldFluid, TConstruct.ingotLiquidValue * 2),
-                            new ItemStack(patternOutputs[i], 1, Short.MAX_VALUE),
-                            false,
-                            50);
+                if (!PHConstruct.removeGoldCastRecipes) tableCasting.addCastingRecipe(
+                        cast,
+                        new FluidStack(TinkerSmeltery.moltenGoldFluid, TConstruct.ingotLiquidValue * 2),
+                        new ItemStack(patternOutputs[i], 1, Short.MAX_VALUE),
+                        false,
+                        50);
 
                 for (int iterTwo = 0; iterTwo < TinkerSmeltery.liquids.length; iterTwo++) {
                     Fluid fs = TinkerSmeltery.liquids[iterTwo].getFluid();
@@ -304,18 +303,18 @@ public class TinkerWeaponry {
                     new ItemStack(arrowhead, 1, Short.MAX_VALUE),
                     false,
                     50);
-            if (!PHConstruct.removeGoldCastRecipes)
-                tableCasting.addCastingRecipe(
-                        cast,
-                        new FluidStack(TinkerSmeltery.moltenGoldFluid, TConstruct.ingotLiquidValue * 2),
-                        new ItemStack(arrowhead, 1, Short.MAX_VALUE),
-                        false,
-                        50);
+            if (!PHConstruct.removeGoldCastRecipes) tableCasting.addCastingRecipe(
+                    cast,
+                    new FluidStack(TinkerSmeltery.moltenGoldFluid, TConstruct.ingotLiquidValue * 2),
+                    new ItemStack(arrowhead, 1, Short.MAX_VALUE),
+                    false,
+                    50);
 
             for (int iterTwo = 0; iterTwo < TinkerSmeltery.liquids.length; iterTwo++) {
                 Fluid fs = TinkerSmeltery.liquids[iterTwo].getFluid();
-                int fluidAmount =
-                        ((IPattern) TinkerSmeltery.metalPattern).getPatternCost(cast) * TConstruct.ingotLiquidValue / 2;
+                int fluidAmount = ((IPattern) TinkerSmeltery.metalPattern).getPatternCost(cast)
+                        * TConstruct.ingotLiquidValue
+                        / 2;
                 ItemStack metalCast = new ItemStack(arrowhead, 1, liquidDamage[iterTwo]);
                 tableCasting.addCastingRecipe(metalCast, new FluidStack(fs, fluidAmount), cast, 50);
                 tableCasting.addCastingRecipe(metalCast, new FluidStack(fs, fluidAmount), clay_cast, true, 50);
@@ -362,8 +361,8 @@ public class TinkerWeaponry {
         TConstructRegistry.addBowMaterial(MaterialID.Manyullyn, 50, 5.0f); // Manyullyn
         TConstructRegistry.addBowMaterial(MaterialID.Copper, 40, 4.9f); // Copper
         TConstructRegistry.addBowMaterial(MaterialID.Bronze, 45, 5.1f); // Bronze
-        TConstructRegistry.addBowMaterial(
-                MaterialID.Alumite, 45, 5.0f); // Alumite - a bit stone-ish since it has obsidian
+        TConstructRegistry.addBowMaterial(MaterialID.Alumite, 45, 5.0f); // Alumite - a bit stone-ish since it has
+                                                                         // obsidian
         // Stone doesn't bend. takes forever, has no pow. WHY WOULD YOU DO THAT
         TConstructRegistry.addBowMaterial(MaterialID.Stone, 90, 1.0f); // Stone
         TConstructRegistry.addBowMaterial(MaterialID.Flint, 90, 1.0f); // Flint
@@ -392,25 +391,47 @@ public class TinkerWeaponry {
         TConstructRegistry.addArrowMaterial(MaterialID.PigIron, 3.0F, 0.5F); // Pigiron
 
         // Arrow Shaft Materials: Material ID, crafting item, durability-medifier, mass, fragility
-        TConstructRegistry.addCustomMaterial(ArrowShaftMaterial.createMaterial(
-                0, Items.stick, 1.0f, 1.0f, 0.15f, 0x866526)); // wood: reference material, 10% break chance
-        TConstructRegistry.addCustomMaterial(ArrowShaftMaterial.createMaterial(
-                1, Items.bone, 0.95f, 1.8f, 0.02f, 0xede6bf)); // bone: heavier, but durable
-        TConstructRegistry.addCustomMaterial(ArrowShaftMaterial.createMaterial(
-                2, Items.reeds, 1.5f, 0.5f, 0.66f, 0xc7ff87)); // reed: light, but less durable
-        TConstructRegistry.addCustomMaterial(ArrowShaftMaterial.createMaterial(
-                3, Items.blaze_rod, 1.2f, 0.9f, 0.08f, 0xfff32d)); // blaze: tad lighter, tad more durable, fieryyyy
+        TConstructRegistry
+                .addCustomMaterial(ArrowShaftMaterial.createMaterial(0, Items.stick, 1.0f, 1.0f, 0.15f, 0x866526)); // wood:
+                                                                                                                    // reference
+                                                                                                                    // material,
+                                                                                                                    // 10%
+                                                                                                                    // break
+                                                                                                                    // chance
+        TConstructRegistry
+                .addCustomMaterial(ArrowShaftMaterial.createMaterial(1, Items.bone, 0.95f, 1.8f, 0.02f, 0xede6bf)); // bone:
+                                                                                                                    // heavier,
+                                                                                                                    // but
+                                                                                                                    // durable
+        TConstructRegistry
+                .addCustomMaterial(ArrowShaftMaterial.createMaterial(2, Items.reeds, 1.5f, 0.5f, 0.66f, 0xc7ff87)); // reed:
+                                                                                                                    // light,
+                                                                                                                    // but
+                                                                                                                    // less
+                                                                                                                    // durable
+        TConstructRegistry
+                .addCustomMaterial(ArrowShaftMaterial.createMaterial(3, Items.blaze_rod, 1.2f, 0.9f, 0.08f, 0xfff32d)); // blaze:
+                                                                                                                        // tad
+                                                                                                                        // lighter,
+                                                                                                                        // tad
+                                                                                                                        // more
+                                                                                                                        // durable,
+                                                                                                                        // fieryyyy
         // also add the tool rod variants, same stats
-        TConstructRegistry.addCustomMaterial(ArrowShaftMaterial.createMaterial(
-                0,
-                TinkerTools.toolRod,
-                MaterialID.Wood,
-                1.0f,
-                1.0f,
-                0.15f,
-                0x866526)); // wood: reference material, 10% break chance
-        TConstructRegistry.addCustomMaterial(ArrowShaftMaterial.createMaterial(
-                1, TinkerTools.toolRod, MaterialID.Bone, 0.95f, 1.8f, 0.02f, 0xede6bf)); // bone: heavier, but durable
+        TConstructRegistry.addCustomMaterial(
+                ArrowShaftMaterial
+                        .createMaterial(0, TinkerTools.toolRod, MaterialID.Wood, 1.0f, 1.0f, 0.15f, 0x866526)); // wood:
+                                                                                                                // reference
+                                                                                                                // material,
+                                                                                                                // 10%
+                                                                                                                // break
+                                                                                                                // chance
+        TConstructRegistry.addCustomMaterial(
+                ArrowShaftMaterial
+                        .createMaterial(1, TinkerTools.toolRod, MaterialID.Bone, 0.95f, 1.8f, 0.02f, 0xede6bf)); // bone:
+                                                                                                                 // heavier,
+                                                                                                                 // but
+                                                                                                                 // durable
 
         // Arrow Fletching Materials
         TConstructRegistry.addFletchingMaterial(
@@ -422,14 +443,15 @@ public class TinkerWeaponry {
                 0.05F,
                 1.0f,
                 0xffffff); // Feather
-        TConstructRegistry.addCustomMaterial(new FletchlingLeafMaterial(
-                1,
-                2,
-                "treeLeaves",
-                new ItemStack(TinkerWeaponry.fletching, 1, 1),
-                75F,
-                0F,
-                2.5f)); // all vanilla and oredicted leaves. and all leaves in general.
+        TConstructRegistry.addCustomMaterial(
+                new FletchlingLeafMaterial(
+                        1,
+                        2,
+                        "treeLeaves",
+                        new ItemStack(TinkerWeaponry.fletching, 1, 1),
+                        75F,
+                        0F,
+                        2.5f)); // all vanilla and oredicted leaves. and all leaves in general.
         TConstructRegistry.addFletchingMaterial(
                 2,
                 2,
@@ -477,8 +499,8 @@ public class TinkerWeaponry {
 
         TConstructRegistry.addToolRecipe(shortbow, partBowLimb, bowstring, partBowLimb);
         TConstructRegistry.addToolRecipe(longbow, partBowLimb, bowstring, partBowLimb, TinkerTools.largePlate);
-        TConstructRegistry.addToolRecipe(
-                crossbow, partCrossbowLimb, partCrossbowBody, bowstring, TinkerTools.toughBinding);
+        TConstructRegistry
+                .addToolRecipe(crossbow, partCrossbowLimb, partCrossbowBody, bowstring, TinkerTools.toughBinding);
 
         TConstructRegistry.addToolRecipe(arrowAmmo, arrowhead, partArrowShaft, fletching);
         TConstructRegistry.addToolRecipe(boltAmmo, partBolt, partBolt, fletching);
@@ -496,8 +518,7 @@ public class TinkerWeaponry {
 
             // get a casting recipe for it D:
             FluidStack liquid = new FluidStack(entry.getValue().fluid, TConstruct.ingotLiquidValue);
-            CastingRecipe recipe =
-                    tb.getCastingRecipe(liquid, new ItemStack(TinkerSmeltery.metalPattern, 1, 2)); // pickaxe
+            CastingRecipe recipe = tb.getCastingRecipe(liquid, new ItemStack(TinkerSmeltery.metalPattern, 1, 2)); // pickaxe
             // no recipe found
             if (recipe == null) continue;
 
@@ -510,7 +531,11 @@ public class TinkerWeaponry {
                 if (((IToolPart) TinkerTools.toolRod).getMaterialID(rod) == -1) continue;
 
                 tb.addCastingRecipe(
-                        DualMaterialToolPart.createDualMaterial(partBolt, id, matID), liquid, rod, true, 150);
+                        DualMaterialToolPart.createDualMaterial(partBolt, id, matID),
+                        liquid,
+                        rod,
+                        true,
+                        150);
             }
         }
     }
@@ -563,6 +588,7 @@ public class TinkerWeaponry {
 
         // arrows
         BlockDispenser.dispenseBehaviorRegistry.putObject(arrowAmmo, new BehaviorProjectileBaseDispense() {
+
             @Override
             protected ProjectileBase getProjectileEntity(World world, IPosition position, ItemStack stack) {
                 return new ArrowEntity(world, position.getX(), position.getY(), position.getZ());
@@ -571,6 +597,7 @@ public class TinkerWeaponry {
 
         // bolts
         BlockDispenser.dispenseBehaviorRegistry.putObject(boltAmmo, new BehaviorProjectileBaseDispense() {
+
             @Override
             protected ProjectileBase getProjectileEntity(World world, IPosition position, ItemStack stack) {
                 return new BoltEntity(world, position.getX(), position.getY(), position.getZ());

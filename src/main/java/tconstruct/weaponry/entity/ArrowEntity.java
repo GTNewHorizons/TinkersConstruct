@@ -8,12 +8,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
 import tconstruct.TConstruct;
 import tconstruct.library.entity.ProjectileBase;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.library.util.PiercingArrowDamage;
 
 public class ArrowEntity extends ProjectileBase {
+
     public ArrowEntity(World world) {
         super(world);
     }
@@ -80,7 +82,7 @@ public class ArrowEntity extends ProjectileBase {
     public boolean dealDamage(float damage, ToolCore ammo, NBTTagCompound tags, Entity entityHit) {
         boolean dealtDamage = false;
 
-        // Minecraft.getMinecraft().thePlayer.sendChatMessage("Damage/Weight: " + damage + "  -  " +
+        // Minecraft.getMinecraft().thePlayer.sendChatMessage("Damage/Weight: " + damage + " - " +
         // tags.getFloat("Mass"));
 
         // we take the weight, and shift the damage done towards armor piercing, the more weight the arrow/bolt has!

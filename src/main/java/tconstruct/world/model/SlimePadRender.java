@@ -1,15 +1,17 @@
 package tconstruct.world.model;
 
-import cpw.mods.fml.client.registry.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
+
 import tconstruct.client.BlockSkinRenderHelper;
 import tconstruct.util.ItemHelper;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.blocks.SlimePad;
+import cpw.mods.fml.client.registry.*;
 
 public class SlimePadRender implements ISimpleBlockRenderingHandler {
+
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
@@ -22,8 +24,8 @@ public class SlimePadRender implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean renderWorldBlock(
-            IBlockAccess world, int x, int y, int z, Block block, int modelID, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
+            RenderBlocks renderer) {
         if (modelID == model) {
             renderer.setRenderBounds(0f, 0, 0f, 1f, 0.5f, 1f);
             int metadata = world.getBlockMetadata(x, y, z);
@@ -58,23 +60,23 @@ public class SlimePadRender implements ISimpleBlockRenderingHandler {
         // xMin, zMin, xMax, zMax
         switch (meta) {
             case 0:
-                return new float[] {0.375f, 0.6875f, 0.625f, 0.9375f};
+                return new float[] { 0.375f, 0.6875f, 0.625f, 0.9375f };
             case 1:
-                return new float[] {0.0625f, 0.6875f, 0.3125f, 0.9375f};
+                return new float[] { 0.0625f, 0.6875f, 0.3125f, 0.9375f };
             case 2:
-                return new float[] {0.0625f, 0.375f, 0.3125f, 0.625f};
+                return new float[] { 0.0625f, 0.375f, 0.3125f, 0.625f };
             case 3:
-                return new float[] {0.0625f, 0.0625f, 0.3125f, 0.3125f};
+                return new float[] { 0.0625f, 0.0625f, 0.3125f, 0.3125f };
             case 4:
-                return new float[] {0.375f, 0.0625f, 0.625f, 0.3125f};
+                return new float[] { 0.375f, 0.0625f, 0.625f, 0.3125f };
             case 5:
-                return new float[] {0.6875f, 0.0625f, 0.9375f, 0.3125f};
+                return new float[] { 0.6875f, 0.0625f, 0.9375f, 0.3125f };
             case 6:
-                return new float[] {0.6875f, 0.375f, 0.9375f, 0.625f};
+                return new float[] { 0.6875f, 0.375f, 0.9375f, 0.625f };
             case 7:
-                return new float[] {0.6875f, 0.6875f, 0.9375f, 0.9375f};
+                return new float[] { 0.6875f, 0.6875f, 0.9375f, 0.9375f };
         }
-        return new float[] {0.375f, 0.375f, 0.625f, 0.625f};
+        return new float[] { 0.375f, 0.375f, 0.625f, 0.625f };
     }
 
     @Override

@@ -1,16 +1,10 @@
 package tconstruct.plugins.nei;
 
-import codechicken.lib.gui.GuiDraw;
-import codechicken.nei.NEIClientConfig;
-import codechicken.nei.guihook.GuiContainerManager;
-import codechicken.nei.recipe.GuiCraftingRecipe;
-import codechicken.nei.recipe.GuiRecipe;
-import codechicken.nei.recipe.GuiUsageRecipe;
-import codechicken.nei.recipe.TemplateRecipeHandler;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -23,11 +17,21 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.IFluidContainerItem;
+
 import org.lwjgl.opengl.GL11;
+
+import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.NEIClientConfig;
+import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.GuiRecipe;
+import codechicken.nei.recipe.GuiUsageRecipe;
+import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public abstract class RecipeHandlerBase extends TemplateRecipeHandler {
 
     public abstract class CachedBaseRecipe extends CachedRecipe {
+
         public List<FluidTankElement> getFluidTanks() {
             return null;
         }
@@ -146,15 +150,10 @@ public abstract class RecipeHandlerBase extends TemplateRecipeHandler {
                 if (tank.position.contains(relMouse)) {
                     if ((tank.fluid != null) && tank.fluid.amount > 0) {
                         if (usage) {
-                            if (!GuiUsageRecipe.openRecipeGui("liquid", new Object[] {tank.fluid})) {
-                                return false;
-                            }
+                            return GuiUsageRecipe.openRecipeGui("liquid", tank.fluid);
                         } else {
-                            if (!GuiCraftingRecipe.openRecipeGui("liquid", new Object[] {tank.fluid})) {
-                                return false;
-                            }
+                            return GuiCraftingRecipe.openRecipeGui("liquid", tank.fluid);
                         }
-                        return true;
                     }
                 }
             }
@@ -207,6 +206,7 @@ public abstract class RecipeHandlerBase extends TemplateRecipeHandler {
     }
 
     public static class FluidTankElement {
+
         public Rectangle position;
         public FluidStack fluid;
         public int capacity;
@@ -231,7 +231,7 @@ public abstract class RecipeHandlerBase extends TemplateRecipeHandler {
             if (this.fluid == null || this.fluid.getFluid() == null || this.fluid.amount <= 0) {
                 return;
             }
-            IIcon fluidIcon = null;
+            IIcon fluidIcon;
             if (this.flowingTexture && this.fluid.getFluid().getFlowingIcon() != null) {
                 fluidIcon = this.fluid.getFluid().getFlowingIcon();
             } else if (this.fluid.getFluid().getStillIcon() != null) {
@@ -245,8 +245,8 @@ public abstract class RecipeHandlerBase extends TemplateRecipeHandler {
             GL11.glColor3ub((byte) (color >> 16 & 0xFF), (byte) (color >> 8 & 0xFF), (byte) (color & 0xFF));
             GL11.glDisable(GL11.GL_BLEND);
 
-            int amount = Math.max(
-                    Math.min(this.position.height, this.fluid.amount * this.position.height / this.capacity), 1);
+            int amount = Math
+                    .max(Math.min(this.position.height, this.fluid.amount * this.position.height / this.capacity), 1);
             int posY = this.position.y + this.position.height - amount;
 
             for (int i = 0; i < this.position.width; i += 16) {
@@ -263,17 +263,12 @@ public abstract class RecipeHandlerBase extends TemplateRecipeHandler {
                     double maxV = fluidIcon.getMaxV();
 
                     Tessellator tessellator = Tessellator.instance;
+                    final double u = minU + (maxU - minU) * drawWidth / 16F;
+                    final double v = minV + (maxV - minV) * drawHeight / 16F;
                     tessellator.startDrawingQuads();
-                    tessellator.addVertexWithUV(
-                            drawX, drawY + drawHeight, 0, minU, minV + (maxV - minV) * drawHeight / 16F);
-                    tessellator.addVertexWithUV(
-                            drawX + drawWidth,
-                            drawY + drawHeight,
-                            0,
-                            minU + (maxU - minU) * drawWidth / 16F,
-                            minV + (maxV - minV) * drawHeight / 16F);
-                    tessellator.addVertexWithUV(
-                            drawX + drawWidth, drawY, 0, minU + (maxU - minU) * drawWidth / 16F, minV);
+                    tessellator.addVertexWithUV(drawX, drawY + drawHeight, 0, minU, v);
+                    tessellator.addVertexWithUV(drawX + drawWidth, drawY + drawHeight, 0, u, v);
+                    tessellator.addVertexWithUV(drawX + drawWidth, drawY, 0, u, minV);
                     tessellator.addVertexWithUV(drawX, drawY, 0, minU, minV);
                     tessellator.draw();
                 }

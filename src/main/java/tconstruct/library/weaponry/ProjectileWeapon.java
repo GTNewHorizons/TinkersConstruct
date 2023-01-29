@@ -1,13 +1,12 @@
 package tconstruct.library.weaponry;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import tconstruct.client.TProxyClient;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
@@ -29,15 +29,17 @@ import tconstruct.library.util.TextureHelper;
 import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.TinkerWeaponry;
 import tconstruct.weaponry.client.CrosshairType;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.InterfaceList({
-    @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon")
-})
+        @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon") })
 /**
- * Weapons that utilize ammo that uses the ammo system to shoot projectiles.
- * Bows,...
+ * Weapons that utilize ammo that uses the ammo system to shoot projectiles. Bows,...
  */
 public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWeapon, IAccuracy, IWindup {
+
     public ProjectileWeapon(int baseDamage, String name) {
         super(baseDamage);
 
@@ -61,6 +63,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
     /**
      * Searches the player for ammo to use
+     * 
      * @param player the player
      * @return the itemstack found to be ammo
      */
@@ -68,15 +71,16 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
     /**
      * Creates the projectile to be fired.
-     * @param ammo The ammo used
-     * @param world world.
-     * @param player player.
-     * @param speed the speed calculated for the projectile
+     * 
+     * @param ammo     The ammo used
+     * @param world    world.
+     * @param player   player.
+     * @param speed    the speed calculated for the projectile
      * @param accuracy the accuracy calculated for the projectile
      * @return A banana.
      */
-    protected abstract Entity createProjectile(
-            ItemStack ammo, World world, EntityPlayer player, float speed, float accuracy, float windup);
+    protected abstract Entity createProjectile(ItemStack ammo, World world, EntityPlayer player, float speed,
+            float accuracy, float windup);
 
     /* Accuracy */
     public abstract float minAccuracy(ItemStack itemStack);
@@ -143,9 +147,9 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
         if (getWindupTime(stack) == 0.0f) return stack;
 
         // broken tool?
-        if (stack.hasTagCompound()
-                && stack.getTagCompound().hasKey(getBaseTagName())
-                && stack.getTagCompound().getCompoundTag(getBaseTagName()).getBoolean("Broken")) return stack;
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(getBaseTagName())
+                && stack.getTagCompound().getCompoundTag(getBaseTagName()).getBoolean("Broken"))
+            return stack;
 
         // only if ammo is present
         if (searchForAmmo(player, stack) != null) player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
@@ -204,21 +208,17 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
         if (!world.isRemote) world.spawnEntityInWorld(projectile);
     }
 
-    public abstract void playFiringSound(
-            World world, EntityPlayer player, ItemStack weapon, ItemStack ammo, float speed, float accuracy);
+    public abstract void playFiringSound(World world, EntityPlayer player, ItemStack weapon, ItemStack ammo,
+            float speed, float accuracy);
 
-    public HashMap<Integer, IIcon[]> animationHeadIcons = new HashMap<Integer, IIcon[]>();
-    public HashMap<Integer, IIcon[]> animationHandleIcons = new HashMap<Integer, IIcon[]>();
-    public HashMap<Integer, IIcon[]> animationAccessoryIcons = new HashMap<Integer, IIcon[]>();
-    public HashMap<Integer, IIcon[]> animationExtraIcons = new HashMap<Integer, IIcon[]>();
-    public HashMap<Integer, IIcon[]> animationEffectIcons = new HashMap<Integer, IIcon[]>();
+    public HashMap<Integer, IIcon[]> animationHeadIcons = new HashMap<>();
+    public HashMap<Integer, IIcon[]> animationHandleIcons = new HashMap<>();
+    public HashMap<Integer, IIcon[]> animationAccessoryIcons = new HashMap<>();
+    public HashMap<Integer, IIcon[]> animationExtraIcons = new HashMap<>();
+    public HashMap<Integer, IIcon[]> animationEffectIcons = new HashMap<>();
 
     /**
-     * return true if the current renderpass should use animations.
-     * 0 == handle
-     * 1 == head
-     * 2 == accessory
-     * 3 == extra
+     * return true if the current renderpass should use animations. 0 == handle 1 == head 2 == accessory 3 == extra
      */
     protected boolean animateLayer(int renderPass) {
         return false;
@@ -238,11 +238,10 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
             String effect = "Effect" + (1 + renderPass - getPartAmount());
             if (tags.hasKey(effect)) {
                 int index = tags.getInteger(effect);
-                if (animationEffectIcons.get(index) != null)
-                    return getCorrectAnimationIcon(
-                            animationEffectIcons,
-                            index,
-                            getWindupProgress(usingItem, getMaxItemUseDuration(usingItem) - useRemaining));
+                if (animationEffectIcons.get(index) != null) return getCorrectAnimationIcon(
+                        animationEffectIcons,
+                        index,
+                        getWindupProgress(usingItem, getMaxItemUseDuration(usingItem) - useRemaining));
                 else
                     // non-animated
                     return effectIcons.get(index);
@@ -354,11 +353,8 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
         animationEffectIcons.put(-1, anims);
     }
 
-    private void addAnimationIcons(
-            HashMap<Integer, String> textures,
-            HashMap<Integer, IIcon[]> icons,
-            IIconRegister iconRegister,
-            String standard) {
+    private void addAnimationIcons(HashMap<Integer, String> textures, HashMap<Integer, IIcon[]> icons,
+            IIconRegister iconRegister, String standard) {
         icons.clear();
 
         // we use the standard to determine how many animations there are
@@ -428,12 +424,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
             if (currentAmmo.getItem() == TinkerWeaponry.arrowAmmo || currentAmmo.getItem() == TinkerWeaponry.boltAmmo)
                 damage = Math.max(
                         0,
-                        damage
-                                - currentAmmo
-                                                .getTagCompound()
-                                                .getCompoundTag("InfiTool")
-                                                .getInteger("Attack")
-                                        / 2f);
+                        damage - currentAmmo.getTagCompound().getCompoundTag("InfiTool").getInteger("Attack") / 2f);
 
             damage *= ((AmmoItem) currentAmmo.getItem()).getDamageModifier();
 
@@ -447,8 +438,9 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
         list.remove(list.size() - 1); // remove last item (the damage of the bow itself)
         list.add(currentAmmo.getDisplayName());
-        list.add(StatCollector.translateToLocal("attribute.name.ammo.maxAttackDamage") + ": "
-                + TProxyClient.df.format(damage));
+        list.add(
+                StatCollector.translateToLocal("attribute.name.ammo.maxAttackDamage") + ": "
+                        + TProxyClient.df.format(damage));
     }
 
     /*---- Battlegear Support START ----*/
@@ -467,8 +459,8 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
     @Override
     @Optional.Method(modid = "battlegear2")
-    public boolean offhandAttackEntity(
-            PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem, ItemStack offhandItem) {
+    public boolean offhandAttackEntity(PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem,
+            ItemStack offhandItem) {
         return false;
     }
 
@@ -494,9 +486,8 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
     @Optional.Method(modid = "battlegear2")
     public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
         if (offhand == null) return true;
-        return (mainhand != null
-                        && mainhand.getItem() != TinkerTools.cleaver
-                        && mainhand.getItem() != TinkerTools.battleaxe)
+        return (mainhand != null && mainhand.getItem() != TinkerTools.cleaver
+                && mainhand.getItem() != TinkerTools.battleaxe)
                 && (offhand.getItem() != TinkerTools.cleaver && offhand.getItem() != TinkerTools.battleaxe);
     }
 

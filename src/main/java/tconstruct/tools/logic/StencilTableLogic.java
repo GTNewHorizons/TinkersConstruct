@@ -1,16 +1,19 @@
 package tconstruct.tools.logic;
 
 import mantle.blocks.abstracts.InventoryLogic;
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import tconstruct.library.crafting.StencilBuilder;
 import tconstruct.tools.inventory.PatternShaperContainer;
 
 public class StencilTableLogic extends InventoryLogic implements ISidedInventory {
+
     private ItemStack selectedStack;
 
     public StencilTableLogic() {
@@ -32,13 +35,10 @@ public class StencilTableLogic extends InventoryLogic implements ISidedInventory
         return new PatternShaperContainer(inventoryplayer, this);
     }
 
-    /*@Override
-    public void onInventoryChanged()
-    {
-    	if (inventory[0] == null)
-    		inventory[1] = null;
-    	super.onInventoryChanged();
-    }*/
+    /*
+     * @Override public void onInventoryChanged() { if (inventory[0] == null) inventory[1] = null;
+     * super.onInventoryChanged(); }
+     */
 
     public void setSelectedPattern(ItemStack stack) {
         selectedStack = stack;
@@ -85,14 +85,12 @@ public class StencilTableLogic extends InventoryLogic implements ISidedInventory
             if (inventory[slot].stackSize == 0) {
                 inventory[slot] = null;
             }
-            return;
         }
     }
 
     @Override
     public boolean canDropInventorySlot(int slot) {
-        if (slot == 0) return true;
-        else return false;
+        return slot == 0;
     }
 
     @Override

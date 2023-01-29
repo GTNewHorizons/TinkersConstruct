@@ -1,23 +1,27 @@
 package tconstruct.library.client;
 
 import java.util.*;
+
 import mantle.lib.client.MantleClientRegistry;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.tools.ToolCore;
 
 public class TConstructClientRegistry {
-    public static ArrayList<StencilGuiElement> stencilButtons = new ArrayList<StencilGuiElement>();
-    public static ArrayList<StencilGuiElement> stencilButtons2 = new ArrayList<StencilGuiElement>();
-    public static ArrayList<ToolGuiElement> toolButtons = new ArrayList<ToolGuiElement>(20);
-    public static ArrayList<ToolGuiElement> tierTwoButtons = new ArrayList<ToolGuiElement>();
-    public static Map<String, ItemStack> manualIcons = new HashMap<String, ItemStack>();
+
+    public static ArrayList<StencilGuiElement> stencilButtons = new ArrayList<>();
+    public static ArrayList<StencilGuiElement> stencilButtons2 = new ArrayList<>();
+    public static ArrayList<ToolGuiElement> toolButtons = new ArrayList<>(20);
+    public static ArrayList<ToolGuiElement> tierTwoButtons = new ArrayList<>();
+    public static Map<String, ItemStack> manualIcons = new HashMap<>();
     public static ItemStack defaultStack = new ItemStack(Items.iron_ingot);
 
-    public static void addMaterialRenderMapping(
-            int materialID, String domain, String renderName, boolean useDefaultFolder) {
+    public static void addMaterialRenderMapping(int materialID, String domain, String renderName,
+            boolean useDefaultFolder) {
         for (ToolCore tool : TConstructRegistry.getToolMapping()) {
             String[] toolIcons = new String[tool.getPartAmount() + 1];
             for (int i = 0; i < tool.getPartAmount() + 1; i++) {
@@ -30,8 +34,8 @@ public class TConstructClientRegistry {
         }
     }
 
-    public static void addAlternateMaterialRenderMapping(
-            ToolCore tool, int materialID, String domain, String renderName, boolean useDefaultFolder) {
+    public static void addAlternateMaterialRenderMapping(ToolCore tool, int materialID, String domain,
+            String renderName, boolean useDefaultFolder) {
         String[] toolIcons = new String[tool.getPartAmount() + 1];
         for (int i = 0; i < tool.getPartAmount() + 1; i++) {
             String icon = domain + ":";
@@ -42,16 +46,16 @@ public class TConstructClientRegistry {
         tool.registerAlternatePartPaths(materialID, toolIcons);
     }
 
-    public static void addEffectRenderMapping(
-            ToolCore tool, int materialID, String domain, String renderName, boolean useDefaultFolder) {
+    public static void addEffectRenderMapping(ToolCore tool, int materialID, String domain, String renderName,
+            boolean useDefaultFolder) {
         String icon = domain + ":";
         if (useDefaultFolder) icon += tool.getDefaultFolder() + "/";
         icon += renderName + tool.getEffectSuffix();
         tool.registerEffectPath(materialID, icon);
     }
 
-    public static void addEffectRenderMapping(
-            int materialID, String domain, String renderName, boolean useDefaultFolder) {
+    public static void addEffectRenderMapping(int materialID, String domain, String renderName,
+            boolean useDefaultFolder) {
         for (ToolCore tool : TConstructRegistry.getToolMapping()) {
             String icon = domain + ":";
             if (useDefaultFolder) icon += tool.getDefaultFolder() + "/";
@@ -60,8 +64,8 @@ public class TConstructClientRegistry {
         }
     }
 
-    public static void addSingleEffectRenderMapping(
-            ToolCore tool, int materialID, String domain, String renderName, boolean useDefaultFolder) {
+    public static void addSingleEffectRenderMapping(ToolCore tool, int materialID, String domain, String renderName,
+            boolean useDefaultFolder) {
         String icon = domain + ":";
         if (useDefaultFolder) icon += tool.getDefaultFolder() + "/";
         icon += renderName + tool.getEffectSuffix();
@@ -72,25 +76,27 @@ public class TConstructClientRegistry {
         registerManualModifier(name, output, topinput, null);
     }
 
-    public static void registerManualModifier(
-            String name, ItemStack output, ItemStack topinput, ItemStack bottominput) {
+    public static void registerManualModifier(String name, ItemStack output, ItemStack topinput,
+            ItemStack bottominput) {
         ItemStack[] recipe = new ItemStack[3];
-        recipe[0] = ModifyBuilder.instance.modifyItem(output, new ItemStack[] {topinput, bottominput
-        }); // ToolBuilder.instance.buildTool(output, topinput, bottominput, "");
+        recipe[0] = ModifyBuilder.instance.modifyItem(output, new ItemStack[] { topinput, bottominput }); // ToolBuilder.instance.buildTool(output,
+                                                                                                          // topinput,
+                                                                                                          // bottominput,
+                                                                                                          // "");
         recipe[1] = topinput;
         recipe[2] = bottominput;
         MantleClientRegistry.recipeIcons.put(name, recipe);
     }
 
-    public static void registerManualModifier(
-            String name, ItemStack output, ItemStack input1, ItemStack input2, ItemStack input3) {
+    public static void registerManualModifier(String name, ItemStack output, ItemStack input1, ItemStack input2,
+            ItemStack input3) {
         registerManualModifier(name, output, input1, input2, input3, null);
     }
 
-    public static void registerManualModifier(
-            String name, ItemStack output, ItemStack input1, ItemStack input2, ItemStack input3, ItemStack input4) {
+    public static void registerManualModifier(String name, ItemStack output, ItemStack input1, ItemStack input2,
+            ItemStack input3, ItemStack input4) {
         ItemStack[] recipe = new ItemStack[5];
-        recipe[0] = ModifyBuilder.instance.modifyItem(output, new ItemStack[] {input1, input2, input3, input4});
+        recipe[0] = ModifyBuilder.instance.modifyItem(output, new ItemStack[] { input1, input2, input3, input4 });
         recipe[1] = input1;
         recipe[2] = input2;
         recipe[3] = input3;
@@ -128,16 +134,8 @@ public class TConstructClientRegistry {
         toolButtons.add(element);
     }
 
-    public static void addToolButton(
-            int slotType,
-            int xButton,
-            int yButton,
-            int[] xIcons,
-            int[] yIcons,
-            String title,
-            String body,
-            String domain,
-            String texture) {
+    public static void addToolButton(int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons, String title,
+            String body, String domain, String texture) {
         toolButtons.add(new ToolGuiElement(slotType, xButton, yButton, xIcons, yIcons, title, body, domain, texture));
     }
 
@@ -145,18 +143,10 @@ public class TConstructClientRegistry {
         tierTwoButtons.add(element);
     }
 
-    public static void addTierTwoButton(
-            int slotType,
-            int xButton,
-            int yButton,
-            int[] xIcons,
-            int[] yIcons,
-            String title,
-            String body,
-            String domain,
-            String texture) {
-        tierTwoButtons.add(
-                new ToolGuiElement(slotType, xButton, yButton, xIcons, yIcons, title, body, domain, texture));
+    public static void addTierTwoButton(int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons,
+            String title, String body, String domain, String texture) {
+        tierTwoButtons
+                .add(new ToolGuiElement(slotType, xButton, yButton, xIcons, yIcons, title, body, domain, texture));
     }
 
     public static ArrayList<ToolGuiElement> getToolButtons() {

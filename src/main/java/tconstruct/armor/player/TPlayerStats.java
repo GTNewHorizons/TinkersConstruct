@@ -1,18 +1,21 @@
 package tconstruct.armor.player;
 
 import java.lang.ref.WeakReference;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
+
 import tconstruct.api.IPlayerExtendedInventoryWrapper;
 
-public class TPlayerStats
-        implements IExtendedEntityProperties,
-                IPlayerExtendedInventoryWrapper // TODO: IExtendedEntityProperties is not appropriate!
+public class TPlayerStats implements IExtendedEntityProperties, IPlayerExtendedInventoryWrapper // TODO:
+                                                                                                // IExtendedEntityProperties
+                                                                                                // is not appropriate!
 {
+
     public static final String PROP_NAME = "TConstruct";
 
     public WeakReference<EntityPlayer> player;
@@ -44,7 +47,7 @@ public class TPlayerStats
     }
 
     public TPlayerStats(EntityPlayer entityplayer) {
-        this.player = new WeakReference<EntityPlayer>(entityplayer);
+        this.player = new WeakReference<>(entityplayer);
         this.armor = new ArmorExtended();
         this.armor.init(entityplayer);
 
@@ -85,7 +88,7 @@ public class TPlayerStats
 
     @Override
     public void init(Entity entity, World world) {
-        this.player = new WeakReference<EntityPlayer>((EntityPlayer) entity);
+        this.player = new WeakReference<>((EntityPlayer) entity);
         this.armor.init((EntityPlayer) entity);
         this.knapsack.init((EntityPlayer) entity);
     }
@@ -108,11 +111,11 @@ public class TPlayerStats
         }
     }
 
-    public static final void register(EntityPlayer player) {
+    public static void register(EntityPlayer player) {
         player.registerExtendedProperties(TPlayerStats.PROP_NAME, new TPlayerStats(player));
     }
 
-    public static final TPlayerStats get(EntityPlayer player) {
+    public static TPlayerStats get(EntityPlayer player) {
         return (TPlayerStats) player.getExtendedProperties(PROP_NAME);
     }
 

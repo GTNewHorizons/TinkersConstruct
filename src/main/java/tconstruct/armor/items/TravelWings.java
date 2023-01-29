@@ -1,7 +1,5 @@
 package tconstruct.armor.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,8 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
 import tconstruct.library.armor.ArmorPart;
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TravelWings extends TravelGear {
 
@@ -26,10 +27,10 @@ public class TravelWings extends TravelGear {
         modifiers[0] = IIconRegister.registerIcon("tinker:" + textureFolder + "/" + "wings" + "_" + "doublejump");
         modifiers[1] = IIconRegister.registerIcon("tinker:" + textureFolder + "/" + "wings" + "_" + "featherfall");
         modifiers[4] = IIconRegister.registerIcon("tinker:" + textureFolder + "/" + "wings" + "_" + "moss");
-        /*modifiers = new IIcon[3];
-        modifiers[0] = IIconRegister.registerIcon(base + "slimewings");
-        modifiers[1] = IIconRegister.registerIcon(base + "piston");
-        modifiers[2] = IIconRegister.registerIcon(base + "pearl");*/
+        /*
+         * modifiers = new IIcon[3]; modifiers[0] = IIconRegister.registerIcon(base + "slimewings"); modifiers[1] =
+         * IIconRegister.registerIcon(base + "piston"); modifiers[2] = IIconRegister.registerIcon(base + "pearl");
+         */
     }
 
     @Override
@@ -43,8 +44,7 @@ public class TravelWings extends TravelGear {
                 float terminalVelocity = -0.4f + (feather * 0.08f);
                 if (terminalVelocity > -0.05f) terminalVelocity = -0.05f;
                 if (player.isSneaking() && terminalVelocity > -0.8f) terminalVelocity = -0.8F;
-                boolean flying = false;
-                flying = player.capabilities.isFlying;
+                boolean flying = player.capabilities.isFlying;
                 if (!flying && player.motionY < terminalVelocity) {
                     player.motionY = terminalVelocity;
                 }

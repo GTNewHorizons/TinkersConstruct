@@ -3,11 +3,13 @@ package tconstruct.items.tools;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.world.World;
+
 import tconstruct.library.tools.Weapon;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.entity.DaggerEntity;
 
 public class Dagger extends Weapon {
+
     public Dagger() {
         super(1);
         this.setUnlocalizedName("InfiTool.Dagger");
@@ -40,7 +42,7 @@ public class Dagger extends Weapon {
 
     @Override
     public String[] getTraits() {
-        return new String[] {"weapon", "melee", "throwing"};
+        return new String[] { "weapon", "melee", "throwing" };
     }
 
     @Override

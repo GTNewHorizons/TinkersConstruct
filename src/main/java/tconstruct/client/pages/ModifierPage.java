@@ -1,15 +1,19 @@
 package tconstruct.client.pages;
 
 import java.util.*;
+
 import mantle.client.pages.BookPage;
 import mantle.lib.client.MantleClientRegistry;
+
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+
 import org.lwjgl.opengl.*;
 import org.w3c.dom.*;
 
 public class ModifierPage extends BookPage {
+
     String type;
     ItemStack[] icons;
     ItemStack[][] iconsMulti;
@@ -29,12 +33,11 @@ public class ModifierPage extends BookPage {
             icons = MantleClientRegistry.getRecipeIcons(recipe);
 
             if (type.equals("travelmulti")) {
-                List<ItemStack[]> stacks = new LinkedList<ItemStack[]>();
-                List<String> tools = new LinkedList<String>();
-                String[] suffixes = new String[] {"goggles", "vest", "wings", "boots", "glove", "belt"};
+                List<ItemStack[]> stacks = new LinkedList<>();
+                List<String> tools = new LinkedList<>();
+                String[] suffixes = new String[] { "goggles", "vest", "wings", "boots", "glove", "belt" };
                 for (String suffix : suffixes) {
-                    ItemStack[] icons2 =
-                            MantleClientRegistry.getRecipeIcons(nodes.item(0).getTextContent() + suffix);
+                    ItemStack[] icons2 = MantleClientRegistry.getRecipeIcons(nodes.item(0).getTextContent() + suffix);
                     if (icons2 != null) {
                         stacks.add(icons2);
                         tools.add(suffix);
@@ -78,8 +81,7 @@ public class ModifierPage extends BookPage {
         if (type.equals("travelmulti")) toolstack = toolMulti[counter];
 
         // update displayed item
-        if (iconsMulti != null
-                && iconsMulti.length > 0
+        if (iconsMulti != null && iconsMulti.length > 0
                 && type.equals("travelmulti")
                 && System.currentTimeMillis() - lastUpdate > 1000) {
             lastUpdate = System.currentTimeMillis();
@@ -104,14 +106,17 @@ public class ModifierPage extends BookPage {
                     (localWidth + 130) / 2,
                     (localHeight + 54) / 2);
             manual.renderitem.renderItemAndEffectIntoGUI(
-                    manual.fonts, manual.getMC().renderEngine, icons[1], (localWidth + 18) / 2, (localHeight + 36) / 2);
-            if (icons[2] != null)
-                manual.renderitem.renderItemAndEffectIntoGUI(
-                        manual.fonts,
-                        manual.getMC().renderEngine,
-                        icons[2],
-                        (localWidth + 18) / 2,
-                        (localHeight + 74) / 2);
+                    manual.fonts,
+                    manual.getMC().renderEngine,
+                    icons[1],
+                    (localWidth + 18) / 2,
+                    (localHeight + 36) / 2);
+            if (icons[2] != null) manual.renderitem.renderItemAndEffectIntoGUI(
+                    manual.fonts,
+                    manual.getMC().renderEngine,
+                    icons[2],
+                    (localWidth + 18) / 2,
+                    (localHeight + 74) / 2);
         } else {
             manual.renderitem.renderItemAndEffectIntoGUI(
                     manual.fonts,
@@ -126,18 +131,29 @@ public class ModifierPage extends BookPage {
                     (localWidth + 140) / 2,
                     (localHeight + 54) / 2);
             manual.renderitem.renderItemAndEffectIntoGUI(
-                    manual.fonts, manual.getMC().renderEngine, icons[1], (localWidth - 2) / 2, (localHeight + 36) / 2);
+                    manual.fonts,
+                    manual.getMC().renderEngine,
+                    icons[1],
+                    (localWidth - 2) / 2,
+                    (localHeight + 36) / 2);
             manual.renderitem.renderItemAndEffectIntoGUI(
-                    manual.fonts, manual.getMC().renderEngine, icons[2], (localWidth - 2) / 2, (localHeight + 74) / 2);
+                    manual.fonts,
+                    manual.getMC().renderEngine,
+                    icons[2],
+                    (localWidth - 2) / 2,
+                    (localHeight + 74) / 2);
             manual.renderitem.renderItemAndEffectIntoGUI(
-                    manual.fonts, manual.getMC().renderEngine, icons[3], (localWidth + 36) / 2, (localHeight + 36) / 2);
-            if (icons[4] != null)
-                manual.renderitem.renderItemAndEffectIntoGUI(
-                        manual.fonts,
-                        manual.getMC().renderEngine,
-                        icons[4],
-                        (localWidth + 36) / 2,
-                        (localHeight + 74) / 2);
+                    manual.fonts,
+                    manual.getMC().renderEngine,
+                    icons[3],
+                    (localWidth + 36) / 2,
+                    (localHeight + 36) / 2);
+            if (icons[4] != null) manual.renderitem.renderItemAndEffectIntoGUI(
+                    manual.fonts,
+                    manual.getMC().renderEngine,
+                    icons[4],
+                    (localWidth + 36) / 2,
+                    (localHeight + 74) / 2);
         }
         manual.renderitem.zLevel = 0;
 

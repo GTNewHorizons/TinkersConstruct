@@ -2,6 +2,7 @@ package tconstruct.library.tools;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -17,12 +18,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.world.BlockEvent;
+
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
 
 /* Base class for tools that should be harvesting blocks */
 
 public abstract class HarvestTool extends ToolCore {
+
     public HarvestTool(int baseDamage) {
         super(baseDamage);
     }
@@ -84,7 +87,7 @@ public abstract class HarvestTool extends ToolCore {
 
     @Override
     public String[] getTraits() {
-        return new String[] {"harvest"};
+        return new String[] { "harvest" };
     }
 
     protected abstract Material[] getEffectiveMaterials();
@@ -93,7 +96,7 @@ public abstract class HarvestTool extends ToolCore {
 
     @Override
     public Set<String> getToolClasses(ItemStack stack) {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
 
         if (stack != null && stack.getItem() instanceof HarvestTool) {
             set.add(((HarvestTool) stack.getItem()).getHarvestType());
@@ -115,24 +118,16 @@ public abstract class HarvestTool extends ToolCore {
 
     // Right-click
     @Override
-    public boolean onItemUse(
-            ItemStack stack,
-            EntityPlayer player,
-            World world,
-            int x,
-            int y,
-            int z,
-            int side,
-            float clickX,
-            float clickY,
-            float clickZ) {
-        /*if (world.isRemote)
-        return true;*/
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+            float clickX, float clickY, float clickZ) {
+        /*
+         * if (world.isRemote) return true;
+         */
 
         boolean used = false;
         int hotbarSlot = player.inventory.currentItem;
         int itemSlot = hotbarSlot == 0 ? 8 : hotbarSlot + 1;
-        ItemStack nearbyStack = null;
+        ItemStack nearbyStack;
 
         if (hotbarSlot < 8) {
             nearbyStack = player.inventory.getStackInSlot(itemSlot);
@@ -165,8 +160,8 @@ public abstract class HarvestTool extends ToolCore {
                             break;
                     }
 
-                    AxisAlignedBB blockBounds =
-                            AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX + 1, posY + 1, posZ + 1);
+                    AxisAlignedBB blockBounds = AxisAlignedBB
+                            .getBoundingBox(posX, posY, posZ, posX + 1, posY + 1, posZ + 1);
                     AxisAlignedBB playerBounds = player.boundingBox;
 
                     if (item instanceof ItemBlock) {
@@ -201,18 +196,15 @@ public abstract class HarvestTool extends ToolCore {
         }
 
         /*
-         if (used) //Update client
-         {
-              Packet103SetSlot packet = new Packet103SetSlot(player.openContainer.windowId, itemSlot, nearbyStack);
-              ((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
-         }
-        */
+         * if (used) //Update client { Packet103SetSlot packet = new Packet103SetSlot(player.openContainer.windowId,
+         * itemSlot, nearbyStack); ((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet); }
+         */
 
         return used;
     }
 
-    public void breakExtraBlock(
-            World world, int x, int y, int z, int sidehit, EntityPlayer playerEntity, int refX, int refY, int refZ) {
+    public void breakExtraBlock(World world, int x, int y, int z, int sidehit, EntityPlayer playerEntity, int refX,
+            int refY, int refZ) {
         // prevent calling that stuff for air blocks, could lead to unexpected behaviour since it fires events
         if (world.isAirBlock(x, y, z)) return;
 
@@ -236,8 +228,8 @@ public abstract class HarvestTool extends ToolCore {
         if (!ForgeHooks.canHarvestBlock(block, player, meta) || refStrength / strength > 10f) return;
 
         // send the blockbreak event
-        BlockEvent.BreakEvent event =
-                ForgeHooks.onBlockBreakEvent(world, player.theItemInWorldManager.getGameType(), player, x, y, z);
+        BlockEvent.BreakEvent event = ForgeHooks
+                .onBlockBreakEvent(world, player.theItemInWorldManager.getGameType(), player, x, y, z);
         if (event.isCanceled()) return;
 
         if (player.capabilities.isCreativeMode) {
@@ -265,8 +257,8 @@ public abstract class HarvestTool extends ToolCore {
             // ItemInWorldManager.removeBlock
             block.onBlockHarvested(world, x, y, z, meta, player);
 
-            if (block.removedByPlayer(
-                    world, player, x, y, z, true)) // boolean is if block can be harvested, checked above
+            if (block.removedByPlayer(world, player, x, y, z, true)) // boolean is if block can be harvested, checked
+                                                                     // above
             {
                 block.onBlockDestroyedByPlayer(world, x, y, z, meta);
                 block.harvestBlock(world, player, x, y, z, meta);
@@ -300,11 +292,8 @@ public abstract class HarvestTool extends ToolCore {
             }
 
             // send an update to the server, so we get an update back
-            if (PHConstruct.extraBlockUpdates)
-                Minecraft.getMinecraft()
-                        .getNetHandler()
-                        .addToSendQueue(new C07PacketPlayerDigging(
-                                2, x, y, z, Minecraft.getMinecraft().objectMouseOver.sideHit));
+            if (PHConstruct.extraBlockUpdates) Minecraft.getMinecraft().getNetHandler().addToSendQueue(
+                    new C07PacketPlayerDigging(2, x, y, z, Minecraft.getMinecraft().objectMouseOver.sideHit));
         }
     }
 }

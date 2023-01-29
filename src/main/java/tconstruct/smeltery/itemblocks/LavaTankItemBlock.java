@@ -1,7 +1,9 @@
 package tconstruct.smeltery.itemblocks;
 
 import java.util.List;
+
 import mantle.blocks.abstracts.MultiItemBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,10 +11,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+
 import tconstruct.smeltery.logic.LavaTankLogic;
 
 public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainerItem {
-    public static final String blockTypes[] = {"Tank", "Gague", "Window"};
+
+    public static final String[] blockTypes = { "Tank", "Gague", "Window" };
 
     public LavaTankItemBlock(Block b) {
         super(b, "LavaTank", blockTypes);
@@ -25,8 +29,9 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
         if (stack.hasTagCompound()) {
             NBTTagCompound liquidTag = stack.getTagCompound().getCompoundTag("Fluid");
             if (liquidTag != null) {
-                list.add(StatCollector.translateToLocal("searedtank1.tooltip") + " "
-                        + StatCollector.translateToLocal(liquidTag.getString("FluidName")));
+                list.add(
+                        StatCollector.translateToLocal("searedtank1.tooltip") + " "
+                                + StatCollector.translateToLocal(liquidTag.getString("FluidName")));
                 list.add(liquidTag.getInteger("Amount") + " mB");
             }
         } else {
@@ -36,8 +41,7 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
     }
 
     /**
-     * @param container
-     *         ItemStack which is the fluid container.
+     * @param container ItemStack which is the fluid container.
      * @return FluidStack representing the fluid in the container, null if the container is empty.
      */
     @Override
@@ -52,10 +56,8 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
     }
 
     /**
-     * @param container
-     *         ItemStack which is the fluid container.
-     * @param resource
-     *         FluidStack attempting to set to the container.
+     * @param container ItemStack which is the fluid container.
+     * @param resource  FluidStack attempting to set to the container.
      */
     public void setFluid(ItemStack container, FluidStack resource) {
         if (container == null) return;
@@ -73,8 +75,7 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
     }
 
     /**
-     * @param container
-     *         ItemStack which is the fluid container.
+     * @param container ItemStack which is the fluid container.
      * @return Capacity of this fluid container.
      */
     @Override
@@ -83,14 +84,10 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
     }
 
     /**
-     * @param container
-     *         ItemStack which is the fluid container.
-     * @param resource
-     *         FluidStack attempting to fill the container.
-     * @param doFill
-     *         If false, the fill will only be simulated.
-     * @return Amount of fluid that was (or would have been, if simulated) filled into the
-     * container.
+     * @param container ItemStack which is the fluid container.
+     * @param resource  FluidStack attempting to fill the container.
+     * @param doFill    If false, the fill will only be simulated.
+     * @return Amount of fluid that was (or would have been, if simulated) filled into the container.
      */
     @Override
     public int fill(ItemStack container, FluidStack resource, boolean doFill) {
@@ -108,14 +105,10 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
     }
 
     /**
-     * @param container
-     *         ItemStack which is the fluid container.
-     * @param maxDrain
-     *         Maximum amount of fluid to be removed from the container.
-     * @param doDrain
-     *         If false, the drain will only be simulated.
-     * @return Amount of fluid that was (or would have been, if simulated) drained from the
-     * container.
+     * @param container ItemStack which is the fluid container.
+     * @param maxDrain  Maximum amount of fluid to be removed from the container.
+     * @param doDrain   If false, the drain will only be simulated.
+     * @return Amount of fluid that was (or would have been, if simulated) drained from the container.
      */
     @Override
     public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {

@@ -1,15 +1,17 @@
 package tconstruct.util.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mantle.common.network.AbstractPacket;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.StencilBuilder;
 import tconstruct.tools.inventory.PatternShaperContainer;
 import tconstruct.tools.logic.StencilTableLogic;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 public class PatternTablePacket extends AbstractPacket {
 
@@ -62,9 +64,9 @@ public class PatternTablePacket extends AbstractPacket {
                                 break;
                             }
                         }
-                        if (warning)
-                            TConstruct.logger.warn("Possible packet-cheating with PatternTable for player "
-                                    + player.getCommandSenderName());
+                        if (warning) TConstruct.logger.warn(
+                                "Possible packet-cheating with PatternTable for player "
+                                        + player.getCommandSenderName());
                         else logic.setSelectedPattern(this.contents);
                     }
                 }

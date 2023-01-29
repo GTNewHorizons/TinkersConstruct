@@ -2,6 +2,7 @@ package tconstruct.smeltery.gui;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
+
 import tconstruct.smeltery.inventory.ActiveContainer;
 import tconstruct.smeltery.inventory.ActiveSlot;
 

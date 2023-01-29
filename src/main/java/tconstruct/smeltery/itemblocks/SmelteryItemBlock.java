@@ -1,29 +1,22 @@
 package tconstruct.smeltery.itemblocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.blocks.abstracts.MultiItemBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
 import tconstruct.achievements.TAchievements;
+import cpw.mods.fml.relauncher.*;
 
 public class SmelteryItemBlock extends MultiItemBlock {
-    public static final String blockTypes[] = {
-        "Controller",
-        "Drain",
-        "Brick",
-        "Furnace",
-        "Stone",
-        "Cobblestone",
-        "Paver",
-        "Brick.Cracked",
-        "Road",
-        "Brick.Fancy",
-        "Brick.Square"
-    };
+
+    public static final String[] blockTypes = { "Controller", "Drain", "Brick", "Furnace", "Stone", "Cobblestone",
+            "Paver", "Brick.Cracked", "Road", "Brick.Fancy", "Brick.Square" };
 
     public SmelteryItemBlock(Block b) {
         super(b, "Smeltery", blockTypes);

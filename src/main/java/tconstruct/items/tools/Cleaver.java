@@ -1,15 +1,16 @@
 package tconstruct.items.tools;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.potion.*;
 import net.minecraft.world.World;
+
 import tconstruct.library.tools.*;
 import tconstruct.tools.TinkerTools;
 
 public class Cleaver extends Weapon {
+
     public Cleaver() {
         super(5);
         this.setUnlocalizedName("InfiTool.Cleaver");
@@ -100,10 +101,8 @@ public class Cleaver extends Weapon {
             entity.hurtResistantTime += 7;
 
             /*
-             * if (entity instanceof EntityLiving) { EntityLiving living =
-             * (EntityLiving) entity; if (living.getHealth() <= 0) {
-             *
-             * } }
+             * if (entity instanceof EntityLiving) { EntityLiving living = (EntityLiving) entity; if (living.getHealth()
+             * <= 0) { } }
              */
             // if (entity.getHealth() <= 0)
         }
@@ -123,7 +122,7 @@ public class Cleaver extends Weapon {
     }
 
     /*
-     * @Override public boolean onEntitySwing (EntityLiving entity, ItemStack
-     * stack) { entity.swingProgressInt /= 2; return false; }
+     * @Override public boolean onEntitySwing (EntityLiving entity, ItemStack stack) { entity.swingProgressInt /= 2;
+     * return false; }
      */
 }

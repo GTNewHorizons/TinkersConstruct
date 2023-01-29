@@ -1,14 +1,17 @@
 package tconstruct.weaponry.items;
 
 import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.tools.items.Pattern;
 import tconstruct.util.Reference;
 
 public class WeaponryPatternClay extends Pattern {
-    private static final String[] patternName = new String[] {"", "", "", "bowlimb"};
+
+    private static final String[] patternName = new String[] { "", "", "", "bowlimb" };
 
     public WeaponryPatternClay(String patternType, String name) {
         super(patternName, getPatternNames(patternName, patternType), "patterns/");

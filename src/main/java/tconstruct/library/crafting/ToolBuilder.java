@@ -1,24 +1,27 @@
 package tconstruct.library.crafting;
 
 /** Once upon a time, too many tools to count. Let's put them together automatically */
-import cpw.mods.fml.common.eventhandler.Event.Result;
 import java.util.*;
+
 import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.event.*;
 import tconstruct.library.modifier.ItemModifier;
 import tconstruct.library.tools.*;
 import tconstruct.library.util.IToolPart;
+import cpw.mods.fml.common.eventhandler.Event.Result;
 
 public class ToolBuilder {
+
     public static ToolBuilder instance = new ToolBuilder();
 
-    public HashMap<String, ToolRecipe> recipeList = new HashMap<String, ToolRecipe>();
-    public List<ToolRecipe> combos = new ArrayList<ToolRecipe>();
-    public HashMap<String, String> modifiers = new HashMap<String, String>();
+    public HashMap<String, ToolRecipe> recipeList = new HashMap<>();
+    public List<ToolRecipe> combos = new ArrayList<>();
+    public HashMap<String, String> modifiers = new HashMap<>();
 
     /* Build tools */
     public static void addNormalToolRecipe(ToolCore output, Item head, Item handle) {
@@ -73,10 +76,10 @@ public class ToolBuilder {
 
     public ToolCore getMatchingRecipe(Item head, Item handle, Item accessory, Item extra) {
         for (ToolRecipe recipe : combos) {
-            if (recipe.validHead(head)
-                    && recipe.validHandle(handle)
+            if (recipe.validHead(head) && recipe.validHandle(handle)
                     && recipe.validAccessory(accessory)
-                    && recipe.validExtra(extra)) return recipe.getType();
+                    && recipe.validExtra(extra))
+                return recipe.getType();
         }
         return null;
     }
@@ -95,14 +98,16 @@ public class ToolBuilder {
         return -1;
     }
 
-    public ItemStack buildTool(
-            ItemStack headStack, ItemStack handleStack, ItemStack accessoryStack, ItemStack extraStack, String name) {
-        /*if (headStack != null && headStack.getItem() instanceof ToolCore)
-        return modifyTool(headStack, new ItemStack[] { handleStack, accessoryStack, extraStack }, name);*/
+    public ItemStack buildTool(ItemStack headStack, ItemStack handleStack, ItemStack accessoryStack,
+            ItemStack extraStack, String name) {
+        /*
+         * if (headStack != null && headStack.getItem() instanceof ToolCore) return modifyTool(headStack, new
+         * ItemStack[] { handleStack, accessoryStack, extraStack }, name);
+         */
 
-        if (headStack == null
-                || handleStack == null) // Nothing to build without these. All tools need at least two parts!
-        return null;
+        if (headStack == null || handleStack == null) // Nothing to build without these. All tools need at least two
+                                                      // parts!
+            return null;
         if (name == null) name = "";
 
         // fire the ToolBuild event to get the correct items
@@ -140,7 +145,10 @@ public class ToolBuilder {
                 if (extra == -1) return null;
 
                 item = getMatchingRecipe(
-                        headStack.getItem(), handleStack.getItem(), accessoryStack.getItem(), extraStack.getItem());
+                        headStack.getItem(),
+                        handleStack.getItem(),
+                        accessoryStack.getItem(),
+                        extraStack.getItem());
             } else {
                 item = getMatchingRecipe(headStack.getItem(), handleStack.getItem(), accessoryStack.getItem(), null);
             }
@@ -148,7 +156,7 @@ public class ToolBuilder {
 
         if (item == null) return null;
 
-        ToolMaterial headMat = null, handleMat = null, accessoryMat = null, extraMat = null;
+        ToolMaterial headMat, handleMat, accessoryMat = null, extraMat = null;
         headMat = TConstructRegistry.getMaterial(head);
         handleMat = TConstructRegistry.getMaterial(handle);
 
@@ -263,7 +271,9 @@ public class ToolBuilder {
         }
 
         ToolCraftEvent.NormalTool event = new ToolCraftEvent.NormalTool(
-                item, compound, new ToolMaterial[] {headMat, handleMat, accessoryMat, extraMat});
+                item,
+                compound,
+                new ToolMaterial[] { headMat, handleMat, accessoryMat, extraMat });
         MinecraftForge.EVENT_BUS.post(event);
 
         if (event.getResult() == Result.DEFAULT) {
@@ -277,46 +287,19 @@ public class ToolBuilder {
         return tool;
     }
 
-    /*@Deprecated
-    public ItemStack modifyTool (ItemStack input, ItemStack topSlot, ItemStack bottomSlot, ItemStack extraStack, String name)
-    {
-        if (extraStack != null)
-            return null;
+    /*
+     * @Deprecated public ItemStack modifyTool (ItemStack input, ItemStack topSlot, ItemStack bottomSlot, ItemStack
+     * extraStack, String name) { if (extraStack != null) return null; ItemStack tool = input.copy(); NBTTagCompound
+     * tags = tool.getTagCompound().getCompoundTag("InfiTool"); tags.removeTag("Built"); if (topSlot == null &&
+     * bottomSlot == null) return tool; boolean built = false; for (ToolMod mod : toolMods) { ItemStack[] slots = new
+     * ItemStack[] { topSlot, bottomSlot }; if (mod.matches(slots, tool)) { built = true; mod.addMatchingEffect(tool);
+     * mod.modify(slots, tool); } } tags = tool.getTagCompound(); if (name != null && !name.equals("") &&
+     * !tags.hasKey("display")) { tags.setCompoundTag("display", new NBTTagCompound());
+     * tags.getCompoundTag("display").setString("Name", "\u00A7f" + name); } if (built) return tool; else return null; }
+     */
 
-        ItemStack tool = input.copy();
-        NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-        tags.removeTag("Built");
-
-        if (topSlot == null && bottomSlot == null)
-            return tool;
-
-        boolean built = false;
-        for (ToolMod mod : toolMods)
-        {
-            ItemStack[] slots = new ItemStack[] { topSlot, bottomSlot };
-            if (mod.matches(slots, tool))
-            {
-                built = true;
-                mod.addMatchingEffect(tool);
-                mod.modify(slots, tool);
-            }
-        }
-
-        tags = tool.getTagCompound();
-        if (name != null && !name.equals("") && !tags.hasKey("display"))
-        {
-            tags.setCompoundTag("display", new NBTTagCompound());
-            tags.getCompoundTag("display").setString("Name", "\u00A7f" + name);
-        }
-
-        if (built)
-            return tool;
-        else
-            return null;
-    }*/
-
-    int buildReinforced(
-            ToolMaterial headMat, ToolMaterial handleMat, ToolMaterial accessoryMat, ToolMaterial extraMat) {
+    int buildReinforced(ToolMaterial headMat, ToolMaterial handleMat, ToolMaterial accessoryMat,
+            ToolMaterial extraMat) {
         int reinforced = 0;
 
         int dHead = headMat.reinforced();

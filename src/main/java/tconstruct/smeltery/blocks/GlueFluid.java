@@ -1,6 +1,5 @@
 package tconstruct.smeltery.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.*;
@@ -8,6 +7,8 @@ import net.minecraft.potion.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
+
+import cpw.mods.fml.relauncher.*;
 
 public class GlueFluid extends BlockFluidFinite {
 

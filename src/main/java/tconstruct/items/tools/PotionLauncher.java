@@ -1,7 +1,7 @@
 package tconstruct.items.tools;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,13 +11,16 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
 import tconstruct.tools.entity.LaunchedPotion;
+import cpw.mods.fml.relauncher.*;
 
 public class PotionLauncher extends Item {
+
     @SideOnly(Side.CLIENT)
     private IIcon[] icons;
 
-    public static final String[] textureNames = new String[] {"potionlauncher"};
+    public static final String[] textureNames = new String[] { "potionlauncher" };
 
     public PotionLauncher() {
         super();
@@ -75,14 +78,13 @@ public class PotionLauncher extends Item {
     }
 
     /**
-     * returns the action that specifies what animation to play when the items
-     * is being used
+     * returns the action that specifies what animation to play when the items is being used
      */
     @Override
     public EnumAction getItemUseAction(ItemStack stack) {
-        if (stack != null
-                && stack.hasTagCompound()
-                && !stack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Loaded")) return EnumAction.bow;
+        if (stack != null && stack.hasTagCompound()
+                && !stack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Loaded"))
+            return EnumAction.bow;
         else return EnumAction.none;
     }
 

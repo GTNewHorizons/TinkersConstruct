@@ -1,13 +1,16 @@
 package tconstruct.util.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mantle.common.network.AbstractPacket;
+
 import net.minecraft.entity.player.EntityPlayer;
+
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.player.TPlayerStats;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 public class HealthUpdatePacket extends AbstractPacket {
+
     private float health;
 
     public HealthUpdatePacket() {}

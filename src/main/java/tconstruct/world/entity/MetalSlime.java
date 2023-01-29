@@ -35,14 +35,9 @@ public class MetalSlime extends BlueSlime {
     }
 
     /*
-     * protected void dropFewItems (boolean par1, int par2) { int j =
-     * this.getDropItemId();
-     *
-     * if (j > 0) { int k = rand.nextInt(3) + rand.nextInt(this.getSlimeSize());
-     *
-     * if (par2 > 0) { k += this.rand.nextInt(par2 + 1); }
-     *
-     * for (int l = 0; l < k; ++l) { this.dropItem(j, 1); } } }
+     * protected void dropFewItems (boolean par1, int par2) { int j = this.getDropItemId(); if (j > 0) { int k =
+     * rand.nextInt(3) + rand.nextInt(this.getSlimeSize()); if (par2 > 0) { k += this.rand.nextInt(par2 + 1); } for (int
+     * l = 0; l < k; ++l) { this.dropItem(j, 1); } } }
      */
 
     @Override

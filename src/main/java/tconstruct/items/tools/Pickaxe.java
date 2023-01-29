@@ -2,10 +2,12 @@ package tconstruct.items.tools;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
+
 import tconstruct.library.tools.HarvestTool;
 import tconstruct.tools.TinkerTools;
 
 public class Pickaxe extends HarvestTool {
+
     public Pickaxe() {
         super(1);
         this.setUnlocalizedName("InfiTool.Pickaxe");
@@ -21,9 +23,8 @@ public class Pickaxe extends HarvestTool {
         return materials;
     }
 
-    static Material[] materials = new Material[] {
-        Material.rock, Material.iron, Material.ice, Material.glass, Material.piston, Material.anvil, Material.circuits
-    };
+    static Material[] materials = new Material[] { Material.rock, Material.iron, Material.ice, Material.glass,
+            Material.piston, Material.anvil, Material.circuits };
 
     @Override
     public Item getHeadItem() {

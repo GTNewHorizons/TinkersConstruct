@@ -1,29 +1,33 @@
 package tconstruct.plugins.gears;
 
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 import java.util.List;
+
 import mantle.pulsar.pulse.Handler;
 import mantle.pulsar.pulse.Pulse;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.FluidType;
 import tconstruct.library.crafting.Smeltery;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.util.config.PHConstruct;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Pulse(
         id = "Tinkers Gears",
         description = "Adds a gear cast if other mods provide gears",
         pulsesRequired = "Tinkers' Smeltery")
 public class TinkerGears {
+
     public static Item gearCast;
 
     @Handler

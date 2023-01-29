@@ -4,11 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.gui.SmelteryGui;
 import tconstruct.smeltery.logic.SmelteryLogic;
 
 public class SmelteryContainer extends ActiveContainer {
+
     public SmelteryLogic logic;
     public InventoryPlayer playerInv;
     public int fuel = 0;
@@ -56,13 +58,10 @@ public class SmelteryContainer extends ActiveContainer {
             // TConstruct.logger.info(invRow);
             int basePos = invRow * columns;
             for (int iter = 0; iter < activeInventorySlots.size(); iter++) {
-                ActiveSlot slot = (ActiveSlot) activeInventorySlots.get(iter);
-                if (slot.activeSlotNumber >= basePos
-                        && slot.activeSlotNumber < basePos + columns * SmelteryGui.maxRows) {
-                    slot.setActive(true);
-                } else {
-                    slot.setActive(false);
-                }
+                ActiveSlot slot = activeInventorySlots.get(iter);
+                slot.setActive(
+                        slot.activeSlotNumber >= basePos
+                                && slot.activeSlotNumber < basePos + columns * SmelteryGui.maxRows);
 
                 int xPos = (iter - basePos) % columns;
                 int yPos = (iter - basePos) / columns;
@@ -84,20 +83,16 @@ public class SmelteryContainer extends ActiveContainer {
 
     @Override
     public void detectAndSendChanges() // TODO: Sync with this
-            {
+    {
         // we only update if the size is the same, since the screen is getting closed on sizechange and would cause a
         // crash otherwise
         if (smelterySize == this.inventorySlots.size()) super.detectAndSendChanges();
         /*
-         * for (int i = 0; i < crafters.size(); i++) { ICrafting icrafting =
-         * (ICrafting)crafters.get(i); if (progress != logic.progress) {
-         * icrafting.sendProgressBarUpdate(this, 0, logic.progress); } if (fuel
-         * != logic.fuel) { icrafting.sendProgressBarUpdate(this, 1,
-         * logic.fuel); } if (fuelGague != logic.fuelGague) {
-         * icrafting.sendProgressBarUpdate(this, 2, logic.fuelGague); } }
-         *
-         * progress = logic.progress; fuel = logic.fuel; fuelGague =
-         * logic.fuelGague;
+         * for (int i = 0; i < crafters.size(); i++) { ICrafting icrafting = (ICrafting)crafters.get(i); if (progress !=
+         * logic.progress) { icrafting.sendProgressBarUpdate(this, 0, logic.progress); } if (fuel != logic.fuel) {
+         * icrafting.sendProgressBarUpdate(this, 1, logic.fuel); } if (fuelGague != logic.fuelGague) {
+         * icrafting.sendProgressBarUpdate(this, 2, logic.fuelGague); } } progress = logic.progress; fuel = logic.fuel;
+         * fuelGague = logic.fuelGague;
          */
     }
 
@@ -139,7 +134,7 @@ public class SmelteryContainer extends ActiveContainer {
             }
 
             if (slotStack.stackSize == 0) {
-                slot.putStack((ItemStack) null);
+                slot.putStack(null);
             } else {
                 slot.onSlotChanged();
             }
@@ -162,25 +157,15 @@ public class SmelteryContainer extends ActiveContainer {
         ItemStack slotStack;
 
         /*
-         * if (inputStack.isStackable() && startSlot >=
-         * logic.getSizeInventory()) { TConstruct.logger.info("Rawr!"); while
-         * (inputStack.stackSize > 0 && (!flag && slotPos < endSlot || flag &&
-         * slotPos >= startSlot)) { slot = (Slot)
-         * this.inventorySlots.get(slotPos); slotStack = slot.getStack();
-         *
-         * if (slotStack != null && ItemStack.areItemStacksEqual(inputStack,
-         * slotStack) && !inputStack.getHasSubtypes()) { int totalSize =
-         * slotStack.stackSize + inputStack.stackSize;
-         *
-         * if (totalSize <= inputStack.getMaxStackSize()) { inputStack.stackSize
-         * = 0; slotStack.stackSize = totalSize; slot.onSlotChanged(); merged =
-         * true; } else if (slotStack.stackSize < inputStack.getMaxStackSize())
-         * { inputStack.stackSize -= inputStack.getMaxStackSize() -
-         * slotStack.stackSize; slotStack.stackSize =
-         * inputStack.getMaxStackSize(); slot.onSlotChanged(); merged = true; }
-         * }
-         *
-         * if (flag) { --slotPos; } else { ++slotPos; } } }
+         * if (inputStack.isStackable() && startSlot >= logic.getSizeInventory()) { TConstruct.logger.info("Rawr!");
+         * while (inputStack.stackSize > 0 && (!flag && slotPos < endSlot || flag && slotPos >= startSlot)) { slot =
+         * (Slot) this.inventorySlots.get(slotPos); slotStack = slot.getStack(); if (slotStack != null &&
+         * ItemStack.areItemStacksEqual(inputStack, slotStack) && !inputStack.getHasSubtypes()) { int totalSize =
+         * slotStack.stackSize + inputStack.stackSize; if (totalSize <= inputStack.getMaxStackSize()) {
+         * inputStack.stackSize = 0; slotStack.stackSize = totalSize; slot.onSlotChanged(); merged = true; } else if
+         * (slotStack.stackSize < inputStack.getMaxStackSize()) { inputStack.stackSize -= inputStack.getMaxStackSize() -
+         * slotStack.stackSize; slotStack.stackSize = inputStack.getMaxStackSize(); slot.onSlotChanged(); merged = true;
+         * } } if (flag) { --slotPos; } else { ++slotPos; } } }
          */
 
         if (inputStack.isStackable() && startSlot >= logic.getSizeInventory()) {
@@ -188,8 +173,7 @@ public class SmelteryContainer extends ActiveContainer {
                 slot = (Slot) this.inventorySlots.get(slotPos);
                 slotStack = slot.getStack();
 
-                if (slotStack != null
-                        && slotStack.isItemEqual(inputStack)
+                if (slotStack != null && slotStack.isItemEqual(inputStack)
                         && ItemStack.areItemStackTagsEqual(slotStack, inputStack)) {
                     int l = slotStack.stackSize + inputStack.stackSize;
 

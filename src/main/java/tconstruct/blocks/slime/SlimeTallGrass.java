@@ -1,7 +1,7 @@
 package tconstruct.blocks.slime;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.*;
+
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -11,10 +11,13 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.*;
 import net.minecraftforge.common.*;
+
 import tconstruct.library.TConstructRegistry;
+import cpw.mods.fml.relauncher.*;
 
 public class SlimeTallGrass extends BlockBush implements IShearable {
-    private static final String[] grassTypes = new String[] {"slimegrass_blue_tall"};
+
+    private static final String[] grassTypes = new String[] { "slimegrass_blue_tall" };
 
     @SideOnly(Side.CLIENT)
     private IIcon[] iconArray;
@@ -44,8 +47,7 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
     }
 
     /**
-     * Returns the usual quantity dropped by the block plus a bonus of 1 to 'i'
-     * (inclusive).
+     * Returns the usual quantity dropped by the block plus a bonus of 1 to 'i' (inclusive).
      */
     @Override
     public int quantityDroppedWithBonus(int par1, Random par2Random) {
@@ -86,7 +88,7 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
 
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
-        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> ret = new ArrayList<>();
         if (world.rand.nextInt(8) != 0) {
             return ret;
         }
@@ -105,7 +107,7 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
 
     @Override
     public ArrayList<ItemStack> onSheared(ItemStack item, IBlockAccess world, int x, int y, int z, int fortune) {
-        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> ret = new ArrayList<>();
         ret.add(new ItemStack(this, 1, world.getBlockMetadata(x, y, z)));
         return ret;
     }

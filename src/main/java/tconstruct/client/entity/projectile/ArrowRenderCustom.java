@@ -1,7 +1,7 @@
 package tconstruct.client.entity.projectile;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.Random;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -9,14 +9,18 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraftforge.client.ForgeHooksClient;
+
 import org.lwjgl.opengl.*;
+
 import tconstruct.tools.entity.ArrowEntity;
+import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 @Deprecated
 public class ArrowRenderCustom extends Render {
-    private static RenderItem renderer = new RenderItem();
-    private Random random = new Random();
+
+    private static final RenderItem renderer = new RenderItem();
+    private final Random random = new Random();
 
     public ArrowRenderCustom() {}
 
@@ -30,7 +34,10 @@ public class ArrowRenderCustom extends Render {
         GL11.glTranslatef((float) par2, (float) par4, (float) par6);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glRotatef(
-                arrow.prevRotationYaw + (arrow.rotationYaw - arrow.prevRotationYaw) * par9 - 90.0F, 0.0F, 1.0F, 0.0F);
+                arrow.prevRotationYaw + (arrow.rotationYaw - arrow.prevRotationYaw) * par9 - 90.0F,
+                0.0F,
+                1.0F,
+                0.0F);
         GL11.glRotatef(
                 arrow.prevRotationPitch + (arrow.rotationPitch - arrow.prevRotationPitch) * par9 - 45.0F,
                 0.0F,
@@ -49,47 +56,33 @@ public class ArrowRenderCustom extends Render {
     /**
      * Renders the item's icon or block into the UI at the specified position.
      */
-    public void renderItemIntoGUI(
-            FontRenderer par1FontRenderer,
-            TextureManager par2TextureManager,
-            ItemStack par3ItemStack,
-            int par4,
-            int par5) {
+    public void renderItemIntoGUI(FontRenderer par1FontRenderer, TextureManager par2TextureManager,
+            ItemStack par3ItemStack, int par4, int par5) {
         renderer.renderItemIntoGUI(par1FontRenderer, par2TextureManager, par3ItemStack, par4, par5);
     }
 
     /**
      * Render the item's icon or block into the GUI, including the glint effect.
      */
-    public void renderItemAndEffectIntoGUI(
-            FontRenderer par1FontRenderer,
-            TextureManager par2TextureManager,
-            ItemStack par3ItemStack,
-            int par4,
-            int par5) {
+    public void renderItemAndEffectIntoGUI(FontRenderer par1FontRenderer, TextureManager par2TextureManager,
+            ItemStack par3ItemStack, int par4, int par5) {
         renderer.renderItemIntoGUI(par1FontRenderer, par2TextureManager, par3ItemStack, par4, par5);
     }
 
     /**
-     * Renders the item's overlay information. Examples being stack count or
-     * damage on top of the item's image at the specified position.
+     * Renders the item's overlay information. Examples being stack count or damage on top of the item's image at the
+     * specified position.
      */
-    public void renderItemOverlayIntoGUI(
-            FontRenderer par1FontRenderer,
-            TextureManager par2TextureManager,
-            ItemStack par3ItemStack,
-            int par4,
-            int par5) {
+    public void renderItemOverlayIntoGUI(FontRenderer par1FontRenderer, TextureManager par2TextureManager,
+            ItemStack par3ItemStack, int par4, int par5) {
         renderer.renderItemOverlayIntoGUI(par1FontRenderer, par2TextureManager, par3ItemStack, par4, par5);
     }
 
     /**
-     * Actually renders the given argument. This is a synthetic bridge method,
-     * always casting down its argument and then handing it off to a worker
-     * function which does the actual work. In all probabilty, the class Render
-     * is generic (Render<T extends Entity) and this method has signature public
-     * void doRender(T entity, double d, double d1, double d2, float f, float
-     * f1). But JAD is pre 1.5 so doesn't do that.
+     * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then
+     * handing it off to a worker function which does the actual work. In all probabilty, the class Render is generic
+     * (Render<T extends Entity) and this method has signature public void doRender(T entity, double d, double d1,
+     * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
      */
     @Override
     public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
@@ -102,7 +95,7 @@ public class ArrowRenderCustom extends Render {
     }
 
     protected ResourceLocation func_110796_a(ArrowEntity par1ArrowEntity) {
-        return this.renderManager.renderEngine.getResourceLocation(
-                par1ArrowEntity.getEntityItem().getItemSpriteNumber());
+        return this.renderManager.renderEngine
+                .getResourceLocation(par1ArrowEntity.getEntityItem().getItemSpriteNumber());
     }
 }

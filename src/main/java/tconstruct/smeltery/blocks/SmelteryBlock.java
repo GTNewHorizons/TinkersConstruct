@@ -1,9 +1,10 @@
 package tconstruct.smeltery.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.*;
+
 import mantle.blocks.abstracts.*;
 import mantle.blocks.iface.*;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,13 +15,16 @@ import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.SmelteryProxyCommon;
 import tconstruct.smeltery.logic.*;
 import tconstruct.smeltery.model.SmelteryRender;
+import cpw.mods.fml.relauncher.*;
 
 public class SmelteryBlock extends InventoryBlock {
+
     Random rand;
     String texturePrefix = "";
 
@@ -48,23 +52,9 @@ public class SmelteryBlock extends InventoryBlock {
 
     @Override
     public String[] getTextureNames() {
-        String[] textureNames = {
-            "smeltery_side",
-            "smeltery_inactive",
-            "smeltery_active",
-            "drain_side",
-            "drain_out",
-            "drain_basin",
-            "searedbrick",
-            "searedstone",
-            "searedcobble",
-            "searedpaver",
-            "searedbrickcracked",
-            "searedroad",
-            "searedbrickfancy",
-            "searedbricksquare",
-            "searedcreeper"
-        };
+        String[] textureNames = { "smeltery_side", "smeltery_inactive", "smeltery_active", "drain_side", "drain_out",
+                "drain_basin", "searedbrick", "searedstone", "searedcobble", "searedpaver", "searedbrickcracked",
+                "searedroad", "searedbrickfancy", "searedbricksquare", "searedcreeper" };
 
         if (!texturePrefix.equals(""))
             for (int i = 0; i < textureNames.length; i++) textureNames[i] = texturePrefix + "_" + textureNames[i];
@@ -189,8 +179,8 @@ public class SmelteryBlock extends InventoryBlock {
     }
 
     @Override
-    public boolean onBlockActivated(
-            World world, int x, int y, int z, EntityPlayer player, int side, float clickX, float clickY, float clickZ) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,
+            float clickY, float clickZ) {
         if (world.getBlockMetadata(x, y, z) != 0) return false;
 
         return super.onBlockActivated(world, x, y, z, player, side, clickX, clickY, clickZ);
@@ -221,9 +211,8 @@ public class SmelteryBlock extends InventoryBlock {
     }
 
     /*
-     * @Override public void breakBlock (World world, int x, int y, int z, int
-     * par5, int par6) //Don't drop inventory { world.removeBlockTileEntity(x,
-     * y, z); }
+     * @Override public void breakBlock (World world, int x, int y, int z, int par5, int par6) //Don't drop inventory {
+     * world.removeBlockTileEntity(x, y, z); }
      */
 
     @Override

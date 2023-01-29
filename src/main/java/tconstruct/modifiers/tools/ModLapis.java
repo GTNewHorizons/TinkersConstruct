@@ -1,12 +1,15 @@
 package tconstruct.modifiers.tools;
 
 import java.util.*;
+
 import net.minecraft.enchantment.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
+
 import tconstruct.library.tools.ToolCore;
 
 public class ModLapis extends ItemModTypeFilter {
+
     String tooltipName;
     int max = 450;
 
@@ -29,8 +32,8 @@ public class ModLapis extends ItemModTypeFilter {
 
             if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input) <= max;
 
-            int keyPair[] = tags.getIntArray(key);
-            if (keyPair[0] + matchingAmount(input) <= max) return true;
+            int[] keyPair = tags.getIntArray(key);
+            return keyPair[0] + matchingAmount(input) <= max;
         }
         return false;
     }
@@ -43,7 +46,7 @@ public class ModLapis extends ItemModTypeFilter {
 
             String modName = "\u00a79Lapis (0/450)";
             int tooltipIndex = addToolTip(tool, "\u00a79Luck", modName);
-            int[] keyPair = new int[] {0, tooltipIndex};
+            int[] keyPair = new int[] { 0, tooltipIndex };
             tags.setIntArray(key, keyPair);
 
             int modifiers = tags.getInteger("Modifiers");
@@ -52,7 +55,7 @@ public class ModLapis extends ItemModTypeFilter {
         }
 
         int increase = matchingAmount(input);
-        int keyPair[] = tags.getIntArray(key);
+        int[] keyPair = tags.getIntArray(key);
         keyPair[0] += increase;
         tags.setIntArray(key, keyPair);
         ToolCore toolcore = (ToolCore) tool.getItem();
@@ -81,7 +84,7 @@ public class ModLapis extends ItemModTypeFilter {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         if (!tags.hasKey(key)) return;
 
-        int keyPair[] = tags.getIntArray(key);
+        int[] keyPair = tags.getIntArray(key);
         if (keyPair[0] == max) return;
 
         if (random.nextInt(50) == 0) {
@@ -90,7 +93,7 @@ public class ModLapis extends ItemModTypeFilter {
             updateModTag(tool, keyPair);
         }
 
-        List list = Arrays.asList(toolItem.getTraits());
+        List<String> list = Arrays.asList(toolItem.getTraits());
         if (list.contains("weapon")) {
             if (keyPair[0] >= 450) {
                 addEnchantment(tool, Enchantment.looting, 3);
@@ -124,30 +127,30 @@ public class ModLapis extends ItemModTypeFilter {
 
     public void addEnchantment(ItemStack tool, Enchantment enchant, int level) {
         NBTTagList tags = new NBTTagList();
-        Map enchantMap = EnchantmentHelper.getEnchantments(tool);
-        Iterator iterator = enchantMap.keySet().iterator();
+        Map<Integer, Integer> enchantMap = EnchantmentHelper.getEnchantments(tool);
+        Iterator<Map.Entry<Integer, Integer>> iterator = enchantMap.entrySet().iterator();
         int index;
         int lvl;
         boolean hasEnchant = false;
         while (iterator.hasNext()) {
             NBTTagCompound enchantTag = new NBTTagCompound();
-            index = ((Integer) iterator.next()).intValue();
-            lvl = (Integer) enchantMap.get(index);
+            final Map.Entry<Integer, Integer> next = iterator.next();
+            index = next.getKey();
+            lvl = next.getValue();
             if (index == enchant.effectId) {
                 hasEnchant = true;
                 enchantTag.setShort("id", (short) index);
-                enchantTag.setShort("lvl", (short) ((byte) level));
-                tags.appendTag(enchantTag);
+                enchantTag.setShort("lvl", (byte) level);
             } else {
                 enchantTag.setShort("id", (short) index);
-                enchantTag.setShort("lvl", (short) ((byte) lvl));
-                tags.appendTag(enchantTag);
+                enchantTag.setShort("lvl", (byte) lvl);
             }
+            tags.appendTag(enchantTag);
         }
         if (!hasEnchant) {
             NBTTagCompound enchantTag = new NBTTagCompound();
             enchantTag.setShort("id", (short) enchant.effectId);
-            enchantTag.setShort("lvl", (short) ((byte) level));
+            enchantTag.setShort("lvl", (byte) level);
             tags.appendTag(enchantTag);
         }
         tool.stackTagCompound.setTag("ench", tags);
@@ -161,7 +164,7 @@ public class ModLapis extends ItemModTypeFilter {
     }
 
     public boolean validType(ToolCore tool) {
-        List list = Arrays.asList(tool.getTraits());
+        List<String> list = Arrays.asList(tool.getTraits());
         return !list.contains("ammo") && (list.contains("weapon") || list.contains("harvest"));
     }
 }

@@ -1,9 +1,10 @@
 package tconstruct.plugins.te4;
 
-import cpw.mods.fml.common.event.FMLInterModComms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
+
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 /**
  * Taken from CoFHLib
@@ -31,14 +32,14 @@ public class TE4Helper {
         addPulverizerRecipe(energy, input, primaryOutput, null, 0);
     }
 
-    public static void addPulverizerRecipe(
-            int energy, ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput) {
+    public static void addPulverizerRecipe(int energy, ItemStack input, ItemStack primaryOutput,
+            ItemStack secondaryOutput) {
 
         addPulverizerRecipe(energy, input, primaryOutput, secondaryOutput, 100);
     }
 
-    public static void addPulverizerRecipe(
-            int energy, ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput, int secondaryChance) {
+    public static void addPulverizerRecipe(int energy, ItemStack input, ItemStack primaryOutput,
+            ItemStack secondaryOutput, int secondaryChance) {
 
         if (input == null || primaryOutput == null || secondaryOutput == null) {
             return;
@@ -63,14 +64,14 @@ public class TE4Helper {
         addSawmillRecipe(energy, input, primaryOutput, null, 0);
     }
 
-    public static void addSawmillRecipe(
-            int energy, ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput) {
+    public static void addSawmillRecipe(int energy, ItemStack input, ItemStack primaryOutput,
+            ItemStack secondaryOutput) {
 
         addSawmillRecipe(energy, input, primaryOutput, secondaryOutput, 100);
     }
 
-    public static void addSawmillRecipe(
-            int energy, ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput, int secondaryChance) {
+    public static void addSawmillRecipe(int energy, ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput,
+            int secondaryChance) {
 
         if (input == null || primaryOutput == null || secondaryOutput == null) {
             return;
@@ -90,29 +91,20 @@ public class TE4Helper {
         FMLInterModComms.sendMessage("ThermalExpansion", "SawmillRecipe", toSend);
     }
 
-    public static void addSmelterRecipe(
-            int energy, ItemStack primaryInput, ItemStack secondaryInput, ItemStack primaryOutput) {
+    public static void addSmelterRecipe(int energy, ItemStack primaryInput, ItemStack secondaryInput,
+            ItemStack primaryOutput) {
 
         addSmelterRecipe(energy, primaryInput, secondaryInput, primaryOutput, null, 0);
     }
 
-    public static void addSmelterRecipe(
-            int energy,
-            ItemStack primaryInput,
-            ItemStack secondaryInput,
-            ItemStack primaryOutput,
-            ItemStack secondaryOutput) {
+    public static void addSmelterRecipe(int energy, ItemStack primaryInput, ItemStack secondaryInput,
+            ItemStack primaryOutput, ItemStack secondaryOutput) {
 
         addSmelterRecipe(energy, primaryInput, secondaryInput, primaryOutput, secondaryOutput, 100);
     }
 
-    public static void addSmelterRecipe(
-            int energy,
-            ItemStack primaryInput,
-            ItemStack secondaryInput,
-            ItemStack primaryOutput,
-            ItemStack secondaryOutput,
-            int secondaryChance) {
+    public static void addSmelterRecipe(int energy, ItemStack primaryInput, ItemStack secondaryInput,
+            ItemStack primaryOutput, ItemStack secondaryOutput, int secondaryChance) {
 
         if (primaryInput == null || secondaryInput == null || primaryOutput == null || secondaryOutput == null) {
             return;
@@ -135,8 +127,8 @@ public class TE4Helper {
     }
 
     /**
-     * Use this to register an Ore TYPE as a "Blast" recipe - it will require Pyrotheum Dust to smelt. Do not add the prefix. This is an opt-in for ores which
-     * do NOT have vanilla furnace recipes.
+     * Use this to register an Ore TYPE as a "Blast" recipe - it will require Pyrotheum Dust to smelt. Do not add the
+     * prefix. This is an opt-in for ores which do NOT have vanilla furnace recipes.
      *
      * Ex: "Steel" or "ElectrumFlux", not "dustSteel" or "dustElectrumFlux"
      *
@@ -168,8 +160,8 @@ public class TE4Helper {
         FMLInterModComms.sendMessage("ThermalExpansion", "CrucibleRecipe", toSend);
     }
 
-    public static void addTransposerFill(
-            int energy, ItemStack input, ItemStack output, FluidStack fluid, boolean reversible) {
+    public static void addTransposerFill(int energy, ItemStack input, ItemStack output, FluidStack fluid,
+            boolean reversible) {
 
         if (input == null || output == null || fluid == null) {
             return;
@@ -189,8 +181,8 @@ public class TE4Helper {
         FMLInterModComms.sendMessage("ThermalExpansion", "TransposerFillRecipe", toSend);
     }
 
-    public static void addTransposerExtract(
-            int energy, ItemStack input, ItemStack output, FluidStack fluid, int chance, boolean reversible) {
+    public static void addTransposerExtract(int energy, ItemStack input, ItemStack output, FluidStack fluid, int chance,
+            boolean reversible) {
 
         if (input == null || output == null || fluid == null) {
             return;

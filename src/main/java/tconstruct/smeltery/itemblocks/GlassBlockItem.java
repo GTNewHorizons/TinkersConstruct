@@ -1,14 +1,17 @@
 package tconstruct.smeltery.itemblocks;
 
 import java.util.List;
+
 import mantle.blocks.abstracts.MultiItemBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class GlassBlockItem extends MultiItemBlock {
-    public static final String blockTypes[] = {"pure"}; // , "soul",
+
+    public static final String[] blockTypes = { "pure" }; // , "soul",
     // "soul.pure" };
 
     public GlassBlockItem(Block b) {

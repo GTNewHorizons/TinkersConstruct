@@ -6,12 +6,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.potion.*;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
 import tconstruct.blocks.TConstructBlock;
 
 public class GlueBlock extends TConstructBlock {
 
     public GlueBlock() {
-        super(Material.ground, 4.0f, new String[] {"glue"});
+        super(Material.ground, 4.0f, new String[] { "glue" });
     }
 
     @Override

@@ -1,8 +1,8 @@
 package tconstruct.tools.logic;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mantle.blocks.BlockUtils;
 import mantle.blocks.iface.IActiveLogic;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,15 +12,16 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import tconstruct.tools.inventory.FrypanContainer;
 
-/* Slots
- * 0: Frying pan item
- * 1: Fuel
- * 2-9: Food
+import tconstruct.tools.inventory.FrypanContainer;
+import cpw.mods.fml.common.registry.GameRegistry;
+
+/*
+ * Slots 0: Frying pan item 1: Fuel 2-9: Food
  */
 
 public class FrypanLogic extends EquipLogic implements IActiveLogic {
+
     boolean active;
     public int fuel;
     public int fuelGague;
@@ -116,8 +117,7 @@ public class FrypanLogic extends EquipLogic implements IActiveLogic {
                     boolean placed = false;
                     while (ids < 10 && !placed) // Try to merge stacks first
                     {
-                        if (inventory[ids] != null
-                                && inventory[ids].isItemEqual(result)
+                        if (inventory[ids] != null && inventory[ids].isItemEqual(result)
                                 && inventory[ids].stackSize < inventory[ids].getMaxStackSize()) {
                             if (inventory[ids].stackSize + result.stackSize <= inventory[ids].getMaxStackSize()) {
                                 inventory[ids].stackSize += result.stackSize;
@@ -150,11 +150,11 @@ public class FrypanLogic extends EquipLogic implements IActiveLogic {
     public boolean canCook() {
         for (int id = 2; id < 10; id++) {
             if (inventory[id] == null) // Nothing here!
-            continue;
+                continue;
 
             ItemStack result = getResultFor(inventory[id]);
             if (result == null) // Doesn't cook into anything
-            continue;
+                continue;
 
             for (int slotid = 2; slotid < 10; slotid++) {
                 if (inventory[slotid] == null) return true;
@@ -171,15 +171,12 @@ public class FrypanLogic extends EquipLogic implements IActiveLogic {
     }
 
     public ItemStack getResultFor(ItemStack stack) {
-        if (stack == null) {
-            return null;
-        } else {
+        if (stack != null) {
             ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(stack);
             if (result != null && result.getItem() instanceof ItemFood) // Only valid for food
-            return result.copy();
-
-            return null;
+                return result.copy();
         }
+        return null;
     }
 
     public static int getItemBurnTime(ItemStack stack) {
@@ -203,12 +200,9 @@ public class FrypanLogic extends EquipLogic implements IActiveLogic {
                     return 300;
                 }
             }
-            if (item instanceof ItemTool
-                    && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemSword
-                    && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
-            if (item instanceof ItemHoe
-                    && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemTool && ((ItemTool) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemSword && ((ItemSword) item).getToolMaterialName().equals("WOOD")) return 200;
+            if (item instanceof ItemHoe && ((ItemHoe) item).getToolMaterialName().equals("WOOD")) return 200;
             if (item == Items.stick) return 100;
             if (item == Items.coal) return 800;
             if (item == Items.lava_bucket) return 20000;

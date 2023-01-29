@@ -6,22 +6,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
 import tconstruct.client.FlexibleToolRenderer;
 import tconstruct.library.entity.ProjectileBase;
 
 public class ProjectileBaseRenderer<T extends ProjectileBase> extends Render {
+
     protected static FlexibleToolRenderer toolCoreRenderer = new FlexibleToolRenderer();
 
     @SuppressWarnings("unchecked")
     @Override
-    public void doRender(
-            Entity p_76986_1_,
-            double p_76986_2_,
-            double p_76986_4_,
-            double p_76986_6_,
-            float p_76986_8_,
+    public void doRender(Entity p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_,
             float p_76986_9_) {
         doRender((T) p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
     }
@@ -88,7 +86,7 @@ public class ProjectileBaseRenderer<T extends ProjectileBase> extends Render {
     }
 
     protected ResourceLocation func_110796_a(ProjectileBase par1ArrowEntity) {
-        return this.renderManager.renderEngine.getResourceLocation(
-                par1ArrowEntity.getEntityItem().getItemSpriteNumber());
+        return this.renderManager.renderEngine
+                .getResourceLocation(par1ArrowEntity.getEntityItem().getItemSpriteNumber());
     }
 }

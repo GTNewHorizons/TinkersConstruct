@@ -1,9 +1,11 @@
 package tconstruct.tools.items;
 
 import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.DynamicToolPart;
 

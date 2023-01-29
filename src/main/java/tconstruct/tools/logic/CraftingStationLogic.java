@@ -1,7 +1,9 @@
 package tconstruct.tools.logic;
 
 import java.lang.ref.WeakReference;
+
 import mantle.blocks.abstracts.InventoryLogic;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -13,10 +15,12 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import tconstruct.tools.inventory.CraftingStationContainer;
 import tconstruct.util.config.PHConstruct;
 
 public class CraftingStationLogic extends InventoryLogic implements ISidedInventory {
+
     public ForgeDirection chestDirection = ForgeDirection.UNKNOWN;
     public int chestSize;
     public WeakReference<IInventory> chest;
@@ -65,9 +69,9 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             final int xPos = x + dir.offsetX, yPos = y + dir.offsetY, zPos = z + dir.offsetZ;
             final TileEntity tile = world.getTileEntity(xPos, yPos, zPos);
-            if (!(tile instanceof IInventory)
-                    || (tile instanceof CraftingStationLogic)
-                    || isBlacklisted(tile.getClass())) continue;
+            if (!(tile instanceof IInventory) || (tile instanceof CraftingStationLogic)
+                    || isBlacklisted(tile.getClass()))
+                continue;
 
             final IInventory inv = (IInventory) tile;
 
@@ -83,20 +87,15 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
             }
 
             if (tile instanceof ISidedInventory
-                    && ((ISidedInventory) tile)
-                                    .getAccessibleSlotsFromSide(
-                                            dir.getOpposite().ordinal())
-                                    .length
-                            == 0) continue;
+                    && ((ISidedInventory) tile).getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length == 0)
+                continue;
 
             if (chest == null && inv.isUseableByPlayer(inventoryplayer.player)) {
                 chest = new WeakReference<>(inv);
                 chestDirection = dir;
                 invColumns = 6;
                 chestSize = tile instanceof ISidedInventory
-                        ? ((ISidedInventory) tile)
-                                .getAccessibleSlotsFromSide(dir.getOpposite().ordinal())
-                                .length
+                        ? ((ISidedInventory) tile).getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length
                         : inv.getSizeInventory();
 
                 if (tile instanceof TileEntityChest) {
@@ -157,7 +156,7 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         return true;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static boolean isUseableByPlayer(EntityPlayer player, WeakReference[] inventories) {
         for (WeakReference<IInventory> ref : inventories) {
             if (ref != null) {
@@ -171,7 +170,7 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
 
     @SuppressWarnings("rawtypes")
     public WeakReference[] getInventories() {
-        return new WeakReference[] {this.chest, this.doubleChest, this.patternChest, this.furnace};
+        return new WeakReference[] { this.chest, this.doubleChest, this.patternChest, this.furnace };
     }
 
     @Override

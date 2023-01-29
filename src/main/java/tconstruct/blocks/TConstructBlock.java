@@ -1,16 +1,20 @@
 package tconstruct.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.blocks.MantleBlock;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
+
 import tconstruct.library.TConstructRegistry;
+import cpw.mods.fml.relauncher.*;
 
 public class TConstructBlock extends MantleBlock {
+
     public String[] textureNames;
     public IIcon[] icons;
 

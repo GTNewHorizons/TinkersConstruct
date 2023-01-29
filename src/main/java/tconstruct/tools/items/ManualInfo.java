@@ -1,15 +1,18 @@
 package tconstruct.tools.items;
 
+import mantle.books.*;
+
+import net.minecraft.util.*;
+
+import org.w3c.dom.Document;
+
+import tconstruct.client.TProxyClient;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
-import mantle.books.*;
-import net.minecraft.util.*;
-import org.w3c.dom.Document;
-import tconstruct.client.TProxyClient;
 
 public class ManualInfo {
-    //    static String[] name = new String[] { "beginner", "toolstation", "smeltery", "diary" };
-    //    static String[] textureName = new String[] { "tinkerbook_diary", "tinkerbook_toolstation",
+    // static String[] name = new String[] { "beginner", "toolstation", "smeltery", "diary" };
+    // static String[] textureName = new String[] { "tinkerbook_diary", "tinkerbook_toolstation",
     // "tinkerbook_smeltery", "tinkerbook_blue" };
 
     BookData beginner = new BookData();
@@ -18,10 +21,12 @@ public class ManualInfo {
     BookData diary = new BookData();
     BookData weaponry = new BookData();
 
-    /*        diary = readManual("/assets/tinker/manuals/diary.xml", dbFactory);
-    volume1 = readManual("/assets/tinker/manuals/firstday.xml", dbFactory);
-    volume2 = readManual("/assets/tinker/manuals/materials.xml", dbFactory);
-    smelter = readManual("/assets/tinker/manuals/smeltery.xml", dbFactory);*/
+    /*
+     * diary = readManual("/assets/tinker/manuals/diary.xml", dbFactory); volume1 =
+     * readManual("/assets/tinker/manuals/firstday.xml", dbFactory); volume2 =
+     * readManual("/assets/tinker/manuals/materials.xml", dbFactory); smelter =
+     * readManual("/assets/tinker/manuals/smeltery.xml", dbFactory);
+     */
 
     public ManualInfo() {
         Side side = FMLCommonHandler.instance().getEffectiveSide();

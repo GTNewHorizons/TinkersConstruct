@@ -1,12 +1,12 @@
 package tconstruct.plugins.ubc;
 
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import exterminatorJeff.undergroundBiomes.api.UBAPIHook;
-import exterminatorJeff.undergroundBiomes.api.UBOreTexturizer.BlocksAreAlreadySet;
 import mantle.pulsar.pulse.Handler;
 import mantle.pulsar.pulse.Pulse;
 import tconstruct.TConstruct;
 import tconstruct.world.TinkerWorld;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import exterminatorJeff.undergroundBiomes.api.UBAPIHook;
+import exterminatorJeff.undergroundBiomes.api.UBOreTexturizer.BlocksAreAlreadySet;
 
 @Pulse(
         id = "Tinkers' Underground Biomes Compatiblity",
@@ -15,6 +15,7 @@ import tconstruct.world.TinkerWorld;
         pulsesRequired = "Tinkers' World",
         forced = true)
 public class TinkerUBC {
+
     @Handler
     public void preInit(FMLPreInitializationEvent event) {
         registerBlock(3, "Copper");
@@ -26,7 +27,10 @@ public class TinkerUBC {
         String overlayTexture = blockName.toLowerCase();
         try {
             UBAPIHook.ubAPIHook.ubOreTexturizer.requestUBOreSetup(
-                    TinkerWorld.oreSlag, meta, "tinker:ore_" + overlayTexture + "_overlay", "MetalOre." + blockName);
+                    TinkerWorld.oreSlag,
+                    meta,
+                    "tinker:ore_" + overlayTexture + "_overlay",
+                    "MetalOre." + blockName);
         } catch (RuntimeException exception) {
             // we have to work around this because otherwise FML would access this for some reason
             // and crash because BlocksAreAlreadySet Exception is not present without UBC

@@ -1,10 +1,12 @@
 package tconstruct.weaponry.ammo;
 
 import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
@@ -16,6 +18,7 @@ import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.TinkerWeaponry;
 
 public class ArrowAmmo extends AmmoItem {
+
     public static ItemStack vanillaArrow;
 
     public ArrowAmmo() {
@@ -82,7 +85,7 @@ public class ArrowAmmo extends AmmoItem {
 
     @Override
     public String[] getTraits() {
-        return new String[] {"ammo", "projectile", "weapon"};
+        return new String[] { "ammo", "projectile", "weapon" };
     }
 
     @Override
@@ -92,8 +95,8 @@ public class ArrowAmmo extends AmmoItem {
         ItemStack handleStack = new ItemStack(getHandleItem(), 1, 0); // wooden shaft
         ItemStack accessoryStack = new ItemStack(getAccessoryItem(), 1, 0); // feather fletchling
 
-        ItemStack tool = ToolBuilder.instance.buildTool(
-                new ItemStack(getHeadItem(), 1, id), handleStack, accessoryStack, null, "");
+        ItemStack tool = ToolBuilder.instance
+                .buildTool(new ItemStack(getHeadItem(), 1, id), handleStack, accessoryStack, null, "");
         if (tool != null) {
             tool.getTagCompound().getCompoundTag("InfiTool").setBoolean("Built", true);
             list.add(tool);
@@ -133,7 +136,7 @@ public class ArrowAmmo extends AmmoItem {
         // blaze shaft?
         if (part == 1 && type == 3) return "\u00a76" + StatCollector.translateToLocal("modifier.tool.blaze");
         if (part >= 1) // only head has ability otherwise
-        return "";
+            return "";
         return super.getAbilityNameForType(type, part);
     }
 }

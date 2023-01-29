@@ -1,10 +1,8 @@
 package tconstruct.items.tools;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -19,15 +17,19 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import tconstruct.library.tools.AOEHarvestTool;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.tools.TinkerTools;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.InterfaceList({
-    @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon"),
-    @Optional.Interface(modid = "ZeldaItemAPI", iface = "zeldaswordskills.api.item.ISword")
-})
+        @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon"),
+        @Optional.Interface(modid = "ZeldaItemAPI", iface = "zeldaswordskills.api.item.ISword") })
 public class Battleaxe extends AOEHarvestTool implements IBattlegearWeapon {
+
     public Battleaxe() {
         super(4, 1, 1);
         this.setUnlocalizedName("InfiTool.Battleaxe");
@@ -44,14 +46,14 @@ public class Battleaxe extends AOEHarvestTool implements IBattlegearWeapon {
     }
 
     @Override
-    public boolean onBlockDestroyed(
-            ItemStack itemstack, World world, Block b, int x, int y, int z, EntityLivingBase player) {
+    public boolean onBlockDestroyed(ItemStack itemstack, World world, Block b, int x, int y, int z,
+            EntityLivingBase player) {
         if (b != null && b.getMaterial() == Material.leaves) return false;
 
         return AbilityHelper.onBlockChanged(itemstack, world, b, x, y, z, player, random);
     }
 
-    static Material[] materials = {Material.wood, Material.vine, Material.circuits, Material.cactus, Material.gourd};
+    static Material[] materials = { Material.wood, Material.vine, Material.circuits, Material.cactus, Material.gourd };
 
     @Override
     public Item getHeadItem() {
@@ -128,23 +130,14 @@ public class Battleaxe extends AOEHarvestTool implements IBattlegearWeapon {
 
     @Override
     public String[] getTraits() {
-        return new String[] {"weapon", "harvest", "melee", "slicing"};
+        return new String[] { "weapon", "harvest", "melee", "slicing" };
     }
 
     /* Battleaxe Specific */
 
     @Override
-    public boolean onItemUse(
-            ItemStack stack,
-            EntityPlayer player,
-            World world,
-            int x,
-            int y,
-            int z,
-            int side,
-            float clickX,
-            float clickY,
-            float clickZ) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
+            float clickX, float clickY, float clickZ) {
         return false;
     }
 
@@ -188,12 +181,12 @@ public class Battleaxe extends AOEHarvestTool implements IBattlegearWeapon {
                 if (increase > 0.56f) increase = 0.56f;
                 player.motionY += increase;
 
-                player.motionX = (double) (-MathHelper.sin(player.rotationYaw / 180.0F * (float) Math.PI)
+                player.motionX = -MathHelper.sin(player.rotationYaw / 180.0F * (float) Math.PI)
                         * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI)
-                        * speed);
-                player.motionZ = (double) (MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI)
+                        * speed;
+                player.motionZ = MathHelper.cos(player.rotationYaw / 180.0F * (float) Math.PI)
                         * MathHelper.cos(player.rotationPitch / 180.0F * (float) Math.PI)
-                        * speed);
+                        * speed;
             }
         }
     }
@@ -239,8 +232,8 @@ public class Battleaxe extends AOEHarvestTool implements IBattlegearWeapon {
 
     @Override
     @Optional.Method(modid = "battlegear2")
-    public boolean offhandAttackEntity(
-            PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem, ItemStack offhandItem) {
+    public boolean offhandAttackEntity(PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem,
+            ItemStack offhandItem) {
         return true;
     }
 
@@ -267,9 +260,8 @@ public class Battleaxe extends AOEHarvestTool implements IBattlegearWeapon {
     public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
         if (offhand == null) return true;
 
-        return (mainhand != null
-                        && mainhand.getItem() != TinkerTools.cleaver
-                        && mainhand.getItem() != TinkerTools.battleaxe)
+        return (mainhand != null && mainhand.getItem() != TinkerTools.cleaver
+                && mainhand.getItem() != TinkerTools.battleaxe)
                 && (offhand.getItem() != TinkerTools.cleaver && offhand.getItem() != TinkerTools.battleaxe);
     }
 

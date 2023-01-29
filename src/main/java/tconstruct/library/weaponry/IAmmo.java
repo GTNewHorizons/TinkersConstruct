@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public interface IAmmo {
+
     /**
      * Returns the current ammo amount of the item.
      */
@@ -16,12 +17,14 @@ public interface IAmmo {
 
     /**
      * Returns the maximum amount of ammo the item can have
+     * 
      * @param tags InfiTool tag compound of the item
      */
     int getMaxAmmo(NBTTagCompound tags);
 
     /**
      * Adds the given amount of ammo cache. Will not go over max-ammo.
+     * 
      * @param count How much to add
      * @param stack The itemstack to add the ammo to. Has to have the proper NBT.
      * @return The amount of ammo that couldn't be added.
@@ -30,6 +33,7 @@ public interface IAmmo {
 
     /**
      * Removes the given amount fro the ammo cache. Will not go below zero.
+     * 
      * @param count How much to remove
      * @param stack The itemstack to add the ammo to. Has to have the proper NBT.
      * @return The amount of ammo that couldn't be removed. If you try to remove 5, but only 3 are left, it'll return 2.
@@ -38,6 +42,7 @@ public interface IAmmo {
 
     /**
      * Sets the Ammo amount to that absolute value. Behaviour for values below 0 or above the max ammo is undefined.
+     * 
      * @param count How much
      * @param stack The itemstack to set the ammo for. Has to have proper NBT.
      */

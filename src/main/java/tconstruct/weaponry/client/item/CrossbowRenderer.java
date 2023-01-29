@@ -5,7 +5,9 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.client.FlexibleToolRenderer;
 import tconstruct.weaponry.TinkerWeaponry;
 import tconstruct.weaponry.ammo.BoltAmmo;
@@ -13,6 +15,7 @@ import tconstruct.weaponry.entity.BoltEntity;
 import tconstruct.weaponry.weapons.Crossbow;
 
 public class CrossbowRenderer extends FlexibleToolRenderer {
+
     private static final BoltEntity dummy = new BoltEntity(null);
 
     @Override

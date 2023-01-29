@@ -1,11 +1,12 @@
 package tconstruct.plugins.nei;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
+
+import tconstruct.client.ArmorControls;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.api.API;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import tconstruct.client.ArmorControls;
 
 public class BeltToggleFromGuiInputHandler implements IContainerInputHandler {
 

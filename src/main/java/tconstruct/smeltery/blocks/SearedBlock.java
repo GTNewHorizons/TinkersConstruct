@@ -1,8 +1,9 @@
 package tconstruct.smeltery.blocks;
 
-import cpw.mods.fml.relauncher.*;
 import java.util.List;
+
 import mantle.blocks.abstracts.InventoryBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,10 +12,12 @@ import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
+
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.logic.*;
 import tconstruct.smeltery.model.CastingBlockRender;
+import cpw.mods.fml.relauncher.*;
 
 public class SearedBlock extends InventoryBlock {
 
@@ -62,8 +65,8 @@ public class SearedBlock extends InventoryBlock {
 
     /* Activation */
     @Override
-    public boolean onBlockActivated(
-            World world, int x, int y, int z, EntityPlayer player, int side, float clickX, float clickY, float clickZ) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,
+            float clickY, float clickZ) {
         int md = world.getBlockMetadata(x, y, z);
         // casting table or basin
         if (md == 0 || md == 2) {
@@ -100,15 +103,8 @@ public class SearedBlock extends InventoryBlock {
 
     @Override
     public String[] getTextureNames() {
-        String[] textureNames = {
-            "castingtable_top",
-            "castingtable_side",
-            "castingtable_bottom",
-            "faucet",
-            "blockcast_top",
-            "blockcast_side",
-            "blockcast_bottom"
-        };
+        String[] textureNames = { "castingtable_top", "castingtable_side", "castingtable_bottom", "faucet",
+                "blockcast_top", "blockcast_side", "blockcast_bottom" };
 
         if (!texturePrefix.equals(""))
             for (int i = 0; i < textureNames.length; i++) textureNames[i] = texturePrefix + "_" + textureNames[i];
@@ -204,7 +200,7 @@ public class SearedBlock extends InventoryBlock {
             return AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1);
         } else {
             TileEntity tile = world.getTileEntity(x, y, z);
-            if (tile != null && tile instanceof FaucetLogic) {
+            if (tile instanceof FaucetLogic) {
                 FaucetLogic logic = (FaucetLogic) tile;
                 float xMin = 0.25F;
                 float xMax = 0.75F;
@@ -231,12 +227,12 @@ public class SearedBlock extends InventoryBlock {
                 }
 
                 return AxisAlignedBB.getBoundingBox(
-                        (double) ((float) x + xMin),
+                        (float) x + xMin,
                         (double) y + 0.25,
-                        (double) ((float) z + zMin),
-                        (double) ((float) x + xMax),
+                        (float) z + zMin,
+                        (float) x + xMax,
                         (double) y + 0.625,
-                        (double) ((float) z + zMax));
+                        (float) z + zMax);
             }
         }
 

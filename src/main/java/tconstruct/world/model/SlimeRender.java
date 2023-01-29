@@ -1,19 +1,22 @@
 package tconstruct.world.model;
 
-import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.*;
 import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
+
 import tconstruct.world.entity.KingBlueSlime;
 import tconstruct.world.entity.SlimeBase;
+import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 public class SlimeRender extends RenderLiving {
+
     static final ResourceLocation texture = new ResourceLocation("tinker", "textures/mob/slimeedible.png");
-    private ModelBase scaleAmount;
+    private final ModelBase scaleAmount;
 
     public SlimeRender(ModelBase par1ModelBase, ModelBase par2ModelBase, float par3) {
         super(par1ModelBase, par3);
@@ -60,8 +63,8 @@ public class SlimeRender extends RenderLiving {
     }
 
     /**
-     * Allows the render to do any OpenGL state modifications necessary before
-     * the model is rendered. Args: entityLiving, partialTickTime
+     * Allows the render to do any OpenGL state modifications necessary before the model is rendered. Args:
+     * entityLiving, partialTickTime
      */
     @Override
     protected void preRenderCallback(EntityLivingBase par1EntityLiving, float par2) {
