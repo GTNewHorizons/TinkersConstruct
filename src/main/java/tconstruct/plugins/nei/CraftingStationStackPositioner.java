@@ -16,7 +16,7 @@ public class CraftingStationStackPositioner implements IStackPositioner {
     public ArrayList<PositionedStack> positionStacks(ArrayList<PositionedStack> stacks) {
 
         if (Minecraft.getMinecraft().currentScreen instanceof GuiRecipe) {
-            GuiRecipe recipeGui = (GuiRecipe) Minecraft.getMinecraft().currentScreen;
+            GuiRecipe<?> recipeGui = (GuiRecipe<?>) Minecraft.getMinecraft().currentScreen;
 
             if (!(recipeGui.firstGui instanceof CraftingStationGui)) {
                 TConstruct.logger.warn("No CraftingStationGui found!");
