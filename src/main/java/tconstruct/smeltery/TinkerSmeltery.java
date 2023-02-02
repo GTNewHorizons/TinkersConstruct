@@ -1032,6 +1032,12 @@ public class TinkerSmeltery {
                 new FluidStack(TinkerSmeltery.bloodFluid, 160),
                 null,
                 50);
+        tableCasting.addCastingRecipe(
+                new ItemStack(TinkerTools.materials, 1, 43),
+                new FluidStack(TinkerSmeltery.moltenSteelFluid, 288),
+                new ItemStack(TinkerTools.largePlate, 1, 6),
+                true,
+                80);
 
         // Buckets
         ItemStack bucket = new ItemStack(Items.bucket);
