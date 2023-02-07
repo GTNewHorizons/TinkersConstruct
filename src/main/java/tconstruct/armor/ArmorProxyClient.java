@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -66,6 +65,9 @@ public class ArmorProxyClient extends ArmorProxyCommon {
 
     public static KnapsackInventory knapsack = new KnapsackInventory();
     public static ArmorExtended armorExtended = new ArmorExtended();
+    private final boolean isRpghudLoaded = Loader.isModLoaded("rpghud");
+    private final boolean isTukmc_vzLoaded = Loader.isModLoaded("tukmc_Vz");
+    private final boolean isBorderlandsModLoaded = Loader.isModLoaded("borderlands");
 
     @Override
     public void preInit() {
@@ -236,8 +238,6 @@ public class ArmorProxyClient extends ArmorProxyCommon {
     Random rand = new Random();
     int updateCounter = 0;
 
-    GameSettings gs = Minecraft.getMinecraft().gameSettings;
-
     @SubscribeEvent
     public void goggleZoom(FOVUpdateEvent event) {
         if (ArmorControls.zoom) {
@@ -259,11 +259,11 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         }
 
         // uses different display, displays health correctly by itself.
-        if (Loader.isModLoaded("rpghud")) {
+        if (isRpghudLoaded) {
             return;
         }
 
-        if (Loader.isModLoaded("tukmc_Vz") && !Loader.isModLoaded("borderlands")) {
+        if (isTukmc_vzLoaded && !isBorderlandsModLoaded) {
             // Loader check to avoid conflicting
             // with a GUI mod (thanks Vazkii!)
             return;

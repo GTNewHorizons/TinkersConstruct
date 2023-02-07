@@ -51,6 +51,7 @@ public class ArmorControls {
     // boolean onStilts = false;
 
     private final KeyBinding[] keys;
+    private boolean isNotEnoughKeysLoaded;
 
     public ArmorControls() {
         getVanillaKeyBindings();
@@ -64,7 +65,8 @@ public class ArmorControls {
                 ClientRegistry.registerKeyBinding(key);
             }
         }
-        if (Loader.isModLoaded("notenoughkeys")) {
+        isNotEnoughKeysLoaded = Loader.isModLoaded("notenoughkeys");
+        if (isNotEnoughKeysLoaded) {
             Api.registerMod(TConstruct.modID, keyDescs);
         }
         // Add mc keys
@@ -80,7 +82,7 @@ public class ArmorControls {
 
     @SubscribeEvent
     public void keyEvent(KeyInputEvent event) {
-        if (!Loader.isModLoaded("notenoughkeys")) {
+        if (!isNotEnoughKeysLoaded) {
             checkAndPerformKeyActions(null, false);
         }
     }

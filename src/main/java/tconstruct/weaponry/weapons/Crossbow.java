@@ -146,11 +146,7 @@ public class Crossbow extends ProjectileWeapon {
         // remove loaded item
         if (ammo.getItem() instanceof IAmmo) ((IAmmo) ammo.getItem()).consumeAmmo(1, ammo);
         else {
-            if (Loader.isModLoaded("battlegear2")) {
-                player.inventory.consumeInventoryItem(ammo.getItem());
-            } else {
-                player.inventory.consumeInventoryItem(ammo.getItem());
-            }
+            player.inventory.consumeInventoryItem(ammo.getItem());
         }
 
         playReloadSound(world, player, weapon, ammo);
