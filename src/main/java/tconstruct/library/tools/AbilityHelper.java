@@ -62,7 +62,7 @@ public class AbilityHelper {
     }
 
     public static boolean onLeftClickEntity(ItemStack stack, EntityLivingBase player, Entity entity, ToolCore tool,
-            double damageFactor) {
+            int damageFactor) {
         if (entity != null && player != null && entity.canAttackWithItem() && stack.hasTagCompound()) {
             if (!entity.hitByEntity(player)) // can't attack this entity
             {
@@ -196,7 +196,7 @@ public class AbilityHelper {
     }
 
     public static int calcDamage(Entity user, Entity entity, ItemStack stack, ToolCore tool, NBTTagCompound toolTags,
-            double damageFactor) {
+            int damageFactor) {
         EntityLivingBase living = user instanceof EntityLivingBase ? (EntityLivingBase) user : null;
 
         int damage = toolTags.getInteger("Attack");
