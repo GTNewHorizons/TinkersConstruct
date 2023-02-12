@@ -76,7 +76,7 @@ public class AbilityHelper {
                 float stoneboundDamage = (float) Math.log(durability / 72f + 1) * -2 * stonebound;
 
                 int damage = calcDamage(player, entity, stack, tool, toolTags, damageFactor);
-                float knockback = calcKnockback(player, entity, stack, tool, toolTags);
+                float knockback = calcKnockback(player, entity, stack, tool, toolTags, damageFactor);
 
                 float enchantDamage = 0;
 
@@ -247,7 +247,7 @@ public class AbilityHelper {
     }
 
     public static float calcKnockback(Entity user, Entity entity, ItemStack stack, ToolCore tool,
-            NBTTagCompound toolTags) {
+            NBTTagCompound toolTags, int baseDamage) {
         if (user == null) return 0;
         float knockback = 0;
 
