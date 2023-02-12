@@ -185,7 +185,9 @@ public class TConstruct {
         MinecraftForge.EVENT_BUS.register(playerTracker);
         NetworkRegistry.INSTANCE.registerGuiHandler(TConstruct.instance, proxy);
 
-        if (PHConstruct.globalDespawn != 6000) MinecraftForge.EVENT_BUS.register(new Spawntercepter());
+        if (PHConstruct.globalDespawn != 6000 && PHConstruct.globalDespawn != 0) {
+            MinecraftForge.EVENT_BUS.register(new Spawntercepter());
+        }
 
         pulsar.preInit(event);
 
@@ -286,8 +288,6 @@ public class TConstruct {
 
         @SubscribeEvent
         public void onEntitySpawn(EntityJoinWorldEvent event) {
-            // return if config is zero to keep vanilla functionality
-            if (PHConstruct.globalDespawn == 0) return;
             if (event.entity instanceof EntityItem) {
                 EntityItem ourGuy = (EntityItem) event.entity;
                 if (ourGuy.lifespan == 6000) {
