@@ -62,7 +62,7 @@ public class AbilityHelper {
     }
 
     public static boolean onLeftClickEntity(ItemStack stack, EntityLivingBase player, Entity entity, ToolCore tool,
-            int damageFactor) {
+            int baseDamage) {
         if (entity != null && player != null && entity.canAttackWithItem() && stack.hasTagCompound()) {
             if (!entity.hitByEntity(player)) // can't attack this entity
             {
@@ -75,8 +75,8 @@ public class AbilityHelper {
 
                 float stoneboundDamage = (float) Math.log(durability / 72f + 1) * -2 * stonebound;
 
-                int damage = calcDamage(player, entity, stack, tool, toolTags, damageFactor);
-                float knockback = calcKnockback(player, entity, stack, tool, toolTags, damageFactor);
+                int damage = calcDamage(player, entity, stack, tool, toolTags, baseDamage);
+                float knockback = calcKnockback(player, entity, stack, tool, toolTags, baseDamage);
 
                 float enchantDamage = 0;
 
@@ -196,7 +196,7 @@ public class AbilityHelper {
     }
 
     public static int calcDamage(Entity user, Entity entity, ItemStack stack, ToolCore tool, NBTTagCompound toolTags,
-            int damageFactor) {
+            int baseDamage) {
         EntityLivingBase living = user instanceof EntityLivingBase ? (EntityLivingBase) user : null;
 
         int damage = toolTags.getInteger("Attack");
@@ -241,7 +241,7 @@ public class AbilityHelper {
         }
         damage += modDamage;
 
-        damage *= damageFactor;
+        damage += baseDamage;
 
         return damage;
     }
