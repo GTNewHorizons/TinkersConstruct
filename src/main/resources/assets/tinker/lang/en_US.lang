@@ -1080,6 +1080,7 @@ modifier.toolstation.Triple-Jump=Triple-Jump
 modifier.toolstation.ThaumicVision=Thaumic Vision
 modifier.toolstation.WaterWalk=Water Walk
 
+modifier.tooltip.Main=Tool Modifier:
 modifier.tooltip.Auto-Smelt=Auto-Smelt
 modifier.tooltip.BaneofArthropods=Bane of Arthropods
 modifier.tooltip.Beheading=Beheading
