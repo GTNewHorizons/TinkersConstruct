@@ -993,9 +993,9 @@ armor.travelboots.ability=Функция: Высокий шаг
 
 item.TConstruct.slimesling.name=Рогатка из слизи
 item.TConstruct.slime_boots.name=Ботинки из слизи
-gadgets.slimesling.use=Цельтесь в блок позади себя, чтобы вас подбросило в воздух.
-gadgets.slimesling.on_ground=Закиньте себя на Луну!
-gadgets.slimesling.not_on_ground=Вы должны стоять на земле, чтобы использовать это.
+gadgets.slimesling.tooltip1=Цельтесь в блок позади себя, чтобы вас подбросило в воздух.
+gadgets.slimesling.tooltip2=Закиньте себя на Луну!
+gadgets.slimesling.tooltip3=Вы должны стоять на земле, чтобы использовать это.
 gadgets.slime_boots.tooltip1=Попрыгали!
 gadgets.slime_boots.tooltip2=Зажмите
 gadgets.slime_boots.tooltip3=, чтобы перестать подпрыгивать.
