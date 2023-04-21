@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -101,7 +102,7 @@ public class ItemSlimeSling extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        list.add("Aim at a block behind you to get thrown into the air.");
-        list.add(player.onGround ? "Shoot for the moon!" : "Must be on the ground to use.");
+        list.add(StatCollector.translateToLocal("gadgets.slimesling.tooltip1"));
+        list.add(player.onGround ? StatCollector.translateToLocal("gadgets.slimesling.tooltip2") : StatCollector.translateToLocal("gadgets.slimesling.tooltip3"));
     }
 }
