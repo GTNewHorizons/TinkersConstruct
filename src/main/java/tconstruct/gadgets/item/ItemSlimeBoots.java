@@ -16,6 +16,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
@@ -218,10 +219,9 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        list.add("Boooounce!");
-        list.add(
-                "Hold " + (I18n.format(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyDescription()))
-                        + " to stop bouncing.");
+        list.add(StatCollector.translateToLocal("gadgets.slime_boots.tooltip1"));
+        list.add(StatCollector.translateToLocal("gadgets.slime_boots.tooltip2") + " " + 
+        (I18n.format(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyDescription())) + StatCollector.translateToLocal("gadgets.slime_boots.tooltip3"));
     }
 
     /* Prevent armor from dying */
