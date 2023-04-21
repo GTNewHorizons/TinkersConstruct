@@ -506,6 +506,7 @@ item.tconstruct.bucket.Ender.name=Ведро жидкости Края
 item.tconstruct.bucket.Slime.name=Ведро жидкой слизи
 item.tconstruct.bucket.PigIron.name=Ведро расплавленного свиного железа
 item.tconstruct.bucket.Glue.name=Ведро липкого клея
+item.tconstruct.bucket.Quartz.name=Ведро расплавленного кварца
 
 item.tconstruct.bowstring.string.name=Тетива
 item.tconstruct.bowstring.enchantedfabriI donc.name=Зачарованная тетива
@@ -990,6 +991,15 @@ armor.travelvest.ability=Функция: Быстрое плавание
 armor.travelwings.ability=Функция: Высокий прыжок
 armor.travelboots.ability=Функция: Высокий шаг
 
+item.TConstruct.slimesling.name=Рогатка из слизи
+item.TConstruct.slime_boots.name=Ботинки из слизи
+gadgets.slimesling.use=Цельтесь в блок позади себя, чтобы вас подбросило в воздух.
+gadgets.slimesling.on_ground=Закиньте себя на Луну!
+gadgets.slimesling.not_on_ground=Вы должны стоять на земле, чтобы использовать это.
+gadgets.slime_boots.tooltip1=Попрыгали!
+gadgets.slime_boots.tooltip2=Зажмите
+gadgets.slime_boots.tooltip3=, чтобы перестать подпрыгивать.
+
 tool.reinforced=Укрепление
 tool.unbreakable=Неразрушимость
 
@@ -1039,6 +1049,8 @@ modifier.toolstation.Triple-Jump=Тройной прыжок
 modifier.toolstation.ThaumicVision=Таумическое зрение
 modifier.toolstation.WaterWalk=Прогулка по воде
 
+modifier.tooltip.Main=Модификатор инструмента:
+modifier.tooltip.Creative=§5§kТ§d§kв§9§kо§3§kр§b§kч§a§kе§2§kс§e§kк§6§kи§c§kй
 modifier.tooltip.Auto-Smelt=Авто-плавка
 modifier.tooltip.BaneofArthropods=Бич членистоногих
 modifier.tooltip.Beheading=Усекновение
@@ -1069,7 +1081,9 @@ option.tcon.table=Литейный стол
 option.tcon.smeltery=Статус плавильни
 
 fluid.molten.unstableIngots=Расплавленный нестабильный слиток
-fluid.molten.bedrockiumIngots=Расплавленный слиток бедрокия 
+fluid.molten.bedrockiumIngots=Расплавленный слиток бедрокия
+
+item.iguana.tcon.clayBucket.Quartz.name=Глиняное ведро расплавленного кварца
 
 tool.pickaxe.netherrack=Кирка из камня Нижнего мира
 tool.shovel.netherrack=Лопата из камня Нижнего мира
