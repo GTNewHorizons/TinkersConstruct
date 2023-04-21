@@ -576,6 +576,7 @@ tile.fluid.molten.mithril.name=Molten Mana Infused Metal
 tile.fluid.molten.enderium.name=Molten Enderium
 tile.fluid.ender.name=Liquified Ender
 tile.liquid.slime.name=Liquified Slime
+tile.molten.quartz.name=Molten Nether Quartz
 
 LiquidMetal.Iron.name=Molten Iron
 LiquidMetal.Gold.name=Molten Gold
@@ -1030,6 +1031,12 @@ armor.travelboots.ability=Ability: High Step
 
 item.TConstruct.slimesling.name=Slimesling
 item.TConstruct.slime_boots.name=Slime Boots
+gadgets.slimesling.tooltip1=Aim at a block behind you to get thrown into the air.
+gadgets.slimesling.tooltip2=Shoot for the moon!
+gadgets.slimesling.tooltip3=Must be on the ground to use.
+gadgets.slime_boots.tooltip1=Boooounce!
+gadgets.slime_boots.tooltip2=Hold
+gadgets.slime_boots.tooltip3= to stop bouncing.
 
 tool.reinforced=Reinforced
 tool.unbreakable=Unbreakable
@@ -1081,6 +1088,7 @@ modifier.toolstation.ThaumicVision=Thaumic Vision
 modifier.toolstation.WaterWalk=Water Walk
 
 modifier.tooltip.Main=Tool Modifier:
+modifier.tooltip.Creative=§5§kC§d§kr§9§ke§3§ka§b§kt§a§ki§2§kv§e§ke
 modifier.tooltip.Auto-Smelt=Auto-Smelt
 modifier.tooltip.BaneofArthropods=Bane of Arthropods
 modifier.tooltip.Beheading=Beheading
