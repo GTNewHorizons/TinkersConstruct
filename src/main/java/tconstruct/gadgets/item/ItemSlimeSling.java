@@ -103,6 +103,8 @@ public class ItemSlimeSling extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         list.add(StatCollector.translateToLocal("gadgets.slimesling.tooltip1"));
-        list.add(player.onGround ? StatCollector.translateToLocal("gadgets.slimesling.tooltip2") : StatCollector.translateToLocal("gadgets.slimesling.tooltip3"));
+        list.add(
+                player.onGround ? StatCollector.translateToLocal("gadgets.slimesling.tooltip2")
+                        : StatCollector.translateToLocal("gadgets.slimesling.tooltip3"));
     }
 }
