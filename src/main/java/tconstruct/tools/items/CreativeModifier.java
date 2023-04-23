@@ -50,8 +50,8 @@ public class CreativeModifier extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         list.add(
-                StatCollector.translateToLocal("modifier.tooltip.Main")
-                        + " " + StatCollector.translateToLocal("modifier.tooltip.Creative"));
+                StatCollector.translateToLocal("modifier.tooltip.Main") + " "
+                        + StatCollector.translateToLocal("modifier.tooltip.Creative"));
         if (stack.hasTagCompound()) {
             String targetLock;
             targetLock = stack.getTagCompound().getString("TargetLock");
