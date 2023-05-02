@@ -794,6 +794,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     public boolean checkSameLevel(int x, int y, int z, int[] sides) {
         lavaTanks.clear();
+        drains.clear();
         boolean check = checkBricksOnLevel(x, y, z, sides);
         return check && lavaTanks.size() > 0;
     }

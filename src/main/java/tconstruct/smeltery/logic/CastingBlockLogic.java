@@ -373,7 +373,10 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
         tick++;
         if (tick % 20 == 0) {
             tick = 0;
-            if (needsUpdate) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            if (needsUpdate) {
+                needsUpdate = false;
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            }
         }
     }
 
