@@ -22,6 +22,5 @@ Any and all issues with this fork should be brought to the [GTNH GitHub](https:/
 
 ## Compile from Source
 Note: Git MUST be installed and in the system path to use our scripts.
-* Setup: Run [gradle]in the repository root: `gradlew[.bat] [setupDevWorkspace|setupDecompWorkspace] [eclipse|idea]`
-* Build: Run [gradle]in the repository root: `gradlew[.bat] build'
+* Before importing the project to your IDE, build it by running `gradlew[.bat] build' in its root directory.
 * If obscure Gradle issues are found try running 'gradlew clean' and 'gradlew cleanCache'
