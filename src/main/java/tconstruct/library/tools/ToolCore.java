@@ -12,6 +12,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import cofh.api.energy.IEnergyContainerItem;
+import cofh.core.item.IEqualityOverrideItem;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.*;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.*;
@@ -20,10 +24,6 @@ import tconstruct.tools.TinkerTools;
 import tconstruct.tools.entity.FancyEntityItem;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.weaponry.TinkerWeaponry;
-import cofh.api.energy.IEnergyContainerItem;
-import cofh.core.item.IEqualityOverrideItem;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.*;
 
 /**
  * NBTTags Main tag - InfiTool

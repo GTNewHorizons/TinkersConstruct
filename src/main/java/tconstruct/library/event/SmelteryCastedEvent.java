@@ -2,8 +2,8 @@ package tconstruct.library.event;
 
 import net.minecraft.item.ItemStack;
 
-import tconstruct.library.crafting.CastingRecipe;
 import cpw.mods.fml.common.eventhandler.Event;
+import tconstruct.library.crafting.CastingRecipe;
 
 /**
  * Fired when an item is cast in the casting table. If consumeCast is set to true, the cast will be destroyed.

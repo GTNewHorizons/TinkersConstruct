@@ -1,9 +1,9 @@
 package tconstruct.library.tools;
 
-import mantle.blocks.BlockUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+
+import mantle.blocks.BlockUtils;
 
 public class FletchlingLeafMaterial extends FletchingMaterial {
 

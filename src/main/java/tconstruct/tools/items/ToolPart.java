@@ -2,12 +2,11 @@ package tconstruct.tools.items;
 
 import java.util.List;
 
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.util.StatCollector;
 
+import mantle.items.abstracts.CraftingItem;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.IToolPart;
 import tconstruct.tools.TinkerTools;

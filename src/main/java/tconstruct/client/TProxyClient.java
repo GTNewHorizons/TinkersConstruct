@@ -5,9 +5,6 @@ import java.text.DecimalFormat;
 
 import javax.xml.parsers.*;
 
-import mantle.client.SmallFontRenderer;
-import mantle.lib.client.MantleClientRegistry;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.*;
@@ -16,6 +13,8 @@ import net.minecraft.util.*;
 
 import org.w3c.dom.Document;
 
+import mantle.client.SmallFontRenderer;
+import mantle.lib.client.MantleClientRegistry;
 import tconstruct.TConstruct;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.player.TPlayerStats;

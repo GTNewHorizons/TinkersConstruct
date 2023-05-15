@@ -1,16 +1,15 @@
 package tconstruct.plugins;
 
-import mantle.pulsar.pulse.*;
-
 import net.minecraft.item.ItemStack;
 
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+import mantle.pulsar.pulse.*;
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.modifiers.armor.AModThaumicVision;
 import tconstruct.world.TinkerWorld;
 import thaumcraft.api.ItemApi;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(

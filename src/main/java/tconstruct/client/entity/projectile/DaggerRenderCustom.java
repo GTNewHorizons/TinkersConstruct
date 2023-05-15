@@ -12,9 +12,9 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.*;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.client.ToolCoreRenderer;
 import tconstruct.tools.entity.DaggerEntity;
-import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 @Deprecated

@@ -2,12 +2,11 @@ package tconstruct.mechworks.logic;
 
 import java.util.*;
 
-import mantle.world.WorldHelper;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import mantle.world.WorldHelper;
 import tconstruct.mechworks.landmine.behavior.Behavior;
 
 /**

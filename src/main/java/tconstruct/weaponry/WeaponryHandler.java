@@ -10,6 +10,10 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder;
@@ -32,10 +36,6 @@ import tconstruct.weaponry.ammo.BoltAmmo;
 import tconstruct.weaponry.weapons.Crossbow;
 import tconstruct.weaponry.weapons.LongBow;
 import tconstruct.weaponry.weapons.ShortBow;
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 public class WeaponryHandler {
 

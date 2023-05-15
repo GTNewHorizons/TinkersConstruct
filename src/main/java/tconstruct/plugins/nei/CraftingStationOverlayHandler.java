@@ -3,11 +3,11 @@ package tconstruct.plugins.nei;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 
+import codechicken.nei.recipe.DefaultOverlayHandler;
+import codechicken.nei.recipe.IRecipeHandler;
 import tconstruct.tools.gui.CraftingStationGui;
 import tconstruct.tools.inventory.CraftingStationContainer;
 import tconstruct.tools.logic.CraftingStationLogic;
-import codechicken.nei.recipe.DefaultOverlayHandler;
-import codechicken.nei.recipe.IRecipeHandler;
 
 /**
  * Modified copy of DefaultOverlayHandler from NotEnoughItems

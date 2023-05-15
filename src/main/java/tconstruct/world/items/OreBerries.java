@@ -2,8 +2,6 @@ package tconstruct.world.items;
 
 import java.util.List;
 
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,8 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import tconstruct.library.TConstructRegistry;
 import cpw.mods.fml.relauncher.*;
+import mantle.items.abstracts.CraftingItem;
+import tconstruct.library.TConstructRegistry;
 
 public class OreBerries extends CraftingItem {
 

@@ -1,8 +1,8 @@
 package tconstruct.util;
 
-import mantle.crash.CallableSuppConfig;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ICrashCallable;
+import mantle.crash.CallableSuppConfig;
 
 public class EnvironmentChecks {
 

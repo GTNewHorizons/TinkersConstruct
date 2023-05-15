@@ -1,7 +1,5 @@
 package tconstruct.blocks.traps;
 
-import mantle.blocks.MantleBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -11,9 +9,10 @@ import net.minecraft.item.*;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.MantleBlock;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.world.model.BarricadeRender;
-import cpw.mods.fml.relauncher.*;
 
 public class BarricadeBlock extends MantleBlock {
 

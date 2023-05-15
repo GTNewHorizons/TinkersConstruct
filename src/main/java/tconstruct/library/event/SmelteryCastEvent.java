@@ -2,8 +2,8 @@ package tconstruct.library.event;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import tconstruct.library.crafting.CastingRecipe;
 import cpw.mods.fml.common.eventhandler.Event;
+import tconstruct.library.crafting.CastingRecipe;
 
 /**
  * Fires when somebody tries to pour a liquid into a metal cast.

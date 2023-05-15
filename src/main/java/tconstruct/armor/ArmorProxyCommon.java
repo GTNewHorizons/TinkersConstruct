@@ -4,11 +4,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.network.IGuiHandler;
 import tconstruct.TConstruct;
 import tconstruct.armor.inventory.*;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.common.TProxyCommon;
-import cpw.mods.fml.common.network.IGuiHandler;
 
 public class ArmorProxyCommon implements IGuiHandler {
 

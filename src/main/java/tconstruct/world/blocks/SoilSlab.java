@@ -10,10 +10,10 @@ import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.blocks.SlabBase;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.TinkerTools;
-import cpw.mods.fml.relauncher.*;
 
 public class SoilSlab extends SlabBase {
 

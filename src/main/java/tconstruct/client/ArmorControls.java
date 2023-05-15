@@ -1,9 +1,5 @@
 package tconstruct.client;
 
-import mantle.common.network.AbstractPacket;
-import modwarriors.notenoughkeys.api.Api;
-import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
@@ -12,6 +8,14 @@ import net.minecraft.potion.Potion;
 
 import org.lwjgl.input.Keyboard;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import mantle.common.network.AbstractPacket;
+import modwarriors.notenoughkeys.api.Api;
+import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
 import tconstruct.TConstruct;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.ArmorProxyCommon;
@@ -21,11 +25,6 @@ import tconstruct.util.network.AccessoryInventoryPacket;
 import tconstruct.util.network.BeltPacket;
 import tconstruct.util.network.DoubleJumpPacket;
 import tconstruct.util.network.GogglePacket;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class ArmorControls {
 

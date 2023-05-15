@@ -1,11 +1,10 @@
 package tconstruct.util.network;
 
-import mantle.common.network.AbstractPacket;
-
 import net.minecraft.entity.player.EntityPlayer;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import mantle.common.network.AbstractPacket;
 
 public class DoubleJumpPacket extends AbstractPacket {
 

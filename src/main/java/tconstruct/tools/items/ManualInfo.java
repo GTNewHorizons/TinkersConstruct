@@ -1,14 +1,13 @@
 package tconstruct.tools.items;
 
-import mantle.books.*;
-
 import net.minecraft.util.*;
 
 import org.w3c.dom.Document;
 
-import tconstruct.client.TProxyClient;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import mantle.books.*;
+import tconstruct.client.TProxyClient;
 
 public class ManualInfo {
     // static String[] name = new String[] { "beginner", "toolstation", "smeltery", "diary" };

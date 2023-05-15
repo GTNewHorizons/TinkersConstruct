@@ -2,9 +2,6 @@ package tconstruct.tools.blocks;
 
 import java.util.Random;
 
-import mantle.blocks.abstracts.InventorySlab;
-import mantle.blocks.iface.*;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,11 +9,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.InventorySlab;
+import mantle.blocks.iface.*;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.ToolProxyCommon;
 import tconstruct.tools.logic.FurnaceLogic;
-import cpw.mods.fml.relauncher.*;
 
 public class FurnaceSlab extends InventorySlab {
 

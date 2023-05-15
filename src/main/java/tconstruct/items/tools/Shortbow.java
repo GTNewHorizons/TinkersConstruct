@@ -10,12 +10,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.BowstringMaterial;
 import tconstruct.library.tools.CustomMaterial;
 import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.TinkerWeaponry;
-import cpw.mods.fml.relauncher.*;
 
 @Deprecated
 public class Shortbow extends BowBase {

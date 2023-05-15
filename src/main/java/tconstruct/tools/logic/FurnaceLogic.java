@@ -1,9 +1,5 @@
 package tconstruct.tools.logic;
 
-import mantle.blocks.BlockUtils;
-import mantle.blocks.abstracts.InventoryLogic;
-import mantle.blocks.iface.*;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,8 +15,11 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import tconstruct.tools.inventory.FurnaceContainer;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mantle.blocks.BlockUtils;
+import mantle.blocks.abstracts.InventoryLogic;
+import mantle.blocks.iface.*;
+import tconstruct.tools.inventory.FurnaceContainer;
 
 /*
  * Slots 0: Input 1: Fuel 2: Output 3-16: Chest

@@ -2,8 +2,6 @@ package tconstruct.weaponry.weapons;
 
 import java.util.List;
 
-import mods.battlegear2.api.core.InventoryPlayerBattle;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -13,6 +11,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.Loader;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.AbilityHelper;
@@ -24,7 +24,6 @@ import tconstruct.util.Reference;
 import tconstruct.weaponry.TinkerWeaponry;
 import tconstruct.weaponry.ammo.BoltAmmo;
 import tconstruct.weaponry.entity.BoltEntity;
-import cpw.mods.fml.common.Loader;
 
 public class Crossbow extends ProjectileWeapon {
 

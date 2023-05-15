@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import cofh.api.energy.IEnergyContainerItem;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.util.config.PHConstruct;
-import cofh.api.energy.IEnergyContainerItem;
 
 /* TE3 support */
 

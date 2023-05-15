@@ -1,10 +1,10 @@
 package tconstruct.tools.itemblocks;
 
-import mantle.blocks.abstracts.MultiItemBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+
+import mantle.blocks.abstracts.MultiItemBlock;
 
 public class CraftingSlabItemBlock extends MultiItemBlock {
 

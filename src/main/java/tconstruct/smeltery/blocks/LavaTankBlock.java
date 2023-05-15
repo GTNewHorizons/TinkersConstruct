@@ -2,8 +2,6 @@ package tconstruct.smeltery.blocks;
 
 import java.util.List;
 
-import mantle.blocks.iface.IServantLogic;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -23,12 +21,13 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mantle.blocks.iface.IServantLogic;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.itemblocks.LavaTankItemBlock;
 import tconstruct.smeltery.logic.LavaTankLogic;
 import tconstruct.smeltery.model.TankRender;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class LavaTankBlock extends BlockContainer {
 

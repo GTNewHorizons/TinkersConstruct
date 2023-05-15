@@ -1,17 +1,16 @@
 package tconstruct.util.network;
 
-import mantle.common.network.AbstractPacket;
-import mantle.common.network.PacketUpdateTE;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import mantle.common.network.AbstractPacket;
+import mantle.common.network.PacketUpdateTE;
 import tconstruct.TConstruct;
 import tconstruct.smeltery.inventory.SmelteryContainer;
 import tconstruct.smeltery.logic.SmelteryLogic;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class SmelteryPacket extends AbstractPacket {
 

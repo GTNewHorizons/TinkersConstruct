@@ -1,19 +1,18 @@
 package tconstruct.library.weaponry;
 
-import mods.battlegear2.api.PlayerEventChild;
-import mods.battlegear2.api.weapons.IBattlegearWeapon;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import mods.battlegear2.api.PlayerEventChild;
+import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.TinkerTools;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
 
 @Optional.InterfaceList({
         @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon") })

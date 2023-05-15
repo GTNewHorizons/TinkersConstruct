@@ -9,9 +9,9 @@ import net.minecraft.world.*;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 
+import cpw.mods.fml.common.IWorldGenerator;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.world.TinkerWorld;
-import cpw.mods.fml.common.IWorldGenerator;
 
 public class TBaseWorldGenerator implements IWorldGenerator {
 

@@ -2,8 +2,6 @@ package tconstruct.tools.blocks;
 
 import java.util.List;
 
-import mantle.blocks.abstracts.InventoryBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,13 +14,14 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.InventoryBlock;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.ToolProxyCommon;
 import tconstruct.tools.logic.ToolForgeLogic;
 import tconstruct.tools.model.TableRender;
 import tconstruct.world.TinkerWorld;
-import cpw.mods.fml.relauncher.*;
 
 public class ToolForgeBlock extends InventoryBlock {
 

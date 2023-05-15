@@ -3,9 +3,6 @@ package tconstruct;
 import java.util.Map;
 import java.util.Random;
 
-import mantle.pulsar.config.ForgeCFG;
-import mantle.pulsar.control.PulseManager;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,6 +11,21 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.NetworkCheckHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
+import cpw.mods.fml.relauncher.Side;
+import mantle.pulsar.config.ForgeCFG;
+import mantle.pulsar.control.PulseManager;
 import tconstruct.achievements.AchievementEvents;
 import tconstruct.achievements.TAchievements;
 import tconstruct.api.TConstructAPI;
@@ -53,19 +65,6 @@ import tconstruct.weaponry.TinkerWeaponry;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.gen.SlimeIslandGen;
 import tconstruct.world.village.*;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.NetworkCheckHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.VillagerRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 /**
  * TConstruct, the tool mod. Craft your tools with style, then modify until the original is gone!

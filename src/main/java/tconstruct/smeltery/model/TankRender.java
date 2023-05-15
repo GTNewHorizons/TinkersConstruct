@@ -8,10 +8,10 @@ import net.minecraftforge.fluids.*;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.registry.*;
 import tconstruct.client.BlockSkinRenderHelper;
 import tconstruct.smeltery.logic.LavaTankLogic;
 import tconstruct.util.ItemHelper;
-import cpw.mods.fml.client.registry.*;
 
 public class TankRender implements ISimpleBlockRenderingHandler {
 

@@ -11,9 +11,9 @@ import net.minecraft.potion.*;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.blocks.TConstructBlock;
 import tconstruct.library.TConstructRegistry;
-import cpw.mods.fml.relauncher.*;
 
 public class SlimeGel extends TConstructBlock {
 

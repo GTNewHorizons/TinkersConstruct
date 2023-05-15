@@ -5,9 +5,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.client.*;
 import tconstruct.tools.logic.ToolForgeLogic;
-import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 public class ToolForgeGui extends ToolStationGui {

@@ -7,10 +7,10 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
+import com.google.common.collect.Sets;
+
 import tconstruct.TConstruct;
 import tconstruct.library.tools.AbilityHelper;
-
-import com.google.common.collect.Sets;
 
 public class PHConstruct {
 

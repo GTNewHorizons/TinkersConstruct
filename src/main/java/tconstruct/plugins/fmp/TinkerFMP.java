@@ -1,13 +1,13 @@
 package tconstruct.plugins.fmp;
 
+import codechicken.microblock.BlockMicroMaterial;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import mantle.pulsar.pulse.Handler;
 import mantle.pulsar.pulse.Pulse;
 import tconstruct.TConstruct;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
-import codechicken.microblock.BlockMicroMaterial;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 
 @Pulse(
         id = "Tinkers FMP Compatibility",

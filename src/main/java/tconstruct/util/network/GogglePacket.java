@@ -1,12 +1,11 @@
 package tconstruct.util.network;
 
-import mantle.common.network.AbstractPacket;
-
 import net.minecraft.entity.player.EntityPlayer;
 
-import tconstruct.armor.PlayerAbilityHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import mantle.common.network.AbstractPacket;
+import tconstruct.armor.PlayerAbilityHelper;
 
 public class GogglePacket extends AbstractPacket {
 

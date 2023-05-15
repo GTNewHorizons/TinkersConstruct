@@ -2,8 +2,6 @@ package tconstruct.smeltery.blocks;
 
 import java.util.List;
 
-import mantle.blocks.abstracts.InventoryBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,11 +11,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.InventoryBlock;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.logic.*;
 import tconstruct.smeltery.model.CastingBlockRender;
-import cpw.mods.fml.relauncher.*;
 
 public class SearedBlock extends InventoryBlock {
 

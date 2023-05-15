@@ -9,8 +9,8 @@ import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 
-import tconstruct.util.config.PHConstruct;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.util.config.PHConstruct;
 
 /**
  * @author fuj1n

@@ -3,10 +3,10 @@ package tconstruct.mechworks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.network.IGuiHandler;
 import tconstruct.common.TProxyCommon;
 import tconstruct.mechworks.inventory.ContainerLandmine;
 import tconstruct.mechworks.logic.TileEntityLandmine;
-import cpw.mods.fml.common.network.IGuiHandler;
 
 public class MechworksProxyCommon implements IGuiHandler {
 

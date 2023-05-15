@@ -1,23 +1,22 @@
 package tconstruct.mechworks;
 
-import mantle.pulsar.pulse.*;
-
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+import mantle.pulsar.pulse.*;
 import tconstruct.TConstruct;
 import tconstruct.mechworks.blocks.BlockLandmine;
 import tconstruct.mechworks.entity.item.*;
 import tconstruct.mechworks.itemblocks.ItemBlockLandmine;
 import tconstruct.mechworks.logic.TileEntityLandmine;
 import tconstruct.tools.TinkerTools;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 // TODO handle migration of all items/blocks that were owned by the previously seperate mod

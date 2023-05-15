@@ -4,12 +4,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.*;
 import tconstruct.TConstruct;
 import tconstruct.library.tools.Weapon;
 import tconstruct.tools.*;
 import tconstruct.tools.logic.EquipLogic;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.*;
 
 public class BattleSign extends Weapon {
 

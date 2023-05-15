@@ -5,13 +5,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.client.entity.item.ExplosiveRender;
 import tconstruct.common.TProxyCommon;
 import tconstruct.mechworks.entity.item.*;
 import tconstruct.mechworks.gui.GuiLandmine;
 import tconstruct.mechworks.inventory.ContainerLandmine;
 import tconstruct.mechworks.logic.TileEntityLandmine;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class MechworksProxyClient extends MechworksProxyCommon {
 

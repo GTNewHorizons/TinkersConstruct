@@ -5,8 +5,8 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 
-import tconstruct.util.ItemHelper;
 import cpw.mods.fml.client.registry.*;
+import tconstruct.util.ItemHelper;
 
 public class SlimeChannelRender implements ISimpleBlockRenderingHandler {
 

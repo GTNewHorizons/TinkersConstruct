@@ -2,8 +2,6 @@ package tconstruct.tools.logic;
 
 import java.lang.ref.WeakReference;
 
-import mantle.blocks.abstracts.InventoryLogic;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -16,6 +14,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.tools.inventory.CraftingStationContainer;
 import tconstruct.util.config.PHConstruct;
 

@@ -5,8 +5,8 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.*;
 import net.minecraft.util.ResourceLocation;
 
-import tconstruct.world.entity.Crystal;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.world.entity.Crystal;
 
 @SideOnly(Side.CLIENT)
 public class CrystalRender extends RenderLiving {

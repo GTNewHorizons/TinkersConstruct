@@ -7,8 +7,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import tconstruct.mechworks.landmine.Helper;
 import cpw.mods.fml.client.registry.*;
+import tconstruct.mechworks.landmine.Helper;
 
 /**
  *

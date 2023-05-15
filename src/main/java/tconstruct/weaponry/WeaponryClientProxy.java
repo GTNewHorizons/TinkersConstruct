@@ -2,13 +2,13 @@ package tconstruct.weaponry;
 
 import static tconstruct.weaponry.TinkerWeaponry.*;
 
-import mantle.lib.client.MantleClientRegistry;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import mantle.lib.client.MantleClientRegistry;
 import tconstruct.client.AmmoItemRenderer;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.ToolBuilder;
@@ -24,7 +24,6 @@ import tconstruct.weaponry.client.entity.ProjectileBaseRenderer;
 import tconstruct.weaponry.client.entity.ShurikenEntityRenderer;
 import tconstruct.weaponry.client.item.*;
 import tconstruct.weaponry.entity.*;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class WeaponryClientProxy extends WeaponryCommonProxy {
 

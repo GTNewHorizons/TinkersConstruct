@@ -2,11 +2,10 @@ package tconstruct.library.client;
 
 import java.util.*;
 
-import mantle.lib.client.MantleClientRegistry;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import mantle.lib.client.MantleClientRegistry;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.tools.ToolCore;

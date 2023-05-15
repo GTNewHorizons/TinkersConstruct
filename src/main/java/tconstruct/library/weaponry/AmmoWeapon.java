@@ -1,8 +1,5 @@
 package tconstruct.library.weaponry;
 
-import mods.battlegear2.api.PlayerEventChild;
-import mods.battlegear2.api.weapons.IBattlegearWeapon;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -10,11 +7,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import tconstruct.tools.TinkerTools;
-import tconstruct.weaponry.client.CrosshairType;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mods.battlegear2.api.PlayerEventChild;
+import mods.battlegear2.api.weapons.IBattlegearWeapon;
+import tconstruct.tools.TinkerTools;
+import tconstruct.weaponry.client.CrosshairType;
 
 @Optional.InterfaceList({
         @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon") })

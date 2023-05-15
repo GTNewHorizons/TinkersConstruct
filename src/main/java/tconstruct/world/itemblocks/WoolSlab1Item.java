@@ -1,13 +1,13 @@
 package tconstruct.world.itemblocks;
 
-import mantle.blocks.abstracts.MultiItemBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import mantle.blocks.abstracts.MultiItemBlock;
 
 public class WoolSlab1Item extends MultiItemBlock {
 

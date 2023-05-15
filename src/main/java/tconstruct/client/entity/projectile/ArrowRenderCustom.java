@@ -12,8 +12,8 @@ import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.*;
 
-import tconstruct.tools.entity.ArrowEntity;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.tools.entity.ArrowEntity;
 
 @SideOnly(Side.CLIENT)
 @Deprecated

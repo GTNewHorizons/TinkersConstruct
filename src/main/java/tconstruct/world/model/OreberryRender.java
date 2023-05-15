@@ -4,8 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
-import tconstruct.util.ItemHelper;
 import cpw.mods.fml.client.registry.*;
+import tconstruct.util.ItemHelper;
 
 public class OreberryRender implements ISimpleBlockRenderingHandler {
 

@@ -1,8 +1,5 @@
 package tconstruct.tools.logic;
 
-import mantle.blocks.BlockUtils;
-import mantle.blocks.iface.IActiveLogic;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -13,8 +10,10 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import tconstruct.tools.inventory.FrypanContainer;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mantle.blocks.BlockUtils;
+import mantle.blocks.iface.IActiveLogic;
+import tconstruct.tools.inventory.FrypanContainer;
 
 /*
  * Slots 0: Frying pan item 1: Fuel 2-9: Food

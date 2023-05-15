@@ -1,12 +1,12 @@
 package tconstruct.plugins.ubc;
 
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import exterminatorJeff.undergroundBiomes.api.UBAPIHook;
+import exterminatorJeff.undergroundBiomes.api.UBOreTexturizer.BlocksAreAlreadySet;
 import mantle.pulsar.pulse.Handler;
 import mantle.pulsar.pulse.Pulse;
 import tconstruct.TConstruct;
 import tconstruct.world.TinkerWorld;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import exterminatorJeff.undergroundBiomes.api.UBAPIHook;
-import exterminatorJeff.undergroundBiomes.api.UBOreTexturizer.BlocksAreAlreadySet;
 
 @Pulse(
         id = "Tinkers' Underground Biomes Compatiblity",

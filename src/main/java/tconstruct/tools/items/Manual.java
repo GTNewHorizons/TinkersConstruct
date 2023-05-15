@@ -2,21 +2,20 @@ package tconstruct.tools.items;
 
 import java.util.List;
 
-import mantle.books.BookData;
-import mantle.client.gui.GuiManual;
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.*;
+import mantle.books.BookData;
+import mantle.client.gui.GuiManual;
+import mantle.items.abstracts.CraftingItem;
 import tconstruct.TConstruct;
 import tconstruct.achievements.TAchievements;
 import tconstruct.client.TProxyClient;
 import tconstruct.library.TConstructRegistry;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.*;
 
 public class Manual extends CraftingItem {
 

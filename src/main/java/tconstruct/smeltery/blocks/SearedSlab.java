@@ -8,10 +8,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.blocks.SlabBase;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.TinkerSmeltery;
-import cpw.mods.fml.relauncher.*;
 
 public class SearedSlab extends SlabBase {
 

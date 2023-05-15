@@ -3,8 +3,8 @@ package tconstruct.library.event;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import tconstruct.library.tools.*;
 import cpw.mods.fml.common.eventhandler.Event;
+import tconstruct.library.tools.*;
 
 /*
  * This event fires after all of the other construction. The resulting nbttag is added to the tool Note: The tag is the

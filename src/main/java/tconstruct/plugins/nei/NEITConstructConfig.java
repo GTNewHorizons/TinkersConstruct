@@ -1,8 +1,8 @@
 package tconstruct.plugins.nei;
 
-import tconstruct.tools.gui.CraftingStationGui;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import tconstruct.tools.gui.CraftingStationGui;
 
 public class NEITConstructConfig implements IConfigureNEI {
 

@@ -2,8 +2,6 @@ package tconstruct.smeltery.items;
 
 import java.util.List;
 
-import mantle.world.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -14,9 +12,10 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidFinite;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.world.WorldHelper;
 import tconstruct.TConstruct;
 import tconstruct.smeltery.TinkerSmeltery;
-import cpw.mods.fml.relauncher.*;
 
 public class FilledBucket extends ItemBucket {
 

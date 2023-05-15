@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -13,12 +11,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mantle.items.abstracts.CraftingItem;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.IToolPart;
 import tconstruct.library.util.TextureHelper;
 import tconstruct.util.config.PHConstruct;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class DynamicToolPart extends CraftingItem implements IToolPart {
 

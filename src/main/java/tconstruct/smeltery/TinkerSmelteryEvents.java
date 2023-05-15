@@ -1,20 +1,19 @@
 package tconstruct.smeltery;
 
-import mantle.world.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraftforge.event.entity.player.*;
 
+import cpw.mods.fml.common.eventhandler.*;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
+import mantle.world.WorldHelper;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
-import cpw.mods.fml.common.eventhandler.*;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
 public class TinkerSmelteryEvents {
 

@@ -10,9 +10,9 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import tconstruct.library.weaponry.IWindup;
 import tconstruct.util.Reference;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class CrosshairHandler {
 

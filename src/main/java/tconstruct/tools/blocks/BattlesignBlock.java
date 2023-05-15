@@ -10,9 +10,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.tools.logic.BattlesignLogic;
 import tconstruct.tools.model.BattlesignRender;
-import cpw.mods.fml.relauncher.*;
 
 public class BattlesignBlock extends EquipBlock {
 

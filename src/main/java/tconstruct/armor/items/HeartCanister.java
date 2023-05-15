@@ -2,17 +2,16 @@ package tconstruct.armor.items;
 
 import java.util.List;
 
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.items.abstracts.CraftingItem;
 import tconstruct.armor.player.*;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.accessory.IHealthAccessory;
-import cpw.mods.fml.relauncher.*;
 
 public class HeartCanister extends CraftingItem implements IHealthAccessory {
 

@@ -7,10 +7,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.*;
 
+import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 import tconstruct.mechworks.TinkerMechworks;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
-import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 
 public class TVillageTrades implements IVillageTradeHandler {
 

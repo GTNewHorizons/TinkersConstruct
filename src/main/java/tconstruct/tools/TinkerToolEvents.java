@@ -22,6 +22,9 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
 
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import tconstruct.TConstruct;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.TConstructRegistry;
@@ -33,9 +36,6 @@ import tconstruct.library.tools.*;
 import tconstruct.util.ItemHelper;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.MovementUpdatePacket;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
 public class TinkerToolEvents {
 

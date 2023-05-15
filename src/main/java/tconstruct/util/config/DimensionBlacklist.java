@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import net.minecraftforge.common.config.Configuration;
 
-import tconstruct.TConstruct;
 import cpw.mods.fml.common.Loader;
+import tconstruct.TConstruct;
 
 public class DimensionBlacklist {
 

@@ -2,8 +2,6 @@ package tconstruct.util.network;
 
 import java.util.*;
 
-import mantle.common.network.*;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.*;
 import net.minecraft.network.*;
@@ -15,6 +13,7 @@ import cpw.mods.fml.relauncher.*;
 import io.netty.buffer.*;
 import io.netty.channel.*;
 import io.netty.handler.codec.MessageToMessageCodec;
+import mantle.common.network.*;
 
 /**
  * Packet pipeline class. Directs all registered packet data to be handled by the packets themselves.

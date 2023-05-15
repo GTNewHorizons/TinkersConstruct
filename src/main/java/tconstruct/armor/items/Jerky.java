@@ -9,8 +9,8 @@ import net.minecraft.potion.*;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
-import tconstruct.world.items.SpecialFood;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.world.items.SpecialFood;
 
 public class Jerky extends SpecialFood {
 

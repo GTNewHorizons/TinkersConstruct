@@ -8,13 +8,13 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import tconstruct.items.tools.FryingPan;
 import tconstruct.library.event.ToolCraftedEvent;
 import tconstruct.library.tools.*;
 import tconstruct.tools.logic.ToolForgeLogic;
-
-import com.mojang.realmsclient.gui.ChatFormatting;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class AchievementEvents {
 

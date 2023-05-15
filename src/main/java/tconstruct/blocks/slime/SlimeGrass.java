@@ -2,8 +2,6 @@ package tconstruct.blocks.slime;
 
 import java.util.*;
 
-import mantle.blocks.MantleBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,9 +13,10 @@ import net.minecraft.world.*;
 import net.minecraftforge.common.*;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.MantleBlock;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.TinkerTools;
-import cpw.mods.fml.relauncher.*;
 
 public class SlimeGrass extends MantleBlock {
 

@@ -6,8 +6,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import tconstruct.util.DamageSourceFireworkExplode;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.util.DamageSourceFireworkExplode;
 
 public class EntityLandmineFirework extends Entity {
 

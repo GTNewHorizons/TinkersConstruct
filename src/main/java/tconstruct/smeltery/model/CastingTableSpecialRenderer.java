@@ -7,11 +7,11 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.ItemBlocklike;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.logic.CastingTableLogic;
 import tconstruct.tools.entity.FancyEntityItem;
-import cpw.mods.fml.relauncher.*;
 
 /* Special renderer, only used for drawing tools */
 

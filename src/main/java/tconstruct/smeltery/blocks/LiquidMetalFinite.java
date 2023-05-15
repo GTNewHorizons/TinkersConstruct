@@ -7,9 +7,9 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.TinkerSmeltery;
-import cpw.mods.fml.relauncher.*;
 
 public class LiquidMetalFinite extends BlockFluidFinite {
 

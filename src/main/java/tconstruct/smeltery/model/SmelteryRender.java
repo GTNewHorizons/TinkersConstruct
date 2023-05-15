@@ -1,7 +1,5 @@
 package tconstruct.smeltery.model;
 
-import mantle.world.CoordTuple;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
@@ -9,11 +7,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.*;
 
+import cpw.mods.fml.client.registry.*;
+import mantle.world.CoordTuple;
 import tconstruct.client.BlockSkinRenderHelper;
 import tconstruct.library.crafting.Smeltery;
 import tconstruct.smeltery.logic.SmelteryLogic;
 import tconstruct.util.ItemHelper;
-import cpw.mods.fml.client.registry.*;
 
 public class SmelteryRender implements ISimpleBlockRenderingHandler {
 

@@ -1,14 +1,14 @@
 package tconstruct.client.pages;
 
-import mantle.client.pages.BookPage;
-import mantle.lib.client.MantleClientRegistry;
-
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.*;
 import org.w3c.dom.*;
+
+import mantle.client.pages.BookPage;
+import mantle.lib.client.MantleClientRegistry;
 
 public class ToolPage extends BookPage {
 

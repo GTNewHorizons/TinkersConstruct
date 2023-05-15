@@ -2,15 +2,14 @@ package tconstruct.armor.items;
 
 import java.util.List;
 
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 
-import tconstruct.library.*;
 import cpw.mods.fml.relauncher.*;
+import mantle.items.abstracts.CraftingItem;
+import tconstruct.library.*;
 
 public class ArmorPattern extends CraftingItem implements ItemBlocklike {
 

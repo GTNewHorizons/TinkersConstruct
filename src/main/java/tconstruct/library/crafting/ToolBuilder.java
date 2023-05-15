@@ -8,12 +8,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.event.*;
 import tconstruct.library.modifier.ItemModifier;
 import tconstruct.library.tools.*;
 import tconstruct.library.util.IToolPart;
-import cpw.mods.fml.common.eventhandler.Event.Result;
 
 public class ToolBuilder {
 

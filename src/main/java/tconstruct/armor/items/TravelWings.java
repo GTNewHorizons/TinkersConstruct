@@ -8,10 +8,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import tconstruct.library.armor.ArmorPart;
-import tconstruct.tools.TinkerTools;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import tconstruct.library.armor.ArmorPart;
+import tconstruct.tools.TinkerTools;
 
 public class TravelWings extends TravelGear {
 

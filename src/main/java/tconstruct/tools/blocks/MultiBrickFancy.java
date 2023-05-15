@@ -7,8 +7,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
 
-import tconstruct.blocks.TConstructBlock;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.blocks.TConstructBlock;
 
 public class MultiBrickFancy extends TConstructBlock {
 

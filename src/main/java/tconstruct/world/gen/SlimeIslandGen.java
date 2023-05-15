@@ -11,10 +11,10 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderFlat;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
+import cpw.mods.fml.common.IWorldGenerator;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.*;
 import tconstruct.world.TinkerWorld;
-import cpw.mods.fml.common.IWorldGenerator;
 
 public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
 

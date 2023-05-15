@@ -4,14 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import mantle.blocks.abstracts.InventoryLogic;
-import mantle.blocks.abstracts.MultiServantLogic;
-import mantle.blocks.iface.IActiveLogic;
-import mantle.blocks.iface.IFacingLogic;
-import mantle.blocks.iface.IMasterLogic;
-import mantle.blocks.iface.IServantLogic;
-import mantle.world.CoordTuple;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,14 +29,21 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mantle.blocks.abstracts.InventoryLogic;
+import mantle.blocks.abstracts.MultiServantLogic;
+import mantle.blocks.iface.IActiveLogic;
+import mantle.blocks.iface.IFacingLogic;
+import mantle.blocks.iface.IMasterLogic;
+import mantle.blocks.iface.IServantLogic;
+import mantle.world.CoordTuple;
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.Smeltery;
 import tconstruct.smeltery.SmelteryDamageSource;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.inventory.SmelteryContainer;
 import tconstruct.util.config.PHConstruct;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /*
  * Simple class for storing items in the block

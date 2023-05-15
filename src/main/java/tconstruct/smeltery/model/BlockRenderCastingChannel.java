@@ -10,9 +10,9 @@ import net.minecraftforge.fluids.*;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.registry.*;
 import tconstruct.client.BlockSkinRenderHelper;
 import tconstruct.smeltery.logic.CastingChannelLogic;
-import cpw.mods.fml.client.registry.*;
 
 /**
  * @author BluSunrize

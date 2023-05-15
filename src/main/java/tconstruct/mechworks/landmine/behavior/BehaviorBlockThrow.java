@@ -1,11 +1,11 @@
 package tconstruct.mechworks.landmine.behavior;
 
-import mantle.blocks.BlockUtils;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import mantle.blocks.BlockUtils;
 
 /**
  *

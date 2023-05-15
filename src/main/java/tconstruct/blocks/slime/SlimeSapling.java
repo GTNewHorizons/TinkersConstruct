@@ -12,11 +12,11 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.gen.SlimeTreeGen;
-import cpw.mods.fml.relauncher.*;
 
 public class SlimeSapling extends BlockSapling {
 

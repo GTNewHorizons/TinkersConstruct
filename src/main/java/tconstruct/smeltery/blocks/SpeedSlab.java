@@ -10,10 +10,10 @@ import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.blocks.SlabBase;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.TinkerSmeltery;
-import cpw.mods.fml.relauncher.*;
 
 public class SpeedSlab extends SlabBase {
 

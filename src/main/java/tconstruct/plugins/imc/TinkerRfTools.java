@@ -2,14 +2,13 @@ package tconstruct.plugins.imc;
 
 import static tconstruct.smeltery.TinkerSmeltery.*;
 
-import mantle.pulsar.pulse.Handler;
-import mantle.pulsar.pulse.Pulse;
-
 import net.minecraftforge.fluids.Fluid;
 
-import tconstruct.world.TinkerWorld;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import mantle.pulsar.pulse.Handler;
+import mantle.pulsar.pulse.Pulse;
+import tconstruct.world.TinkerWorld;
 
 @Pulse(id = "Tinkers RF-Tools Compatibility", forced = true, modsRequired = TinkerRfTools.modid)
 public class TinkerRfTools {

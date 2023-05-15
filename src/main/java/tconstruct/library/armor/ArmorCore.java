@@ -15,11 +15,11 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.modifier.*;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.entity.FancyEntityItem;
-import cpw.mods.fml.relauncher.*;
 
 public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IModifyable {
 
