@@ -1,8 +1,8 @@
 package tconstruct.weaponry;
 
+import cpw.mods.fml.common.registry.EntityRegistry;
 import tconstruct.TConstruct;
 import tconstruct.weaponry.entity.*;
-import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class WeaponryCommonProxy {
 

@@ -14,11 +14,11 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 
+import cpw.mods.fml.common.Loader;
 import tconstruct.TConstruct;
 import tconstruct.smeltery.inventory.*;
 import tconstruct.smeltery.logic.SmelteryLogic;
 import tconstruct.util.network.SmelteryPacket;
-import cpw.mods.fml.common.Loader;
 
 public class SmelteryGui extends ActiveContainerGui {
 

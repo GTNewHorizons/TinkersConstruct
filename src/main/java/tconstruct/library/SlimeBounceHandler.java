@@ -9,10 +9,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-import tconstruct.gadgets.TinkerGadgets;
-import tconstruct.gadgets.item.ItemSlimeBoots;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import tconstruct.gadgets.TinkerGadgets;
+import tconstruct.gadgets.item.ItemSlimeBoots;
 
 /** Logic for entities bouncing */
 public class SlimeBounceHandler {

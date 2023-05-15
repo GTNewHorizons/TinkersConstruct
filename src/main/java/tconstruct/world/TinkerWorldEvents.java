@@ -11,11 +11,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 
+import cpw.mods.fml.common.eventhandler.*;
 import tconstruct.TConstruct;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.ItemHelper;
 import tconstruct.util.config.PHConstruct;
-import cpw.mods.fml.common.eventhandler.*;
 
 public class TinkerWorldEvents {
 

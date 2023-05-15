@@ -2,8 +2,6 @@ package tconstruct.library.weaponry;
 
 import java.util.List;
 
-import mods.battlegear2.api.core.InventoryPlayerBattle;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -14,13 +12,14 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.Loader;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.BowstringMaterial;
 import tconstruct.library.tools.CustomMaterial;
 import tconstruct.weaponry.ammo.ArrowAmmo;
 import tconstruct.weaponry.entity.ArrowEntity;
-import cpw.mods.fml.common.Loader;
 
 public abstract class BowBaseAmmo extends ProjectileWeapon {
 

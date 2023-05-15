@@ -1,7 +1,5 @@
 package tconstruct.world;
 
-import mantle.lib.client.MantleClientRegistry;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelSlime;
@@ -10,12 +8,13 @@ import net.minecraft.init.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
+import mantle.lib.client.MantleClientRegistry;
 import tconstruct.mechworks.model.CartRender;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.entity.*;
 import tconstruct.world.model.*;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.registry.VillagerRegistry;
 
 public class TinkerWorldProxyClient extends TinkerWorldProxyCommon {
 

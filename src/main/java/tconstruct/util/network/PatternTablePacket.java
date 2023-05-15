@@ -1,17 +1,16 @@
 package tconstruct.util.network;
 
-import mantle.common.network.AbstractPacket;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import mantle.common.network.AbstractPacket;
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.StencilBuilder;
 import tconstruct.tools.inventory.PatternShaperContainer;
 import tconstruct.tools.logic.StencilTableLogic;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PatternTablePacket extends AbstractPacket {
 

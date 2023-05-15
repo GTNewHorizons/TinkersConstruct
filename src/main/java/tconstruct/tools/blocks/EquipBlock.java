@@ -2,8 +2,6 @@ package tconstruct.tools.blocks;
 
 import java.util.Random;
 
-import mantle.blocks.abstracts.InventoryBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,12 +15,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.InventoryBlock;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.ToolProxyCommon;
 import tconstruct.tools.logic.*;
 import tconstruct.tools.model.FrypanRender;
-import cpw.mods.fml.relauncher.*;
 
 public class EquipBlock extends InventoryBlock {
 

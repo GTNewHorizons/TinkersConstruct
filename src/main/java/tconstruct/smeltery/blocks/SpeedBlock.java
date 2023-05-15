@@ -8,8 +8,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.*;
 import net.minecraft.world.World;
 
-import tconstruct.blocks.TConstructBlock;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.blocks.TConstructBlock;
 
 public class SpeedBlock extends TConstructBlock {
 

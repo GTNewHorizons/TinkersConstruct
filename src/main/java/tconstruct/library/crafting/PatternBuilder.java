@@ -7,11 +7,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.*;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.event.PartBuilderEvent;
 import tconstruct.library.tools.CustomMaterial;
 import tconstruct.library.util.IPattern;
-import cpw.mods.fml.common.eventhandler.Event.Result;
 
 public class PatternBuilder {
 

@@ -7,9 +7,9 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.blocks.logic.DryingRackLogic;
 import tconstruct.tools.entity.FancyEntityItem;
-import cpw.mods.fml.relauncher.*;
 
 /* Special renderer, only used for drawing tools */
 

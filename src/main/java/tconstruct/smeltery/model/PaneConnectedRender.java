@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
-import tconstruct.smeltery.blocks.GlassPaneConnected;
 import cpw.mods.fml.client.registry.*;
+import tconstruct.smeltery.blocks.GlassPaneConnected;
 
 public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 

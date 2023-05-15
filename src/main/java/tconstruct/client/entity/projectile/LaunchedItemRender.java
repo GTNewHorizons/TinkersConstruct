@@ -10,8 +10,8 @@ import net.minecraft.util.*;
 
 import org.lwjgl.opengl.*;
 
-import tconstruct.tools.entity.LaunchedPotion;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.tools.entity.LaunchedPotion;
 
 @SideOnly(Side.CLIENT)
 public class LaunchedItemRender extends Render {

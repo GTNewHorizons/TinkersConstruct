@@ -1,15 +1,14 @@
 package tconstruct.util.network;
 
-import mantle.common.network.AbstractPacket;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
-import tconstruct.TConstruct;
-import tconstruct.tools.logic.BattlesignLogic;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import mantle.common.network.AbstractPacket;
+import tconstruct.TConstruct;
+import tconstruct.tools.logic.BattlesignLogic;
 
 public class SignDataPacket extends AbstractPacket {
 

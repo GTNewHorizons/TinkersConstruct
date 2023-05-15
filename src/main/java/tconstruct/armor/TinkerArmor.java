@@ -2,8 +2,6 @@ package tconstruct.armor;
 
 import java.util.EnumSet;
 
-import mantle.pulsar.pulse.*;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.*;
 import net.minecraft.item.*;
@@ -13,6 +11,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
+import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+import mantle.pulsar.pulse.*;
 import tconstruct.TConstruct;
 import tconstruct.armor.blocks.DryingRack;
 import tconstruct.armor.items.*;
@@ -26,10 +29,6 @@ import tconstruct.modifiers.armor.*;
 import tconstruct.modifiers.tools.ModAttack;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(id = "Tinkers' Armory", description = "Modifyable armors, such as the traveller's gear.")

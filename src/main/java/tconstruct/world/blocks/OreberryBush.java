@@ -16,11 +16,11 @@ import net.minecraft.world.*;
 import net.minecraftforge.common.*;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.model.OreberryRender;
-import cpw.mods.fml.relauncher.*;
 
 public class OreberryBush extends BlockLeavesBase implements IPlantable {
 

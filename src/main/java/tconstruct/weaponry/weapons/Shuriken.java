@@ -12,13 +12,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.client.IconFlipped;
 import tconstruct.library.weaponry.AmmoWeapon;
 import tconstruct.weaponry.TinkerWeaponry;
 import tconstruct.weaponry.client.CrosshairType;
 import tconstruct.weaponry.entity.ShurikenEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class Shuriken extends AmmoWeapon {
 

@@ -1,12 +1,12 @@
 package tconstruct.smeltery.logic;
 
-import mantle.blocks.abstracts.MultiServantLogic;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.*;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+
+import mantle.blocks.abstracts.MultiServantLogic;
 
 public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
 

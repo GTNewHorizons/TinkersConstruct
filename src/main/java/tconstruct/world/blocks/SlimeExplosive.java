@@ -2,8 +2,6 @@ package tconstruct.world.blocks;
 
 import java.util.List;
 
-import mantle.world.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -15,9 +13,10 @@ import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.world.WorldHelper;
 import tconstruct.blocks.TConstructBlock;
 import tconstruct.mechworks.entity.item.ExplosivePrimed;
-import cpw.mods.fml.relauncher.*;
 
 public class SlimeExplosive extends TConstructBlock {
 

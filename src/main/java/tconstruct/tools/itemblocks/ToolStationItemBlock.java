@@ -1,8 +1,8 @@
 package tconstruct.tools.itemblocks;
 
-import mantle.blocks.abstracts.MultiItemBlock;
-
 import net.minecraft.block.Block;
+
+import mantle.blocks.abstracts.MultiItemBlock;
 
 public class ToolStationItemBlock extends MultiItemBlock {
 

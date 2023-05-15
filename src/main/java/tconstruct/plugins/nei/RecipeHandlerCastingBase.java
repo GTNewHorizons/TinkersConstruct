@@ -7,9 +7,9 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import tconstruct.library.crafting.CastingRecipe;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
+import tconstruct.library.crafting.CastingRecipe;
 
 public abstract class RecipeHandlerCastingBase extends RecipeHandlerBase {
 

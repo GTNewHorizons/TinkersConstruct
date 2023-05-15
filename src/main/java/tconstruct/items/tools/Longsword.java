@@ -7,9 +7,9 @@ import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.tools.Weapon;
 import tconstruct.tools.TinkerTools;
-import cpw.mods.fml.relauncher.*;
 
 public class Longsword extends Weapon {
 

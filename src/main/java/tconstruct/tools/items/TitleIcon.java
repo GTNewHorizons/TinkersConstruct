@@ -12,12 +12,12 @@ import net.minecraft.item.*;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.*;
 import tconstruct.client.TProxyClient;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.world.entity.BlueSlime;
 import tconstruct.world.entity.KingBlueSlime;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.*;
 
 // spawn egg.
 public class TitleIcon extends Item {

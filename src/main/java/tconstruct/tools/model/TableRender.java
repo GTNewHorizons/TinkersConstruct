@@ -6,8 +6,8 @@ import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
-import tconstruct.tools.TinkerTools;
 import cpw.mods.fml.client.registry.*;
+import tconstruct.tools.TinkerTools;
 
 public class TableRender implements ISimpleBlockRenderingHandler {
 

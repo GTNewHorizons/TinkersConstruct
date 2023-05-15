@@ -10,9 +10,9 @@ import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.world.TinkerWorld;
-import cpw.mods.fml.relauncher.*;
 
 public class GravelOre extends BlockSand {
 

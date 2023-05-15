@@ -1,10 +1,10 @@
 package tconstruct.armor.inventory;
 
-import mantle.blocks.BlockUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
+import mantle.blocks.BlockUtils;
 
 /**
  *

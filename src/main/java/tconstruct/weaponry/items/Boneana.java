@@ -8,10 +8,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-import tconstruct.items.tools.Broadsword;
-import tconstruct.util.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import tconstruct.items.tools.Broadsword;
+import tconstruct.util.Reference;
 
 public class Boneana extends Broadsword {
 

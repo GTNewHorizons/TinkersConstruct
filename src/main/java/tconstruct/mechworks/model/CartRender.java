@@ -9,8 +9,8 @@ import net.minecraft.util.*;
 
 import org.lwjgl.opengl.GL11;
 
-import tconstruct.world.entity.CartEntity;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.world.entity.CartEntity;
 
 @SideOnly(Side.CLIENT)
 public class CartRender extends Render {

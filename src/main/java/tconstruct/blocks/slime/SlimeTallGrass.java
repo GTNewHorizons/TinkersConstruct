@@ -12,8 +12,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.*;
 import net.minecraftforge.common.*;
 
-import tconstruct.library.TConstructRegistry;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.library.TConstructRegistry;
 
 public class SlimeTallGrass extends BlockBush implements IShearable {
 

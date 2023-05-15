@@ -12,8 +12,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
-import tconstruct.tools.entity.LaunchedPotion;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.tools.entity.LaunchedPotion;
 
 public class PotionLauncher extends Item {
 

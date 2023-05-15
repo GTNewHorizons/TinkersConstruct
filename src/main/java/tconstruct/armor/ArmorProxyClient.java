@@ -2,8 +2,6 @@ package tconstruct.armor;
 
 import java.util.Random;
 
-import mantle.lib.client.MantleClientRegistry;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped;
@@ -28,6 +26,10 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mantle.lib.client.MantleClientRegistry;
 import tconstruct.armor.gui.ArmorExtendedGui;
 import tconstruct.armor.gui.KnapsackGui;
 import tconstruct.armor.items.TravelGear;
@@ -49,9 +51,6 @@ import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ArmorProxyClient extends ArmorProxyCommon {
 

@@ -2,9 +2,6 @@ package tconstruct.tools;
 
 import static tconstruct.tools.TinkerTools.*;
 
-import mantle.client.MProxyClient;
-import mantle.lib.client.MantleClientRegistry;
-
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.*;
@@ -15,6 +12,10 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mantle.client.MProxyClient;
+import mantle.lib.client.MantleClientRegistry;
 import tconstruct.client.FlexibleToolRenderer;
 import tconstruct.client.entity.projectile.*;
 import tconstruct.client.pages.*;
@@ -30,8 +31,6 @@ import tconstruct.tools.gui.*;
 import tconstruct.tools.logic.*;
 import tconstruct.tools.model.*;
 import tconstruct.weaponry.TinkerWeaponry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ToolProxyClient extends ToolProxyCommon {
 

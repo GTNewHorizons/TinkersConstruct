@@ -10,9 +10,9 @@ import net.minecraft.util.*;
 import net.minecraft.world.*;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.smeltery.model.PaneConnectedRender;
 import tconstruct.util.config.PHConstruct;
-import cpw.mods.fml.relauncher.*;
 
 public class GlassPaneConnected extends GlassBlockConnected {
 

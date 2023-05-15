@@ -9,10 +9,10 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
-import tconstruct.library.crafting.AlloyMix;
-import tconstruct.library.crafting.Smeltery;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.PositionedStack;
+import tconstruct.library.crafting.AlloyMix;
+import tconstruct.library.crafting.Smeltery;
 
 public class RecipeHandlerAlloying extends RecipeHandlerBase {
 

@@ -7,13 +7,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.library.entity.ProjectileBase;
 import tconstruct.library.weaponry.AmmoWeapon;
 import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.client.CrosshairType;
 import tconstruct.weaponry.entity.ThrowingKnifeEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ThrowingKnife extends AmmoWeapon {
 

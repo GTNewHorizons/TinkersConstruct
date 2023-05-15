@@ -2,8 +2,6 @@ package tconstruct.plugins.waila;
 
 import java.util.List;
 
-import mcp.mobius.waila.api.*;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,6 +10,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
+import mcp.mobius.waila.api.*;
 import tconstruct.smeltery.logic.SmelteryLogic;
 
 public class SmelteryDataProvider implements IWailaDataProvider {

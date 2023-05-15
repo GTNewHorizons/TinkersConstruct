@@ -5,8 +5,8 @@ import net.minecraft.entity.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.*;
 
-import tconstruct.world.MiningExplosion;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.world.MiningExplosion;
 
 public class ExplosivePrimed extends Entity {
 

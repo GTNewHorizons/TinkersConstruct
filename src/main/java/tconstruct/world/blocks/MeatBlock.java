@@ -9,8 +9,8 @@ import net.minecraft.item.*;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 
-import tconstruct.library.TConstructRegistry;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.library.TConstructRegistry;
 
 public class MeatBlock extends BlockWood {
 

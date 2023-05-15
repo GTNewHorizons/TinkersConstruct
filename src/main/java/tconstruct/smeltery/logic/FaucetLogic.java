@@ -1,7 +1,5 @@
 package tconstruct.smeltery.logic;
 
-import mantle.blocks.iface.*;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.*;
@@ -10,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
+import mantle.blocks.iface.*;
 import tconstruct.TConstruct;
 
 public class FaucetLogic extends TileEntity implements IFacingLogic, IActiveLogic, IFluidHandler {

@@ -26,13 +26,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 
+import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import tconstruct.TConstruct;
 import tconstruct.library.ActiveToolMod;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.PiercingEntityDamage;
-import cofh.api.energy.IEnergyContainerItem;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.eventhandler.Event.Result;
 
 public class AbilityHelper {
 

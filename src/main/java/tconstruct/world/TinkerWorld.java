@@ -1,8 +1,5 @@
 package tconstruct.world;
 
-import mantle.pulsar.pulse.*;
-import mantle.utils.RecipeRemover;
-
 import net.minecraft.block.*;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.material.Material;
@@ -17,6 +14,13 @@ import net.minecraftforge.common.*;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.oredict.*;
 
+import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+import mantle.pulsar.pulse.*;
+import mantle.utils.RecipeRemover;
 import tconstruct.TConstruct;
 import tconstruct.armor.TinkerArmor;
 import tconstruct.blocks.SlabBase;
@@ -38,11 +42,6 @@ import tconstruct.world.entity.*;
 import tconstruct.world.gen.*;
 import tconstruct.world.itemblocks.*;
 import tconstruct.world.items.*;
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(id = "Tinkers' World", description = "Ores, slime islands, essence berries, and the like.", forced = true)

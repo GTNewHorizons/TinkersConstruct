@@ -7,10 +7,10 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import codechicken.lib.gui.GuiDraw;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.CastingRecipe;
 import tconstruct.library.crafting.LiquidCasting;
-import codechicken.lib.gui.GuiDraw;
 
 public class RecipeHandlerCastingBasin extends RecipeHandlerCastingBase {
 

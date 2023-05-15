@@ -8,9 +8,9 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.world.entity.KingBlueSlime;
 import tconstruct.world.entity.SlimeBase;
-import cpw.mods.fml.relauncher.*;
 
 @SideOnly(Side.CLIENT)
 public class SlimeRender extends RenderLiving {

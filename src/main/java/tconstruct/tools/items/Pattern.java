@@ -4,17 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.util.StatCollector;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.items.abstracts.CraftingItem;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder.MaterialSet;
 import tconstruct.library.util.IPattern;
-import cpw.mods.fml.relauncher.*;
 
 public class Pattern extends CraftingItem implements IPattern {
 

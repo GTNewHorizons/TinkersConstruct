@@ -2,8 +2,6 @@ package tconstruct.smeltery.itemblocks;
 
 import java.util.List;
 
-import mantle.blocks.abstracts.MultiItemBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,6 +10,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
+import mantle.blocks.abstracts.MultiItemBlock;
 import tconstruct.smeltery.logic.LavaTankLogic;
 
 public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainerItem {

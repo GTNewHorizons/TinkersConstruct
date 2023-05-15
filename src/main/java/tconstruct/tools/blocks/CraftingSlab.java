@@ -2,8 +2,6 @@ package tconstruct.tools.blocks;
 
 import java.util.List;
 
-import mantle.blocks.abstracts.InventorySlab;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -16,12 +14,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.InventorySlab;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.*;
 import tconstruct.tools.logic.*;
 import tconstruct.util.config.PHConstruct;
-import cpw.mods.fml.relauncher.*;
 
 public class CraftingSlab extends InventorySlab {
 

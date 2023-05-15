@@ -1,12 +1,11 @@
 package tconstruct.world.itemblocks;
 
-import mantle.blocks.abstracts.MultiItemBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.util.*;
 
-import tconstruct.world.TinkerWorld;
 import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.MultiItemBlock;
+import tconstruct.world.TinkerWorld;
 
 public class SlimeTallGrassItem extends MultiItemBlock {
 

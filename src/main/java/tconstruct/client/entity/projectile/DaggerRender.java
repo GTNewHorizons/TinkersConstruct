@@ -2,8 +2,6 @@ package tconstruct.client.entity.projectile;
 
 import java.util.Random;
 
-import mantle.blocks.BlockUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -17,8 +15,9 @@ import net.minecraftforge.client.ForgeHooksClient;
 
 import org.lwjgl.opengl.*;
 
-import tconstruct.tools.entity.DaggerEntity;
 import cpw.mods.fml.relauncher.*;
+import mantle.blocks.BlockUtils;
+import tconstruct.tools.entity.DaggerEntity;
 
 @SideOnly(Side.CLIENT)
 @Deprecated

@@ -5,8 +5,6 @@ import java.net.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import mantle.player.PlayerUtils;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.*;
 import net.minecraft.entity.Entity.EnumEntitySize;
@@ -18,15 +16,16 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 
-import tconstruct.TConstruct;
-import tconstruct.library.tools.AbilityHelper;
-import tconstruct.tools.TinkerTools;
-import tconstruct.util.config.PHConstruct;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import cpw.mods.fml.relauncher.Side;
+import mantle.player.PlayerUtils;
+import tconstruct.TConstruct;
+import tconstruct.library.tools.AbilityHelper;
+import tconstruct.tools.TinkerTools;
+import tconstruct.util.config.PHConstruct;
 
 // TODO: Redesign this class
 public class TPlayerHandler {

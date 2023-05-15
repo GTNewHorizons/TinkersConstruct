@@ -6,13 +6,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
 
+import cpw.mods.fml.client.registry.*;
 import tconstruct.TConstruct;
 import tconstruct.client.BlockSkinRenderHelper;
 import tconstruct.library.crafting.CastingRecipe;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.logic.*;
 import tconstruct.util.ItemHelper;
-import cpw.mods.fml.client.registry.*;
 
 public class CastingBlockRender implements ISimpleBlockRenderingHandler {
 

@@ -1,9 +1,8 @@
 package tconstruct.tools.items;
 
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.item.ItemStack;
 
+import mantle.items.abstracts.CraftingItem;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.IToolPart;
 

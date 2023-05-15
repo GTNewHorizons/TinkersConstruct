@@ -1,12 +1,11 @@
 package tconstruct.tools.logic;
 
-import mantle.blocks.abstracts.InventoryLogic;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.library.util.IPattern;
 import tconstruct.tools.inventory.PatternChestContainer;
 

@@ -2,12 +2,12 @@ package tconstruct.library.crafting;
 
 import java.util.*;
 
-import mantle.utils.ItemMetaWrapper;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.oredict.OreDictionary;
+
+import mantle.utils.ItemMetaWrapper;
 
 /** Melting and hacking, churn and burn */
 public class Smeltery {

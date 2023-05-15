@@ -2,9 +2,6 @@ package tconstruct.smeltery.blocks;
 
 import java.util.*;
 
-import mantle.blocks.abstracts.*;
-import mantle.blocks.iface.*;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -16,12 +13,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.*;
+import mantle.blocks.iface.*;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.SmelteryProxyCommon;
 import tconstruct.smeltery.logic.*;
 import tconstruct.smeltery.model.SmelteryRender;
-import cpw.mods.fml.relauncher.*;
 
 public class SmelteryBlock extends InventoryBlock {
 

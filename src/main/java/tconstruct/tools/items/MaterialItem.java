@@ -2,15 +2,14 @@ package tconstruct.tools.items;
 
 import java.util.List;
 
-import mantle.items.abstracts.CraftingItem;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
-import tconstruct.library.TConstructRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mantle.items.abstracts.CraftingItem;
+import tconstruct.library.TConstructRegistry;
 
 public class MaterialItem extends CraftingItem {
 

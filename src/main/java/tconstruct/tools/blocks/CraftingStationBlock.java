@@ -2,8 +2,6 @@ package tconstruct.tools.blocks;
 
 import java.util.List;
 
-import mantle.blocks.abstracts.InventoryBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,12 +11,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.InventoryBlock;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.ToolProxyCommon;
 import tconstruct.tools.logic.CraftingStationLogic;
 import tconstruct.tools.model.TableRender;
-import cpw.mods.fml.relauncher.*;
 
 public class CraftingStationBlock extends InventoryBlock {
 

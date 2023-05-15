@@ -1,7 +1,5 @@
 package tconstruct.world.blocks;
 
-import mantle.blocks.MantleBlock;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.*;
@@ -10,9 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.MantleBlock;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.world.model.SlimeChannelRender;
-import cpw.mods.fml.relauncher.*;
 
 public class ConveyorBase extends MantleBlock {
 

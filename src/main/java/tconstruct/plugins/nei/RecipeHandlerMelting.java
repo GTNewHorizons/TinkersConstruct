@@ -5,18 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import mantle.utils.ItemMetaWrapper;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
-import tconstruct.library.crafting.Smeltery;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
+import mantle.utils.ItemMetaWrapper;
+import tconstruct.library.crafting.Smeltery;
 
 public class RecipeHandlerMelting extends RecipeHandlerBase {
 

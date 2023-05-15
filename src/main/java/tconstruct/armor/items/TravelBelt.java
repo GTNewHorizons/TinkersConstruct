@@ -11,10 +11,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.client.ArmorControls;
 import tconstruct.library.accessory.*;
-import cpw.mods.fml.relauncher.*;
 
 public class TravelBelt extends AccessoryCore implements IAccessoryModel {
 

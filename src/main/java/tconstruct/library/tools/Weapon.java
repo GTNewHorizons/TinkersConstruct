@@ -1,8 +1,5 @@
 package tconstruct.library.tools;
 
-import mods.battlegear2.api.PlayerEventChild;
-import mods.battlegear2.api.weapons.IBattlegearWeapon;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -12,9 +9,11 @@ import net.minecraft.item.*;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import tconstruct.tools.TinkerTools;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.*;
+import mods.battlegear2.api.PlayerEventChild;
+import mods.battlegear2.api.weapons.IBattlegearWeapon;
+import tconstruct.tools.TinkerTools;
 
 @Optional.InterfaceList({
         @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon"),

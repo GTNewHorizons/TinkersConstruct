@@ -2,8 +2,6 @@ package tconstruct.blocks.traps;
 
 import java.util.Random;
 
-import mantle.blocks.MantleBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,10 +12,11 @@ import net.minecraft.potion.*;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.MantleBlock;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.model.PunjiRender;
-import cpw.mods.fml.relauncher.*;
 
 public class Punji extends MantleBlock {
 

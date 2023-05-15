@@ -6,9 +6,9 @@ import net.minecraft.entity.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.library.accessory.*;
-import cpw.mods.fml.relauncher.*;
 
 public class TravelGlove extends AccessoryCore implements IAccessoryModel {
 

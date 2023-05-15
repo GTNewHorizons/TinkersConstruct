@@ -7,8 +7,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.*;
 
-import tconstruct.blocks.TConstructBlock;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.blocks.TConstructBlock;
 
 public class GlassBlock extends TConstructBlock {
 

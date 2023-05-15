@@ -17,6 +17,9 @@ import net.minecraft.network.play.server.S2BPacketChangeGameState;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import io.netty.buffer.ByteBuf;
 import tconstruct.library.ActiveToolMod;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
@@ -24,9 +27,6 @@ import tconstruct.library.tools.ToolCore;
 import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.util.Reference;
 import tconstruct.weaponry.entity.ArrowEntity;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import io.netty.buffer.ByteBuf;
 
 // have to base this on EntityArrow, otherwise minecraft does derp things because everything is handled based on class.
 public abstract class ProjectileBase extends EntityArrow implements IEntityAdditionalSpawnData {

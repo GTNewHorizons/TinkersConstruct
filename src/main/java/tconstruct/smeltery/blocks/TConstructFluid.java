@@ -5,8 +5,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.*;
 
-import tconstruct.library.TConstructRegistry;
 import cpw.mods.fml.relauncher.*;
+import tconstruct.library.TConstructRegistry;
 
 public class TConstructFluid extends BlockFluidClassic {
 

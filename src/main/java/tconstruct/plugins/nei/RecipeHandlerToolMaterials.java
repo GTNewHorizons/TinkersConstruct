@@ -10,6 +10,8 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.PositionedStack;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.CastingRecipe;
 import tconstruct.library.crafting.PatternBuilder;
@@ -23,8 +25,6 @@ import tconstruct.library.util.HarvestLevels;
 import tconstruct.library.util.IToolPart;
 import tconstruct.tools.items.ToolPart;
 import tconstruct.util.config.PHConstruct;
-import codechicken.lib.gui.GuiDraw;
-import codechicken.nei.PositionedStack;
 
 public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
 

@@ -2,9 +2,6 @@ package tconstruct.tools;
 
 import static net.minecraft.util.EnumChatFormatting.*;
 
-import mantle.pulsar.pulse.*;
-import mantle.utils.RecipeRemover;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.Material;
@@ -15,6 +12,12 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.*;
 
+import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+import mantle.pulsar.pulse.*;
+import mantle.utils.RecipeRemover;
 import tconstruct.TConstruct;
 import tconstruct.achievements.items.CraftAchievementItem;
 import tconstruct.common.itemblocks.MetadataItemBlock;
@@ -37,10 +40,6 @@ import tconstruct.world.TDispenserBehaviorSpawnEgg;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.blocks.SoilBlock;
 import tconstruct.world.itemblocks.CraftedSoilItemBlock;
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.*;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(

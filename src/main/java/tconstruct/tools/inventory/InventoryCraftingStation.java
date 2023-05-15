@@ -1,10 +1,10 @@
 package tconstruct.tools.inventory;
 
-import mantle.blocks.abstracts.InventoryLogic;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
+
+import mantle.blocks.abstracts.InventoryLogic;
 
 public class InventoryCraftingStation extends InventoryCrafting {
 

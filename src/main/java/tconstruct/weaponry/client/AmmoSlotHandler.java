@@ -6,8 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import tconstruct.library.weaponry.ProjectileWeapon;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import tconstruct.library.weaponry.ProjectileWeapon;
 
 public class AmmoSlotHandler {
 

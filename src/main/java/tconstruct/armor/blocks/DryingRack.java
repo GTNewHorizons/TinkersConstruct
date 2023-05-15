@@ -2,8 +2,6 @@ package tconstruct.armor.blocks;
 
 import java.util.List;
 
-import mantle.blocks.abstracts.InventoryBlock;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,12 +11,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.*;
 
+import cpw.mods.fml.relauncher.*;
+import mantle.blocks.abstracts.InventoryBlock;
 import tconstruct.TConstruct;
 import tconstruct.armor.modelblock.DryingRackRender;
 import tconstruct.blocks.logic.DryingRackLogic;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
-import cpw.mods.fml.relauncher.*;
 
 public class DryingRack extends InventoryBlock {
 

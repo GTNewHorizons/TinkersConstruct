@@ -4,9 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import io.netty.buffer.ByteBuf;
 import tconstruct.library.entity.ProjectileBase;
 import tconstruct.weaponry.TinkerWeaponry;
-import io.netty.buffer.ByteBuf;
 
 public class ShurikenEntity extends ProjectileBase {
 

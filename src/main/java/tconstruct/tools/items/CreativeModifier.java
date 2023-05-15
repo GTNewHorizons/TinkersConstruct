@@ -9,10 +9,10 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
+import cpw.mods.fml.relauncher.*;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.*;
 import tconstruct.library.tools.ToolCore;
-import cpw.mods.fml.relauncher.*;
 
 public class CreativeModifier extends Item {
 
