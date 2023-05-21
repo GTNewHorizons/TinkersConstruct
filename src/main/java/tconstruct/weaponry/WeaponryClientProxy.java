@@ -113,12 +113,12 @@ public class WeaponryClientProxy extends WeaponryCommonProxy {
         TConstructClientRegistry.addStencilButton2(0, 0, -1, null, null);
         TConstructClientRegistry.addStencilButton2(0, 0, -1, null, null);
 
-        TConstructClientRegistry.addStencilButton2(3, 4, 27, Reference.RESOURCE, tex); // bow limb
         TConstructClientRegistry.addStencilButton2(10, 3, 23, Reference.RESOURCE, tex); // bowstring
+        TConstructClientRegistry.addStencilButton2(0, 4, 24, Reference.RESOURCE, tex); // shuriken
         TConstructClientRegistry.addStencilButton2(1, 4, 25, Reference.RESOURCE, tex); // crossbow limb
         TConstructClientRegistry.addStencilButton2(2, 4, 26, Reference.RESOURCE, tex); // crossbow body
 
-        TConstructClientRegistry.addStencilButton2(0, 4, 24, Reference.RESOURCE, tex); // shuriken
+        TConstructClientRegistry.addStencilButton2(3, 4, 27, Reference.RESOURCE, tex); // bow limb
         // TConstructClientRegistry.addStencilButton2(4, 4, index, Reference.RESOURCE, "textures/gui/icons.png"); //
         // bolt
 
