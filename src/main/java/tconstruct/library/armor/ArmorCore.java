@@ -246,7 +246,7 @@ public abstract class ArmorCore extends ItemArmor implements ISpecialArmor, IMod
                 int maxDurability = tags.getInteger("TotalDurability");
                 int currentDurability = tags.getInteger("Damage");
                 if (currentDurability + damage > maxDurability) {
-                    tags.setInteger("Damage", 0);
+                    tags.setInteger("Damage", maxDurability);
                     tags.setBoolean("Broken", true);
                     armor.setItemDamage(0);
                     entity.worldObj.playSound(entity.posX, entity.posY, entity.posZ, "random.break", 1f, 1f, true);
