@@ -19,6 +19,8 @@ import mantle.pulsar.pulse.*;
 import tconstruct.TConstruct;
 import tconstruct.armor.blocks.DryingRack;
 import tconstruct.armor.items.*;
+import tconstruct.armor.items.slime.ItemSlimeBoots;
+import tconstruct.armor.items.slime.ItemSlimeSling;
 import tconstruct.blocks.logic.DryingRackLogic;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.accessory.AccessoryCore;
@@ -63,6 +65,8 @@ public class TinkerArmor {
     public static TravelGear travelBoots;
     public static AccessoryCore travelGlove;
     public static AccessoryCore travelBelt;
+    public static ItemSlimeBoots slimeBoots;
+    public static ItemSlimeSling slimeSling;
 
     public static ModAttack modAttackGlove;
 
@@ -124,12 +128,17 @@ public class TinkerArmor {
         travelBoots = (TravelGear) new TravelGear(ArmorPart.Feet).setUnlocalizedName("tconstruct.travelboots");
         travelGlove = (AccessoryCore) new TravelGlove().setUnlocalizedName("tconstruct.travelgloves");
         travelBelt = (AccessoryCore) new TravelBelt().setUnlocalizedName("tconstruct.travelbelt");
+        slimeBoots = new ItemSlimeBoots();
+        slimeSling = new ItemSlimeSling();
+
         GameRegistry.registerItem(travelGoggles, "travelGoggles");
         GameRegistry.registerItem(travelVest, "travelVest");
         GameRegistry.registerItem(travelWings, "travelWings");
         GameRegistry.registerItem(travelBoots, "travelBoots");
         GameRegistry.registerItem(travelGlove, "travelGlove");
         GameRegistry.registerItem(travelBelt, "travelBelt");
+        GameRegistry.registerItem(slimeSling, "slimesling");
+        GameRegistry.registerItem(slimeBoots, "slime_boots");
     }
 
     @Handler
@@ -234,8 +243,8 @@ public class TinkerArmor {
 
         // Temporary recipes
         ItemStack leather = new ItemStack(Items.leather);
-        ItemStack glass = new ItemStack(Blocks.glass);
         ItemStack string = new ItemStack(Items.string);
+        ItemStack slimeBlockGreen = new ItemStack(TinkerWorld.slimeGel, 1, 1);
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(
                         travelGoggles.getDefaultItem(),
@@ -297,6 +306,29 @@ public class TinkerArmor {
                         "chestWood",
                         'i',
                         "ingotAluminum"));
+        if (!Loader.isModLoaded("dreamcraft")) {
+            GameRegistry.addShapedRecipe(
+                    new ItemStack(slimeBoots),
+                    "   ",
+                    "s s",
+                    "b b",
+                    's',
+                    Items.slime_ball,
+                    'b',
+                    slimeBlockGreen);
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(slimeSling),
+                            "fbf",
+                            "s s",
+                            " s ",
+                            'f',
+                            Items.string,
+                            's',
+                            Items.slime_ball,
+                            'b',
+                            slimeBlockGreen));
+        }
     }
 
     protected static void addRecipesForDryingRack() {

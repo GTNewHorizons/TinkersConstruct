@@ -11,8 +11,8 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import tconstruct.gadgets.TinkerGadgets;
-import tconstruct.gadgets.item.ItemSlimeBoots;
+import tconstruct.TConstruct;
+import tconstruct.armor.items.slime.ItemSlimeBoots;
 
 /** Logic for entities bouncing */
 public class SlimeBounceHandler {
@@ -37,12 +37,12 @@ public class SlimeBounceHandler {
     }
 
     private SlimeBounceHandler() {
-        TinkerGadgets.log.info("Created instance of Bounce Handler.");
+        TConstruct.logger.info("Created instance of Bounce Handler.");
     }
 
     /** Registers event handlers */
     public static void init() {
-        TinkerGadgets.log.info("Registering Bounce Handler.");
+        TConstruct.logger.info("Registering Bounce Handler.");
         registerEvent(new SlimeBounceHandler());
     }
 
@@ -71,9 +71,9 @@ public class SlimeBounceHandler {
         if (hasSlimeBoots(entity)) {
             if (info == null) {
                 BOUNCING_ENTITIES.put(entity, new BounceInfo(entity, bounce));
-                TinkerGadgets.log.info("Created new BounceInfo for " + entity.getCommandSenderName());
+                TConstruct.logger.info("Created new BounceInfo for " + entity.getCommandSenderName());
             } else if (bounce != 0) {
-                TinkerGadgets.log.info("Updating Bounce data?");
+                TConstruct.logger.info("Updating Bounce data?");
                 // updated bounce if needed
                 info.bounce = bounce;
                 // add one to the tick as there is a 1 tick delay between falling and ticking
@@ -98,18 +98,18 @@ public class SlimeBounceHandler {
         if (entity != null) {
             BounceInfo info = BOUNCING_ENTITIES.get(entity);
 
-            // TinkerGadgets.log.info("Bounce Data valid? "+(info != null));
+            // TConstruct.logger.info("Bounce Data valid? "+(info != null));
             // if we have info for this entity, time to work
             if (info != null) {
-                // TinkerGadgets.log.info("Found Bounce Data in tick handler.");
+                // TConstruct.logger.info("Found Bounce Data in tick handler.");
                 // if flying, nothing to do
                 if (entity.isDead || entity.noClip) {
-                    // TinkerGadgets.log.info("Removing Bounce Data.");
+                    // TConstruct.logger.info("Removing Bounce Data.");
                     BOUNCING_ENTITIES.remove(entity);
                     return;
                 }
                 if (!hasSlimeBoots(entity)) {
-                    // TinkerGadgets.log.info("Removing Bounce Data. No Boots.");
+                    // TConstruct.logger.info("Removing Bounce Data. No Boots.");
                     BOUNCING_ENTITIES.remove(entity);
                     return;
                 }
@@ -117,14 +117,14 @@ public class SlimeBounceHandler {
                 // if its the bounce tick, time to bounce. This is to circumvent the logic that
                 // resets y motion after landing
                 if (entity.ticksExisted == info.bounceTick) {
-                    TinkerGadgets.log.info("Bounce Tick?");
+                    TConstruct.logger.info("Bounce Tick?");
                     entity.motionY = info.bounce;
                     info.bounceTick = 0;
                 }
 
                 boolean isInAir = !entity.onGround && !entity.isInWater() && !entity.isOnLadder();
 
-                // TinkerGadgets.log.info("In Air? "+isInAir);
+                // TConstruct.logger.info("In Air? "+isInAir);
                 // preserve motion
                 if (isInAir && info.lastMagSq > 0) {
                     // figure out how much motion has reduced
@@ -157,23 +157,23 @@ public class SlimeBounceHandler {
                         }
                     }
                 }
-                // TinkerGadgets.log.info("Did things? 1");
+                // TConstruct.logger.info("Did things? 1");
 
                 // timing the effect out
                 if (info.wasInAir && !isInAir) {
                     if (info.endHandler == 0) {
                         info.endHandler = entity.ticksExisted + 5;
                     } else if (entity.ticksExisted > info.endHandler) {
-                        // TinkerGadgets.log.info("Removing Bounce Data for "+entity.getCommandSenderName());
+                        // TConstruct.logger.info("Removing Bounce Data for "+entity.getCommandSenderName());
                         BOUNCING_ENTITIES.remove(entity);
                     }
                 } else {
                     info.endHandler = 0;
                     info.wasInAir = true;
                 }
-                // TinkerGadgets.log.info("Did things? 2");
+                // TConstruct.logger.info("Did things? 2");
             } else {
-                // TinkerGadgets.log.info("Bad Bounce Data.");
+                // TConstruct.logger.info("Bad Bounce Data.");
             }
         }
     }
@@ -187,7 +187,7 @@ public class SlimeBounceHandler {
             for (int i = 1; i < 5; i++) {
                 ItemStack aBoots = entity.getEquipmentInSlot(i);
                 if (aBoots != null && aBoots.getItem() instanceof ItemSlimeBoots) {
-                    // TinkerGadgets.log.info("Found boots in slot "+i);
+                    // TConstruct.logger.info("Found boots in slot "+i);
                     return true;
                 }
             }

@@ -33,7 +33,6 @@ import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.player.TPlayerHandler;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.common.TProxyCommon;
-import tconstruct.gadgets.TinkerGadgets;
 import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructCreativeTab;
 import tconstruct.library.TConstructRegistry;
@@ -146,7 +145,6 @@ public class TConstruct {
         pulsar.registerPulse(new TinkerMechworks());
         pulsar.registerPulse(new TinkerArmor());
         pulsar.registerPulse(new TinkerWeaponry());
-        pulsar.registerPulse(new TinkerGadgets());
         pulsar.registerPulse(new TinkerThaumcraft());
         pulsar.registerPulse(new TinkerWaila());
         pulsar.registerPulse(new TinkerBuildCraft());
@@ -243,7 +241,7 @@ public class TConstruct {
     /** Called on server shutdown to prevent memory leaks */
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
-        TinkerGadgets.log.info("Cleaning up SlimeBounceHandler data.");
+        logger.info("Cleaning up SlimeBounceHandler data.");
         SlimeBounceHandler.BOUNCING_ENTITIES.clear();
     }
 

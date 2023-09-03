@@ -1,6 +1,7 @@
-package tconstruct.gadgets.item;
+package tconstruct.armor.items.slime;
 
 import java.util.List;
+import java.util.Locale;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -26,6 +27,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import tconstruct.TConstruct;
 import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.armor.ArmorPart;
@@ -42,6 +44,7 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
     public ItemSlimeBoots() {
         super(SLIME_MATERIAL, 0, 3);
         this.setCreativeTab(TConstructRegistry.gadgetsTab);
+        this.setUnlocalizedName(getUnlocalizedName());
         this.setMaxStackSize(1);
         this.setMaxDamage(100);
         SLIME_MATERIAL.customCraftingMaterial = Items.slime_ball;
@@ -116,7 +119,7 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
             // velocity is lost on server players, but we dont have to defer the bounce
             double gravity = 0.2353455252;
             double time = Math.sqrt(living.fallDistance / gravity);
-            double velocity = gravity * time;
+            double velocity = gravity * time / 2;
             living.motionX = motion.xCoord / 0.95f;
             living.motionY = velocity;
             living.motionZ = motion.zCoord / 0.95f;
@@ -143,7 +146,7 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
 
     @Override
     public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
-        return 2;
+        return 0;
     }
 
     @Override
@@ -236,4 +239,10 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
     public Entity createEntity(World world, Entity location, ItemStack itemstack) {
         return new FancyEntityItem(world, location, itemstack);
     }
+
+    @Override
+    public String getUnlocalizedName() {
+        return String.format("%s.%s", TConstruct.modID, "slime_boots".toLowerCase(Locale.US));
+    }
+
 }

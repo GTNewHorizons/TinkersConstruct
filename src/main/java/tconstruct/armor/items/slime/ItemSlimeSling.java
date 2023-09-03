@@ -1,6 +1,7 @@
-package tconstruct.gadgets.item;
+package tconstruct.armor.items.slime;
 
 import java.util.List;
+import java.util.Locale;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +19,6 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.TConstruct;
-import tconstruct.gadgets.TinkerGadgets;
 import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.util.network.MovementUpdatePacket;
@@ -27,6 +27,8 @@ public class ItemSlimeSling extends Item {
 
     public ItemSlimeSling() {
         this.setMaxStackSize(1);
+        this.setMaxDamage(100);
+        this.setUnlocalizedName(getUnlocalizedName());
         this.setCreativeTab(TConstructRegistry.gadgetsTab);
     }
 
@@ -58,7 +60,7 @@ public class ItemSlimeSling extends Item {
 
     @Override
     public int getMaxItemUseDuration(ItemStack stack) {
-        return 72000;
+        return 50000;
     }
 
     // sling logic
@@ -71,13 +73,9 @@ public class ItemSlimeSling extends Item {
 
         // copy chargeup code from bow \o/
         int i = this.getMaxItemUseDuration(stack) - timeLeft;
-        float f = i / 20.0F;
-        f = (f * f + f * 2.0F) / 3.0F;
-        f *= 4f;
 
-        if (f > 6f) {
-            f = 6f;
-        }
+        float f = i / 5.0F;
+        f = Math.min((f * f + f * 2.0F) * (4.0F / 3.0F), 6.0F);
 
         // check if player was targeting a block
         MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, false);
@@ -93,10 +91,15 @@ public class ItemSlimeSling extends Item {
                 TConstruct.packetPipeline.sendTo(new MovementUpdatePacket(player), playerMP);
                 playerMP.playerNetServerHandler.sendPacket(new S12PacketEntityVelocity(player));
             }
-            player.playSound(TinkerGadgets.resource("slimesling"), 1f, 1f);
+            player.playSound(resource("slimesling"), 1f, 1f);
             SlimeBounceHandler.addBounceHandler(player);
+            stack.damageItem(1, player);
             // TinkerCommons.potionSlimeBounce.apply(player);
         }
+    }
+
+    private String resource(String res) {
+        return String.format("%s:%s", "tinker", res);
     }
 
     @Override
@@ -106,5 +109,10 @@ public class ItemSlimeSling extends Item {
         list.add(
                 player.onGround ? StatCollector.translateToLocal("gadgets.slimesling.tooltip2")
                         : StatCollector.translateToLocal("gadgets.slimesling.tooltip3"));
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return String.format("%s.%s", TConstruct.modID, "slimesling".toLowerCase(Locale.US));
     }
 }
