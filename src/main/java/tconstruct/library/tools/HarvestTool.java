@@ -19,7 +19,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.world.BlockEvent;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
 
@@ -134,10 +133,9 @@ public abstract class HarvestTool extends ToolCore {
             nearbyStack = player.inventory.getStackInSlot(itemSlot);
             if (nearbyStack != null) {
                 Item item = nearbyStack.getItem();
-                Item ofanix = GameRegistry.findItem("Ztones", "ofanix");
 
                 if (item instanceof ItemBlock || (item != null && item == TinkerTools.openBlocksDevNull)
-                        || (ofanix != null && ofanix == item)) {
+                        || (TinkerTools.ofanix != null && TinkerTools.ofanix == item)) {
                     int posX = x;
                     int posY = y;
                     int posZ = z;

@@ -146,6 +146,7 @@ public class TinkerTools {
 
     // Dev/Null Stuff
     public static Item openBlocksDevNull;
+    public static Item ofanix;
 
     @Handler
     public void preInit(FMLPreInitializationEvent event) {
@@ -1337,6 +1338,9 @@ public class TinkerTools {
 
         // OpenBlocks
         openBlocksDevNull = GameRegistry.findItem("OpenBlocks", "devnull");
+
+        // Ztones
+        ofanix = GameRegistry.findItem("Ztones", "ofanix");
     }
 
     void registerMaterials() {
