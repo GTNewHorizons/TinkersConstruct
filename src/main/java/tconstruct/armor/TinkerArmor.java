@@ -3,31 +3,51 @@ package tconstruct.armor;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
-import mantle.pulsar.pulse.*;
+import mantle.pulsar.pulse.Handler;
+import mantle.pulsar.pulse.Pulse;
 import tconstruct.TConstruct;
 import tconstruct.armor.blocks.DryingRack;
-import tconstruct.armor.items.*;
-import tconstruct.armor.items.slime.ItemSlimeBoots;
-import tconstruct.armor.items.slime.ItemSlimeSling;
+import tconstruct.armor.items.ArmorBasic;
+import tconstruct.armor.items.DiamondApple;
+import tconstruct.armor.items.HeartCanister;
+import tconstruct.armor.items.Jerky;
+import tconstruct.armor.items.Knapsack;
+import tconstruct.armor.items.TravelBelt;
+import tconstruct.armor.items.TravelGear;
+import tconstruct.armor.items.TravelGlove;
+import tconstruct.armor.items.TravelWings;
 import tconstruct.blocks.logic.DryingRackLogic;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.accessory.AccessoryCore;
 import tconstruct.library.armor.ArmorPart;
-import tconstruct.library.crafting.*;
+import tconstruct.library.crafting.DryingRackRecipes;
+import tconstruct.library.crafting.LiquidCasting;
+import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.modifiers.accessory.GloveSpeed;
-import tconstruct.modifiers.armor.*;
+import tconstruct.modifiers.armor.AModBoolean;
+import tconstruct.modifiers.armor.AModInteger;
+import tconstruct.modifiers.armor.AModLeadBoots;
+import tconstruct.modifiers.armor.ActiveTinkerArmor;
+import tconstruct.modifiers.armor.TravelModDoubleJump;
+import tconstruct.modifiers.armor.TravelModRepair;
 import tconstruct.modifiers.tools.ModAttack;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.TinkerWorld;
@@ -41,8 +61,6 @@ public class TinkerArmor {
 
     public static Item diamondApple;
     public static Item jerky;
-    // public static Item stonePattern;
-    // public static Item netherPattern;
     public static Block dryingRack;
     // Wearables
     /*
@@ -65,8 +83,6 @@ public class TinkerArmor {
     public static TravelGear travelBoots;
     public static AccessoryCore travelGlove;
     public static AccessoryCore travelBelt;
-    public static ItemSlimeBoots slimeBoots;
-    public static ItemSlimeSling slimeSling;
 
     public static ModAttack modAttackGlove;
 
@@ -88,18 +104,9 @@ public class TinkerArmor {
         GameRegistry.registerItem(TinkerArmor.jerky, "jerky");
 
         // Wearables
-        // heavyHelmet = new TArmorBase(PHConstruct.heavyHelmet,
-        // 0).setUnlocalizedName("tconstruct.HeavyHelmet");
         TinkerArmor.heartCanister = new HeartCanister().setUnlocalizedName("tconstruct.canister");
-        // heavyBoots = new TArmorBase(PHConstruct.heavyBoots,
-        // 3).setUnlocalizedName("tconstruct.HeavyBoots");
-        // glove = new
-        // Glove(PHConstruct.glove).setUnlocalizedName("tconstruct.Glove");
         TinkerArmor.knapsack = new Knapsack().setUnlocalizedName("tconstruct.storage");
-        // GameRegistry.registerItem(TRepo.heavyHelmet, "heavyHelmet");
         GameRegistry.registerItem(TinkerArmor.heartCanister, "heartCanister");
-        // GameRegistry.registerItem(TRepo.heavyBoots, "heavyBoots");
-        // GameRegistry.registerItem(TRepo.glove, "glove");
         GameRegistry.registerItem(TinkerArmor.knapsack, "knapsack");
 
         LiquidCasting basinCasting = TConstruct.getBasinCasting();
@@ -128,8 +135,6 @@ public class TinkerArmor {
         travelBoots = (TravelGear) new TravelGear(ArmorPart.Feet).setUnlocalizedName("tconstruct.travelboots");
         travelGlove = (AccessoryCore) new TravelGlove().setUnlocalizedName("tconstruct.travelgloves");
         travelBelt = (AccessoryCore) new TravelBelt().setUnlocalizedName("tconstruct.travelbelt");
-        slimeBoots = new ItemSlimeBoots();
-        slimeSling = new ItemSlimeSling();
 
         GameRegistry.registerItem(travelGoggles, "travelGoggles");
         GameRegistry.registerItem(travelVest, "travelVest");
@@ -137,8 +142,6 @@ public class TinkerArmor {
         GameRegistry.registerItem(travelBoots, "travelBoots");
         GameRegistry.registerItem(travelGlove, "travelGlove");
         GameRegistry.registerItem(travelBelt, "travelBelt");
-        GameRegistry.registerItem(slimeSling, "slimesling");
-        GameRegistry.registerItem(slimeBoots, "slime_boots");
     }
 
     @Handler
@@ -172,9 +175,6 @@ public class TinkerArmor {
                 new ShapedOreRecipe(new ItemStack(TinkerArmor.heartCanister, 1, 0), "##", "##", '#', "ingotAluminum"));
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(new ItemStack(TinkerArmor.heartCanister, 1, 0), "##", "##", '#', "ingotAluminium"));
-        // GameRegistry.addRecipe(new ShapedOreRecipe(new
-        // ItemStack(TRepo.heartCanister, 1, 0), "##", "##", '#',
-        // "ingotNaturalAluminum"));
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(
                         new ItemStack(TinkerArmor.heartCanister, 1, 0),
@@ -210,8 +210,6 @@ public class TinkerArmor {
                 new ItemStack(TinkerArmor.heartCanister, 1, 2),
                 new ItemStack(TinkerArmor.heartCanister, 1, 3),
                 new ItemStack(Items.golden_apple, 1, 1));
-        // GameRegistry.addShapelessRecipe(new ItemStack(heartCanister, 1, 6), new ItemStack(heartCanister, 1, 0), new
-        // ItemStack(heartCanister, 1, 4), new ItemStack(heartCanister, 1, 5));
 
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(
@@ -244,7 +242,6 @@ public class TinkerArmor {
         // Temporary recipes
         ItemStack leather = new ItemStack(Items.leather);
         ItemStack string = new ItemStack(Items.string);
-        ItemStack slimeBlockGreen = new ItemStack(TinkerWorld.slimeGel, 1, 1);
         GameRegistry.addRecipe(
                 new ShapedOreRecipe(
                         travelGoggles.getDefaultItem(),
@@ -306,29 +303,6 @@ public class TinkerArmor {
                         "chestWood",
                         'i',
                         "ingotAluminum"));
-        if (!Loader.isModLoaded("dreamcraft")) {
-            GameRegistry.addShapedRecipe(
-                    new ItemStack(slimeBoots),
-                    "   ",
-                    "s s",
-                    "b b",
-                    's',
-                    Items.slime_ball,
-                    'b',
-                    slimeBlockGreen);
-            GameRegistry.addRecipe(
-                    new ShapedOreRecipe(
-                            new ItemStack(slimeSling),
-                            "fbf",
-                            "s s",
-                            " s ",
-                            'f',
-                            Items.string,
-                            's',
-                            Items.slime_ball,
-                            'b',
-                            slimeBlockGreen));
-        }
     }
 
     protected static void addRecipesForDryingRack() {
@@ -336,8 +310,6 @@ public class TinkerArmor {
         DryingRackRecipes.addDryingRecipe(Items.beef, 20 * 60 * 5, new ItemStack(TinkerArmor.jerky, 1, 0));
         DryingRackRecipes.addDryingRecipe(Items.chicken, 20 * 60 * 5, new ItemStack(TinkerArmor.jerky, 1, 1));
         DryingRackRecipes.addDryingRecipe(Items.porkchop, 20 * 60 * 5, new ItemStack(TinkerArmor.jerky, 1, 2));
-        // DryingRackRecipes.addDryingRecipe(Item.muttonRaw, 20 * 60 * 5, new
-        // ItemStack(TRepo.jerky, 1, 3));
         DryingRackRecipes.addDryingRecipe(Items.fish, 20 * 60 * 5, new ItemStack(TinkerArmor.jerky, 1, 4));
         DryingRackRecipes.addDryingRecipe(Items.rotten_flesh, 20 * 60 * 5, new ItemStack(TinkerArmor.jerky, 1, 5));
         DryingRackRecipes.addDryingRecipe(
@@ -349,8 +321,6 @@ public class TinkerArmor {
                 20 * 60 * 5,
                 new ItemStack(TinkerArmor.jerky, 1, 7));
 
-        // DryingRackRecipes.addDryingRecipe(new ItemStack(TRepo.jerky, 1, 5),
-        // 20 * 60 * 10, Item.leather);
     }
 
     private void registerModifiers() {
@@ -459,8 +429,6 @@ public class TinkerArmor {
         // Glove
         ModifyBuilder.registerModifier(
                 new GloveSpeed(1, new ItemStack[] { redstoneItem, redstoneBlock }, new int[] { 1, 9 }));
-        // ModifyBuilder.registerModifier(new GloveClimb(new ItemStack[] { new ItemStack(Items.slime_ball), new
-        // ItemStack(Blocks.web), new ItemStack(TinkerTools.materials, 1, 25) }));
         modAttackGlove = new ModAttack(
                 "Quartz",
                 2,
@@ -469,6 +437,5 @@ public class TinkerArmor {
                 50,
                 50,
                 "Accessory");
-        // ModifyBuilder.registerModifier(modAttackGlove);
     }
 }
