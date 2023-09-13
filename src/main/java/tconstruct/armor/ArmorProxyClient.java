@@ -252,7 +252,7 @@ public class ArmorProxyClient extends ArmorProxyCommon {
     }
 
     @SubscribeEvent
-    public void tickEnd(TickEvent.ClientTickEvent event) {
+    public void onTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) this.updateCounter++;
     }
 
