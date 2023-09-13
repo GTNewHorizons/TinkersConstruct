@@ -29,6 +29,7 @@ import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import mantle.lib.client.MantleClientRegistry;
 import tconstruct.armor.gui.ArmorExtendedGui;
 import tconstruct.armor.gui.KnapsackGui;
@@ -83,6 +84,7 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         registerManualIcons();
         registerManualRecipes();
         MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     private void registerManualIcons() {
@@ -249,6 +251,11 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         // event.newfov = 1.0f;
     }
 
+    @SubscribeEvent
+    public void tickEnd(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) this.updateCounter++;
+    }
+
     /* HUD */
     @SubscribeEvent
     public void renderHealthbar(RenderGameOverlayEvent.Pre event) {
@@ -267,8 +274,6 @@ public class ArmorProxyClient extends ArmorProxyCommon {
             // with a GUI mod (thanks Vazkii!)
             return;
         }
-
-        updateCounter++;
 
         int scaledWidth = event.resolution.getScaledWidth();
         int scaledHeight = event.resolution.getScaledHeight();
