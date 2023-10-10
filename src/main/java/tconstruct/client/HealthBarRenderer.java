@@ -40,7 +40,7 @@ public class HealthBarRenderer extends Gui {
     }
 
     /* HUD */
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGH) // Not highest for DualHotbar compatibility
     public void renderHealthbar(RenderGameOverlayEvent.Pre event) {
 
         if (event.type != RenderGameOverlayEvent.ElementType.HEALTH) {
