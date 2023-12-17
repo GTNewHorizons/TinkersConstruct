@@ -4,6 +4,7 @@ itemGroup.TConstructBlocks=TConstruct: Блоки
 itemGroup.TConstructParts=TConstruct: Составные части
 itemGroup.TConstructEquipables=TConstruct: Экипировка
 itemGroup.TConstructWeaponry=TConstruct: Вооружение
+itemGroup.TConstructGadgets=TConstruct: Гаджеты
 
 crafters.ToolStation=Инженерная станция
 crafters.ToolForge=Инженерная кузня
