@@ -21,6 +21,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -202,6 +203,11 @@ public class TinkerWorld {
         TinkerTools.multiBrick = new MultiBrick().setBlockName("Decoration.Brick");
         TinkerTools.multiBrickFancy = new MultiBrickFancy().setBlockName("Decoration.BrickFancy");
         TinkerTools.multiBrickMetal = new MultiBrickMetal().setBlockName("Decoration.BrickMetal");
+        // Iguana Tweaks compat for obsidian
+        if (Loader.isModLoaded("IguanaTweaksTConstruct")) {
+            TinkerTools.multiBrick.setHarvestLevel("pickaxe", 5, 0);
+            TinkerTools.multiBrickFancy.setHarvestLevel("pickaxe", 5, 0);
+        }
 
         // Ores
         String[] berryOres = new String[] { "berry_iron", "berry_gold", "berry_copper", "berry_tin", "berry_iron_ripe",
