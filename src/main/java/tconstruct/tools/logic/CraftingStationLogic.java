@@ -131,7 +131,7 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         if (doubleFirst && doubleChest != null) {
             return doubleChest.get();
         } else {
-            return chest.get();
+            return chest != null ? chest.get() : null;
         }
     }
 
