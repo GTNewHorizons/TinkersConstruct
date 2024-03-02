@@ -13,6 +13,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.client.BlockSkinRenderHelper;
@@ -21,6 +23,7 @@ import tconstruct.smeltery.logic.CastingChannelLogic;
 /**
  * @author BluSunrize
  */
+@ThreadSafeISBRH(perThread = false)
 public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
 
     public static int renderID = RenderingRegistry.getNextAvailableRenderId();

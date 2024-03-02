@@ -8,6 +8,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import mantle.world.CoordTuple;
@@ -16,6 +18,7 @@ import tconstruct.library.crafting.Smeltery;
 import tconstruct.smeltery.logic.SmelteryLogic;
 import tconstruct.util.ItemHelper;
 
+@ThreadSafeISBRH(perThread = false)
 public class SmelteryRender implements ISimpleBlockRenderingHandler {
 
     public static int smelteryModel = RenderingRegistry.getNextAvailableRenderId();
@@ -40,8 +43,8 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
     public boolean renderSmeltery(IBlockAccess world, int x, int y, int z, Block block, int modelID,
             RenderBlocks renderer) {
         boolean ret = renderer.renderStandardBlock(block, x, y, z);
-        SmelteryLogic logic = (SmelteryLogic) world.getTileEntity(x, y, z);
-        if (logic.validStructure) {
+        final SmelteryLogic logic = (SmelteryLogic) world.getTileEntity(x, y, z);
+        if (logic != null && logic.validStructure) {
             CoordTuple from = logic.minPos;
             CoordTuple to = logic.maxPos;
 

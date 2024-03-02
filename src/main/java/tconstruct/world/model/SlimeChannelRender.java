@@ -7,10 +7,13 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.util.ItemHelper;
 
+@ThreadSafeISBRH(perThread = false)
 public class SlimeChannelRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();

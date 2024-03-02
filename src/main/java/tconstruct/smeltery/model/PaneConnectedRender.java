@@ -10,10 +10,13 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.smeltery.blocks.GlassPaneConnected;
 
+@ThreadSafeISBRH(perThread = false)
 public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();

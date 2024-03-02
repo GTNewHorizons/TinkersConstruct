@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.client.BlockSkinRenderHelper;
@@ -11,6 +13,7 @@ import tconstruct.util.ItemHelper;
 import tconstruct.world.TinkerWorld;
 import tconstruct.world.blocks.SlimePad;
 
+@ThreadSafeISBRH(perThread = false)
 public class SlimePadRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();

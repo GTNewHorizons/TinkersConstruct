@@ -5,10 +5,13 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
+
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -16,10 +19,10 @@ import tconstruct.client.BlockSkinRenderHelper;
 import tconstruct.smeltery.logic.LavaTankLogic;
 import tconstruct.util.ItemHelper;
 
+@ThreadSafeISBRH(perThread = false)
 public class TankRender implements ISimpleBlockRenderingHandler {
 
     public static int tankModelID = RenderingRegistry.getNextAvailableRenderId();
-    public static int renderPass = 0;
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
@@ -38,9 +41,9 @@ public class TankRender implements ISimpleBlockRenderingHandler {
             RenderBlocks renderer) {
         if (modelID == tankModelID) {
             // Liquid
-            if (renderPass == 0) {
+            if (ForgeHooksClient.getWorldRenderPass() == 0) {
                 LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(x, y, z);
-                if (logic.containsFluid()) {
+                if (logic != null && logic.containsFluid()) {
                     FluidStack liquid = logic.tank.getFluid();
                     renderer.setRenderBounds(0.001, 0.001, 0.001, 0.999, logic.getFluidAmountScaled(), 0.999);
                     Fluid fluid = liquid.getFluid();
@@ -84,7 +87,7 @@ public class TankRender implements ISimpleBlockRenderingHandler {
     }
 
     private void renderDoRe(RenderBlocks renderblocks, Block block, int meta) {
-        Tessellator tessellator = Tessellator.instance;
+        final Tessellator tessellator = Tessellator.instance;
         GL11.glTranslatef(-0.5F, 0.5F, -0.5F);
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1F, 0.0F);

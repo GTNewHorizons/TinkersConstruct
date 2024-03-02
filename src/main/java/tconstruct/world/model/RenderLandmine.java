@@ -7,6 +7,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.mechworks.landmine.Helper;
@@ -16,6 +18,7 @@ import tconstruct.mechworks.landmine.Helper;
  * @author fuj1n
  *
  */
+@ThreadSafeISBRH(perThread = false)
 public class RenderLandmine implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();

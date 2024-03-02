@@ -91,7 +91,6 @@ public class LavaTankBlock extends BlockContainer {
 
     @Override
     public boolean canRenderInPass(int pass) {
-        TankRender.renderPass = pass;
         return true;
     }
 

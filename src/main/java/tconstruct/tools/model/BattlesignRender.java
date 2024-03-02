@@ -4,9 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
+@ThreadSafeISBRH(perThread = false)
 public class BattlesignRender implements ISimpleBlockRenderingHandler {
 
     public static int battlesignModelID = RenderingRegistry.getNextAvailableRenderId();
