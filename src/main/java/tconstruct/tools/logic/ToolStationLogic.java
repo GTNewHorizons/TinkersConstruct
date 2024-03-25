@@ -9,10 +9,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import mantle.blocks.abstracts.InventoryLogic;
+import tconstruct.TConstruct;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.tools.inventory.ToolStationContainer;
+import tconstruct.util.network.ToolStationPacket;
 
 /*
  * Simple class for storing items in the block
@@ -89,6 +91,10 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
                 output = tryRenameTool(output, name);
         }
         inventory[0] = output;
+        if (output != null && output.hasDisplayName()) {
+            TConstruct.packetPipeline
+                    .sendToServer(new ToolStationPacket(xCoord, yCoord, zCoord, output.getDisplayName()));
+        }
     }
 
     public void setToolname(String name) {
