@@ -62,9 +62,11 @@ public class OreBerries extends CraftingItem {
                 spawnEntity(player.posX, player.posY + 1, player.posZ, entity, world, player);
                 if (!player.capabilities.isCreativeMode) stack.stackSize--;
             } else {
+                int xpToAdd = 0;
                 for (int i = stack.stackSize; i > 0; i--) {
-                    player.addExperience(itemRand.nextInt(14) + 6);
+                    xpToAdd += itemRand.nextInt(14) + 6;
                 }
+                player.addExperience(xpToAdd);
                 if (!player.capabilities.isCreativeMode) stack.stackSize = 0;
             }
         }
