@@ -3,6 +3,7 @@ package tconstruct.plugins.nei;
 import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IStackPositioner;
@@ -14,16 +15,14 @@ public class CraftingStationStackPositioner implements IStackPositioner {
 
     @Override
     public ArrayList<PositionedStack> positionStacks(ArrayList<PositionedStack> stacks) {
+        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
 
-        if (Minecraft.getMinecraft().currentScreen instanceof GuiRecipe) {
-            GuiRecipe<?> recipeGui = (GuiRecipe<?>) Minecraft.getMinecraft().currentScreen;
+        if (screen instanceof GuiRecipe) {
+            screen = ((GuiRecipe<?>) screen).firstGui;
+        }
 
-            if (!(recipeGui.firstGui instanceof CraftingStationGui)) {
-                TConstruct.logger.warn("No CraftingStationGui found!");
-                return stacks;
-            }
-
-            CraftingStationGui gui = (CraftingStationGui) recipeGui.firstGui;
+        if (screen instanceof CraftingStationGui) {
+            CraftingStationGui gui = (CraftingStationGui) screen;
 
             int offsetX = gui.hasChest() ? 5 + gui.getChestWidth() : 5;
             int offsetY = 11;
@@ -32,6 +31,8 @@ public class CraftingStationStackPositioner implements IStackPositioner {
                 stack.relx += offsetX;
                 stack.rely += offsetY;
             }
+        } else {
+            TConstruct.logger.warn("No CraftingStationGui found!");
         }
 
         return stacks;
