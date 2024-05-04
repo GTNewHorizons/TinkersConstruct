@@ -186,7 +186,7 @@ public class TinkerWorld {
                 .setBlockName("slime.grass");
         TinkerWorld.slimeTallGrass = new SlimeTallGrass().setStepSound(Block.soundTypeGrass)
                 .setBlockName("slime.grass.tall");
-        TinkerWorld.slimeLeaves = (SlimeLeaves) new SlimeLeaves().setStepSound(TinkerWorld.slimeStep).setLightOpacity(0)
+        TinkerWorld.slimeLeaves = (SlimeLeaves) new SlimeLeaves().setStepSound(TinkerWorld.slimeStep)
                 .setBlockName("slime.leaves");
         TinkerWorld.slimeSapling = (SlimeSapling) new SlimeSapling().setStepSound(TinkerWorld.slimeStep)
                 .setBlockName("slime.sapling");

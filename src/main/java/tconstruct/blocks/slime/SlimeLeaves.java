@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.BlockLeaves;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -20,20 +20,13 @@ import tconstruct.world.TinkerWorld;
 
 public class SlimeLeaves extends BlockLeaves {
 
-    private static final String[] fastLeaves = new String[] { "slimeleaves_blue_fast" };
-    private static final String[] fancyLeaves = new String[] { "slimeleaves_blue_fancy" };
-
-    @SideOnly(Side.CLIENT)
-    private IIcon[] fastIcons;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon[] fancyIcons;
+    private static final String[][] leaves = new String[][] { { "slimeleaves_blue_fancy" },
+            { "slimeleaves_blue_fast" } };
 
     public SlimeLeaves() {
         super();
         setCreativeTab(TConstructRegistry.blockTab);
-        setLightOpacity(1);
-        this.setHardness(0.3f);
+        setHardness(0.3f);
     }
 
     @Override
@@ -54,37 +47,39 @@ public class SlimeLeaves extends BlockLeaves {
         return 0xffffff;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        this.fastIcons = new IIcon[fastLeaves.length];
-        this.fancyIcons = new IIcon[fancyLeaves.length];
-
-        for (int i = 0; i < this.fastIcons.length; i++) {
-            this.fastIcons[i] = iconRegister.registerIcon("tinker:" + fastLeaves[i]);
-            this.fancyIcons[i] = iconRegister.registerIcon("tinker:" + fancyLeaves[i]);
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister reg) {
+        for (int detail = 0; detail < leaves.length; ++detail) {
+            field_150129_M[detail] = new IIcon[leaves[detail].length];
+            for (int leaf = 0; leaf < leaves[detail].length; ++leaf) {
+                field_150129_M[detail][leaf] = reg.registerIcon("tinker:" + leaves[detail][leaf]);
+            }
         }
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        int tex = meta % 1;
-        this.setGraphicsLevel(Minecraft.getMinecraft().gameSettings.fancyGraphics);
-        if (this.field_150121_P) return fancyIcons[tex];
-        else return fastIcons[tex];
+        return field_150129_M[Blocks.leaves.isOpaqueCube() ? 1 : 0][(meta % 4) % leaves[0].length];
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockAccess worldIn, int x, int y, int z, int side) {
+        return Blocks.leaves.shouldSideBeRendered(worldIn, x, y, z, side);
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return Blocks.leaves.isOpaqueCube();
     }
 
     @Override
     public void getSubBlocks(Item id, CreativeTabs tab, List list) {
-        for (int iter = 0; iter < fastIcons.length; iter++) {
+        for (int iter = 0; iter < leaves[0].length; iter++) {
             list.add(new ItemStack(id, 1, iter));
         }
-    }
-
-    @Override
-    public boolean isLeaves(IBlockAccess world, int x, int y, int z) {
-        return true;
     }
 
     /* Drops */
