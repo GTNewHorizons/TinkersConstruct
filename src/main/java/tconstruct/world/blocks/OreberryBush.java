@@ -6,12 +6,12 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeavesBase;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -55,8 +55,8 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
 
     /* Berries show up at meta 12-15 */
 
-    @SideOnly(Side.CLIENT)
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
         this.fastIcons = new IIcon[textureNames.length];
         this.fancyIcons = new IIcon[textureNames.length];
@@ -70,21 +70,9 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int metadata) {
-        this.setGraphicsLevel(Minecraft.getMinecraft().gameSettings.fancyGraphics);
-        if (field_150121_P) {
-            if (metadata < 12) {
-                return fancyIcons[metadata % 4];
-            } else {
-                return fancyIcons[metadata % 4 + 4];
-            }
-        } else {
-            if (metadata < 12) {
-                return fastIcons[metadata % 4];
-            } else {
-                return fastIcons[metadata % 4 + 4];
-            }
-        }
+        return (Blocks.leaves.isOpaqueCube() ? fastIcons : fancyIcons)[metadata % 4 + (metadata < 12 ? 0 : 4)];
     }
 
     /* Bushes are stored by size then type */
@@ -209,10 +197,6 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
         return false;
     }
 
-    public void setGraphicsLevel(boolean flag) {
-        field_150121_P = flag;
-    }
-
     @Override
     public boolean renderAsNormalBlock() {
         return false;
@@ -224,12 +208,21 @@ public class OreberryBush extends BlockLeavesBase implements IPlantable {
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int x, int y, int z, int meta) {
-        if (meta > 7 || field_150121_P) {
-            return super.shouldSideBeRendered(iblockaccess, x, y, z, meta);
-        } else {
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side) {
+        Block block = blockAccess.getBlock(x, y, z);
+        // If the block touching the side is same type of bush and not fully grown then render side.
+        if (block == this && blockAccess.getBlockMetadata(x, y, z) < 8) {
             return true;
+            // If this block is fully grown and is touching a bush (fast mode) or solid block then don't render side.
+        } else if ((Blocks.leaves.isOpaqueCube() && block == this) || block.isOpaqueCube()) {
+            if (side == 0) {
+                return false;
+            }
+            return maxY < 1f;
         }
+        // If none of the above then render side.
+        return true;
     }
 
     /* Bush growth */
