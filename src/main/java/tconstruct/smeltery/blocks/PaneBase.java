@@ -41,8 +41,8 @@ public class PaneBase extends BlockStainedGlassPane {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon func_149735_b(int p_149735_1_, int p_149735_2_) {
-        return icons[p_149735_2_];
+    public IIcon func_149735_b(int side, int meta) {
+        return icons[meta];
     }
 
     @Override
@@ -52,8 +52,8 @@ public class PaneBase extends BlockStainedGlassPane {
     }
 
     @Override
-    public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
-        return icons[p_149691_2_];
+    public IIcon getIcon(int side, int meta) {
+        return icons[meta];
     }
 
     @Override

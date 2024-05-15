@@ -281,12 +281,7 @@ public final class ToolStationGuiHelper {
     /**
      * Renders the specified text to the screen, center-aligned. Copied out of GUI
      */
-    public static void drawCenteredString(FontRenderer p_73732_1_, String p_73732_2_, int p_73732_3_, int p_73732_4_,
-            int p_73732_5_) {
-        p_73732_1_.drawStringWithShadow(
-                p_73732_2_,
-                p_73732_3_ - p_73732_1_.getStringWidth(p_73732_2_) / 2,
-                p_73732_4_,
-                p_73732_5_);
+    public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
+        fontRendererIn.drawStringWithShadow(text, x - fontRendererIn.getStringWidth(text) / 2, y, color);
     }
 }

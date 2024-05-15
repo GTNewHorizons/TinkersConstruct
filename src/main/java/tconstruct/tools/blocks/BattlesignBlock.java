@@ -33,14 +33,11 @@ public class BattlesignBlock extends EquipBlock {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_,
-            int p_149646_5_) {
-        return p_149646_5_ == 0 && this.minY > 0.0D || (p_149646_5_ == 1 && this.maxY < 1.0D || (p_149646_5_ == 2
-                && this.minZ > 0.0D
-                || (p_149646_5_ == 3 && this.maxZ < 1.0D || (p_149646_5_ == 4 && this.minX > 0.0D || (p_149646_5_ == 5
-                        && this.maxX < 1.0D
-                        || !(p_149646_1_.getBlock(p_149646_2_, p_149646_3_, p_149646_4_).isOpaqueCube()
-                                && p_149646_1_.getBlock(p_149646_2_, p_149646_3_ + 1, p_149646_4_).isOpaqueCube()))))));
+    public boolean shouldSideBeRendered(IBlockAccess worldIn, int x, int y, int z, int side) {
+        return side == 0 && this.minY > 0.0D || (side == 1 && this.maxY < 1.0D
+                || (side == 2 && this.minZ > 0.0D || (side == 3 && this.maxZ < 1.0D || (side == 4 && this.minX > 0.0D
+                        || (side == 5 && this.maxX < 1.0D || !(worldIn.getBlock(x, y, z).isOpaqueCube()
+                                && worldIn.getBlock(x, y + 1, z).isOpaqueCube()))))));
     }
 
     @Override
