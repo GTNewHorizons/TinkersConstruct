@@ -103,7 +103,7 @@ import tconstruct.world.village.VillageToolStationHandler;
                 + "before:UndergroundBiomes")
 public class TConstruct {
 
-    public static final String modVersion = "GRADLETOKEN_VERSION";
+    public static final String modVersion = Tags.VERSION;
     /** The value of one ingot in millibuckets */
     public static final int ingotLiquidValue = 144;
 
