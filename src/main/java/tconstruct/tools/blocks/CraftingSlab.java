@@ -89,43 +89,30 @@ public class CraftingSlab extends InventorySlab {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        switch (metadata % 8) {
-            case 0:
-                return new CraftingStationLogic();
-            case 1:
-                return new ToolStationLogic();
-            case 2:
-                return new PartBuilderLogic();
-            case 3:
-                return new StencilTableLogic();
-            case 4:
-                return new PatternChestLogic();
-            case 5:
-                return new ToolForgeLogic();
-            default:
-                return null;
-        }
+        return switch (metadata % 8) {
+            case 0 -> new CraftingStationLogic();
+            case 1 -> new ToolStationLogic();
+            case 2 -> new PartBuilderLogic();
+            case 3 -> new StencilTableLogic();
+            case 4 -> new PatternChestLogic();
+            case 5 -> new ToolForgeLogic();
+            default -> null;
+        };
     }
 
     @Override
     public Integer getGui(World world, int x, int y, int z, EntityPlayer entityplayer) {
         int meta = world.getBlockMetadata(x, y, z) % 8;
-        switch (meta) {
-            case 0:
-                return ToolProxyCommon.craftingStationID;
-            case 1:
-                return ToolProxyCommon.toolStationID;
-            case 2:
-                return ToolProxyCommon.partBuilderID;
-            case 3:
-                return ToolProxyCommon.stencilTableID;
-            case 4:
-                return ToolProxyCommon.patternChestID;
-            case 5:
-                return ToolProxyCommon.toolForgeID;
-        }
+        return switch (meta) {
+            case 0 -> ToolProxyCommon.craftingStationID;
+            case 1 -> ToolProxyCommon.toolStationID;
+            case 2 -> ToolProxyCommon.partBuilderID;
+            case 3 -> ToolProxyCommon.stencilTableID;
+            case 4 -> ToolProxyCommon.patternChestID;
+            case 5 -> ToolProxyCommon.toolForgeID;
+            default -> -1;
+        };
 
-        return -1;
     }
 
     @Override
@@ -134,7 +121,7 @@ public class CraftingSlab extends InventorySlab {
     }
 
     @Override
-    public void getSubBlocks(Item b, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 6; iter++) {
             list.add(new ItemStack(b, 1, iter));
         }
@@ -146,8 +133,7 @@ public class CraftingSlab extends InventorySlab {
         if (stack.hasTagCompound()) {
             NBTTagCompound inventory = stack.getTagCompound().getCompoundTag("Inventory");
             TileEntity te = world.getTileEntity(x, y, z);
-            if (inventory != null && te instanceof PatternChestLogic) {
-                PatternChestLogic logic = (PatternChestLogic) te;
+            if (inventory != null && te instanceof PatternChestLogic logic) {
                 logic.readInventoryFromNBT(inventory);
                 logic.xCoord = x;
                 logic.yCoord = y;
@@ -170,22 +156,15 @@ public class CraftingSlab extends InventorySlab {
 
     @Override
     public TileEntity createNewTileEntity(World var1, int metadata) {
-        switch (metadata % 8) {
-            case 0:
-                return new CraftingStationLogic();
-            case 1:
-                return new ToolStationLogic();
-            case 2:
-                return new PartBuilderLogic();
-            case 3:
-                return new StencilTableLogic();
-            case 4:
-                return new PatternChestLogic();
-            case 5:
-                return new ToolForgeLogic();
-            default:
-                return null;
-        }
+        return switch (metadata % 8) {
+            case 0 -> new CraftingStationLogic();
+            case 1 -> new ToolStationLogic();
+            case 2 -> new PartBuilderLogic();
+            case 3 -> new StencilTableLogic();
+            case 4 -> new PatternChestLogic();
+            case 5 -> new ToolForgeLogic();
+            default -> null;
+        };
     }
 
     /* Keep pattern chest inventory */

@@ -134,10 +134,10 @@ public class CartEntity extends Entity implements IInventory, IEntityAdditionalS
 
     @Override
     protected void entityInit() {
-        this.dataWatcher.addObject(16, new Byte((byte) 0));
-        this.dataWatcher.addObject(17, new Integer(0));
-        this.dataWatcher.addObject(18, new Integer(1));
-        this.dataWatcher.addObject(19, new Integer(0));
+        this.dataWatcher.addObject(16, (byte) 0);
+        this.dataWatcher.addObject(17, 0);
+        this.dataWatcher.addObject(18, 1);
+        this.dataWatcher.addObject(19, 0);
     }
 
     /**
@@ -809,12 +809,8 @@ public class CartEntity extends Entity implements IInventory, IEntityAdditionalS
         if (player.isSneaking()) {
             if (entityFollowing == null) {
                 entityFollowing = player;
-                // if (!worldObj.isRemote)
-                // player.addChatMessage("The cart is following you");
             } else {
                 entityFollowing = null;
-                // if (!worldObj.isRemote)
-                // player.addChatMessage("The cart has stopped following you");
             }
             return true;
         }
@@ -898,9 +894,9 @@ public class CartEntity extends Entity implements IInventory, IEntityAdditionalS
      */
     protected void setMinecartPowered(boolean par1) {
         if (par1) {
-            this.dataWatcher.updateObject(16, Byte.valueOf((byte) (this.dataWatcher.getWatchableObjectByte(16) | 1)));
+            this.dataWatcher.updateObject(16, (byte) (this.dataWatcher.getWatchableObjectByte(16) | 1));
         } else {
-            this.dataWatcher.updateObject(16, Byte.valueOf((byte) (this.dataWatcher.getWatchableObjectByte(16) & -2)));
+            this.dataWatcher.updateObject(16, (byte) (this.dataWatcher.getWatchableObjectByte(16) & -2));
         }
     }
 
@@ -913,7 +909,7 @@ public class CartEntity extends Entity implements IInventory, IEntityAdditionalS
      * 40.
      */
     public void setDamage(int par1) {
-        this.dataWatcher.updateObject(19, Integer.valueOf(par1));
+        this.dataWatcher.updateObject(19, par1);
     }
 
     /**
@@ -925,7 +921,7 @@ public class CartEntity extends Entity implements IInventory, IEntityAdditionalS
     }
 
     public void setRollingAmplitude(int par1) {
-        this.dataWatcher.updateObject(17, Integer.valueOf(par1));
+        this.dataWatcher.updateObject(17, par1);
     }
 
     public int getRollingAmplitude() {
@@ -933,7 +929,7 @@ public class CartEntity extends Entity implements IInventory, IEntityAdditionalS
     }
 
     public void setRollingDirection(int par1) {
-        this.dataWatcher.updateObject(18, Integer.valueOf(par1));
+        this.dataWatcher.updateObject(18, par1);
     }
 
     public int getRollingDirection() {

@@ -42,16 +42,12 @@ public class SearedBlock extends InventoryBlock {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        switch (metadata) {
-            case 0:
-                return new CastingTableLogic();
-            case 1:
-                return new FaucetLogic();
-            case 2:
-                return new CastingBasinLogic();
-            default:
-                return null;
-        }
+        return switch (metadata) {
+            case 0 -> new CastingTableLogic();
+            case 1 -> new FaucetLogic();
+            case 2 -> new CastingBasinLogic();
+            default -> null;
+        };
     }
 
     @Override
@@ -155,7 +151,7 @@ public class SearedBlock extends InventoryBlock {
     }
 
     @Override
-    public void getSubBlocks(Item id, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 3; iter++) {
             list.add(new ItemStack(id, 1, iter));
         }
@@ -173,8 +169,7 @@ public class SearedBlock extends InventoryBlock {
             float zMin = 0.25F;
             float zMax = 0.75F;
 
-            if (te instanceof FaucetLogic) {
-                FaucetLogic logic = (FaucetLogic) te;
+            if (te instanceof FaucetLogic logic) {
                 switch (logic.getRenderDirection()) {
                     case 2:
                         zMin = 0.625F;
@@ -206,8 +201,7 @@ public class SearedBlock extends InventoryBlock {
             return AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1);
         } else {
             TileEntity tile = world.getTileEntity(x, y, z);
-            if (tile instanceof FaucetLogic) {
-                FaucetLogic logic = (FaucetLogic) tile;
+            if (tile instanceof FaucetLogic logic) {
                 float xMin = 0.25F;
                 float xMax = 0.75F;
                 float zMin = 0.25F;
@@ -256,8 +250,7 @@ public class SearedBlock extends InventoryBlock {
         if (world.getBlockMetadata(x, y, z) == 1) {
             boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
             TileEntity te = world.getTileEntity(x, y, z);
-            if (!(te instanceof FaucetLogic)) return;
-            FaucetLogic logic = (FaucetLogic) te;
+            if (!(te instanceof FaucetLogic logic)) return;
             // was it a low->high pulse
             if (!logic.hasRedstonePower && isPowered) {
                 logic.hasRedstonePower = true;
@@ -271,15 +264,11 @@ public class SearedBlock extends InventoryBlock {
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        switch (metadata) {
-            case 0:
-                return new CastingTableLogic();
-            case 1:
-                return new FaucetLogic();
-            case 2:
-                return new CastingBasinLogic();
-            default:
-                return null;
-        }
+        return switch (metadata) {
+            case 0 -> new CastingTableLogic();
+            case 1 -> new FaucetLogic();
+            case 2 -> new CastingBasinLogic();
+            default -> null;
+        };
     }
 }

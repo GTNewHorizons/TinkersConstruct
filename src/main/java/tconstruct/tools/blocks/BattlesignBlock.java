@@ -54,22 +54,14 @@ public class BattlesignBlock extends EquipBlock {
         super.onBlockPlacedBy(par1World, par2, par3, par4, par5EntityLivingBase, par6ItemStack);
         int i3 = MathHelper.floor_double((par5EntityLivingBase.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-        int newMeta = 0;
+        int newMeta = switch (i3) {
+            case 3 -> 0;
+            case 0 -> 3;
+            case 1 -> 1;
+            case 2 -> 2;
+            default -> 0;
+        };
 
-        switch (i3) {
-            case 3:
-                newMeta = 0;
-                break;
-            case 0:
-                newMeta = 3;
-                break;
-            case 1:
-                newMeta = 1;
-                break;
-            case 2:
-                newMeta = 2;
-                break;
-        }
         par1World.setBlockMetadataWithNotify(par2, par3, par4, newMeta, 2);
     }
 
@@ -92,7 +84,7 @@ public class BattlesignBlock extends EquipBlock {
     }
 
     @Override
-    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list,
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List<AxisAlignedBB> list,
             Entity entity) {
         setBlockBoundsBasedOnState(world, x, y, z);
 

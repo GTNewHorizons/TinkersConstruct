@@ -502,7 +502,7 @@ public class GlassPaneConnected extends GlassBlockConnected {
 
     @Override
     public void addCollisionBoxesToList(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB,
-            List par6List, Entity par7Entity) {
+            List<AxisAlignedBB> par6List, Entity par7Entity) {
         boolean flag = this.canPaneConnectTo(par1World, par2, par3, par4, ForgeDirection.NORTH);
         boolean flag1 = this.canPaneConnectTo(par1World, par2, par3, par4, ForgeDirection.SOUTH);
         boolean flag2 = this.canPaneConnectTo(par1World, par2, par3, par4, ForgeDirection.WEST);

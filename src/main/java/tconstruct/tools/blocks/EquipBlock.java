@@ -103,22 +103,14 @@ public class EquipBlock extends InventoryBlock {
         super.onBlockPlacedBy(par1World, par2, par3, par4, par5EntityLivingBase, par6ItemStack);
         int i3 = MathHelper.floor_double((par5EntityLivingBase.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-        int newMeta = 0;
+        int newMeta = switch (i3) {
+            case 3 -> 0;
+            case 0 -> 3;
+            case 1 -> 1;
+            case 2 -> 2;
+            default -> 0;
+        };
 
-        switch (i3) {
-            case 3:
-                newMeta = 0;
-                break;
-            case 0:
-                newMeta = 3;
-                break;
-            case 1:
-                newMeta = 1;
-                break;
-            case 2:
-                newMeta = 2;
-                break;
-        }
         par1World.setBlockMetadataWithNotify(par2, par3, par4, newMeta, 2);
     }
 
@@ -126,8 +118,7 @@ public class EquipBlock extends InventoryBlock {
     public void breakBlock(World par1World, int x, int y, int z, Block par5, int meta) {
         TileEntity te = par1World.getTileEntity(x, y, z);
 
-        if (te instanceof EquipLogic) {
-            EquipLogic logic = (EquipLogic) te;
+        if (te instanceof EquipLogic logic) {
             for (int iter = 0; iter < logic.getSizeInventory(); ++iter) {
                 ItemStack stack = iter == 0 ? logic.getEquipmentItem() : logic.getStackInSlot(iter);
 
@@ -188,8 +179,7 @@ public class EquipBlock extends InventoryBlock {
     public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z) {
         TileEntity te = blockAccess.getTileEntity(x, y, z);
 
-        if (te instanceof EquipLogic) {
-            EquipLogic logic = (EquipLogic) te;
+        if (te instanceof EquipLogic logic) {
             ItemStack stack = logic.getEquipmentItem();
             if (stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("InfiTool")) {
                 NBTTagCompound tag = stack.getTagCompound().getCompoundTag("InfiTool");

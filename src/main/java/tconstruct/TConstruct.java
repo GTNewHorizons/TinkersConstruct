@@ -219,10 +219,6 @@ public class TConstruct {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         packetPipeline.initalise();
-        // if (event.getSide() == Side.CLIENT) {
-        // MinecraftForge.EVENT_BUS.register(new EventCloakRender());
-        // }
-
         DimensionBlacklist.getBadBimensions();
         GameRegistry.registerWorldGenerator(new SlimeIslandGen(TinkerWorld.slimePool, 2), 2);
 
@@ -291,8 +287,7 @@ public class TConstruct {
 
         @SubscribeEvent
         public void onEntitySpawn(EntityJoinWorldEvent event) {
-            if (event.entity instanceof EntityItem) {
-                EntityItem ourGuy = (EntityItem) event.entity;
+            if (event.entity instanceof EntityItem ourGuy) {
                 if (ourGuy.lifespan == 6000) {
                     ourGuy.lifespan = PHConstruct.globalDespawn;
                 }

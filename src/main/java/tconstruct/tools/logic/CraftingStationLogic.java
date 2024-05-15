@@ -68,11 +68,9 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             final int xPos = x + dir.offsetX, yPos = y + dir.offsetY, zPos = z + dir.offsetZ;
             final TileEntity tile = world.getTileEntity(xPos, yPos, zPos);
-            if (!(tile instanceof IInventory) || (tile instanceof CraftingStationLogic)
+            if (!(tile instanceof IInventory inv) || (tile instanceof CraftingStationLogic)
                     || isBlacklisted(tile.getClass()))
                 continue;
-
-            final IInventory inv = (IInventory) tile;
 
             if (patternChest == null && tile instanceof PatternChestLogic) {
                 patternChest = new WeakReference<>(inv);
@@ -85,16 +83,16 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
                 continue;
             }
 
-            if (tile instanceof ISidedInventory
-                    && ((ISidedInventory) tile).getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length == 0)
+            if (tile instanceof ISidedInventory sidedIvn
+                    && sidedIvn.getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length == 0)
                 continue;
 
             if (chest == null && inv.isUseableByPlayer(inventoryplayer.player)) {
                 chest = new WeakReference<>(inv);
                 chestDirection = dir;
                 invColumns = 6;
-                chestSize = tile instanceof ISidedInventory
-                        ? ((ISidedInventory) tile).getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length
+                chestSize = tile instanceof ISidedInventory sidedIvn
+                        ? sidedIvn.getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length
                         : inv.getSizeInventory();
 
                 if (tile instanceof TileEntityChest) {

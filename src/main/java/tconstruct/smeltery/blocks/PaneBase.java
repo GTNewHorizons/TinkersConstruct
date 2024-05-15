@@ -58,7 +58,7 @@ public class PaneBase extends BlockStainedGlassPane {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item b, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < textureNames.length; iter++) {
             list.add(new ItemStack(b, 1, iter));
         }

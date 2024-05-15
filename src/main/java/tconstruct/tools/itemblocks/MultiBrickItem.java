@@ -25,7 +25,7 @@ public class MultiBrickItem extends MultiItemBlock {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
         switch (stack.getItemDamage()) {
             case 5:
             case 6:

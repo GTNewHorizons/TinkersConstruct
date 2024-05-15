@@ -65,18 +65,13 @@ public class ToolForgeBlock extends InventoryBlock {
             return textureTop;
         }
         if (side == 0) {
-            switch (meta) {
-                case 0:
-                    return Blocks.iron_block.getIcon(side, 0);
-                case 1:
-                    return Blocks.gold_block.getIcon(side, 0);
-                case 2:
-                    return Blocks.diamond_block.getIcon(side, 0);
-                case 3:
-                    return Blocks.emerald_block.getIcon(side, 0);
-                default:
-                    return TinkerWorld.metalBlock.getIcon(side, meta - 4);
-            }
+            return switch (meta) {
+                case 0 -> Blocks.iron_block.getIcon(side, 0);
+                case 1 -> Blocks.gold_block.getIcon(side, 0);
+                case 2 -> Blocks.diamond_block.getIcon(side, 0);
+                case 3 -> Blocks.emerald_block.getIcon(side, 0);
+                default -> TinkerWorld.metalBlock.getIcon(side, meta - 4);
+            };
         }
 
         return this.icons[meta];
@@ -123,7 +118,7 @@ public class ToolForgeBlock extends InventoryBlock {
     }
 
     @Override
-    public void getSubBlocks(Item b, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < textureNames.length; iter++) {
             list.add(new ItemStack(b, 1, iter));
         }

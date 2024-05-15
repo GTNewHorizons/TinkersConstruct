@@ -50,23 +50,18 @@ public class Manual extends CraftingItem {
     }
 
     private static String getBookName(int bookItemDamage) {
-        switch (bookItemDamage) {
-            case 0:
-                return "tconstruct.manual.beginner";
-            case 1:
-                return "tconstruct.manual.toolstation";
-            case 2:
-                return "tconstruct.manual.smeltery";
-            case 4:
-                return "tconstruct.manual.weaponry";
-            default:
-                return "tconstruct.manual.diary";
-        }
+        return switch (bookItemDamage) {
+            case 0 -> "tconstruct.manual.beginner";
+            case 1 -> "tconstruct.manual.toolstation";
+            case 2 -> "tconstruct.manual.smeltery";
+            case 4 -> "tconstruct.manual.weaponry";
+            default -> "tconstruct.manual.diary";
+        };
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
         switch (stack.getItemDamage()) {
             case 0:
                 list.add("\u00a7o" + StatCollector.translateToLocal("manual1.tooltip"));

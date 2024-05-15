@@ -76,7 +76,7 @@ public class SlimeLeaves extends BlockLeaves {
     }
 
     @Override
-    public void getSubBlocks(Item id, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < leaves[0].length; iter++) {
             list.add(new ItemStack(id, 1, iter));
         }

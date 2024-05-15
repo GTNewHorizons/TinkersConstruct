@@ -121,31 +121,13 @@ public class ToolStationBlock extends InventoryBlock {
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        switch (metadata) {
-            case 0:
-                return new ToolStationLogic();
-            case 1:
-            case 3:
-            case 2:
-            case 4:
-                return new PartBuilderLogic();
-            case 5:
-            case 9:
-            case 8:
-            case 7:
-            case 6:
-                return new PatternChestLogic();
-            case 10:
-            case 13:
-            case 12:
-            case 11:
-                return new StencilTableLogic();
-            /*
-             * case 14: return new CastingTableLogic();
-             */
-            default:
-                return null;
-        }
+        return switch (metadata) {
+            case 0 -> new ToolStationLogic();
+            case 1, 3, 2, 4 -> new PartBuilderLogic();
+            case 5, 9, 8, 7, 6 -> new PatternChestLogic();
+            case 10, 13, 12, 11 -> new StencilTableLogic();
+            default -> null;
+        };
     }
 
     @Override
@@ -165,7 +147,7 @@ public class ToolStationBlock extends InventoryBlock {
     }
 
     @Override
-    public void getSubBlocks(Item id, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 6; iter++) {
             list.add(new ItemStack(id, 1, iter));
         }
@@ -241,8 +223,7 @@ public class ToolStationBlock extends InventoryBlock {
         if (stack.hasTagCompound()) {
             NBTTagCompound inventory = stack.getTagCompound().getCompoundTag("Inventory");
             TileEntity te = world.getTileEntity(x, y, z);
-            if (inventory != null && te instanceof PatternChestLogic) {
-                PatternChestLogic logic = (PatternChestLogic) te;
+            if (inventory != null && te instanceof PatternChestLogic logic) {
                 logic.readInventoryFromNBT(inventory);
                 logic.xCoord = x;
                 logic.yCoord = y;

@@ -41,8 +41,7 @@ public class FrypanContainer extends Container {
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-        for (Object crafter : crafters) {
-            ICrafting icrafting = (ICrafting) crafter;
+        for (ICrafting icrafting : crafters) {
             if (progress != logic.progress) {
                 icrafting.sendProgressBarUpdate(this, 0, logic.progress);
             }

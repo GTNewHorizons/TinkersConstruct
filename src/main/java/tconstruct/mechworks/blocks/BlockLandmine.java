@@ -183,7 +183,7 @@ public class BlockLandmine extends BlockContainer {
     }
 
     @Override
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
         par3List.add(new ItemStack(par1, 1, 0));
         par3List.add(new ItemStack(par1, 1, 1));
         par3List.add(new ItemStack(par1, 1, 2));
@@ -279,22 +279,15 @@ public class BlockLandmine extends BlockContainer {
     }
 
     public static int invertMetadata(int par0) {
-        switch (par0) {
-            case 0:
-                return 0;
-            case 1:
-                return 5;
-            case 2:
-                return 4;
-            case 3:
-                return 3;
-            case 4:
-                return 2;
-            case 5:
-                return 1;
-            default:
-                return -1;
-        }
+        return switch (par0) {
+            case 0 -> 0;
+            case 1 -> 5;
+            case 2 -> 4;
+            case 3 -> 3;
+            case 4 -> 2;
+            case 5 -> 1;
+            default -> -1;
+        };
     }
 
     @Override
@@ -407,30 +400,19 @@ public class BlockLandmine extends BlockContainer {
         TileEntity tileEntity = par1World.getTileEntity(par2, par3, par4);
         // Change to return 1 if you want the landmine to blow up when the block
         // holding it is broken
-        if (!(tileEntity instanceof TileEntityLandmine)) {
+        if (!(tileEntity instanceof TileEntityLandmine te)) {
             return 0;
         }
 
-        TileEntityLandmine te = (TileEntityLandmine) tileEntity;
-        Sensitivity triggerType;
-
-        switch (te.triggerType) {
-            case 0:
-                triggerType = Sensitivity.everything;
-                break;
-            case 1:
-                triggerType = Sensitivity.mobs;
-                break;
-            case 2:
-                triggerType = Sensitivity.players;
-                break;
-            default:
-                triggerType = null;
-                break;
-        }
+        Sensitivity triggerType = switch (te.triggerType) {
+            case 0 -> Sensitivity.everything;
+            case 1 -> Sensitivity.mobs;
+            case 2 -> Sensitivity.players;
+            default -> null;
+        };
 
         if (triggerType != null) {
-            List<Entity> list = null;
+            List<? extends Entity> list = null;
 
             if (triggerType == Sensitivity.everything) {
                 list = par1World
@@ -461,10 +443,6 @@ public class BlockLandmine extends BlockContainer {
 
     protected AxisAlignedBB getSensitiveAABB(World par1World, int par2, int par3, int par4) {
         float f = 0.125F;
-        // return AxisAlignedBB.getBoundingBox((double)((float)par1 + f),
-        // (double)par2, (double)((float)par3 + f), (double)((float)(par1 + 1) -
-        // f), (double)par2 + 0.25D, (double)((float)(par3 + 1) - f));
-
         int l = par1World.getBlockMetadata(par2, par3, par4);
         int i1 = l & 7;
         boolean flag = (l & 8) > 0;
@@ -502,23 +480,15 @@ public class BlockLandmine extends BlockContainer {
         if (te == null) {
             return null;
         }
-        switch (te.triggerType) {
-            case 0:
-                triggerType = Sensitivity.everything;
-                break;
-            case 1:
-                triggerType = Sensitivity.mobs;
-                break;
-            case 2:
-                triggerType = Sensitivity.players;
-                break;
-            default:
-                triggerType = null;
-                break;
-        }
+        triggerType = switch (te.triggerType) {
+            case 0 -> Sensitivity.everything;
+            case 1 -> Sensitivity.mobs;
+            case 2 -> Sensitivity.players;
+            default -> null;
+        };
 
         if (triggerType != null) {
-            List<Entity> list = null;
+            List<? extends Entity> list = null;
 
             if (triggerType == Sensitivity.everything) {
                 list = par1World.getEntitiesWithinAABBExcludingEntity(

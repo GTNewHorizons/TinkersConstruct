@@ -306,8 +306,7 @@ public class AbilityHelper {
 
     static void alertPlayerWolves(EntityPlayer player, EntityLivingBase living, boolean par2) {
         if (!(living instanceof EntityCreeper) && !(living instanceof EntityGhast)) {
-            if (living instanceof EntityWolf) {
-                EntityWolf var3 = (EntityWolf) living;
+            if (living instanceof EntityWolf var3) {
 
                 if (var3.isTamed() && player.getDisplayName().equals(var3.func_152113_b())) {
                     return;
@@ -381,18 +380,13 @@ public class AbilityHelper {
             int maxDamage = tags.getCompoundTag("InfiTool").getInteger("TotalDurability");
             if (damageTrue <= 0) {
                 tags.getCompoundTag("InfiTool").setInteger("Damage", 0);
-                // stack.setItemDamage(0);
                 tags.getCompoundTag("InfiTool").setBoolean("Broken", false);
             } else if (damageTrue > maxDamage) {
                 breakTool(stack, tags, entity);
-                // stack.setItemDamage(0);
             } else {
                 tags.getCompoundTag("InfiTool").setInteger("Damage", damage + dam);
                 int toolDamage = (damage * 100 / maxDamage) + 1;
                 int stackDamage = stack.getItemDamage();
-                // if (toolDamage != stackDamage) {
-                // // stack.setItemDamage((damage * 100 / maxDamage) + 1);
-                // }
             }
         }
     }

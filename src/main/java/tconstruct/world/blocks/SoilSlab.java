@@ -34,20 +34,16 @@ public class SoilSlab extends SlabBase {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        switch (meta % 8) {
-            case 0:
-                return this.blockIcon; // Block.grass.getIcon(1, 0);
-            case 1:
-                return Blocks.dirt.getIcon(side, 0);
-            case 2:
-                return Blocks.mycelium.getIcon(1, 0);
-            default:
-                return TinkerTools.craftedSoil.getIcon(side, meta - 3);
-        }
+        return switch (meta % 8) {
+            case 0 -> this.blockIcon; // Block.grass.getIcon(1, 0);
+            case 1 -> Blocks.dirt.getIcon(side, 0);
+            case 2 -> Blocks.mycelium.getIcon(1, 0);
+            default -> TinkerTools.craftedSoil.getIcon(side, meta - 3);
+        };
     }
 
     @Override
-    public void getSubBlocks(Item b, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 8; iter++) {
             list.add(new ItemStack(b, 1, iter));
         }

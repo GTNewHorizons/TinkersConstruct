@@ -72,7 +72,7 @@ public class SlimeGrass extends MantleBlock {
     }
 
     @Override
-    public void getSubBlocks(Item b, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 1; iter++) {
             list.add(new ItemStack(b, 1, iter));
         }

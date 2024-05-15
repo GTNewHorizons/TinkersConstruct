@@ -44,8 +44,7 @@ public class ChestSlot extends Slot {
 
     @Override
     public boolean isItemValid(ItemStack itemStack) {
-        if (inventory instanceof ISidedInventory) {
-            ISidedInventory sided = (ISidedInventory) inventory;
+        if (inventory instanceof ISidedInventory sided) {
             return sided.canInsertItem(this.getSlotIndex(), itemStack, accessSide);
         }
         return inventory.isItemValidForSlot(this.getSlotIndex(), itemStack);
@@ -53,8 +52,7 @@ public class ChestSlot extends Slot {
 
     @Override
     public boolean canTakeStack(EntityPlayer player) {
-        if (inventory instanceof ISidedInventory) {
-            ISidedInventory sided = (ISidedInventory) inventory;
+        if (inventory instanceof ISidedInventory sided) {
             return sided.canExtractItem(this.getSlotIndex(), this.getStack(), accessSide);
         }
         return super.canTakeStack(player);

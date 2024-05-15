@@ -223,7 +223,7 @@ public class SmelteryBlock extends InventoryBlock {
      */
 
     @Override
-    public void getSubBlocks(Item id, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 12; iter++) {
             if (iter != 3) list.add(new ItemStack(id, 1, iter));
         }

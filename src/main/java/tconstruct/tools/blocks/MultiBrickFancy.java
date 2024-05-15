@@ -28,86 +28,52 @@ public class MultiBrickFancy extends TConstructBlock {
     @Override
     public float getBlockHardness(World world, int x, int y, int z) {
         int meta = world.getBlockMetadata(x, y, z);
-        switch (meta) {
-            case 0:
-            case 13:
-                return Blocks.obsidian.getBlockHardness(world, x, y, z);
-            case 1:
-                return Blocks.sandstone.getBlockHardness(world, x, y, z);
-            case 2:
-                return Blocks.netherrack.getBlockHardness(world, x, y, z);
-            case 4:
-                return Blocks.iron_block.getBlockHardness(world, x, y, z);
-            case 5:
-                return Blocks.gold_block.getBlockHardness(world, x, y, z);
-            case 6:
-                return Blocks.lapis_block.getBlockHardness(world, x, y, z);
-            case 7:
-                return Blocks.diamond_block.getBlockHardness(world, x, y, z);
-            case 8:
-                return Blocks.redstone_block.getBlockHardness(world, x, y, z);
-            case 9:
-                return 1.0F;
-            case 10:
-            case 11:
-                return 1.5F;
-            case 12:
-                return Blocks.end_stone.getBlockHardness(world, x, y, z);
-            case 3:
-            case 14:
-            case 15:
-                return Blocks.stone.getBlockHardness(world, x, y, z);
-            default:
-                return blockHardness;
-        }
+        return switch (meta) {
+            case 0, 13 -> Blocks.obsidian.getBlockHardness(world, x, y, z);
+            case 1 -> Blocks.sandstone.getBlockHardness(world, x, y, z);
+            case 2 -> Blocks.netherrack.getBlockHardness(world, x, y, z);
+            case 4 -> Blocks.iron_block.getBlockHardness(world, x, y, z);
+            case 5 -> Blocks.gold_block.getBlockHardness(world, x, y, z);
+            case 6 -> Blocks.lapis_block.getBlockHardness(world, x, y, z);
+            case 7 -> Blocks.diamond_block.getBlockHardness(world, x, y, z);
+            case 8 -> Blocks.redstone_block.getBlockHardness(world, x, y, z);
+            case 9 -> 1.0F;
+            case 10, 11 -> 1.5F;
+            case 12 -> Blocks.end_stone.getBlockHardness(world, x, y, z);
+            case 3, 14, 15 -> Blocks.stone.getBlockHardness(world, x, y, z);
+            default -> blockHardness;
+        };
     }
 
     @Override
     public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX,
             double explosionY, double explosionZ) {
         int meta = world.getBlockMetadata(x, y, z);
-        switch (meta) {
-            case 0:
-            case 13:
-                return Blocks.obsidian
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 1:
-                return Blocks.sandstone
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 2:
-                return Blocks.netherrack
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 4:
-                return Blocks.iron_block
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 5:
-                return Blocks.gold_block
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 6:
-                return Blocks.lapis_block
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 7:
-                return Blocks.diamond_block
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 8:
-                return Blocks.redstone_block
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 9:
-                return 1.0F;
-            case 10:
-            case 11:
-                return 1.5F;
-            case 12:
-                return Blocks.end_stone
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            case 3:
-            case 14:
-            case 15:
-                return Blocks.stone
-                        .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-            default:
-                return getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
-        }
+        return switch (meta) {
+            case 0, 13 -> Blocks.obsidian
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 1 -> Blocks.sandstone
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 2 -> Blocks.netherrack
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 4 -> Blocks.iron_block
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 5 -> Blocks.gold_block
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 6 -> Blocks.lapis_block
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 7 -> Blocks.diamond_block
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 8 -> Blocks.redstone_block
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 9 -> 1.0F;
+            case 10, 11 -> 1.5F;
+            case 12 -> Blocks.end_stone
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            case 3, 14, 15 -> Blocks.stone
+                    .getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+            default -> getExplosionResistance(entity, world, meta, meta, meta, explosionZ, explosionZ, explosionZ);
+        };
     }
 
     // TODO onEntityCollidedWithBlock

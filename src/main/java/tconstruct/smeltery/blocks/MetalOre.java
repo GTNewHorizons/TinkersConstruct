@@ -25,7 +25,7 @@ public class MetalOre extends TConstructBlock {
     }
 
     @Override
-    public void getSubBlocks(Item b, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 1; iter < 6; iter++) {
             list.add(new ItemStack(b, 1, iter));
         }

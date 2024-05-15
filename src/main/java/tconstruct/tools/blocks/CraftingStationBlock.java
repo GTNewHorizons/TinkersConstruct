@@ -88,7 +88,7 @@ public class CraftingStationBlock extends InventoryBlock {
     }
 
     @Override
-    public void getSubBlocks(Item id, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 1; iter++) {
             list.add(new ItemStack(id, 1, iter));
         }

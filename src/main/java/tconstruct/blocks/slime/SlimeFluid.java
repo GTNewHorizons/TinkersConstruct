@@ -6,6 +6,7 @@ import java.util.Random;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -58,5 +59,5 @@ public class SlimeFluid extends BlockFluidClassic {
         }
     }
 
-    public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List) {}
+    public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {}
 }

@@ -70,8 +70,7 @@ public final class ToolStationGuiHelper {
         else if (item instanceof ToolCore || item instanceof ArmorCore) drawDurability(tags);
 
         // tools
-        if (item instanceof ToolCore) {
-            ToolCore tool = (ToolCore) item;
+        if (item instanceof ToolCore tool) {
             // DualHarvest tool?
             if (categories.contains("dualharvest")) drawDualHarvestStats(tool, tags);
             // or regular Harvest tool?
@@ -88,13 +87,11 @@ public final class ToolStationGuiHelper {
             if (categories.contains("projectile")) drawProjectileStats(tags);
         }
         // armor
-        if (item instanceof ArmorCore) {
-            ArmorCore armor = (ArmorCore) item;
+        if (item instanceof ArmorCore armor) {
             drawArmorStats(armor, tags, stack);
         }
         // Accessory
-        if (item instanceof AccessoryCore) {
-            AccessoryCore accessory = (AccessoryCore) item;
+        if (item instanceof AccessoryCore accessory) {
             drawAccessoryStats(accessory, tags);
         }
 

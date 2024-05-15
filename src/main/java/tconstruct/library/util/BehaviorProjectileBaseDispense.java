@@ -24,8 +24,7 @@ public abstract class BehaviorProjectileBaseDispense extends BehaviorDefaultDisp
 
         ItemStack reference;
 
-        if (stack.getItem() instanceof IAmmo) {
-            IAmmo ammo = (IAmmo) stack.getItem();
+        if (stack.getItem() instanceof IAmmo ammo) {
             // needs ammo to shoot
             if (ammo.getAmmoCount(stack) <= 0) return stack;
             ammo.consumeAmmo(1, stack);
