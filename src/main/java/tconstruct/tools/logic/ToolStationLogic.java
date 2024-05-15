@@ -184,6 +184,7 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
     public void closeInventory() {}
 
     public static boolean canRename(NBTTagCompound tags, ItemStack tool) {
-        return !tags.hasKey("Name") || tags.getString("Name").equals("\u00A7f" + ToolBuilder.defaultToolName(tool));
+        return tags != null && (!tags.hasKey("Name")
+                || tags.getString("Name").equals("\u00A7f" + ToolBuilder.defaultToolName(tool)));
     }
 }
