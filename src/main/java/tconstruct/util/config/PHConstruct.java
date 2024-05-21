@@ -274,7 +274,7 @@ public class PHConstruct {
                 .getBoolean(false);
 
         // Experimental functionality
-        disableHeartRender = config.get("Experimental", "Disabled Heart Rendering", false).getBoolean(true);
+        disableHeartRender = config.get("Experimental", "Disable colored heart rendering", false).getBoolean(false);
         throwableSmeltery = config.get("Experimental", "Items can be thrown into smelteries", true).getBoolean(true);
         meltableHorses = config.get("Experimental", "Allow horses to be melted down for glue", true).getBoolean(true);
         meltableVillagers = config.get("Experimental", "Allow villagers to be melted down for emeralds", true)

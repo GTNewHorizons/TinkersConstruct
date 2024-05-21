@@ -40,15 +40,15 @@ public class HealthBarRenderer extends Gui {
         }
     }
 
-        /* HUD */
-        @SubscribeEvent(priority = EventPriority.HIGH) // Not highest for DualHotbar compatibility
-        public void renderHealthbar (RenderGameOverlayEvent.Pre event){
+    /* HUD */
+    @SubscribeEvent(priority = EventPriority.HIGH) // Not highest for DualHotbar compatibility
+    public void renderHealthbar(RenderGameOverlayEvent.Pre event) {
 
         if (event.type != RenderGameOverlayEvent.ElementType.HEALTH) {
             return;
         }
 
-        // config option for heart rendering
+        // config option for colored heart rendering
         if (PHConstruct.disableHeartRender) {
             return;
         }
@@ -187,7 +187,6 @@ public class HealthBarRenderer extends Gui {
             }
             mc.getTextureManager().bindTexture(icons);
         }
-
 
         GuiIngameForge.left_height += 10;
         if (absorb > 0) GuiIngameForge.left_height += 10;
