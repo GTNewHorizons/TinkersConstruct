@@ -21,7 +21,6 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import tconstruct.util.config.PHConstruct;
 
 public class HealthBarRenderer extends Gui {
 
@@ -45,11 +44,6 @@ public class HealthBarRenderer extends Gui {
     public void renderHealthbar(RenderGameOverlayEvent.Pre event) {
 
         if (event.type != RenderGameOverlayEvent.ElementType.HEALTH) {
-            return;
-        }
-
-        // config option for colored heart rendering
-        if (PHConstruct.disableHeartRender) {
             return;
         }
 
@@ -196,4 +190,5 @@ public class HealthBarRenderer extends Gui {
         MinecraftForge.EVENT_BUS.post(new RenderGameOverlayEvent.Post(event, HEALTH));
 
     }
+
 }

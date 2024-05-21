@@ -39,6 +39,7 @@ import tconstruct.library.accessory.IAccessoryModel;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.tools.TinkerTools;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.world.TinkerWorld;
 
 public class ArmorProxyClient extends ArmorProxyCommon {
@@ -69,9 +70,11 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         registerManualIcons();
         registerManualRecipes();
         MinecraftForge.EVENT_BUS.register(this);
-        final HealthBarRenderer healthBarRenderer = new HealthBarRenderer();
-        MinecraftForge.EVENT_BUS.register(healthBarRenderer);
-        FMLCommonHandler.instance().bus().register(healthBarRenderer);
+        if (!PHConstruct.disableHeartRender) {
+            final HealthBarRenderer healthBarRenderer = new HealthBarRenderer();
+            MinecraftForge.EVENT_BUS.register(healthBarRenderer);
+            FMLCommonHandler.instance().bus().register(healthBarRenderer);
+        }
     }
 
     private void registerManualIcons() {
