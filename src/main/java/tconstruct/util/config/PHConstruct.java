@@ -274,6 +274,7 @@ public class PHConstruct {
                 .getBoolean(false);
 
         // Experimental functionality
+        disableHeartRender = config.get("Experimental", "Disabled Heart Rendering", false).getBoolean(true);
         throwableSmeltery = config.get("Experimental", "Items can be thrown into smelteries", true).getBoolean(true);
         meltableHorses = config.get("Experimental", "Allow horses to be melted down for glue", true).getBoolean(true);
         meltableVillagers = config.get("Experimental", "Allow villagers to be melted down for emeralds", true)
@@ -481,6 +482,7 @@ public class PHConstruct {
     public static boolean genOresFlat;
 
     // Experimental functionality
+    public static boolean disableHeartRender;
     public static boolean throwableSmeltery;
     public static boolean meltableHorses;
     public static boolean meltableVillagers;

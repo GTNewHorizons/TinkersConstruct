@@ -21,6 +21,7 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import tconstruct.util.config.PHConstruct;
 
 public class HealthBarRenderer extends Gui {
 
@@ -39,11 +40,16 @@ public class HealthBarRenderer extends Gui {
         }
     }
 
-    /* HUD */
-    @SubscribeEvent(priority = EventPriority.HIGH) // Not highest for DualHotbar compatibility
-    public void renderHealthbar(RenderGameOverlayEvent.Pre event) {
+        /* HUD */
+        @SubscribeEvent(priority = EventPriority.HIGH) // Not highest for DualHotbar compatibility
+        public void renderHealthbar (RenderGameOverlayEvent.Pre event){
 
         if (event.type != RenderGameOverlayEvent.ElementType.HEALTH) {
+            return;
+        }
+
+        // config option for heart rendering
+        if (PHConstruct.disableHeartRender) {
             return;
         }
 
@@ -182,6 +188,7 @@ public class HealthBarRenderer extends Gui {
             mc.getTextureManager().bindTexture(icons);
         }
 
+
         GuiIngameForge.left_height += 10;
         if (absorb > 0) GuiIngameForge.left_height += 10;
         GL11.glDisable(GL11.GL_BLEND);
@@ -190,5 +197,4 @@ public class HealthBarRenderer extends Gui {
         MinecraftForge.EVENT_BUS.post(new RenderGameOverlayEvent.Post(event, HEALTH));
 
     }
-
 }
