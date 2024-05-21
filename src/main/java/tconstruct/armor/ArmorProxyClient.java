@@ -70,7 +70,7 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         registerManualIcons();
         registerManualRecipes();
         MinecraftForge.EVENT_BUS.register(this);
-        if (!PHConstruct.disableHeartRender) {
+        if (PHConstruct.coloredHeartRender) {
             final HealthBarRenderer healthBarRenderer = new HealthBarRenderer();
             MinecraftForge.EVENT_BUS.register(healthBarRenderer);
             FMLCommonHandler.instance().bus().register(healthBarRenderer);
