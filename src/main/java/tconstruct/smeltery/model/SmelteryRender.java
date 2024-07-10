@@ -59,7 +59,10 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
             float base = 0F;
             int yBase = 0;
             int liquidBase = 0;
-            for (FluidStack liquid : logic.moltenMetal) {
+
+            for (int fluidIndex = 0; fluidIndex < logic.moltenMetal.size(); fluidIndex++) {
+                FluidStack liquid = logic.moltenMetal.get(fluidIndex);
+
                 int liquidSize = liquid.amount;
                 while (liquidSize > 0) {
                     int cap = logic.getCapacityPerLayer();

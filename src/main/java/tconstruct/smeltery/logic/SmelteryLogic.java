@@ -1,6 +1,7 @@
 package tconstruct.smeltery.logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -82,7 +83,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     public int[] meltingTemps; // values are multiplied by 10
     private int tick;
 
-    public ArrayList<FluidStack> moltenMetal = new ArrayList<>();
+    public List<FluidStack> moltenMetal = Collections.synchronizedList(new ArrayList<>());
     public int maxLiquid;
     public int currentLiquid;
 

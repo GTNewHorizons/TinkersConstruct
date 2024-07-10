@@ -171,7 +171,7 @@ public class Smeltery {
         return instance.renderIndex.get(new ItemMetaWrapper(input));
     }
 
-    public static ArrayList<FluidStack> mixMetals(ArrayList<FluidStack> moltenMetal) {
+    public static ArrayList<FluidStack> mixMetals(List<FluidStack> moltenMetal) {
         ArrayList<FluidStack> liquids = new ArrayList<>();
         for (AlloyMix alloy : instance.alloys) {
             FluidStack liquid = alloy.mix(moltenMetal);
