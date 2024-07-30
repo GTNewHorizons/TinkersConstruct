@@ -62,7 +62,7 @@ public class LumberAxe extends AOEHarvestTool {
 
     @Override
     public boolean onBlockDestroyed(ItemStack itemstack, World world, Block block, int x, int y, int z,
-            EntityLivingBase player) {
+        EntityLivingBase player) {
         if (block != null && block.getMaterial() == Material.leaves) return false;
 
         return AbilityHelper.onBlockChanged(itemstack, world, block, x, y, z, player, random);
@@ -151,7 +151,7 @@ public class LumberAxe extends AOEHarvestTool {
             for (int offY = 0; offY < d; offY++) {
                 for (int offZ = 0; offZ < d; offZ++) {
                     int xPos = pos.chunkPosX - 1 + offX, yPos = pos.chunkPosY - 1 + offY,
-                            zPos = pos.chunkPosZ - 1 + offZ;
+                        zPos = pos.chunkPosZ - 1 + offZ;
                     Block leaf = world.getBlock(xPos, yPos, zPos);
                     if (leaf != null && leaf.isLeaves(world, xPos, yPos, zPos)) {
                         if (++leaves >= 5) {
@@ -178,7 +178,7 @@ public class LumberAxe extends AOEHarvestTool {
         public Set<ChunkPosition> visited = new THashSet<>();
 
         public TreeChopTask(AOEHarvestTool tool, ItemStack stack, ChunkPosition start, EntityPlayer player,
-                int blocksPerTick) {
+            int blocksPerTick) {
             this.world = player.getEntityWorld();
             this.player = player;
             this.tool = tool;

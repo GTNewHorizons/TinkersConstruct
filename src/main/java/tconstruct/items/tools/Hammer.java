@@ -52,7 +52,7 @@ public class Hammer extends AOEHarvestTool {
     }
 
     static Material[] materials = new Material[] { Material.rock, Material.iron, Material.ice, Material.glass,
-            Material.piston, Material.anvil };
+        Material.piston, Material.anvil };
 
     @Override
     public Item getHeadItem() {
@@ -128,11 +128,11 @@ public class Hammer extends AOEHarvestTool {
         super.getSubItems(id, tab, list);
 
         ItemStack tool = ToolBuilder.instance.buildTool(
-                new ItemStack(getHeadItem(), 1, 10),
-                new ItemStack(getHandleItem(), 1, 8),
-                new ItemStack(getAccessoryItem(), 1, 11),
-                new ItemStack(getExtraItem(), 1, 11),
-                StatCollector.translateToLocal("tool.infiminer"));
+            new ItemStack(getHeadItem(), 1, 10),
+            new ItemStack(getHandleItem(), 1, 8),
+            new ItemStack(getAccessoryItem(), 1, 11),
+            new ItemStack(getExtraItem(), 1, 11),
+            StatCollector.translateToLocal("tool.infiminer"));
 
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         tags.setBoolean("Special", true);
