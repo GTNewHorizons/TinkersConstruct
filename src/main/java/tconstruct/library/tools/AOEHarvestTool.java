@@ -27,6 +27,7 @@ public abstract class AOEHarvestTool extends HarvestTool {
     @Override
     public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
         // only effective materials matter. We don't want to aoe when breaking dirt with a hammer.
+        String toolName = "tool." + getAOEToolName().toLowerCase();
         Block block = player.worldObj.getBlock(x, y, z);
         int meta = player.worldObj.getBlockMetadata(x, y, z);
         if (block == null || !isEffective(block, meta) || !stack.hasTagCompound())
@@ -71,9 +72,8 @@ public abstract class AOEHarvestTool extends HarvestTool {
                 if (xPos == x && yPos == y && zPos == z) continue;
 
                 Block targetBlock = player.worldObj.getBlock(xPos, yPos, zPos);
-                String blockId = Block.blockRegistry.getNameForObject(targetBlock);
 
-                if (!AoEExclusionList.isBlockExcluded(getAOEToolName(), targetBlock)) {
+                if (!AoEExclusionList.isBlockExcluded(toolName, targetBlock)) {
                     if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
                         breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
                 }
