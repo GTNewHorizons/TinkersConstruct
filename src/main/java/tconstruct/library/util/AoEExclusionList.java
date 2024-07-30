@@ -1,7 +1,11 @@
 package tconstruct.library.util;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Configuration;
