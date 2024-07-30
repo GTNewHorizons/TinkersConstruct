@@ -26,10 +26,9 @@ public class AoEExclusionList {
             String[] exclusionList = config.getStringList(
                     tool + "Exclusions",
                     "AOE_Exclusions",
-                    new String[] {},
+                    new String[] { "examplemod:exampleblock" },
                     "Block IDs that should not be broken by " + tool + "'s AOE effect");
             toolExclusionLists.put(tool, exclusionList);
-            System.out.println("Loaded exclusion list for " + tool + ": " + Arrays.toString(exclusionList));
         }
 
         if (config.hasChanged()) {
@@ -50,8 +49,7 @@ public class AoEExclusionList {
         }
 
         String blockId = Block.blockRegistry.getNameForObject(block);
-        boolean isExcluded = Arrays.asList(exclusions).contains(blockId);
 
-        return isExcluded;
+        return Arrays.asList(exclusions).contains(blockId);
     }
 }
