@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 
+import tconstruct.library.util.AoEExclusionList;
+
 public abstract class AOEHarvestTool extends HarvestTool {
 
     public int breakRadius;
@@ -18,9 +20,15 @@ public abstract class AOEHarvestTool extends HarvestTool {
         this.breakDepth = breakDepth;
     }
 
+    protected String getAOEToolName() {
+        return "tool." + getToolName().toLowerCase();
+    }
+
     @Override
     public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
-        // only effective materials matter. We don't want to aoe when beraking dirt with a hammer.
+        // only effective materials matter. We don't want to aoe when breaking dirt with a hammer.
+        String toolName = "tool." + getToolName().toLowerCase();
+        System.out.println("Full tool name: " + toolName);
         Block block = player.worldObj.getBlock(x, y, z);
         int meta = player.worldObj.getBlockMetadata(x, y, z);
         if (block == null || !isEffective(block, meta) || !stack.hasTagCompound())
@@ -64,8 +72,28 @@ public abstract class AOEHarvestTool extends HarvestTool {
                 // don't break the originally already broken block, duh
                 if (xPos == x && yPos == y && zPos == z) continue;
 
-                if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
-                    breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
+                Block targetBlock = player.worldObj.getBlock(xPos, yPos, zPos);
+                String blockId = Block.blockRegistry.getNameForObject(targetBlock);
+
+                // Debug logging
+                System.out.println(
+                    "Checking block at " + xPos
+                        + ","
+                        + yPos
+                        + ","
+                        + zPos
+                        + ": "
+                        + targetBlock.getUnlocalizedName());
+                System.out.println("Tool name: " + getAOEToolName());
+                System.out.println("Is excluded: " + AoEExclusionList.isBlockExcluded(getAOEToolName(), targetBlock));
+
+                if (!AoEExclusionList.isBlockExcluded(getAOEToolName(), targetBlock)) {
+                    if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
+                        breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
+                } else {
+                    // Debug logging
+                    System.out.println("Block " + blockId + " excluded from breaking");
+                }
             }
 
         return super.onBlockStartBreak(stack, x, y, z, player);

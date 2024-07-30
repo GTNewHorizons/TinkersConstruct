@@ -1,5 +1,6 @@
 package tconstruct;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Random;
 
@@ -45,6 +46,7 @@ import tconstruct.library.TConstructCreativeTab;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.Detailing;
 import tconstruct.library.crafting.LiquidCasting;
+import tconstruct.library.util.AoEExclusionList;
 import tconstruct.mechworks.TinkerMechworks;
 import tconstruct.mechworks.landmine.behavior.Behavior;
 import tconstruct.mechworks.landmine.behavior.stackCombo.SpecialStackHandler;
@@ -82,25 +84,25 @@ import tconstruct.world.village.VillageToolStationHandler;
  * @author mDiyo
  */
 @Mod(
-        modid = TConstruct.modID,
-        name = "TConstruct",
-        version = TConstruct.modVersion,
-        dependencies = "required-after:Forge@[10.13.3.1384,11.14);"
-                + "required-after:Mantle@[0.3.2,1.7.10),[1.7.10-0.3.2,);"
-                + // make sure we still have the 0.3.2 requirement, even without the 1.7.10 prefix
-                "after:MineFactoryReloaded@[1.7.10R2.8.0RC7,);"
-                + "after:ThermalExpansion@[1.7.10R4.0.0RC2,);"
-                + "after:ThermalFoundation@[1.7.10R1.0.0RC3,);"
-                + "after:armourersWorkshop@[1.7.10-0.28.0,);"
-                + "after:CoFHAPI|energy;"
-                + "after:CoFHCore;"
-                + "after:battlegear2;"
-                + "after:ZeldaItemAPI;"
-                + "after:DynamicSkillsAPI;"
-                + "after:NotEnoughItems;"
-                + "after:Waila;"
-                + "before:GalacticraftCore;"
-                + "before:UndergroundBiomes")
+    modid = TConstruct.modID,
+    name = "TConstruct",
+    version = TConstruct.modVersion,
+    dependencies = "required-after:Forge@[10.13.3.1384,11.14);"
+        + "required-after:Mantle@[0.3.2,1.7.10),[1.7.10-0.3.2,);"
+        + // make sure we still have the 0.3.2 requirement, even without the 1.7.10 prefix
+        "after:MineFactoryReloaded@[1.7.10R2.8.0RC7,);"
+        + "after:ThermalExpansion@[1.7.10R4.0.0RC2,);"
+        + "after:ThermalFoundation@[1.7.10R1.0.0RC3,);"
+        + "after:armourersWorkshop@[1.7.10-0.28.0,);"
+        + "after:CoFHAPI|energy;"
+        + "after:CoFHCore;"
+        + "after:battlegear2;"
+        + "after:ZeldaItemAPI;"
+        + "after:DynamicSkillsAPI;"
+        + "after:NotEnoughItems;"
+        + "after:Waila;"
+        + "before:GalacticraftCore;"
+        + "before:UndergroundBiomes")
 public class TConstruct {
 
     public static final String modVersion = Tags.VERSION;
@@ -128,8 +130,8 @@ public class TConstruct {
 
     /* Loads modules in a way that doesn't clutter the @Mod list */
     public static PulseManager pulsar = new PulseManager(
-            modID,
-            new ForgeCFG("TinkersModules", "Modules: Disabling these will disable a chunk of the mod"));
+        modID,
+        new ForgeCFG("TinkersModules", "Modules: Disabling these will disable a chunk of the mod"));
 
     public TConstruct() {
         if (Loader.isModLoaded("Natura")) {
@@ -182,6 +184,8 @@ public class TConstruct {
         tableCasting = new LiquidCasting();
         basinCasting = new LiquidCasting();
         chiselDetailing = new Detailing();
+
+        AoEExclusionList.init(new File(event.getModConfigurationDirectory(), "TConstruct_AOEExclusions.cfg"));
 
         playerTracker = new TPlayerHandler();
         FMLCommonHandler.instance().bus().register(playerTracker);
