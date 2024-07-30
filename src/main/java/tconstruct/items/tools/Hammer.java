@@ -22,6 +22,11 @@ public class Hammer extends AOEHarvestTool {
     }
 
     @Override
+    protected String getAOEToolName() {
+        return "hammer";
+    }
+
+    @Override
     public int getPartAmount() {
         return 4;
     }

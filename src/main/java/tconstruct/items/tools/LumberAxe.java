@@ -36,6 +36,11 @@ public class LumberAxe extends AOEHarvestTool {
     }
 
     @Override
+    protected String getAOEToolName() {
+        return "lumberaxe";
+    }
+
+    @Override
     protected Material[] getEffectiveMaterials() {
         return materials;
     }

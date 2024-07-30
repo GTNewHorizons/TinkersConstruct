@@ -1,5 +1,6 @@
 package tconstruct;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Random;
 
@@ -45,6 +46,7 @@ import tconstruct.library.TConstructCreativeTab;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.Detailing;
 import tconstruct.library.crafting.LiquidCasting;
+import tconstruct.library.util.AoEExclusionList;
 import tconstruct.mechworks.TinkerMechworks;
 import tconstruct.mechworks.landmine.behavior.Behavior;
 import tconstruct.mechworks.landmine.behavior.stackCombo.SpecialStackHandler;
@@ -182,6 +184,8 @@ public class TConstruct {
         tableCasting = new LiquidCasting();
         basinCasting = new LiquidCasting();
         chiselDetailing = new Detailing();
+
+        AoEExclusionList.init(new File(event.getModConfigurationDirectory(), "TConstruct_AOEExclusions.cfg"));
 
         playerTracker = new TPlayerHandler();
         FMLCommonHandler.instance().bus().register(playerTracker);
