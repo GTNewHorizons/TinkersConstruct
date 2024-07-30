@@ -72,8 +72,9 @@ public abstract class AOEHarvestTool extends HarvestTool {
                 if (xPos == x && yPos == y && zPos == z) continue;
 
                 Block targetBlock = player.worldObj.getBlock(xPos, yPos, zPos);
+                int targetMeta = player.worldObj.getBlockMetadata(xPos, yPos, zPos);
 
-                if (!AoEExclusionList.isBlockExcluded(toolName, targetBlock)) {
+                if (!AoEExclusionList.isBlockExcluded(toolName, targetBlock, targetMeta)) {
                     if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
                         breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
                 }

@@ -24,8 +24,8 @@ public class AoEExclusionList {
             String[] exclusionArray = config.getStringList(
                     tool + "Exclusions",
                     "AOE_Exclusions",
-                    new String[] { "examplemod:exampleblock" },
-                    "Block IDs that should not be broken by " + tool + "'s AOE effect");
+                    new String[] { "examplemod:exampleblock", "examplemod:exampleblock:1" },
+                    "Block IDs (with optional metadata) that should not be broken by " + tool + "'s AOE effect");
             Set<String> exclusionSet = new HashSet<>(Arrays.asList(exclusionArray));
             toolExclusionLists.put(tool, exclusionSet);
         }
@@ -35,7 +35,7 @@ public class AoEExclusionList {
         }
     }
 
-    public static boolean isBlockExcluded(String tool, Block block) {
+    public static boolean isBlockExcluded(String tool, Block block, int metadata) {
         Set<String> exclusions = toolExclusionLists.get(tool);
         if (exclusions == null) {
             exclusions = toolExclusionLists.get("tool." + tool);
@@ -46,6 +46,6 @@ public class AoEExclusionList {
         }
 
         String blockId = Block.blockRegistry.getNameForObject(block);
-        return exclusions.contains(blockId);
+        return exclusions.contains(blockId) || exclusions.contains(blockId + ":" + metadata);
     }
 }
