@@ -35,11 +35,6 @@ public class AoEExclusionList {
         if (config.hasChanged()) {
             config.save();
         }
-
-        // Print out all loaded exclusion lists
-        for (Map.Entry<String, String[]> entry : toolExclusionLists.entrySet()) {
-            System.out.println("Exclusion list for " + entry.getKey() + ": " + Arrays.toString(entry.getValue()));
-        }
     }
 
     public static boolean isBlockExcluded(String tool, Block block) {
@@ -54,20 +49,8 @@ public class AoEExclusionList {
             }
         }
 
-        if (exclusions == null) {
-            System.out.println("No exclusion list found for tool: " + tool);
-            return false;
-        }
-
         String blockId = Block.blockRegistry.getNameForObject(block);
         boolean isExcluded = Arrays.asList(exclusions).contains(blockId);
-
-        System.out.println(
-                "Checking exclusion for " + tool
-                        + ": Block "
-                        + blockId
-                        + " is "
-                        + (isExcluded ? "excluded" : "not excluded"));
 
         return isExcluded;
     }
