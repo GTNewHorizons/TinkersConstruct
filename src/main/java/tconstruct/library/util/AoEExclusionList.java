@@ -39,7 +39,7 @@ public class AoEExclusionList {
     public static boolean isBlockExcluded(String tool, Block block) {
         String[] exclusions = toolExclusionLists.get(tool);
         if (exclusions == null) {
-                exclusions = toolExclusionLists.get("tool." + tool);
+            exclusions = toolExclusionLists.get("tool." + tool);
         }
         String blockId = Block.blockRegistry.getNameForObject(block);
         return Arrays.asList(exclusions).contains(blockId);
