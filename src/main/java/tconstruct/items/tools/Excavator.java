@@ -29,7 +29,7 @@ public class Excavator extends AOEHarvestTool {
     }
 
     static Material[] materials = { Material.grass, Material.ground, Material.sand, Material.snow, Material.craftedSnow,
-        Material.clay };
+            Material.clay };
 
     @Override
     public Item getHeadItem() {
