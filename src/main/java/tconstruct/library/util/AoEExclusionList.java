@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
 import net.minecraft.block.Block;
 import net.minecraftforge.common.config.Configuration;
 
