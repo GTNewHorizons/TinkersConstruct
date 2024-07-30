@@ -39,17 +39,9 @@ public class AoEExclusionList {
     public static boolean isBlockExcluded(String tool, Block block) {
         String[] exclusions = toolExclusionLists.get(tool);
         if (exclusions == null) {
-            // Try with "tool." prefix if it's not present
-            if (!tool.startsWith("tool.")) {
                 exclusions = toolExclusionLists.get("tool." + tool);
-            } else {
-                // Try without "tool." prefix if it's present
-                exclusions = toolExclusionLists.get(tool.substring(5) + "Exclusions");
-            }
         }
-
         String blockId = Block.blockRegistry.getNameForObject(block);
-
         return Arrays.asList(exclusions).contains(blockId);
     }
 }
