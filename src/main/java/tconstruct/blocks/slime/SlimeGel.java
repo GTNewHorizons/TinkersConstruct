@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
@@ -76,7 +77,13 @@ public class SlimeGel extends TConstructBlock {
         // par3List.add(new ItemStack(par1, 1, 2));
     }
 
-    public boolean canSustainLeaves(World world, int x, int y, int z) {
+    @Override
+    public boolean canSustainLeaves(IBlockAccess world, int x, int y, int z) {
+        return true;
+    }
+
+    @Override
+    public boolean isWood(IBlockAccess world, int x, int y, int z) {
         return true;
     }
 }
