@@ -17,8 +17,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.world.World;
 
+import tconstruct.items.tools.Arrow;
+import tconstruct.items.tools.BowBase;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.tools.HarvestTool;
+import tconstruct.library.tools.Weapon;
+import tconstruct.library.weaponry.AmmoItem;
+import tconstruct.library.weaponry.ProjectileWeapon;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.gui.ChestSlot;
 import tconstruct.tools.logic.CraftingStationLogic;
@@ -239,6 +245,22 @@ public class CraftingStationContainer extends Container {
 
     protected boolean moveToCraftingGrid(ItemStack itemstack) {
         if (itemstack == null || itemstack.stackSize <= 0) return false;
+
+        // We make a special check for tinker tools to move into the center of the crafting grid. This makes applying
+        // modifiers just a little bit more convenient.
+        Item item = itemstack.getItem();
+        if (item instanceof Arrow || item instanceof BowBase
+                || item instanceof HarvestTool
+                || item instanceof Weapon
+                || item instanceof AmmoItem
+                || item instanceof ProjectileWeapon) {
+
+            // We simply want to check if we are able to insert it into the center. If not, we continue as normal.
+            boolean wasAbleToInsertIntoCenter = this.mergeItemStack(itemstack, 5, 6, false);
+            if (wasAbleToInsertIntoCenter) {
+                return true;
+            }
+        }
 
         return !this.mergeItemStack(itemstack, 1, 10, true);
     }
