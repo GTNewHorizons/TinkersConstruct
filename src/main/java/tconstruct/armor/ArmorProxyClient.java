@@ -259,7 +259,7 @@ public class ArmorProxyClient extends ArmorProxyCommon {
                 ArmorProxyClient.belt.isChild = event.renderer.modelBipedMain.isChild;
                 ArmorProxyClient.belt.isSneak = event.renderer.modelBipedMain.isSneak;
 
-                renderArmorExtras(event);
+                if (PHConstruct.showTravellerAccessories) renderArmorExtras(event);
 
                 break;
             case 3:

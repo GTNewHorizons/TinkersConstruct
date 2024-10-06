@@ -250,6 +250,8 @@ public class PHConstruct {
         conTexMode.comment = "0 = disabled, 1 = enabled, 2 = enabled + ignore stained glass meta";
         connectedTexturesMode = conTexMode.getInt(2);
 
+        showTravellerAccessories = config.get("Looks", "Show Traveller Gear Accessories", true).getBoolean(true);
+
         // dimension blacklist
         cfgForbiddenDim = config
                 .get(
@@ -482,6 +484,7 @@ public class PHConstruct {
 
     // Looks
     public static int connectedTexturesMode;
+    public static boolean showTravellerAccessories;
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;
