@@ -1,8 +1,11 @@
 package tconstruct.items.tools;
 
+import java.util.Comparator;
 import java.util.Queue;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.Stack;
+import java.util.TreeSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -114,8 +117,9 @@ public class LumberAxe extends AOEHarvestTool {
     }
 
     public static boolean detectTree(World world, int pX, int pY, int pZ) {
-        ChunkPosition pos = null;
         Stack<ChunkPosition> candidates = new Stack<>();
+        SortedSet<ChunkPosition> visited = new TreeSet<>(Comparator.comparingInt((ChunkPosition a) -> a.chunkPosY));
+
         candidates.add(new ChunkPosition(pX, pY, pZ));
 
         while (!candidates.isEmpty()) {
@@ -123,24 +127,32 @@ public class LumberAxe extends AOEHarvestTool {
             int curX = candidate.chunkPosX, curY = candidate.chunkPosY, curZ = candidate.chunkPosZ;
 
             Block block = world.getBlock(curX, curY, curZ);
-            if ((pos == null || candidate.chunkPosY > pos.chunkPosY) && block.isWood(world, curX, curY, curZ)) {
-                pos = new ChunkPosition(curX, candidate.chunkPosY + 1, curZ);
-                // go up
-                while (world.getBlock(curX, pos.chunkPosY, curZ).isWood(world, curX, pos.chunkPosY, curZ)) {
-                    pos = new ChunkPosition(curX, pos.chunkPosY + 1, curZ);
+            if (!block.isWood(world, curX, curY, curZ)) {
+                continue;
+            }
+            if (!visited.add(candidate)) {
+                continue;
+            }
+
+            // add the current layer and above
+            for (int offX = 0; offX < 3; offX++) {
+                for (int offY = 0; offY < 2; offY++) {
+                    for (int offZ = 0; offZ < 3; offZ++) {
+                        ChunkPosition newCandidate = new ChunkPosition(curX - 1 + offX, curY + offY, curZ - 1 + offZ);
+                        if (!visited.contains(newCandidate)) {
+                            candidates.add(newCandidate);
+                        }
+                    }
                 }
-                // check if we still have a way diagonally up
-                candidates.add(new ChunkPosition(curX + 1, pos.chunkPosY + 1, curZ));
-                candidates.add(new ChunkPosition(curX, pos.chunkPosY + 1, curZ + 1));
-                candidates.add(new ChunkPosition(curX - 1, pos.chunkPosY + 1, curZ));
-                candidates.add(new ChunkPosition(curX, pos.chunkPosY + 1, curZ - 1));
             }
         }
 
         // not even one match, so there were no logs.
-        if (pos == null) {
+        if (visited.isEmpty()) {
             return false;
         }
+
+        ChunkPosition topmost = visited.last();
 
         // check if there were enough leaves around the last position
         // pos now contains the block above the topmost log
@@ -150,8 +162,8 @@ public class LumberAxe extends AOEHarvestTool {
         for (int offX = 0; offX < d; offX++) {
             for (int offY = 0; offY < d; offY++) {
                 for (int offZ = 0; offZ < d; offZ++) {
-                    int xPos = pos.chunkPosX - 1 + offX, yPos = pos.chunkPosY - 1 + offY,
-                            zPos = pos.chunkPosZ - 1 + offZ;
+                    int xPos = topmost.chunkPosX - 1 + offX, yPos = topmost.chunkPosY - 1 + offY,
+                            zPos = topmost.chunkPosZ - 1 + offZ;
                     Block leaf = world.getBlock(xPos, yPos, zPos);
                     if (leaf != null && leaf.isLeaves(world, xPos, yPos, zPos)) {
                         if (++leaves >= 5) {
@@ -238,16 +250,12 @@ public class LumberAxe extends AOEHarvestTool {
                     continue;
                 }
 
-                // save its neighbors
-                queueCoordinate(x + 1, y, z);
-                queueCoordinate(x, y, z + 1);
-                queueCoordinate(x - 1, y, z);
-                queueCoordinate(x, y, z - 1);
-
-                // also add the layer above.. stupid acacia trees
+                // add the current layer and above
                 for (int offX = 0; offX < 3; offX++) {
-                    for (int offZ = 0; offZ < 3; offZ++) {
-                        queueCoordinate(x - 1 + offX, y + 1, z - 1 + offZ);
+                    for (int offY = 0; offY < 2; offY++) {
+                        for (int offZ = 0; offZ < 3; offZ++) {
+                            queueCoordinate(x - 1 + offX, y + offY, z - 1 + offZ);
+                        }
                     }
                 }
 
