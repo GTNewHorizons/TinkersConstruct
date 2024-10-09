@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -291,9 +292,12 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         translucentID = -1;
     }
 
-    public static int isTranslucent(ItemStack stack) {
+    public static int getTranslucencyLevel(ItemStack stack) {
         int translucent = getTranslucentID();
-        return EnchantmentHelper.getEnchantmentLevel(translucent, stack);
+        if (translucent > 0) 
+            return EnchantmentHelper.getEnchantmentLevel(translucent, stack);
+        else
+            return 0;
     }
 
     // ---
@@ -340,8 +344,8 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         // TPlayerStats stats = TPlayerStats.get(player);
         ArmorExtended armor = ArmorProxyClient.armorExtended; // TODO: Do this for every player, not just the client
         if (armor != null && armor.inventory[1] != null) {
-            if (isTranslucent(armor.inventory[1]) != 2
-                    && !(player.isInvisible() && isTranslucent(armor.inventory[1]) > 0)) {
+            if (getTranslucencyLevel(armor.inventory[1]) != 2
+                    && !(player.isInvisible() && getTranslucencyLevel(armor.inventory[1]) > 0)) {
                 Item item = armor.inventory[1].getItem();
                 ModelBiped model = item.getArmorModel(player, armor.inventory[1], 4);
 
@@ -362,8 +366,8 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         }
 
         if (armor != null && armor.inventory[3] != null) {
-            if (isTranslucent(armor.inventory[3]) != 2
-                    && !(player.isInvisible() && isTranslucent(armor.inventory[3]) > 0)) {
+            if (getTranslucencyLevel(armor.inventory[3]) != 2
+                    && !(player.isInvisible() && getTranslucencyLevel(armor.inventory[3]) > 0)) {
                 Item item = armor.inventory[3].getItem();
                 ModelBiped model = item.getArmorModel(player, armor.inventory[3], 5);
 
