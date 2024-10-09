@@ -293,15 +293,7 @@ public class ArmorProxyClient extends ArmorProxyCommon {
 
     public static int isTranslucent(ItemStack stack) {
         int translucent = getTranslucentID();
-        NBTTagList stackEnch = stack.getEnchantmentTagList();
-        if (translucent >= 0 && stackEnch != null) {
-            for (int i = 0; i < stackEnch.tagCount(); i++) {
-                int id = stackEnch.getCompoundTagAt(i).getInteger("id");
-                int lvl = stackEnch.getCompoundTagAt(i).getInteger("lvl");
-                if (id == translucent) return lvl;
-            }
-        }
-        return 0;
+        return EnchantmentHelper.getEnchantmentLevel(translucent, stack);
     }
 
     // ---
