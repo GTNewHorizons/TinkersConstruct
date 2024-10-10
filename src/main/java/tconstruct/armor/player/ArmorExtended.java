@@ -219,10 +219,8 @@ public class ArmorExtended implements IInventory {
 
     public static boolean isSoulBounded(ItemStack stack) {
         int soulBound = getSoulBoundID();
-        if(soulBound > 0)
-            return EnchantmentHelper.getEnchantmentLevel(soulBound, stack) > 0;
-        else
-            return false;
+        if (soulBound > 0) return EnchantmentHelper.getEnchantmentLevel(soulBound, stack) > 0;
+        else return false;
     }
 
     // ---

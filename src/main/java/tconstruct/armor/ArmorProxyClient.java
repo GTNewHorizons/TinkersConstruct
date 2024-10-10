@@ -11,7 +11,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.FOVUpdateEvent;
@@ -294,10 +293,8 @@ public class ArmorProxyClient extends ArmorProxyCommon {
 
     public static int getTranslucencyLevel(ItemStack stack) {
         int translucent = getTranslucentID();
-        if (translucent > 0) 
-            return EnchantmentHelper.getEnchantmentLevel(translucent, stack);
-        else
-            return 0;
+        if (translucent > 0) return EnchantmentHelper.getEnchantmentLevel(translucent, stack);
+        else return 0;
     }
 
     // ---
