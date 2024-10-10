@@ -40,6 +40,11 @@ public class TravelBelt extends AccessoryCore implements IAccessoryModel {
         return ArmorProxyClient.belt;
     }
 
+    @Override
+    public boolean isItemTool(ItemStack stack) {
+        return true;
+    }
+
     ResourceLocation texture = new ResourceLocation("tinker", "textures/armor/travel_2.png");
 
     @Override
