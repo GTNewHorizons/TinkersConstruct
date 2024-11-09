@@ -58,7 +58,7 @@ public class PHConstruct {
         vanillaMetalBlocks = config.get("Difficulty Changes", "Craft vanilla metal blocks", true).getBoolean(true);
         lavaFortuneInteraction = config.get("Difficulty Changes", "Enable Auto-Smelt and Fortune interaction", true)
                 .getBoolean(true);
-        removeGoldCastRecipes = config.get("Difficulty Changes", "Remove Gold Cast Recipes", true).getBoolean(true);
+        removeGoldCastRecipes = config.get("Difficulty Changes", "Remove Gold Cast Recipes", false).getBoolean(false);
         removeVanillaToolRecipes = config.get("Difficulty Changes", "Remove Vanilla Tool Recipes", false)
                 .getBoolean(false);
         labotimizeVanillaTools = config.get("Difficulty Changes", "Remove Vanilla Tool Effectiveness", false)
