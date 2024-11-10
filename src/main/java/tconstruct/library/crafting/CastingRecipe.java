@@ -6,6 +6,8 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import tconstruct.library.client.FluidRenderProperties;
 
+import javax.annotation.Nullable;
+
 public class CastingRecipe {
 
     public ItemStack output;
@@ -32,14 +34,14 @@ public class CastingRecipe {
         this(replacement, metal, cast, consume, delay, props, false);
     }
 
-    public boolean matches(FluidStack metal, ItemStack inputCast) {
-        if (castingMetal.isFluidEqual(metal)) {
-            if (cast != null && cast.getItemDamage() == OreDictionary.WILDCARD_VALUE
+    public boolean matches(@Nullable FluidStack metal, @Nullable ItemStack inputCast) {
+        if (metal != null && castingMetal.isFluidEqual(metal)) {
+            if (inputCast != null && cast != null && cast.getItemDamage() == OreDictionary.WILDCARD_VALUE
                     && inputCast.getItem() == cast.getItem()) {
                 return true;
             } else if (!ignoreNBT && ItemStack.areItemStacksEqual(cast, inputCast)) {
                 return true;
-            } else return ignoreNBT && cast != null && inputCast != null && cast.isItemEqual(inputCast);
+            } else return ignoreNBT && inputCast != null && cast != null && cast.isItemEqual(inputCast);
         }
         return false;
     }
