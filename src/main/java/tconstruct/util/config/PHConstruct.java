@@ -9,6 +9,7 @@ import net.minecraftforge.common.config.Property;
 
 import com.google.common.collect.Sets;
 
+import cpw.mods.fml.common.Loader;
 import tconstruct.TConstruct;
 import tconstruct.library.tools.AbilityHelper;
 
@@ -58,7 +59,11 @@ public class PHConstruct {
         vanillaMetalBlocks = config.get("Difficulty Changes", "Craft vanilla metal blocks", true).getBoolean(true);
         lavaFortuneInteraction = config.get("Difficulty Changes", "Enable Auto-Smelt and Fortune interaction", true)
                 .getBoolean(true);
-        removeGoldCastRecipes = config.get("Difficulty Changes", "Remove Gold Cast Recipes", false).getBoolean(false);
+
+        boolean removeGoldCastsDefault = Loader.isModLoaded("dreamcraft");
+        removeGoldCastRecipes = config.get("Difficulty Changes", "Remove Gold Cast Recipes", removeGoldCastsDefault)
+                .getBoolean(removeGoldCastsDefault);
+
         removeVanillaToolRecipes = config.get("Difficulty Changes", "Remove Vanilla Tool Recipes", false)
                 .getBoolean(false);
         labotimizeVanillaTools = config.get("Difficulty Changes", "Remove Vanilla Tool Effectiveness", false)
