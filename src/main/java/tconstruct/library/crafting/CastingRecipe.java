@@ -1,12 +1,12 @@
 package tconstruct.library.crafting;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import tconstruct.library.client.FluidRenderProperties;
-
-import javax.annotation.Nullable;
 
 public class CastingRecipe {
 
@@ -36,7 +36,8 @@ public class CastingRecipe {
 
     public boolean matches(@Nullable FluidStack metal, @Nullable ItemStack inputCast) {
         if (metal != null && castingMetal.isFluidEqual(metal)) {
-            if (inputCast != null && cast != null && cast.getItemDamage() == OreDictionary.WILDCARD_VALUE
+            if (inputCast != null && cast != null
+                    && cast.getItemDamage() == OreDictionary.WILDCARD_VALUE
                     && inputCast.getItem() == cast.getItem()) {
                 return true;
             } else if (!ignoreNBT && ItemStack.areItemStacksEqual(cast, inputCast)) {
