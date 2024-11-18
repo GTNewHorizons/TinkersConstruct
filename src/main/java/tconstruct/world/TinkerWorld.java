@@ -979,7 +979,7 @@ public class TinkerWorld {
         OreDictionary.registerOre("oreberryAluminum", new ItemStack(TinkerWorld.oreBerries, 1, 4));
         OreDictionary.registerOre("oreberryAluminium", new ItemStack(TinkerWorld.oreBerries, 1, 4));
         OreDictionary.registerOre("oreberryGold", new ItemStack(TinkerWorld.oreBerries, 1, 1));
-        OreDictionary.registerOre("oreberryEssence", new ItemStack(TinkerWorld.oreBerries, 1, 1));
+        OreDictionary.registerOre("oreberryEssence", new ItemStack(TinkerWorld.oreBerries, 1, 5));
 
         OreDictionary.registerOre("orebushIron", new ItemStack(TinkerWorld.oreBerry, 1, 0));
         OreDictionary.registerOre("orebushGold", new ItemStack(TinkerWorld.oreBerry, 1, 1));
