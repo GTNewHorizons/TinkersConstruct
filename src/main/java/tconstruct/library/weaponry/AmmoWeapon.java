@@ -106,7 +106,7 @@ public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, 
         if (getWindupProgress(stack, time) >= getMinWindupProgress(stack)) launchProjectile(stack, world, player, time);
     }
 
-        protected void launchProjectile(ItemStack stack, World world, EntityPlayer player, int time) {
+    protected void launchProjectile(ItemStack stack, World world, EntityPlayer player, int time) {
         ItemStack reference = stack.copy();
         reference.stackSize = 1;
         // spawn projectile on server
