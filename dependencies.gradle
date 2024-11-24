@@ -1,7 +1,7 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnlyApi('com.github.GTNewHorizons:Angelica:1.0.0-beta20:api')
+    compileOnlyApi('com.github.GTNewHorizons:Angelica:1.0.0-beta22:api')
     api("com.github.GTNewHorizons:Mantle:0.4.2:dev")
     api("com.github.GTNewHorizons:ForgeMultipart:1.5.0:dev")
     implementation("com.github.GTNewHorizons:NotEnoughItems:2.6.46-GTNH:dev")
@@ -15,5 +15,5 @@ dependencies {
     compileOnly("curse.maven:dynamic-sword-skills-226360:2495462")
     compileOnly("curse.maven:notenoughkeys-224614:2276280")
     compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
-    compileOnly("com.github.GTNewHorizons:Mobs-Info:0.4.6-GTNH:dev")
+    compileOnly("com.github.GTNewHorizons:Mobs-Info:0.4.7-GTNH:dev")
 }
