@@ -107,10 +107,10 @@ public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, 
     }
 
     protected void launchProjectile(ItemStack stack, World world, EntityPlayer player, int time) {
+        ItemStack reference = stack.copy();
+        reference.stackSize = 1;
         // spawn projectile on server
         if (!world.isRemote) {
-            ItemStack reference = stack.copy();
-            reference.stackSize = 1;
             ((IAmmo) reference.getItem()).setAmmo(1, reference);
 
             Entity projectile = createProjectile(reference, world, player, getAccuracy(stack, time), time);
@@ -118,7 +118,14 @@ public abstract class AmmoWeapon extends AmmoItem implements IBattlegearWeapon, 
         }
 
         // reduce ammo
-        if (!player.capabilities.isCreativeMode) this.consumeAmmo(1, stack);
+        if (!player.capabilities.isCreativeMode) {
+            if (reference.hasTagCompound()) {
+                if (random.nextInt(10)
+                        < 10 - reference.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking")) {
+                    this.consumeAmmo(1, stack);
+                }
+            }
+        }
     }
 
     protected abstract Entity createProjectile(ItemStack reference, World world, EntityPlayer player, float accuracy,
