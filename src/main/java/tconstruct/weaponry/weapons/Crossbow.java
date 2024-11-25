@@ -146,7 +146,7 @@ public class Crossbow extends ProjectileWeapon {
 
         // remove loaded item
         if (ammo.getItem() instanceof IAmmo) {
-            if (ammo.hasTagCompound()){
+            if (ammo.hasTagCompound()) {
                 int ammoReinforced = ammo.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");
                 if (random.nextInt(10) < 10 - ammoReinforced) ((IAmmo) ammo.getItem()).consumeAmmo(1, ammo);
             }
