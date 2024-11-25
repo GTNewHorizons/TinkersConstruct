@@ -199,7 +199,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
         // use up ammo
         if (!player.capabilities.isCreativeMode) {
-            if (ammo.getItem() instanceof IAmmo){
+            if (ammo.getItem() instanceof IAmmo) {
                 if (ammo.hasTagCompound()) {
                     int ammoReinforced = ammo.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");
                     if (random.nextInt(10) < 10 - ammoReinforced) ((IAmmo) ammo.getItem()).consumeAmmo(1, ammo);
