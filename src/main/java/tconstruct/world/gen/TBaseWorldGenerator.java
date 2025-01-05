@@ -39,10 +39,10 @@ public class TBaseWorldGenerator implements IWorldGenerator {
             generateNether(random, chunkX * 16, chunkZ * 16, world);
         } else if (world.provider.terrainType != WorldType.FLAT || PHConstruct.genOresFlat) {
             generateSurface(random, chunkX * 16, chunkZ * 16, world);
-            if (world.provider.dimensionId == 0) generateOreBushes(random, chunkX * 16, chunkZ * 16, world);
+            if (world.provider.isSurfaceWorld()) generateOreBushes(random, chunkX * 16, chunkZ * 16, world);
         }
 
-        if (PHConstruct.superfunWorld && world.provider.dimensionId == 0) {
+        if (PHConstruct.superfunWorld && world.provider.isSurfaceWorld()) {
             superfunGenerate(random, chunkX * 16, chunkZ * 16, world);
         }
 
