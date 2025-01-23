@@ -336,7 +336,7 @@ public class SmelteryGui extends ActiveContainerGui {
 
     protected void drawFluidStackTooltip(FluidStack par1ItemStack, int par2, int par3, boolean fuel) {
         this.zLevel = 100;
-        List<String> list = getLiquidTooltip(par1ItemStack, this.mc.gameSettings.advancedItemTooltips, fuel);
+        List<String> list = getLiquidTooltip(par1ItemStack, fuel);
         for (int k = 0; k < list.size(); ++k) {
             list.set(k, EnumChatFormatting.GRAY + list.get(k));
         }
@@ -344,15 +344,17 @@ public class SmelteryGui extends ActiveContainerGui {
         this.zLevel = 0;
     }
 
-    public List<String> getLiquidTooltip(FluidStack liquid, boolean advanced, boolean fuel) {
+    private List<String> getLiquidTooltip(FluidStack liquid, boolean fuel) {
         ArrayList<String> list = new ArrayList<>();
-        if (fuel || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (fuel) {
             list.add("\u00A7f" + StatCollector.translateToLocal("gui.smeltery.fuel"));
             list.add("mB: " + liquid.amount);
         } else {
             String name = liquid.getFluid().getLocalizedName(liquid);
             list.add("\u00A7f" + name);
-            if (name.equals(StatCollector.translateToLocal("fluid.emerald.liquid"))) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                list.add("mB: " + liquid.amount);
+            } else if (name.equals(StatCollector.translateToLocal("fluid.emerald.liquid"))) {
                 list.add(StatCollector.translateToLocal("gui.smeltery.emerald") + liquid.amount / 640f);
             } else if (name.equals(StatCollector.translateToLocal("fluid.quartz.molten"))) {
                 list.add(StatCollector.translateToLocal("gui.smeltery.quartz") + liquid.amount / 250f);
