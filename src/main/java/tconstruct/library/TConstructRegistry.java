@@ -1,6 +1,5 @@
 package tconstruct.library;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import tconstruct.TConstruct;
 import tconstruct.library.crafting.Detailing;
 import tconstruct.library.crafting.LiquidCasting;
 import tconstruct.library.crafting.ToolBuilder;
@@ -508,62 +508,16 @@ public class TConstructRegistry {
         return null;
     }
 
-    /*
-     * public static CustomMaterial getCustomMaterial(ItemStack input, ItemStack pattern) { for (CustomMaterial mat :
-     * customMaterials) { if (mat.matches(input, pattern)) return mat; } return null; }
-     */
-
-    /*
-     * public static ItemStack craftBowString(ItemStack stack) { if (stack.stackSize < 3) return null; for
-     * (BowstringMaterial mat : bowstringMaterials) { if (stack.isItemEqual(mat.input)) return mat.craftingItem.copy();
-     * } return null; } public static BowstringMaterial getBowstringMaterial(ItemStack stack) { if (stack.stackSize < 3)
-     * return null; for (BowstringMaterial mat : bowstringMaterials) { if (stack.isItemEqual(mat.input)) return mat; }
-     * return null; }
-     */
-
     public static LiquidCasting getTableCasting() {
-        return instance.tableCasting();
-    }
-
-    LiquidCasting tableCasting() {
-        try {
-            Class<?> clazz = Class.forName("tconstruct.TConstruct");
-            Method method = clazz.getMethod("getTableCasting");
-            return (LiquidCasting) method.invoke(this);
-        } catch (Exception e) {
-            logger.warn("Could not find casting table recipes.");
-            return null;
-        }
+        return TConstruct.getTableCasting();
     }
 
     public static LiquidCasting getBasinCasting() {
-        return instance.basinCasting();
-    }
-
-    LiquidCasting basinCasting() {
-        try {
-            Class<?> clazz = Class.forName("tconstruct.TConstruct");
-            Method method = clazz.getMethod("getBasinCasting");
-            return (LiquidCasting) method.invoke(this);
-        } catch (Exception e) {
-            logger.warn("Could not find casting basin recipes.");
-            return null;
-        }
+        return TConstruct.getBasinCasting();
     }
 
     public static Detailing getChiselDetailing() {
-        return instance.chiselDetailing();
-    }
-
-    Detailing chiselDetailing() {
-        try {
-            Class<?> clazz = Class.forName("tconstruct.TConstruct");
-            Method method = clazz.getMethod("getChiselDetailing");
-            return (Detailing) method.invoke(this);
-        } catch (Exception e) {
-            logger.warn("Could not find chisel detailing recipes.");
-            return null;
-        }
+        return TConstruct.getChiselDetailing();
     }
 
     public static ArrayList<ActiveToolMod> activeModifiers = new ArrayList<>();

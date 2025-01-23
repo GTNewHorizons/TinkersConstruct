@@ -315,6 +315,12 @@ public class PHConstruct {
                         new String[] { "wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest" })
                         .getStringList());
 
+        metalCastFluidTypeName = config.get(
+                "CrossmodInteractions",
+                "Metal cast FluidType",
+                "AluminumBrass",
+                "For pack maintainers. Defines the LiquidType used to create metal casts.").getString();
+
         /* Save the configuration file only if it has changed */
         if (config.hasChanged()) config.save();
 
@@ -508,4 +514,7 @@ public class PHConstruct {
     public static boolean extraBlockUpdates;
     public static String[] heartDropBlacklist;
     public static Set<String> craftingStationBlacklist;
+
+    // Crossmod interactions
+    public static String metalCastFluidTypeName;
 }

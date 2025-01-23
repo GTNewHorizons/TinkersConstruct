@@ -274,17 +274,10 @@ public class TinkerWeaponry {
                 ItemStack cast = new ItemStack(metalPattern, 1, i);
                 ItemStack clay_cast = new ItemStack(clayPattern, 1, i);
 
-                tableCasting.addCastingRecipe(
+                TinkerSmeltery.addMetalPatternCastingTableRecipe(
+                        tableCasting,
                         cast,
-                        new FluidStack(TinkerSmeltery.moltenAlubrassFluid, TConstruct.ingotLiquidValue),
                         new ItemStack(patternOutputs[i], 1, Short.MAX_VALUE),
-                        false,
-                        50);
-                if (!PHConstruct.removeGoldCastRecipes) tableCasting.addCastingRecipe(
-                        cast,
-                        new FluidStack(TinkerSmeltery.moltenGoldFluid, TConstruct.ingotLiquidValue * 2),
-                        new ItemStack(patternOutputs[i], 1, Short.MAX_VALUE),
-                        false,
                         50);
 
                 for (int iterTwo = 0; iterTwo < TinkerSmeltery.liquids.length; iterTwo++) {
@@ -312,17 +305,10 @@ public class TinkerWeaponry {
             ItemStack cast = new ItemStack(TinkerSmeltery.metalPattern, 1, 25);
             ItemStack clay_cast = new ItemStack(TinkerSmeltery.clayPattern, 1, 25);
 
-            tableCasting.addCastingRecipe(
+            TinkerSmeltery.addMetalPatternCastingTableRecipe(
+                    tableCasting,
                     cast,
-                    new FluidStack(TinkerSmeltery.moltenAlubrassFluid, TConstruct.ingotLiquidValue),
                     new ItemStack(arrowhead, 1, Short.MAX_VALUE),
-                    false,
-                    50);
-            if (!PHConstruct.removeGoldCastRecipes) tableCasting.addCastingRecipe(
-                    cast,
-                    new FluidStack(TinkerSmeltery.moltenGoldFluid, TConstruct.ingotLiquidValue * 2),
-                    new ItemStack(arrowhead, 1, Short.MAX_VALUE),
-                    false,
                     50);
 
             for (int iterTwo = 0; iterTwo < TinkerSmeltery.liquids.length; iterTwo++) {
