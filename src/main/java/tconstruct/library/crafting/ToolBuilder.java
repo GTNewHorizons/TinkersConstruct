@@ -355,7 +355,10 @@ public class ToolBuilder {
             return StatCollector.translateToLocal("tool." + toolName + "." + matName);
         }
 
-        return String.format("%s %s", headMat.prefixName(), tool.getLocalizedToolName());
+        return String.format(
+                StatCollector.translateToLocal("tool.nameformat"),
+                headMat.prefixName(),
+                tool.getLocalizedToolName());
     }
 
     // Passthrough for now
