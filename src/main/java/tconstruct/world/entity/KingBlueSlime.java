@@ -138,7 +138,7 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
             // materials
             String name;
             if (StatCollector.canTranslate(loc)) name = StatCollector.translateToLocal(loc);
-            else name = StatCollector.translateToLocal("tool.kingslimeprefix") + " " + tool.getLocalizedToolName();
+            else name = String.format(StatCollector.translateToLocal("tool.nameformat"), StatCollector.translateToLocal("tool.kingslimeprefix"), tool.getLocalizedToolName());
 
             ItemStack toolStack = ToolBuilder.instance
                     .buildTool(headStack, handleStack, accessoryStack, extraStack, name);
