@@ -35,7 +35,7 @@ public class FancyEntityItem extends EntityItem {
 
     public FancyEntityItem(World world, Entity original, ItemStack stack) {
         this(world, original.posX, original.posY, original.posZ);
-        this.delayBeforeCanPickup = 20;
+        this.delayBeforeCanPickup = 10;
         this.motionX = original.motionX;
         this.motionY = original.motionY;
         this.motionZ = original.motionZ;
