@@ -190,7 +190,7 @@ public class TBaseWorldGenerator implements IWorldGenerator {
                 }
             }
         }
-        if (PHConstruct.generateEssenceBush && random.nextInt(PHConstruct.essenceBushRarity) == 0) {
+        if (PHConstruct.generateEssenceBush && random.nextInt(PHConstruct.essenceBushRarity + 1) == 0) {
             for (int i = 0; i < PHConstruct.silverBushDensity; i++) {
                 xPos = xChunk + random.nextInt(16);
                 yPos = PHConstruct.seaLevel - 16;
