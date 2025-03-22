@@ -70,7 +70,7 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
         int time = ((CachedDryingRackRecipe) this.arecipes.get(recipe)).time;
         int seconds = time / 20;
         GuiDraw.drawStringC(
-                StatCollector.translateToLocalFormatted("tconstruct.nei.DryingRack", time, seconds),
+                StatCollector.translateToLocalFormatted("tconstruct.nei.dryingrack.duration", time, seconds),
                 81,
                 40,
                 0x808080,
