@@ -243,6 +243,10 @@ public class LumberAxe extends AOEHarvestTool {
                 queueCoordinate(x, y, z + 1);
                 queueCoordinate(x - 1, y, z);
                 queueCoordinate(x, y, z - 1);
+                queueCoordinate(x + 1, y, z + 1);
+                queueCoordinate(x + 1, y, z - 1);
+                queueCoordinate(x - 1, y, z + 1);
+                queueCoordinate(x - 1, y, z - 1);
 
                 // also add the layer above.. stupid acacia trees
                 for (int offX = 0; offX < 3; offX++) {
