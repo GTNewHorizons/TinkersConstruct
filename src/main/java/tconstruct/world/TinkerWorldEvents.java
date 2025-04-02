@@ -75,9 +75,7 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
                 if (TinkerWorld.slimeSapling
                         .boneFertilize(event.world, event.x, event.y, event.z, event.world.rand, event.entityPlayer))
                     event.setResult(Event.Result.ALLOW);
-                else {
-                    event.setCanceled(true);
-                }
+                else event.setCanceled(true);
             }
         }
     }
