@@ -325,7 +325,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     }
 
     void detectEntities() {
-        if (minPos == null || maxPos == null) return;
+        if (!validStructure || minPos == null || maxPos == null) return;
 
         AxisAlignedBB box = AxisAlignedBB
                 .getBoundingBox(minPos.x, minPos.y, minPos.z, maxPos.x + 1, minPos.y + layers, maxPos.z + 1);
@@ -334,13 +334,12 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
         for (Entity o : list) {
             if (o.isDead) return;
 
-            if (moltenMetal.size() >= 1) {
+            if (!moltenMetal.isEmpty()) {
                 Fluid fluid = null;
                 int amount = 0;
                 float damage = 5;
 
-                if (o instanceof EntityVillager && PHConstruct.meltableVillagers) {
-                    EntityVillager villager = (EntityVillager) o;
+                if (o instanceof EntityVillager villager && PHConstruct.meltableVillagers) {
                     fluid = TinkerSmeltery.moltenEmeraldFluid;
                     amount = villager.isChild() ? 5 : 40;
                 } else if (o instanceof EntityEnderman) {
