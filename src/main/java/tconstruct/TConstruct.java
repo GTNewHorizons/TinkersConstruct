@@ -36,6 +36,7 @@ import mantle.pulsar.control.PulseManager;
 import tconstruct.achievements.AchievementEvents;
 import tconstruct.achievements.TAchievements;
 import tconstruct.api.TConstructAPI;
+import tconstruct.api.harvesting.AoeCropHarvestHandler;
 import tconstruct.api.harvesting.CropHarvestHandlers;
 import tconstruct.api.harvesting.VanillaCropsHarvestHandler;
 import tconstruct.armor.TinkerArmor;
@@ -231,7 +232,10 @@ public class TConstruct {
         GameRegistry.registerWorldGenerator(new SlimeIslandGen(TinkerWorld.slimePool, 2), 2);
 
         pulsar.init(event);
-        CropHarvestHandlers.registerCropHarvestHandler(new VanillaCropsHarvestHandler());
+        if (PHConstruct.scytheAoeHarvest) {
+            CropHarvestHandlers.registerCropHarvestHandler(new VanillaCropsHarvestHandler());
+            MinecraftForge.EVENT_BUS.register(new AoeCropHarvestHandler());
+        }
     }
 
     @EventHandler
