@@ -268,12 +268,7 @@ public class ToolBuilder {
 
         if (name != null && !name.equals("")) {
             compound.setTag("display", new NBTTagCompound());
-            compound.getCompoundTag("display").setString("Name", "\u00A7f" + name);
-        }
-        // set a nice default name
-        else {
-            compound.setTag("display", new NBTTagCompound());
-            compound.getCompoundTag("display").setString("Name", "\u00A7f" + defaultToolName(headMat, item));
+            compound.getCompoundTag("display").setString("Name", name);
         }
 
         ToolCraftEvent.NormalTool event = new ToolCraftEvent.NormalTool(

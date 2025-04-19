@@ -6,12 +6,10 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import tconstruct.TConstruct;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.tools.inventory.ToolForgeContainer;
-import tconstruct.util.network.ToolStationPacket;
 
 /*
  * Simple class for storing items in the block
@@ -67,15 +65,5 @@ public class ToolForgeLogic extends ToolStationLogic implements ISidedInventory 
                 output = tryRenameTool(output, name);
         }
         inventory[0] = output;
-        if (output != null && output.hasDisplayName()) {
-            TConstruct.packetPipeline
-                    .sendToServer(new ToolStationPacket(xCoord, yCoord, zCoord, output.getDisplayName()));
-        }
     }
-    /*
-     * public void buildTool (String name) { toolName = name; ItemStack tool =
-     * ToolBuilder.instance.buildTool(inventory[1], inventory[2], inventory[3], inventory[4], name); if (inventory[0] ==
-     * null) inventory[0] = tool; else { NBTTagCompound tags = inventory[0].getTagCompound(); if
-     * (!tags.getCompoundTag("InfiTool").hasKey("Built")) { inventory[0] = tool; } } }
-     */
 }
