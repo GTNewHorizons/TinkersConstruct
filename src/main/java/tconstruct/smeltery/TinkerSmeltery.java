@@ -610,11 +610,13 @@ public class TinkerSmeltery {
     public void init(FMLInitializationEvent event) {
         proxy.initialize();
         loadMetalPatternMaterial();
-        craftingTableRecipes();
-        addRecipesForSmeltery();
-        addRecipesForTableCasting();
-        addRecipesForBasinCasting();
-        addRecipesForFurnace();
+        if (!PHConstruct.disableAllRecipes) {
+            craftingTableRecipes();
+            addRecipesForSmeltery();
+            addRecipesForTableCasting();
+            addRecipesForBasinCasting();
+            addRecipesForFurnace();
+        }
     }
 
     @Handler
