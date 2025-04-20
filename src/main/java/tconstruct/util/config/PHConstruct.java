@@ -437,6 +437,8 @@ public class PHConstruct {
 
     public static boolean consumeXPBerryStacks;
 
+    public static boolean disableAllRecipes;
+
     // Mobs
     public static int naturalSlimeSpawn;
 
