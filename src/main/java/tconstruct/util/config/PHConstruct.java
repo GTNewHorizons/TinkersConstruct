@@ -226,6 +226,12 @@ public class PHConstruct {
                 true,
                 "Allow stacks of essence berries to be consumed at once when shifting (this does not spawn XP orbs in world).")
                 .getBoolean();
+        disableAllRecipes = config.get(
+                "general",
+                "Disable All Recipes",
+                false,
+                "Disable all TiC recipes (smeltery, drying rack, crafting, etc)")
+                .getBoolean();
 
         enableHealthRegen = config.get("Ultra Hardcore Changes", "Passive Health Regen", true).getBoolean(true);
         goldAppleRecipe = config.get(
