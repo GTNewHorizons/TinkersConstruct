@@ -23,6 +23,7 @@ import tconstruct.gadgets.item.ItemSlimeBoots;
 import tconstruct.gadgets.item.ItemSlimeSling;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.world.TinkerWorld;
+import tconstruct.util.config.PHConstruct;
 
 @Pulse(id = "Tinkers' Gadgets", description = "All the fun toys.", forced = true)
 public class TinkerGadgets {
@@ -42,7 +43,7 @@ public class TinkerGadgets {
 
     @Handler
     public void init(FMLInitializationEvent event) {
-        if (!Loader.isModLoaded("dreamcraft")) {
+        if (!(Loader.isModLoaded("dreamcraft") || PHConstruct.disableAllRecipes)) {
             ItemStack slimeBlockGreen = new ItemStack(TinkerWorld.slimeGel, 1, 1);
 
             GameRegistry.addShapedRecipe(
