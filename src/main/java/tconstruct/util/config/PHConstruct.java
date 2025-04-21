@@ -230,8 +230,7 @@ public class PHConstruct {
                 "general",
                 "Disable All Recipes",
                 false,
-                "Disable all TiC recipes (smeltery, drying rack, crafting, etc)")
-                .getBoolean();
+                "Disable all TiC recipes (smeltery, drying rack, crafting, etc)").getBoolean();
 
         enableHealthRegen = config.get("Ultra Hardcore Changes", "Passive Health Regen", true).getBoolean(true);
         goldAppleRecipe = config.get(

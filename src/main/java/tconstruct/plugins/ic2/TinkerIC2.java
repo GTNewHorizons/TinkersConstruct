@@ -40,12 +40,12 @@ public class TinkerIC2 {
 
         // Block casting
         if (!PHConstruct.disableAllRecipes) {
-                basinCasting.addCastingRecipe(
-                        new ItemStack(Blocks.diamond_block),
-                        fluidStackBlock,
-                        new ItemStack(Blocks.dirt),
-                        true,
-                        50);
+            basinCasting.addCastingRecipe(
+                    new ItemStack(Blocks.diamond_block),
+                    fluidStackBlock,
+                    new ItemStack(Blocks.dirt),
+                    true,
+                    50);
         }
     }
 }

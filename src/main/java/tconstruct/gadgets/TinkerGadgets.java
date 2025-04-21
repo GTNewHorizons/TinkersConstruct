@@ -22,8 +22,8 @@ import tconstruct.TConstruct;
 import tconstruct.gadgets.item.ItemSlimeBoots;
 import tconstruct.gadgets.item.ItemSlimeSling;
 import tconstruct.library.TConstructRegistry;
-import tconstruct.world.TinkerWorld;
 import tconstruct.util.config.PHConstruct;
+import tconstruct.world.TinkerWorld;
 
 @Pulse(id = "Tinkers' Gadgets", description = "All the fun toys.", forced = true)
 public class TinkerGadgets {

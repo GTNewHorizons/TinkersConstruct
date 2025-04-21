@@ -50,8 +50,8 @@ import tconstruct.modifiers.armor.TravelModDoubleJump;
 import tconstruct.modifiers.armor.TravelModRepair;
 import tconstruct.modifiers.tools.ModAttack;
 import tconstruct.tools.TinkerTools;
-import tconstruct.world.TinkerWorld;
 import tconstruct.util.config.PHConstruct;
+import tconstruct.world.TinkerWorld;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(id = "Tinkers' Armory", description = "Modifyable armors, such as the traveller's gear.")
