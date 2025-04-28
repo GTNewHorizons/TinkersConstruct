@@ -135,8 +135,10 @@ public class TinkerWeaponry {
 
     @Handler
     public void init(FMLInitializationEvent event) {
-        addPartRecipies();
-        addWeaponRecipies();
+        if (!PHConstruct.disableAllRecipes) {
+            addPartRecipies();
+            addWeaponRecipies();
+        }
         setupCreativeTab();
 
         // Modifiers

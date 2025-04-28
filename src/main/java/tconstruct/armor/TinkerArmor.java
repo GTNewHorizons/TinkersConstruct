@@ -50,6 +50,7 @@ import tconstruct.modifiers.armor.TravelModDoubleJump;
 import tconstruct.modifiers.armor.TravelModRepair;
 import tconstruct.modifiers.tools.ModAttack;
 import tconstruct.tools.TinkerTools;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.world.TinkerWorld;
 
 @ObjectHolder(TConstruct.modID)
@@ -146,9 +147,11 @@ public class TinkerArmor {
 
     @Handler
     public void init(FMLInitializationEvent event) {
-        craftingTableRecipes();
-        registerModifiers();
-        addRecipesForDryingRack();
+        if (!PHConstruct.disableAllRecipes) {
+            craftingTableRecipes();
+            registerModifiers();
+            addRecipesForDryingRack();
+        }
         TConstructRegistry.equipableTab.init(travelGoggles.getDefaultItem());
         proxy.initialize();
     }

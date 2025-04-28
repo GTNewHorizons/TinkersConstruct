@@ -14,6 +14,7 @@ import tconstruct.TConstruct;
 import tconstruct.api.harvesting.CropHarvestHandlers;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.LiquidCasting;
+import tconstruct.util.config.PHConstruct;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(
@@ -38,11 +39,13 @@ public class TinkerIC2 {
         LiquidCasting basinCasting = TConstructRegistry.getBasinCasting();
 
         // Block casting
-        basinCasting.addCastingRecipe(
-                new ItemStack(Blocks.diamond_block),
-                fluidStackBlock,
-                new ItemStack(Blocks.dirt),
-                true,
-                50);
+        if (!PHConstruct.disableAllRecipes) {
+            basinCasting.addCastingRecipe(
+                    new ItemStack(Blocks.diamond_block),
+                    fluidStackBlock,
+                    new ItemStack(Blocks.dirt),
+                    true,
+                    50);
+        }
     }
 }

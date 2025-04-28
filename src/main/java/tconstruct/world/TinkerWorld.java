@@ -319,8 +319,10 @@ public class TinkerWorld {
 
     @Handler
     public void init(FMLInitializationEvent event) {
-        craftingTableRecipes();
-        addRecipesForFurnace();
+        if (!PHConstruct.disableAllRecipes) {
+            craftingTableRecipes();
+            addRecipesForFurnace();
+        }
         addLoot();
         createEntities();
         proxy.initialize();

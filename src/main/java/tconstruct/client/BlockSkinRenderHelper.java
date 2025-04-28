@@ -981,8 +981,8 @@ public class BlockSkinRenderHelper {
         }
 
         // safety
+        if (flowingIcon == null) flowingIcon = stillIcon != null ? stillIcon : FluidRegistry.WATER.getFlowingIcon();
         if (stillIcon == null) stillIcon = FluidRegistry.WATER.getStillIcon();
-        if (flowingIcon == null) flowingIcon = FluidRegistry.WATER.getFlowingIcon();
 
         boolean raf = renderer.renderAllFaces;
         renderer.renderAllFaces = true;
