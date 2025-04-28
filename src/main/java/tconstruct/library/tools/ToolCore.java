@@ -439,7 +439,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         for (Map.Entry<Integer, tconstruct.library.tools.ToolMaterial> integerToolMaterialEntry : TConstructRegistry.toolMaterials
                 .entrySet()) {
             tconstruct.library.tools.ToolMaterial material = integerToolMaterialEntry.getValue();
-            buildTool(integerToolMaterialEntry.getKey(), ToolBuilder.defaultToolName(material, this), list);
+            buildTool(integerToolMaterialEntry.getKey(), null, list);
         }
     }
 
