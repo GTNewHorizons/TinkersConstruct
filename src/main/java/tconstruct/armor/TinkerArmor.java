@@ -149,9 +149,9 @@ public class TinkerArmor {
     public void init(FMLInitializationEvent event) {
         if (!PHConstruct.disableAllRecipes) {
             craftingTableRecipes();
-            registerModifiers();
             addRecipesForDryingRack();
         }
+        registerModifiers();
         TConstructRegistry.equipableTab.init(travelGoggles.getDefaultItem());
         proxy.initialize();
     }
