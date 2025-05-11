@@ -601,6 +601,14 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
         return new FluidStack(FluidRegistry.LAVA, 0);
     }
 
+    public boolean hasFuel() {
+        return activeLavaTank != null;
+    }
+
+    public boolean isInUse() {
+        return inUse;
+    }
+
     public FluidStack getResultFor(ItemStack stack) {
         return Smeltery.getSmelteryResult(stack);
     }
