@@ -16,7 +16,7 @@ public class Ic2CropHarvestHandler implements CropHarvestHandler {
 
     @Override
     public boolean tryHarvest(ItemStack stack, EntityPlayer player, World world, int x, int y, int z) {
-        return world.getTileEntity(x, y, z) instanceof ICropTile crop && crop.getCrop().canBeHarvested(crop)
+        return world.getTileEntity(x, y, z) instanceof ICropTile crop && crop.getCrop() != null && crop.getCrop().canBeHarvested(crop)
                 && crop.harvest(true);
     }
 }
