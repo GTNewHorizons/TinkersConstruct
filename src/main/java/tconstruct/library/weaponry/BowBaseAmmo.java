@@ -13,7 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.common.Loader;
-import mods.battlegear2.api.core.IInventoryPlayerBattle;
+import mods.battlegear2.api.core.IBattlePlayer;
+import tconstruct.compat.Battlegear2Compat;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.BowstringMaterial;
@@ -62,8 +63,9 @@ public abstract class BowBaseAmmo extends ProjectileWeapon {
     @Override
     public ItemStack searchForAmmo(EntityPlayer player, ItemStack weapon) {
         // arrow priority: hotbar > inventory, tinker arrows > regular arrows
-        if (isBattlegear2Loaded) {
-            ItemStack offhand = ((IInventoryPlayerBattle) player.inventory).battlegear2$getCurrentOffhandWeapon();
+        if (isBattlegear2Loaded && player instanceof IBattlePlayer battlePlayer
+                && battlePlayer.battlegear2$isBattlemode()) {
+            ItemStack offhand = Battlegear2Compat.getBattlegear2Offhand(player);
             if (checkTinkerArrow(offhand) || checkVanillaArrow(offhand)) {
                 return offhand;
             }
