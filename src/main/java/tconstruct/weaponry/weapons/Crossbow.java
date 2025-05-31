@@ -12,7 +12,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.common.Loader;
-import mods.battlegear2.api.core.IInventoryPlayerBattle;
+import mods.battlegear2.api.core.IBattlePlayer;
+import tconstruct.compat.Battlegear2Compat;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.AbilityHelper;
@@ -224,8 +225,9 @@ public class Crossbow extends ProjectileWeapon {
     @Override
     public ItemStack searchForAmmo(EntityPlayer player, ItemStack weapon) {
         // arrow priority: hotbar > inventory, tinker arrows > regular arrows
-        if (isBattlegear2Loaded) {
-            ItemStack offhand = ((IInventoryPlayerBattle) player.inventory).battlegear2$getCurrentOffhandWeapon();
+        if (isBattlegear2Loaded && player instanceof IBattlePlayer battlePlayer
+                && battlePlayer.battlegear2$isBattlemode()) {
+            ItemStack offhand = Battlegear2Compat.getBattlegear2Offhand(player);
             if (offhand != null && (offhand.getItem() instanceof BoltAmmo)
                     && ((IAmmo) offhand.getItem()).getAmmoCount(offhand) > 0) {
                 return offhand;
