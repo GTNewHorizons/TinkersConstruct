@@ -1084,8 +1084,6 @@ option.tcon.smeltery=Статус плавильни
 fluid.molten.unstableIngots=Расплавленный нестабильный слиток
 fluid.molten.bedrockiumIngots=Расплавленный слиток бедрокия
 
-item.iguana.tcon.clayBucket.Quartz.name=Глиняное ведро расплавленного кварца
-
 tool.pickaxe.netherrack=Кирка из камня Нижнего мира
 tool.shovel.netherrack=Лопата из камня Нижнего мира
 tool.hatchet.netherrack=Топорик из камня Нижнего мира
