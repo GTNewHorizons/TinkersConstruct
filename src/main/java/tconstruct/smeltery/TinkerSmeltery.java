@@ -1184,7 +1184,7 @@ public class TinkerSmeltery {
         tableCasting.addCastingRecipe(
                 new ItemStack(Items.ender_pearl),
                 new FluidStack(TinkerSmeltery.moltenEnderFluid, 250),
-                new ItemStack(TinkerSmeltery.clayPattern, 1, 18),
+                new ItemStack(TinkerSmeltery.clayPattern, 1, 26),
                 true,
                 50);
 
