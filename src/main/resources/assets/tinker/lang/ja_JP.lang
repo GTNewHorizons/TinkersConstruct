@@ -453,7 +453,7 @@ item.tconstruct.Bowstring.string.name=弓弦
 item.tconstruct.Bowstring.enchantedfabric.name=エンチャントした弓弦
 item.tconstruct.Bowstring.flamestring.name=火の弓弦
 item.tconstruct.Fletching.feather.name=羽毛の矢羽
-item.tconstruct.Fletching.leaf.name葉の矢羽
+item.tconstruct.Fletching.leaf.name=葉の矢羽
 item.tconstruct.Fletching.slime.name=スライムの矢羽
 item.tconstruct.Fletching.blueslime.name=スライムの矢羽
 item.tconstruct.Fletching.slimeleaf.name=スライム状の葉の矢羽
