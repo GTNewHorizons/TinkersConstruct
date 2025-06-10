@@ -28,7 +28,9 @@ public class HealthBarRenderer extends Gui {
     private static final boolean isTukmc_vzLoaded = Loader.isModLoaded("tukmc_Vz");
     private static final boolean isBorderlandsModLoaded = Loader.isModLoaded("borderlands");
     private static final ResourceLocation TINKER_HEARTS = new ResourceLocation("tinker", "textures/gui/newhearts.png");
-    private static final ResourceLocation TINKER_HEARTS_PLUS = new ResourceLocation("tinker", "textures/gui/plus.png");
+    private static final ResourceLocation TINKER_HEARTS_CYCLE_OVERLAY = new ResourceLocation(
+            "tinker",
+            "textures/gui/hearts_cycle_overlay.png");
     private static final Minecraft mc = Minecraft.getMinecraft();
     private final Random rand = new Random();
     private int updateCounter = 0;
@@ -199,7 +201,7 @@ public class HealthBarRenderer extends Gui {
                                 9);
                         // Render '+' on this heart if its index < completed cycles
                         if (j < fullCycles && fullCycles <= 10) {
-                            mc.getTextureManager().bindTexture(TINKER_HEARTS_PLUS);
+                            mc.getTextureManager().bindTexture(TINKER_HEARTS_CYCLE_OVERLAY);
                             this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 0, 0, 9, 9);
                             mc.getTextureManager().bindTexture(TINKER_HEARTS);
                         }
