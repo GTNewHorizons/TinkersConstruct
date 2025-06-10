@@ -28,6 +28,7 @@ public class HealthBarRenderer extends Gui {
     private static final boolean isTukmc_vzLoaded = Loader.isModLoaded("tukmc_Vz");
     private static final boolean isBorderlandsModLoaded = Loader.isModLoaded("borderlands");
     private static final ResourceLocation TINKER_HEARTS = new ResourceLocation("tinker", "textures/gui/newhearts.png");
+    private static final ResourceLocation TINKER_HEARTS_PLUS = new ResourceLocation("tinker", "textures/gui/plus.png");
     private static final Minecraft mc = Minecraft.getMinecraft();
     private final Random rand = new Random();
     private int updateCounter = 0;
@@ -156,7 +157,7 @@ public class HealthBarRenderer extends Gui {
             mc.getTextureManager().bindTexture(TINKER_HEARTS);
             for (int i = Math.max(0, health / 20 - 2); i < health / 20; i++) {
                 // uncomment the line below to help with debugging
-                // yBasePos -=20;
+                // yBasePos -= 20;
                 final int heartIndexMax = Math.min(10, (health - 20 * (i + 1)) / 2);
 
                 // Determines the correct heart texture column from newhearts.png.
@@ -173,6 +174,17 @@ public class HealthBarRenderer extends Gui {
                     textureColumn = ((i - loopStartPoint) % span) + loopStartPoint;
                 }
 
+                // Calculate full cycles completed (1 cycle = all hearts looped once)
+                int firstCycleLength = loopEnd + 1;
+                int loopCycleLength = loopEnd - loopStartPoint + 1;
+                int fullCycles;
+
+                if (i < firstCycleLength) {
+                    fullCycles = 0; // first cycle, not fully completed yet
+                } else {
+                    fullCycles = 1 + (i - firstCycleLength) / loopCycleLength;
+                }
+
                 for (int j = 0; j < heartIndexMax; j++) {
                     int y = 0;
                     if (j == regen) y -= 2;
@@ -185,6 +197,12 @@ public class HealthBarRenderer extends Gui {
                                 tinkerTextureY,
                                 9,
                                 9);
+                        // Render '+' on this heart if its index < completed cycles
+                        if (j < fullCycles && fullCycles <= 10) {
+                            mc.getTextureManager().bindTexture(TINKER_HEARTS_PLUS);
+                            this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 0, 0, 9, 9);
+                            mc.getTextureManager().bindTexture(TINKER_HEARTS);
+                        }
                     }
                 }
                 if (health % 2 == 1 && heartIndexMax < 10) {
