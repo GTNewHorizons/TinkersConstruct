@@ -199,8 +199,8 @@ public class HealthBarRenderer extends Gui {
                                 tinkerTextureY,
                                 9,
                                 9);
-                        // Render '+' on this heart if its index < completed cycles
-                        if (j < fullCycles && fullCycles <= 10) {
+                        // Render cycle counter on this heart if its index < completed cycles
+                        if (j < Math.min(fullCycles, 10)) {
                             mc.getTextureManager().bindTexture(TINKER_HEARTS_CYCLE_OVERLAY);
                             this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 0, 0, 9, 9);
                             mc.getTextureManager().bindTexture(TINKER_HEARTS);
