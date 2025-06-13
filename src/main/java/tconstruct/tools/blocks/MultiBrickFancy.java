@@ -104,6 +104,11 @@ public class MultiBrickFancy extends TConstructBlock {
     }
 
     @Override
+    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
+        return world.getBlockMetadata(x, y, z) == 8 && super.canConnectRedstone(world, x, y, z, side);
+    }
+
+    @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
         if (world.getBlockMetadata(x, y, z) == 8) return 4;
         return 0;
