@@ -28,9 +28,6 @@ public class HealthBarRenderer extends Gui {
     private static final boolean isTukmc_vzLoaded = Loader.isModLoaded("tukmc_Vz");
     private static final boolean isBorderlandsModLoaded = Loader.isModLoaded("borderlands");
     private static final ResourceLocation TINKER_HEARTS = new ResourceLocation("tinker", "textures/gui/newhearts.png");
-    private static final ResourceLocation TINKER_HEARTS_OVERLAY = new ResourceLocation(
-            "tinker",
-            "textures/gui/hearts_overlay.png");
     private static final Minecraft mc = Minecraft.getMinecraft();
     private final Random rand = new Random();
     private int updateCounter = 0;
@@ -197,16 +194,20 @@ public class HealthBarRenderer extends Gui {
                                     9);
                         } else {
                             this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * 10, tinkerTextureY, 9, 9);
-                            mc.getTextureManager().bindTexture(TINKER_HEARTS_OVERLAY);
                             if (health <= 260) {
                                 int fullOverlays = overlayCount / 2;
                                 if (j < fullOverlays) {
-                                    this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 0, 0, 9, 9);
+                                    this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 0, 54, 9, 9);
                                 }
                             } else {
-                                this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * textureColumn, 0, 9, 9);
+                                this.drawTexturedModalRect(
+                                        xBasePos + 8 * j,
+                                        yBasePos + y,
+                                        18 * textureColumn,
+                                        54,
+                                        9,
+                                        9);
                             }
-                            mc.getTextureManager().bindTexture(TINKER_HEARTS);
                         }
                     }
                 }
@@ -230,23 +231,21 @@ public class HealthBarRenderer extends Gui {
                                 tinkerTextureY,
                                 9,
                                 9);
-                        mc.getTextureManager().bindTexture(TINKER_HEARTS_OVERLAY);
                         if (health <= 260) {
                             int fullOverlays = overlayCount / 2;
                             boolean hasHalfOverlay = (overlayCount % 2) == 1;
                             if (heartIndexMax == fullOverlays && hasHalfOverlay) {
-                                this.drawTexturedModalRect(xBasePos + 8 * heartIndexMax, yBasePos + y, 9, 0, 9, 9);
+                                this.drawTexturedModalRect(xBasePos + 8 * heartIndexMax, yBasePos + y, 9, 54, 9, 9);
                             }
                         } else {
                             this.drawTexturedModalRect(
                                     xBasePos + 8 * heartIndexMax,
                                     yBasePos + y,
                                     9 + 18 * textureColumn,
-                                    0,
+                                    54,
                                     9,
                                     9);
                         }
-                        mc.getTextureManager().bindTexture(TINKER_HEARTS);
                     }
                 }
             }
