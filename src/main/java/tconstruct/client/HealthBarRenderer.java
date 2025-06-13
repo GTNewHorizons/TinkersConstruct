@@ -28,9 +28,9 @@ public class HealthBarRenderer extends Gui {
     private static final boolean isTukmc_vzLoaded = Loader.isModLoaded("tukmc_Vz");
     private static final boolean isBorderlandsModLoaded = Loader.isModLoaded("borderlands");
     private static final ResourceLocation TINKER_HEARTS = new ResourceLocation("tinker", "textures/gui/newhearts.png");
-    private static final ResourceLocation TINKER_HEARTS_CYCLE_OVERLAY = new ResourceLocation(
+    private static final ResourceLocation TINKER_HEARTS_OVERLAY = new ResourceLocation(
             "tinker",
-            "textures/gui/hearts_cycle_overlay.png");
+            "textures/gui/hearts_overlay.png");
     private static final Minecraft mc = Minecraft.getMinecraft();
     private final Random rand = new Random();
     private int updateCounter = 0;
@@ -176,33 +176,23 @@ public class HealthBarRenderer extends Gui {
                     textureColumn = ((i - loopStartPoint) % span) + loopStartPoint;
                 }
 
-                // Calculate full cycles completed (1 cycle = all hearts looped once)
-                int firstCycleLength = loopEnd + 1;
-                int loopCycleLength = loopEnd - loopStartPoint + 1;
-                int fullCycles;
-
-                if (i < firstCycleLength) {
-                    fullCycles = 0; // first cycle, not fully completed yet
-                } else {
-                    fullCycles = 1 + (i - firstCycleLength) / loopCycleLength;
-                }
-
                 for (int j = 0; j < heartIndexMax; j++) {
                     int y = 0;
                     if (j == regen) y -= 2;
                     if ((i + 1) * 20 + j * 2 + 21 >= health) {
                         // full heart texture
-                        this.drawTexturedModalRect(
-                                xBasePos + 8 * j,
-                                yBasePos + y,
-                                18 * textureColumn,
-                                tinkerTextureY,
-                                9,
-                                9);
-                        // Render cycle counter on this heart if its index < completed cycles
-                        if (j < Math.min(fullCycles, 10)) {
-                            mc.getTextureManager().bindTexture(TINKER_HEARTS_CYCLE_OVERLAY);
-                            this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 0, 0, 9, 9);
+                        if (health <= 240) {
+                            this.drawTexturedModalRect(
+                                    xBasePos + 8 * j,
+                                    yBasePos + y,
+                                    18 * textureColumn,
+                                    tinkerTextureY,
+                                    9,
+                                    9);
+                        } else {
+                            this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * 10, tinkerTextureY, 9, 9);
+                            mc.getTextureManager().bindTexture(TINKER_HEARTS_OVERLAY);
+                            this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * textureColumn, 0, 9, 9);
                             mc.getTextureManager().bindTexture(TINKER_HEARTS);
                         }
                     }
@@ -211,18 +201,30 @@ public class HealthBarRenderer extends Gui {
                     int y = 0;
                     if (heartIndexMax == regen) y -= 2;
                     // half heart texture
-                    this.drawTexturedModalRect(
-                            xBasePos + 8 * heartIndexMax,
-                            yBasePos + y,
-                            9 + 18 * textureColumn,
-                            tinkerTextureY,
-                            9,
-                            9);
-                    // Render cycle counter on this heart if its index < completed cycles
-                    // even if it is a half-heart
-                    if (heartIndexMax < Math.min(fullCycles, 10)) {
-                        mc.getTextureManager().bindTexture(TINKER_HEARTS_CYCLE_OVERLAY);
-                        this.drawTexturedModalRect(xBasePos + 8 * heartIndexMax, yBasePos + y, 0, 0, 9, 9);
+                    if (health <= 240) {
+                        this.drawTexturedModalRect(
+                                xBasePos + 8 * heartIndexMax,
+                                yBasePos + y,
+                                9 + 18 * textureColumn,
+                                tinkerTextureY,
+                                9,
+                                9);
+                    } else {
+                        this.drawTexturedModalRect(
+                                xBasePos + 8 * heartIndexMax,
+                                yBasePos + y,
+                                9 + 18 * 10,
+                                tinkerTextureY,
+                                9,
+                                9);
+                        mc.getTextureManager().bindTexture(TINKER_HEARTS_OVERLAY);
+                        this.drawTexturedModalRect(
+                                xBasePos + 8 * heartIndexMax,
+                                yBasePos + y,
+                                9 + 18 * textureColumn,
+                                0,
+                                9,
+                                9);
                         mc.getTextureManager().bindTexture(TINKER_HEARTS);
                     }
                 }
