@@ -176,6 +176,12 @@ public class HealthBarRenderer extends Gui {
                     textureColumn = ((i - loopStartPoint) % span) + loopStartPoint;
                 }
 
+                // Calculate overlay count for 240-260 range
+                int overlayCount = 0;
+                if (health > 240 && health <= 260) {
+                    overlayCount = health - 240;
+                }
+
                 for (int j = 0; j < heartIndexMax; j++) {
                     int y = 0;
                     if (j == regen) y -= 2;
@@ -192,7 +198,14 @@ public class HealthBarRenderer extends Gui {
                         } else {
                             this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * 10, tinkerTextureY, 9, 9);
                             mc.getTextureManager().bindTexture(TINKER_HEARTS_OVERLAY);
-                            this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * textureColumn, 0, 9, 9);
+                            if (health <= 260) {
+                                int fullOverlays = overlayCount / 2;
+                                if (j < fullOverlays) {
+                                    this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 0, 0, 9, 9);
+                                }
+                            } else {
+                                this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * textureColumn, 0, 9, 9);
+                            }
                             mc.getTextureManager().bindTexture(TINKER_HEARTS);
                         }
                     }
@@ -218,13 +231,21 @@ public class HealthBarRenderer extends Gui {
                                 9,
                                 9);
                         mc.getTextureManager().bindTexture(TINKER_HEARTS_OVERLAY);
-                        this.drawTexturedModalRect(
-                                xBasePos + 8 * heartIndexMax,
-                                yBasePos + y,
-                                9 + 18 * textureColumn,
-                                0,
-                                9,
-                                9);
+                        if (health <= 260) {
+                            int fullOverlays = overlayCount / 2;
+                            boolean hasHalfOverlay = (overlayCount % 2) == 1;
+                            if (heartIndexMax == fullOverlays && hasHalfOverlay) {
+                                this.drawTexturedModalRect(xBasePos + 8 * heartIndexMax, yBasePos + y, 9, 0, 9, 9);
+                            }
+                        } else {
+                            this.drawTexturedModalRect(
+                                    xBasePos + 8 * heartIndexMax,
+                                    yBasePos + y,
+                                    9 + 18 * textureColumn,
+                                    0,
+                                    9,
+                                    9);
+                        }
                         mc.getTextureManager().bindTexture(TINKER_HEARTS);
                     }
                 }
