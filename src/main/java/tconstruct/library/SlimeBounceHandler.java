@@ -5,11 +5,9 @@ import java.util.IdentityHashMap;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import tconstruct.gadgets.item.ItemSlimeBoots;
 
@@ -71,11 +69,6 @@ public class SlimeBounceHandler {
                 info.lastAngle = atan2(entity.motionZ, entity.motionX);
             }
         }
-    }
-
-    public static void registerEvent(Object o) {
-        MinecraftForge.EVENT_BUS.register(o);
-        FMLCommonHandler.instance().bus().register(o);
     }
 
     /** Called on living tick to preserve momentum and bounce */

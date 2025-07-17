@@ -21,6 +21,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 
@@ -48,7 +49,7 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
         armorPart = ArmorPart.Feet;
         textureFolder = "armor";
         textureName = "slime";
-        SlimeBounceHandler.registerEvent(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     @Override
