@@ -35,46 +35,10 @@ import tconstruct.util.network.ArmourGuiSyncPacket;
 @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
 public class TinkerArmorEvents implements IMobExtraInfoProvider {
 
-    @SubscribeEvent
-    public void onLivingDrop(LivingDropsEvent event) {
-        // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideDropsInformation!
-        if (event.entityLiving == null) return;
-
-        if (!event.entityLiving.worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) return;
-
-        if (TConstruct.random.nextInt(200) == 0 && event.entityLiving instanceof IMob
-                && event.source.damageType.equals("player")) {
-            ItemStack dropStack = new ItemStack(TinkerArmor.heartCanister, 1, 1);
-            EntityItem entityitem = new EntityItem(
-                    event.entityLiving.worldObj,
-                    event.entityLiving.posX,
-                    event.entityLiving.posY,
-                    event.entityLiving.posZ,
-                    dropStack);
-            entityitem.delayBeforeCanPickup = 10;
-            event.drops.add(entityitem);
-        }
-
-        if (event.entityLiving instanceof IBossDisplayData) {
-            String entityName = event.entityLiving.getClass().getSimpleName().toLowerCase();
-            for (String name : PHConstruct.heartDropBlacklist)
-                if (name.toLowerCase(Locale.US).equals(entityName)) return;
-
-            int count = event.entityLiving instanceof EntityDragon ? 5 : 1;
-            for (int i = 0; i < count; i++) {
-                ItemStack dropStack = new ItemStack(TinkerArmor.heartCanister, 1, 3);
-                EntityItem entityitem = new EntityItem(
-                        event.entityLiving.worldObj,
-                        event.entityLiving.posX,
-                        event.entityLiving.posY,
-                        event.entityLiving.posZ,
-                        dropStack);
-                entityitem.delayBeforeCanPickup = 10;
-                event.drops.add(entityitem);
-            }
-        }
+    public EventHandler handler;
+    public TinkerArmorEvents(){
+        handler = new EventHandler();
     }
-
     @Optional.Method(modid = "mobsinfo")
     @Override
     public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
@@ -108,76 +72,118 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
         }
     }
 
-    /* Abilities */
-    @SubscribeEvent
-    public void armorMineSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
-        if (event.entityPlayer == null) return;
+    public class EventHandler{
+        @SubscribeEvent
+        public void onLivingDrop(LivingDropsEvent event) {
+            // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideDropsInformation!
+            if (event.entityLiving == null) return;
 
-        ItemStack glove = TPlayerStats.get(event.entityPlayer).armor.getStackInSlot(1);
-        if (event.entityPlayer.worldObj.isRemote) { // todo: sync extended inventory with clients so this stuff and
-                                                    // rendering is done
-            // properly...
-            if (ArmorProxyClient.armorExtended != null) glove = ArmorProxyClient.armorExtended.getStackInSlot(1);
-            else glove = null;
-        }
-        if (glove == null || !glove.hasTagCompound()) return;
+            if (!event.entityLiving.worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) return;
 
-        // ok, we got a glove. bonus mining speeeeed
-        NBTTagCompound tags = glove.getTagCompound().getCompoundTag(TinkerArmor.travelGlove.getBaseTagName());
-        float mineSpeed = tags.getInteger("MiningSpeed");
+            if (TConstruct.random.nextInt(200) == 0 && event.entityLiving instanceof IMob
+                    && event.source.damageType.equals("player")) {
+                ItemStack dropStack = new ItemStack(TinkerArmor.heartCanister, 1, 1);
+                EntityItem entityitem = new EntityItem(
+                        event.entityLiving.worldObj,
+                        event.entityLiving.posX,
+                        event.entityLiving.posY,
+                        event.entityLiving.posZ,
+                        dropStack);
+                entityitem.delayBeforeCanPickup = 10;
+                event.drops.add(entityitem);
+            }
 
-        float modifier = 1f + mineSpeed / 1000f;
-        float base = mineSpeed / 250f;
-        event.newSpeed = (event.originalSpeed + base) * modifier;
-    }
+            if (event.entityLiving instanceof IBossDisplayData) {
+                String entityName = event.entityLiving.getClass().getSimpleName().toLowerCase();
+                for (String name : PHConstruct.heartDropBlacklist)
+                    if (name.toLowerCase(Locale.US).equals(entityName)) return;
 
-    @SubscribeEvent
-    public void jumpHeight(LivingJumpEvent event) {
-        ItemStack stack = event.entityLiving.getEquipmentInSlot(2);
-        if (stack != null && stack.getItem() instanceof TravelWings) {
-            event.entityLiving.motionY += 0.2;
-        }
-    }
-
-    @SubscribeEvent
-    public void slimefall(LivingFallEvent event) {
-        ItemStack boots = event.entityLiving.getEquipmentInSlot(1);
-        if (boots != null && boots.getItem() instanceof IModifyable) {
-            NBTTagCompound tag = boots.getTagCompound()
-                    .getCompoundTag(((IModifyable) boots.getItem()).getBaseTagName());
-            int sole = tag.getInteger("Slimy Soles");
-            if (sole > 0) {
-                event.distance /= (1 + sole);
-                event.entityLiving.fallDistance /= (1 + sole);
+                int count = event.entityLiving instanceof EntityDragon ? 5 : 1;
+                for (int i = 0; i < count; i++) {
+                    ItemStack dropStack = new ItemStack(TinkerArmor.heartCanister, 1, 3);
+                    EntityItem entityitem = new EntityItem(
+                            event.entityLiving.worldObj,
+                            event.entityLiving.posX,
+                            event.entityLiving.posY,
+                            event.entityLiving.posZ,
+                            dropStack);
+                    entityitem.delayBeforeCanPickup = 10;
+                    event.drops.add(entityitem);
+                }
             }
         }
-    }
 
-    @SubscribeEvent
-    public void perfectDodge(LivingAttackEvent event) {
-        if (!event.source.isProjectile()) return;
+        /* Abilities */
+        @SubscribeEvent
+        public void armorMineSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+            if (event.entityPlayer == null) return;
 
-        // perfect dodge?
-        if (!(event.entityLiving instanceof EntityPlayer)) return;
+            ItemStack glove = TPlayerStats.get(event.entityPlayer).armor.getStackInSlot(1);
+            if (event.entityPlayer.worldObj.isRemote) { // todo: sync extended inventory with clients so this stuff and
+                // rendering is done
+                // properly...
+                if (ArmorProxyClient.armorExtended != null) glove = ArmorProxyClient.armorExtended.getStackInSlot(1);
+                else glove = null;
+            }
+            if (glove == null || !glove.hasTagCompound()) return;
 
-        EntityPlayer player = (EntityPlayer) event.entityLiving;
-        ItemStack chest = player.getCurrentArmor(2);
-        if (chest == null || !(chest.getItem() instanceof IModifyable) || !chest.hasTagCompound()) return;
+            // ok, we got a glove. bonus mining speeeeed
+            NBTTagCompound tags = glove.getTagCompound().getCompoundTag(TinkerArmor.travelGlove.getBaseTagName());
+            float mineSpeed = tags.getInteger("MiningSpeed");
 
-        NBTTagCompound tags = chest.getTagCompound().getCompoundTag(((IModifyable) chest.getItem()).getBaseTagName());
-        int dodge = tags.getInteger("Perfect Dodge");
-        if (dodge > TConstruct.random.nextInt(10)) event.setCanceled(true);
-    }
+            float modifier = 1f + mineSpeed / 1000f;
+            float base = mineSpeed / 250f;
+            event.newSpeed = (event.originalSpeed + base) * modifier;
+        }
 
-    @SubscribeEvent
-    public void joinWorld(EntityJoinWorldEvent event) {
-        if (event.entity instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP) event.entity;
-            TPlayerStats stats = TPlayerStats.get(player);
-            NBTTagCompound tag = new NBTTagCompound();
-            stats.saveNBTData(tag);
-            ArmourGuiSyncPacket syncPacket = new ArmourGuiSyncPacket(tag);
-            TConstruct.packetPipeline.sendTo(syncPacket, player);
+        @SubscribeEvent
+        public void jumpHeight(LivingJumpEvent event) {
+            ItemStack stack = event.entityLiving.getEquipmentInSlot(2);
+            if (stack != null && stack.getItem() instanceof TravelWings) {
+                event.entityLiving.motionY += 0.2;
+            }
+        }
+
+        @SubscribeEvent
+        public void slimefall(LivingFallEvent event) {
+            ItemStack boots = event.entityLiving.getEquipmentInSlot(1);
+            if (boots != null && boots.getItem() instanceof IModifyable) {
+                NBTTagCompound tag = boots.getTagCompound()
+                        .getCompoundTag(((IModifyable) boots.getItem()).getBaseTagName());
+                int sole = tag.getInteger("Slimy Soles");
+                if (sole > 0) {
+                    event.distance /= (1 + sole);
+                    event.entityLiving.fallDistance /= (1 + sole);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void perfectDodge(LivingAttackEvent event) {
+            if (!event.source.isProjectile()) return;
+
+            // perfect dodge?
+            if (!(event.entityLiving instanceof EntityPlayer)) return;
+
+            EntityPlayer player = (EntityPlayer) event.entityLiving;
+            ItemStack chest = player.getCurrentArmor(2);
+            if (chest == null || !(chest.getItem() instanceof IModifyable) || !chest.hasTagCompound()) return;
+
+            NBTTagCompound tags = chest.getTagCompound().getCompoundTag(((IModifyable) chest.getItem()).getBaseTagName());
+            int dodge = tags.getInteger("Perfect Dodge");
+            if (dodge > TConstruct.random.nextInt(10)) event.setCanceled(true);
+        }
+
+        @SubscribeEvent
+        public void joinWorld(EntityJoinWorldEvent event) {
+            if (event.entity instanceof EntityPlayerMP) {
+                EntityPlayerMP player = (EntityPlayerMP) event.entity;
+                TPlayerStats stats = TPlayerStats.get(player);
+                NBTTagCompound tag = new NBTTagCompound();
+                stats.saveNBTData(tag);
+                ArmourGuiSyncPacket syncPacket = new ArmourGuiSyncPacket(tag);
+                TConstruct.packetPipeline.sendTo(syncPacket, player);
+            }
         }
     }
 }
