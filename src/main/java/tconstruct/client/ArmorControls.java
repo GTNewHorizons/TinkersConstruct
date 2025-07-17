@@ -197,6 +197,7 @@ public class ArmorControls {
     }
 
     public class EventHandler {
+
         @SubscribeEvent
         public void keyEvent(KeyInputEvent event) {
             if (!isNotEnoughKeysLoaded) {

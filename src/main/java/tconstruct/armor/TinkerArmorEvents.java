@@ -36,9 +36,11 @@ import tconstruct.util.network.ArmourGuiSyncPacket;
 public class TinkerArmorEvents implements IMobExtraInfoProvider {
 
     public EventHandler handler;
-    public TinkerArmorEvents(){
+
+    public TinkerArmorEvents() {
         handler = new EventHandler();
     }
+
     @Optional.Method(modid = "mobsinfo")
     @Override
     public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
@@ -72,7 +74,8 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
         }
     }
 
-    public class EventHandler{
+    public class EventHandler {
+
         @SubscribeEvent
         public void onLivingDrop(LivingDropsEvent event) {
             // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideDropsInformation!
@@ -169,7 +172,8 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
             ItemStack chest = player.getCurrentArmor(2);
             if (chest == null || !(chest.getItem() instanceof IModifyable) || !chest.hasTagCompound()) return;
 
-            NBTTagCompound tags = chest.getTagCompound().getCompoundTag(((IModifyable) chest.getItem()).getBaseTagName());
+            NBTTagCompound tags = chest.getTagCompound()
+                    .getCompoundTag(((IModifyable) chest.getItem()).getBaseTagName());
             int dodge = tags.getInteger("Perfect Dodge");
             if (dodge > TConstruct.random.nextInt(10)) event.setCanceled(true);
         }

@@ -41,9 +41,11 @@ import tconstruct.util.config.PHConstruct;
 public class TinkerWorldEvents implements IMobExtraInfoProvider {
 
     public EventHandler handler;
-    public TinkerWorldEvents(){
+
+    public TinkerWorldEvents() {
         handler = new EventHandler();
     }
+
     public static void spawnEntityLiving(double x, double y, double z, EntityLiving entity, World world) {
         if (!world.isRemote) {
             entity.setPosition(x, y, z);
@@ -74,7 +76,9 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
             }
         }
     }
+
     public class EventHandler {
+
         @SubscribeEvent
         public void onLivingSpawn(LivingSpawnEvent.SpecialSpawn event) {
             EntityLivingBase living = event.entityLiving;
@@ -93,13 +97,19 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
                 orb.mountEntity(creeper);
             }
         }
+
         /* Bonemeal */
         @SubscribeEvent
         public void bonemealEvent(BonemealEvent event) {
             if (!event.world.isRemote) {
                 if (event.block == TinkerWorld.slimeSapling) {
-                    if (TinkerWorld.slimeSapling
-                            .boneFertilize(event.world, event.x, event.y, event.z, event.world.rand, event.entityPlayer))
+                    if (TinkerWorld.slimeSapling.boneFertilize(
+                            event.world,
+                            event.x,
+                            event.y,
+                            event.z,
+                            event.world.rand,
+                            event.entityPlayer))
                         event.setResult(Event.Result.ALLOW);
                     else event.setCanceled(true);
                 }

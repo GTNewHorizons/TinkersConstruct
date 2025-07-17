@@ -43,6 +43,7 @@ public class TPlayerHandler {
     private final ConcurrentHashMap<UUID, TPlayerStats> playerStats = new ConcurrentHashMap<>();
 
     public EventHandler handler;
+
     public TPlayerHandler() {
         handler = new EventHandler();
     }
@@ -264,6 +265,7 @@ public class TPlayerHandler {
     }
 
     public class EventHandler {
+
         @SubscribeEvent
         public void PlayerLoggedInEvent(PlayerLoggedInEvent event) {
             onPlayerLogin(event.player);
