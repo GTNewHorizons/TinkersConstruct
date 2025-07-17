@@ -193,7 +193,7 @@ public class TConstruct {
         AoEExclusionList.init(new File(event.getModConfigurationDirectory(), "TConstruct_AOEExclusions.cfg"));
 
         playerTracker = new TPlayerHandler();
-        FMLCommonHandler.instance().bus().register(playerTracker);
+        FMLCommonHandler.instance().bus().register(playerTracker.handler);
         MinecraftForge.EVENT_BUS.register(playerTracker);
         NetworkRegistry.INSTANCE.registerGuiHandler(TConstruct.instance, proxy);
 

@@ -42,21 +42,9 @@ public class TPlayerHandler {
 
     private final ConcurrentHashMap<UUID, TPlayerStats> playerStats = new ConcurrentHashMap<>();
 
-    @SubscribeEvent
-    public void PlayerLoggedInEvent(PlayerLoggedInEvent event) {
-        onPlayerLogin(event.player);
-    }
-
-    @SubscribeEvent
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        onPlayerRespawn(event.player);
-    }
-
-    @SubscribeEvent
-    public void onEntityConstructing(EntityEvent.EntityConstructing event) {
-        if (event.entity instanceof EntityPlayer && TPlayerStats.get((EntityPlayer) event.entity) == null) {
-            TPlayerStats.register((EntityPlayer) event.entity);
-        }
+    public EventHandler handler;
+    public TPlayerHandler() {
+        handler = new EventHandler();
     }
 
     public void onPlayerLogin(EntityPlayer player) {
@@ -210,52 +198,6 @@ public class TPlayerHandler {
         }
     }
 
-    @SubscribeEvent
-    public void livingFall(LivingFallEvent evt) // Only for negating fall damage
-    {
-        if (evt.entityLiving instanceof EntityPlayer) {
-            evt.distance -= 1;
-        }
-    }
-
-    @SubscribeEvent
-    public void playerDeath(LivingDeathEvent event) {
-        if (!(event.entity instanceof EntityPlayer)) return;
-
-        if (!event.entity.worldObj.isRemote) {
-            TPlayerStats properties = (TPlayerStats) event.entity.getExtendedProperties(TPlayerStats.PROP_NAME);
-            properties.hunger = ((EntityPlayer) event.entity).getFoodStats().getFoodLevel();
-            playerStats.put(event.entity.getPersistentID(), properties);
-        }
-    }
-
-    @SubscribeEvent
-    public void playerDrops(PlayerDropsEvent evt) {
-        // After playerDeath event. Modifying saved data.
-        TPlayerStats stats = playerStats.get(evt.entityPlayer.getPersistentID());
-
-        stats.level = evt.entityPlayer.experienceLevel / 2;
-        // stats.health = 20;
-        int hunger = evt.entityPlayer.getFoodStats().getFoodLevel();
-        if (hunger < 6) stats.hunger = 6;
-        else stats.hunger = evt.entityPlayer.getFoodStats().getFoodLevel();
-
-        if (evt.entityPlayer.capturedDrops != evt.drops) {
-            evt.entityPlayer.capturedDrops.clear();
-        }
-
-        evt.entityPlayer.captureDrops = true;
-        stats.armor.dropItems();
-        stats.knapsack.dropItems();
-        evt.entityPlayer.captureDrops = false;
-
-        if (evt.entityPlayer.capturedDrops != evt.drops) {
-            evt.drops.addAll(evt.entityPlayer.capturedDrops);
-        }
-
-        playerStats.put(evt.entityPlayer.getPersistentID(), stats);
-    }
-
     /* Modify Player */
     public void updateSize(String user, float offset) {
         /*
@@ -318,6 +260,71 @@ public class TPlayerHandler {
             br.close();
         } catch (Exception e) {
             TConstruct.logger.error(e.getMessage() != null ? e.getMessage() : "UNKOWN DL ERROR", e);
+        }
+    }
+
+    public class EventHandler {
+        @SubscribeEvent
+        public void PlayerLoggedInEvent(PlayerLoggedInEvent event) {
+            onPlayerLogin(event.player);
+        }
+
+        @SubscribeEvent
+        public void onPlayerRespawn(PlayerRespawnEvent event) {
+            TPlayerHandler.this.onPlayerRespawn(event.player);
+        }
+
+        @SubscribeEvent
+        public void onEntityConstructing(EntityEvent.EntityConstructing event) {
+            if (event.entity instanceof EntityPlayer && TPlayerStats.get((EntityPlayer) event.entity) == null) {
+                TPlayerStats.register((EntityPlayer) event.entity);
+            }
+        }
+
+        @SubscribeEvent
+        public void livingFall(LivingFallEvent evt) // Only for negating fall damage
+        {
+            if (evt.entityLiving instanceof EntityPlayer) {
+                evt.distance -= 1;
+            }
+        }
+
+        @SubscribeEvent
+        public void playerDeath(LivingDeathEvent event) {
+            if (!(event.entity instanceof EntityPlayer)) return;
+
+            if (!event.entity.worldObj.isRemote) {
+                TPlayerStats properties = (TPlayerStats) event.entity.getExtendedProperties(TPlayerStats.PROP_NAME);
+                properties.hunger = ((EntityPlayer) event.entity).getFoodStats().getFoodLevel();
+                playerStats.put(event.entity.getPersistentID(), properties);
+            }
+        }
+
+        @SubscribeEvent
+        public void playerDrops(PlayerDropsEvent evt) {
+            // After playerDeath event. Modifying saved data.
+            TPlayerStats stats = playerStats.get(evt.entityPlayer.getPersistentID());
+
+            stats.level = evt.entityPlayer.experienceLevel / 2;
+            // stats.health = 20;
+            int hunger = evt.entityPlayer.getFoodStats().getFoodLevel();
+            if (hunger < 6) stats.hunger = 6;
+            else stats.hunger = evt.entityPlayer.getFoodStats().getFoodLevel();
+
+            if (evt.entityPlayer.capturedDrops != evt.drops) {
+                evt.entityPlayer.capturedDrops.clear();
+            }
+
+            evt.entityPlayer.captureDrops = true;
+            stats.armor.dropItems();
+            stats.knapsack.dropItems();
+            evt.entityPlayer.captureDrops = false;
+
+            if (evt.entityPlayer.capturedDrops != evt.drops) {
+                evt.drops.addAll(evt.entityPlayer.capturedDrops);
+            }
+
+            playerStats.put(evt.entityPlayer.getPersistentID(), stats);
         }
     }
 }
