@@ -60,8 +60,8 @@ public class ArmorProxyClient extends ArmorProxyCommon {
     @Override
     public void preInit() {
         controlInstance = new ArmorControls();
-        FMLCommonHandler.instance().bus().register(controlInstance);
-        MinecraftForge.EVENT_BUS.register(controlInstance);
+        FMLCommonHandler.instance().bus().register(controlInstance.handler);
+        MinecraftForge.EVENT_BUS.register(controlInstance.handler);
         MinecraftForge.EVENT_BUS.register(new TabRegistry());
     }
 

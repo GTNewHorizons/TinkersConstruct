@@ -51,10 +51,12 @@ public class ArmorControls {
 
     private final KeyBinding[] keys;
     private boolean isNotEnoughKeysLoaded;
+    public EventHandler handler;
 
     public ArmorControls() {
         getVanillaKeyBindings();
         keys = new KeyBinding[] { armorKey, toggleGoggles, beltSwap, zoomKey, null, null };
+        handler = new EventHandler();
     }
 
     public void registerKeys() {
@@ -77,21 +79,6 @@ public class ArmorControls {
         mc = Minecraft.getMinecraft();
         jumpKey = mc.gameSettings.keyBindJump;
         invKey = mc.gameSettings.keyBindInventory;
-    }
-
-    @SubscribeEvent
-    public void keyEvent(KeyInputEvent event) {
-        if (!isNotEnoughKeysLoaded) {
-            checkAndPerformKeyActions(null, false);
-        }
-    }
-
-    @Optional.Method(modid = "notenoughkeys")
-    @SubscribeEvent
-    public void keyEventSpecial(KeyBindingPressedEvent event) {
-        if (event.keyBinding != null && event.isKeyBindingPressed) {
-            checkAndPerformKeyActions(event.keyBinding, true);
-        }
     }
 
     private void checkAndPerformKeyActions(KeyBinding keyBinding, boolean inputFromNotEnoughKeys) {
@@ -207,5 +194,22 @@ public class ArmorControls {
 
     static void updateServer(AbstractPacket abstractPacket) {
         TConstruct.packetPipeline.sendToServer(abstractPacket);
+    }
+
+    public class EventHandler {
+        @SubscribeEvent
+        public void keyEvent(KeyInputEvent event) {
+            if (!isNotEnoughKeysLoaded) {
+                checkAndPerformKeyActions(null, false);
+            }
+        }
+
+        @Optional.Method(modid = "notenoughkeys")
+        @SubscribeEvent
+        public void keyEventSpecial(KeyBindingPressedEvent event) {
+            if (event.keyBinding != null && event.isKeyBindingPressed) {
+                checkAndPerformKeyActions(event.keyBinding, true);
+            }
+        }
     }
 }
