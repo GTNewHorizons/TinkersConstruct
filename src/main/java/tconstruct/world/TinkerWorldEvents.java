@@ -40,12 +40,6 @@ import tconstruct.util.config.PHConstruct;
 @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
 public class TinkerWorldEvents implements IMobExtraInfoProvider {
 
-    public EventHandler handler;
-
-    public TinkerWorldEvents() {
-        handler = new EventHandler();
-    }
-
     public static void spawnEntityLiving(double x, double y, double z, EntityLiving entity, World world) {
         if (!world.isRemote) {
             entity.setPosition(x, y, z);
@@ -77,7 +71,7 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
         }
     }
 
-    public class EventHandler {
+    public static class EventHandler {
 
         @SubscribeEvent
         public void onLivingSpawn(LivingSpawnEvent.SpecialSpawn event) {

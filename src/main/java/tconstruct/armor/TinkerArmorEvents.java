@@ -35,12 +35,6 @@ import tconstruct.util.network.ArmourGuiSyncPacket;
 @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
 public class TinkerArmorEvents implements IMobExtraInfoProvider {
 
-    public EventHandler handler;
-
-    public TinkerArmorEvents() {
-        handler = new EventHandler();
-    }
-
     @Optional.Method(modid = "mobsinfo")
     @Override
     public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
@@ -74,7 +68,7 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
         }
     }
 
-    public class EventHandler {
+    public static class EventHandler {
 
         @SubscribeEvent
         public void onLivingDrop(LivingDropsEvent event) {

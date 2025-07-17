@@ -149,7 +149,7 @@ public class TinkerWorld {
 
     @Handler
     public void preInit(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(new TinkerWorldEvents().handler);
+        MinecraftForge.EVENT_BUS.register(new TinkerWorldEvents.EventHandler());
 
         // Blocks
         TinkerWorld.meatBlock = new MeatBlock().setBlockName("tconstruct.meatblock");

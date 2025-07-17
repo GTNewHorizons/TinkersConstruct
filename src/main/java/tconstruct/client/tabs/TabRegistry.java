@@ -17,11 +17,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TabRegistry {
 
     private static final ArrayList<AbstractTab> tabList = new ArrayList<>();
-    public EventHandler handler;
-
-    public TabRegistry() {
-        handler = new EventHandler();
-    }
 
     public static void registerTab(AbstractTab tab) {
         tabList.add(tab);
@@ -86,7 +81,7 @@ public class TabRegistry {
         return 0;
     }
 
-    public class EventHandler {
+    public static class EventHandler {
 
         @SideOnly(Side.CLIENT)
         @SubscribeEvent

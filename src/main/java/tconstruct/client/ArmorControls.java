@@ -5,10 +5,12 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -51,12 +53,13 @@ public class ArmorControls {
 
     private final KeyBinding[] keys;
     private boolean isNotEnoughKeysLoaded;
-    public EventHandler handler;
 
     public ArmorControls() {
         getVanillaKeyBindings();
         keys = new KeyBinding[] { armorKey, toggleGoggles, beltSwap, zoomKey, null, null };
-        handler = new EventHandler();
+        EventHandler handler = new EventHandler();
+        FMLCommonHandler.instance().bus().register(handler);
+        MinecraftForge.EVENT_BUS.register(handler);
     }
 
     public void registerKeys() {

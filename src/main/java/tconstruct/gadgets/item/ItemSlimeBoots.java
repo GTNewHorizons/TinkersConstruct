@@ -174,7 +174,7 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
         return new FancyEntityItem(world, location, itemstack);
     }
 
-    public class EventHandler {
+    public static class EventHandler {
 
         /** Called when an entity lands to handle the event */
         @SubscribeEvent

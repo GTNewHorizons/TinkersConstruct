@@ -91,7 +91,7 @@ public class TinkerArmor {
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit();
 
-        MinecraftForge.EVENT_BUS.register(new TinkerArmorEvents().handler);
+        MinecraftForge.EVENT_BUS.register(new TinkerArmorEvents.EventHandler());
         FMLCommonHandler.instance().bus().register(new ArmorAbilities());
 
         TinkerArmor.dryingRack = new DryingRack().setBlockName("Armor.DryingRack");

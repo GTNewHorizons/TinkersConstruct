@@ -12,7 +12,6 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -193,8 +192,6 @@ public class TConstruct {
         AoEExclusionList.init(new File(event.getModConfigurationDirectory(), "TConstruct_AOEExclusions.cfg"));
 
         playerTracker = new TPlayerHandler();
-        FMLCommonHandler.instance().bus().register(playerTracker.handler);
-        MinecraftForge.EVENT_BUS.register(playerTracker);
         NetworkRegistry.INSTANCE.registerGuiHandler(TConstruct.instance, proxy);
 
         if (PHConstruct.globalDespawn != 6000 && PHConstruct.globalDespawn != 0) {
