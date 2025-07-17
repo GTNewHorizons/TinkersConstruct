@@ -18,6 +18,7 @@ public class TabRegistry {
 
     private static final ArrayList<AbstractTab> tabList = new ArrayList<>();
     public EventHandler handler;
+
     public TabRegistry() {
         handler = new EventHandler();
     }
@@ -85,7 +86,8 @@ public class TabRegistry {
         return 0;
     }
 
-    public class EventHandler{
+    public class EventHandler {
+
         @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event) {
