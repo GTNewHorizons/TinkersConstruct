@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Loader;
@@ -16,10 +17,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TabRegistry {
 
-    public EventHandler handler;
+    static {
+        new TabRegistry().registerEvent();
+    }
 
-    public TabRegistry() {
-        handler = new EventHandler();
+    private void registerEvent() {
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     private static final ArrayList<AbstractTab> tabList = new ArrayList<>();
