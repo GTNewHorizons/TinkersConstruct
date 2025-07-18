@@ -16,6 +16,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TabRegistry {
 
+    public EventHandler handler;
+
+    public TabRegistry() {
+        handler = new EventHandler();
+    }
+
     private static final ArrayList<AbstractTab> tabList = new ArrayList<>();
 
     public static void registerTab(AbstractTab tab) {
@@ -81,21 +87,26 @@ public class TabRegistry {
         return 0;
     }
 
-    public static class EventHandler {
+    // Client method
+    public void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event) {
+        if ((event.gui instanceof GuiInventory)) {
+            int xSize = 176;
+            int ySize = 166;
+            int guiLeft = (event.gui.width - xSize) / 2;
+            int guiTop = (event.gui.height - ySize) / 2;
+            guiLeft += getPotionOffset();
+
+            updateTabValues(guiLeft, guiTop, InventoryTabVanilla.class);
+            addTabsToList(event.gui.buttonList);
+        }
+    }
+
+    public class EventHandler {
 
         @SideOnly(Side.CLIENT)
         @SubscribeEvent
-        public void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event) {
-            if ((event.gui instanceof GuiInventory)) {
-                int xSize = 176;
-                int ySize = 166;
-                int guiLeft = (event.gui.width - xSize) / 2;
-                int guiTop = (event.gui.height - ySize) / 2;
-                guiLeft += getPotionOffset();
-
-                updateTabValues(guiLeft, guiTop, InventoryTabVanilla.class);
-                addTabsToList(event.gui.buttonList);
-            }
+        public void guiPostInitWrapper(GuiScreenEvent.InitGuiEvent.Post event) {
+            TabRegistry.this.guiPostInit(event);
         }
     }
 }
