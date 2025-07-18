@@ -262,7 +262,7 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean advanced) {
         super.addInformation(stack, player, lines, advanced);
-        addBaubleInformation(lines);
+        if (LoadedMods.baubles) addBaubleInformation(lines);
     }
 
     @SideOnly(Side.CLIENT)
