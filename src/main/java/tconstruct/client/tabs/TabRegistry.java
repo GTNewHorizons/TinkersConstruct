@@ -17,11 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TabRegistry {
 
-    static {
-        new TabRegistry().registerEvent();
-    }
-
-    private void registerEvent() {
+    public void registerEvent() {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
