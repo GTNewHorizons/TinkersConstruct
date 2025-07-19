@@ -2,7 +2,6 @@ package tconstruct.library.weaponry;
 
 import java.util.List;
 
-import baubles.api.expanded.BaubleExpandedSlots;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,6 +13,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
+import baubles.api.expanded.BaubleExpandedSlots;
 import baubles.api.expanded.IBaubleExpanded;
 import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.Optional;
@@ -21,7 +21,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
-import tconstruct.TConstruct;
 import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.ToolCore;
