@@ -2,6 +2,7 @@ package tconstruct.library.weaponry;
 
 import java.util.List;
 
+import baubles.api.expanded.BaubleExpandedSlots;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -222,7 +223,7 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
     @Override
     @Optional.Method(modid = "Baubles|Expanded")
     public String[] getBaubleTypes(ItemStack itemstack) {
-        return new String[] { TConstruct.AMMOBAUBLESLOT };
+        return new String[] { BaubleExpandedSlots.quiverType };
     }
 
     // Fallback for base Baubles

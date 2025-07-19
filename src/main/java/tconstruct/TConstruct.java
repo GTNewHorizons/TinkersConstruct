@@ -138,8 +138,6 @@ public class TConstruct {
             modID,
             new ForgeCFG("TinkersModules", "Modules: Disabling these will disable a chunk of the mod"));
 
-    public static final String AMMOBAUBLESLOT = "quiver";
-
     public TConstruct() {
         if (Loader.isModLoaded("Natura")) {
             logger.info("Natura, what are we going to do tomorrow night?");
@@ -226,8 +224,8 @@ public class TConstruct {
         TConstructAPI.PROP_NAME = TPlayerStats.PROP_NAME;
 
         if (LoadedMods.baublesExpanded) {
-            BaubleExpandedSlots.tryRegisterType(AMMOBAUBLESLOT);
-            BaubleExpandedSlots.tryAssignSlotOfType(AMMOBAUBLESLOT);
+            BaubleExpandedSlots.tryRegisterType(BaubleExpandedSlots.quiverType);
+            BaubleExpandedSlots.tryAssignSlotOfType(BaubleExpandedSlots.quiverType);
         }
     }
 
