@@ -107,8 +107,7 @@ import tconstruct.world.village.VillageToolStationHandler;
                 + "after:NotEnoughItems;"
                 + "after:Waila;"
                 + "before:GalacticraftCore;"
-                + "before:UndergroundBiomes;"
-                + "after:Baubles|Expanded")
+                + "before:UndergroundBiomes")
 public class TConstruct {
 
     public static final String modVersion = Tags.VERSION;
