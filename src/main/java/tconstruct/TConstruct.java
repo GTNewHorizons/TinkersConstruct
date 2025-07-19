@@ -12,6 +12,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import baubles.api.expanded.BaubleExpandedSlots;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -42,6 +43,7 @@ import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.player.TPlayerHandler;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.common.TProxyCommon;
+import tconstruct.compat.LoadedMods;
 import tconstruct.gadgets.TinkerGadgets;
 import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructCreativeTab;
@@ -105,7 +107,8 @@ import tconstruct.world.village.VillageToolStationHandler;
                 + "after:NotEnoughItems;"
                 + "after:Waila;"
                 + "before:GalacticraftCore;"
-                + "before:UndergroundBiomes")
+                + "before:UndergroundBiomes;"
+                + "after:Baubles|Expanded")
 public class TConstruct {
 
     public static final String modVersion = Tags.VERSION;
@@ -135,6 +138,8 @@ public class TConstruct {
     public static PulseManager pulsar = new PulseManager(
             modID,
             new ForgeCFG("TinkersModules", "Modules: Disabling these will disable a chunk of the mod"));
+
+    public static final String AMMOBAUBLESLOT = "quiver";
 
     public TConstruct() {
         if (Loader.isModLoaded("Natura")) {
@@ -220,6 +225,11 @@ public class TConstruct {
         }
 
         TConstructAPI.PROP_NAME = TPlayerStats.PROP_NAME;
+
+        if (LoadedMods.baublesExpanded) {
+            BaubleExpandedSlots.tryRegisterType(AMMOBAUBLESLOT);
+            BaubleExpandedSlots.tryAssignSlotOfType(AMMOBAUBLESLOT);
+        }
     }
 
     @EventHandler
