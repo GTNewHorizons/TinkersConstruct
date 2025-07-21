@@ -5,12 +5,11 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-
-import com.mojang.realmsclient.gui.ChatFormatting;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import tconstruct.items.tools.FryingPan;
@@ -79,8 +78,8 @@ public class AchievementEvents {
             return;
 
         event.toolTip.add(
-                "" + ChatFormatting.DARK_PURPLE
-                        + ChatFormatting.ITALIC
+                "" + EnumChatFormatting.DARK_PURPLE
+                        + EnumChatFormatting.ITALIC
                         + StatCollector.translateToLocal("frypankill.tooltip"));
     }
 }
