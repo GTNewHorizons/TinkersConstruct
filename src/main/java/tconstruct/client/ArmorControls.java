@@ -199,21 +199,30 @@ public class ArmorControls {
         TConstruct.packetPipeline.sendToServer(abstractPacket);
     }
 
+    public void keyEvent(KeyInputEvent event) {
+        if (!isNotEnoughKeysLoaded) {
+            checkAndPerformKeyActions(null, false);
+        }
+    }
+
+    @Optional.Method(modid = "notenoughkeys")
+    public void keyEventSpecial(KeyBindingPressedEvent event) {
+        if (event.keyBinding != null && event.isKeyBindingPressed) {
+            checkAndPerformKeyActions(event.keyBinding, true);
+        }
+    }
+
     public class EventHandler {
 
         @SubscribeEvent
-        public void keyEvent(KeyInputEvent event) {
-            if (!isNotEnoughKeysLoaded) {
-                checkAndPerformKeyActions(null, false);
-            }
+        public void keyEventWrapper(KeyInputEvent event) {
+            ArmorControls.this.keyEvent(event);
         }
 
         @Optional.Method(modid = "notenoughkeys")
         @SubscribeEvent
-        public void keyEventSpecial(KeyBindingPressedEvent event) {
-            if (event.keyBinding != null && event.isKeyBindingPressed) {
-                checkAndPerformKeyActions(event.keyBinding, true);
-            }
+        public void keyEventSpecialWrapper(KeyBindingPressedEvent event) {
+            ArmorControls.this.keyEventSpecial(event);
         }
     }
 }
