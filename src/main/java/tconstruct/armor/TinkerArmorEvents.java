@@ -34,8 +34,10 @@ import tconstruct.util.network.ArmourGuiSyncPacket;
 
 @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
 public class TinkerArmorEvents implements IMobExtraInfoProvider {
+
     public EventHandler handler;
-    public TinkerArmorEvents(){
+
+    public TinkerArmorEvents() {
         handler = new EventHandler();
     }
 
@@ -163,8 +165,7 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
         ItemStack chest = player.getCurrentArmor(2);
         if (chest == null || !(chest.getItem() instanceof IModifyable) || !chest.hasTagCompound()) return;
 
-        NBTTagCompound tags = chest.getTagCompound()
-                .getCompoundTag(((IModifyable) chest.getItem()).getBaseTagName());
+        NBTTagCompound tags = chest.getTagCompound().getCompoundTag(((IModifyable) chest.getItem()).getBaseTagName());
         int dodge = tags.getInteger("Perfect Dodge");
         if (dodge > TConstruct.random.nextInt(10)) event.setCanceled(true);
     }

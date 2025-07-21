@@ -265,11 +265,9 @@ public class TPlayerHandler {
         }
     }
 
-
     public void PlayerLoggedInEvent(PlayerLoggedInEvent event) {
         onPlayerLogin(event.player);
     }
-
 
     public void onEntityConstructing(EntityEvent.EntityConstructing event) {
         if (event.entity instanceof EntityPlayer && TPlayerStats.get((EntityPlayer) event.entity) == null) {
@@ -277,14 +275,12 @@ public class TPlayerHandler {
         }
     }
 
-
     public void livingFall(LivingFallEvent evt) // Only for negating fall damage
     {
         if (evt.entityLiving instanceof EntityPlayer) {
             evt.distance -= 1;
         }
     }
-
 
     public void playerDeath(LivingDeathEvent event) {
         if (!(event.entity instanceof EntityPlayer)) return;
@@ -295,7 +291,6 @@ public class TPlayerHandler {
             playerStats.put(event.entity.getPersistentID(), properties);
         }
     }
-
 
     public void playerDrops(PlayerDropsEvent evt) {
         // After playerDeath event. Modifying saved data.
@@ -322,7 +317,6 @@ public class TPlayerHandler {
 
         playerStats.put(evt.entityPlayer.getPersistentID(), stats);
     }
-
 
     public class EventHandler {
 
