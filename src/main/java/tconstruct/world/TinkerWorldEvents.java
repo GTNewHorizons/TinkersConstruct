@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -40,10 +41,8 @@ import tconstruct.util.config.PHConstruct;
 @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
 public class TinkerWorldEvents implements IMobExtraInfoProvider {
 
-    public EventHandler handler;
-
-    public TinkerWorldEvents() {
-        handler = new EventHandler();
+    public void registerEvents() {
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     public static void spawnEntityLiving(double x, double y, double z, EntityLiving entity, World world) {

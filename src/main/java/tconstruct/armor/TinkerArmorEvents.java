@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -35,10 +36,8 @@ import tconstruct.util.network.ArmourGuiSyncPacket;
 @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
 public class TinkerArmorEvents implements IMobExtraInfoProvider {
 
-    public EventHandler handler;
-
-    public TinkerArmorEvents() {
-        handler = new EventHandler();
+    public void registerEvents() {
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     @Optional.Method(modid = "mobsinfo")
