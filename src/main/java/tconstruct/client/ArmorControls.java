@@ -84,6 +84,19 @@ public class ArmorControls {
         invKey = mc.gameSettings.keyBindInventory;
     }
 
+    public void keyEvent(KeyInputEvent event) {
+        if (!isNotEnoughKeysLoaded) {
+            checkAndPerformKeyActions(null, false);
+        }
+    }
+
+    @Optional.Method(modid = "notenoughkeys")
+    public void keyEventSpecial(KeyBindingPressedEvent event) {
+        if (event.keyBinding != null && event.isKeyBindingPressed) {
+            checkAndPerformKeyActions(event.keyBinding, true);
+        }
+    }
+
     private void checkAndPerformKeyActions(KeyBinding keyBinding, boolean inputFromNotEnoughKeys) {
         if (inputFromNotEnoughKeys ? keyBinding == armorKey : armorKey.isPressed()) {
             openArmorGui();
@@ -202,18 +215,14 @@ public class ArmorControls {
     public class EventHandler {
 
         @SubscribeEvent
-        public void keyEvent(KeyInputEvent event) {
-            if (!isNotEnoughKeysLoaded) {
-                checkAndPerformKeyActions(null, false);
-            }
+        public void keyEventWrapper(KeyInputEvent event) {
+            ArmorControls.this.keyEvent(event);
         }
 
         @Optional.Method(modid = "notenoughkeys")
         @SubscribeEvent
-        public void keyEventSpecial(KeyBindingPressedEvent event) {
-            if (event.keyBinding != null && event.isKeyBindingPressed) {
-                checkAndPerformKeyActions(event.keyBinding, true);
-            }
+        public void keyEventSpecialWrapper(KeyBindingPressedEvent event) {
+            ArmorControls.this.keyEventSpecial(event);
         }
     }
 }

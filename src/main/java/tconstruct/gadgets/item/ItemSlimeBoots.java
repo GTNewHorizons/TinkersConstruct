@@ -72,6 +72,63 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
         return itemStackIn;
     }
 
+    /** Called when an entity lands to handle the event */
+    // RUBBERY BOUNCY BOUNCERY WOOOOO
+    public void onFall(LivingFallEvent event) {
+        final EntityLivingBase living = event.entityLiving;
+        // using fall distance as the event distance could be reduced by jump boost
+        if (living == null || living.fallDistance <= 2f) {
+            return;
+        }
+        // can the entity bounce?
+        if (!SlimeBounceHandler.hasSlimeBoots(living)) {
+            return;
+        }
+
+        // reduced fall damage when crouching
+        if (living.isSneaking()) {
+            event.distance = 1;
+            return;
+        }
+
+        // thing is wearing slime boots. let's get bouncyyyyy
+        event.setCanceled(true);
+        // skip further client processing on players
+        if (living.worldObj.isRemote) {
+            living.playSound("mob.slime.small", 1f, 1f);
+            SlimeBounceHandler.addBounceHandler(living);
+            return;
+        }
+
+        // server players behave differently than non-server players, they have no
+        // velocity during the event, so we need to reverse engineer it
+        Vec3 motion = SlimeBounceHandler.getMotion(living);
+        if (living instanceof EntityPlayerMP) {
+            // velocity is lost on server players, but we don't have to defer the bounce
+            double gravity = 0.2353455252;
+            double time = Math.sqrt(living.fallDistance / gravity);
+            double velocity = gravity * time / 2;
+            living.motionX = motion.xCoord / 0.95f;
+            living.motionY = velocity;
+            living.motionZ = motion.zCoord / 0.95f;
+            living.velocityChanged = true;
+            // preserve momentum
+            SlimeBounceHandler.addBounceHandler(living);
+        } else {
+            // for non-players, need to defer the bounce
+            // only slow down half as much when bouncing
+            living.motionX = motion.xCoord / 0.95f;
+            living.motionY = motion.yCoord * -0.9;
+            living.motionZ = motion.zCoord / 0.95f;
+            SlimeBounceHandler.addBounceHandler(living, SlimeBounceHandler.getMotion(living).yCoord);
+        }
+        // update airborn status
+        living.isAirBorne = true;
+        living.onGround = false;
+        event.distance = 0f;
+        living.playSound("mob.slime.small", 1f, 1f);
+    }
+
     @Override
     public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
         return 0;
@@ -175,65 +232,15 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
         return new FancyEntityItem(world, location, itemstack);
     }
 
-    public static class EventHandler {
+    public class EventHandler {
 
-        /** Called when an entity lands to handle the event */
+        /**
+         * Called when an entity lands to handle the event
+         */
         @SubscribeEvent
         // RUBBERY BOUNCY BOUNCERY WOOOOO
         public void onFall(LivingFallEvent event) {
-            final EntityLivingBase living = event.entityLiving;
-            // using fall distance as the event distance could be reduced by jump boost
-            if (living == null || living.fallDistance <= 2f) {
-                return;
-            }
-            // can the entity bounce?
-            if (!SlimeBounceHandler.hasSlimeBoots(living)) {
-                return;
-            }
-
-            // reduced fall damage when crouching
-            if (living.isSneaking()) {
-                event.distance = 1;
-                return;
-            }
-
-            // thing is wearing slime boots. let's get bouncyyyyy
-            event.setCanceled(true);
-            // skip further client processing on players
-            if (living.worldObj.isRemote) {
-                living.playSound("mob.slime.small", 1f, 1f);
-                SlimeBounceHandler.addBounceHandler(living);
-                return;
-            }
-
-            // server players behave differently than non-server players, they have no
-            // velocity during the event, so we need to reverse engineer it
-            Vec3 motion = SlimeBounceHandler.getMotion(living);
-            if (living instanceof EntityPlayerMP) {
-                // velocity is lost on server players, but we don't have to defer the bounce
-                double gravity = 0.2353455252;
-                double time = Math.sqrt(living.fallDistance / gravity);
-                double velocity = gravity * time / 2;
-                living.motionX = motion.xCoord / 0.95f;
-                living.motionY = velocity;
-                living.motionZ = motion.zCoord / 0.95f;
-                living.velocityChanged = true;
-                // preserve momentum
-                SlimeBounceHandler.addBounceHandler(living);
-            } else {
-                // for non-players, need to defer the bounce
-                // only slow down half as much when bouncing
-                living.motionX = motion.xCoord / 0.95f;
-                living.motionY = motion.yCoord * -0.9;
-                living.motionZ = motion.zCoord / 0.95f;
-                SlimeBounceHandler.addBounceHandler(living, SlimeBounceHandler.getMotion(living).yCoord);
-            }
-            // update airborn status
-            living.isAirBorne = true;
-            living.onGround = false;
-            event.distance = 0f;
-            living.playSound("mob.slime.small", 1f, 1f);
+            ItemSlimeBoots.this.onFall(event);
         }
-
     }
 }

@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -91,7 +90,7 @@ public class TinkerArmor {
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit();
 
-        MinecraftForge.EVENT_BUS.register(new TinkerArmorEvents.EventHandler());
+        new TinkerArmorEvents().registerEvents();
         FMLCommonHandler.instance().bus().register(new ArmorAbilities());
 
         TinkerArmor.dryingRack = new DryingRack().setBlockName("Armor.DryingRack");
