@@ -198,7 +198,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
         playFiringSound(world, player, weapon, ammo, projectileSpeed, accuracy);
 
         // use up ammo
-        if (!player.capabilities.isCreativeMode) {
+        if (!player.capabilities.isCreativeMode && !world.isRemote) {
             if (ammo.getItem() instanceof IAmmo) {
                 if (ammo.hasTagCompound()) {
                     int ammoReinforced = ammo.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");

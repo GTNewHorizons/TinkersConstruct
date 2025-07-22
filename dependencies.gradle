@@ -17,6 +17,7 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:Mobs-Info:0.5.3-GTNH:dev")
     compileOnlyApi("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
     compileOnlyApi("com.github.GTNewHorizons:Natura:2.8.8:dev")
+    compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.1.9-GTNH:dev')
 
     // For testing scythe crop harvesting
     // devOnlyNonPublishable("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")

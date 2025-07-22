@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
 import tconstruct.TConstruct;
@@ -27,18 +28,13 @@ public class ArrowAmmo extends AmmoItem {
 
     @Override
     public String getIconSuffix(int partType) {
-        switch (partType) {
-            case 0:
-                return "_arrow_head";
-            case 1:
-                return ""; // Doesn't break
-            case 2:
-                return "_arrow_shaft";
-            case 3:
-                return "_arrow_fletching";
-            default:
-                return "";
-        }
+        return switch (partType) {
+            case 0 -> "_arrow_head";
+            case 1 -> ""; // Doesn't break
+            case 2 -> "_arrow_shaft";
+            case 3 -> "_arrow_fletching";
+            default -> "";
+        };
     }
 
     @Override
@@ -89,7 +85,7 @@ public class ArrowAmmo extends AmmoItem {
     }
 
     @Override
-    public void buildTool(int id, String name, List list) {
+    public void buildTool(int id, String name, List<ItemStack> list) {
         if (TConstructRegistry.getArrowMaterial(id) == null) return;
 
         ItemStack handleStack = new ItemStack(getHandleItem(), 1, 0); // wooden shaft
@@ -104,7 +100,7 @@ public class ArrowAmmo extends AmmoItem {
     }
 
     @Override
-    public void getSubItems(Item id, CreativeTabs tab, List list) {
+    public void getSubItems(Item id, CreativeTabs tab, List<ItemStack> list) {
         super.getSubItems(id, tab, list);
 
         // vanilla arrow
@@ -134,9 +130,9 @@ public class ArrowAmmo extends AmmoItem {
     @Override
     public String getAbilityNameForType(int type, int part) {
         // blaze shaft?
-        if (part == 1 && type == 3) return "\u00a76" + StatCollector.translateToLocal("modifier.tool.blaze");
-        if (part >= 1) // only head has ability otherwise
-            return "";
+        if (part == 1 && type == 3)
+            return EnumChatFormatting.GOLD + StatCollector.translateToLocal("modifier.tool.blaze");
+        if (part > 1) return ""; // only head has ability otherwise
         return super.getAbilityNameForType(type, part);
     }
 }
