@@ -45,37 +45,6 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
-    public static void spawnEntityLiving(double x, double y, double z, EntityLiving entity, World world) {
-        if (!world.isRemote) {
-            entity.setPosition(x, y, z);
-            entity.onSpawnWithEgg(null);
-            world.spawnEntityInWorld(entity);
-        }
-    }
-
-    @Optional.Method(modid = "mobsinfo")
-    @Override
-    public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
-            @Nonnull MobRecipe recipe) {
-        if (recipe.entity.getClass() == EntityGhast.class) {
-            if (PHConstruct.uhcGhastDrops) {
-                for (MobDrop drop : drops) {
-                    if (drop.stack.getItem() == Items.ghast_tear) {
-                        drop.stack = new ItemStack(Items.gold_ingot);
-                        drop.reconstructableStack = new ConstructableItemStack(drop.stack);
-                    }
-                }
-            } else {
-                for (MobDrop drop : drops) {
-                    if (drop.stack.getItem() == Items.ghast_tear) {
-                        drop.chance += 10000;
-                        drop.clampChance();
-                    }
-                }
-            }
-        }
-    }
-
     public void onLivingSpawn(LivingSpawnEvent.SpecialSpawn event) {
         EntityLivingBase living = event.entityLiving;
         if (living.getClass() == EntitySpider.class && TConstruct.random.nextInt(100) == 0) {
@@ -91,6 +60,14 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
                     living.posZ,
                     TConstruct.random.nextInt(20) + 20);
             orb.mountEntity(creeper);
+        }
+    }
+
+    public static void spawnEntityLiving(double x, double y, double z, EntityLiving entity, World world) {
+        if (!world.isRemote) {
+            entity.setPosition(x, y, z);
+            entity.onSpawnWithEgg(null);
+            world.spawnEntityInWorld(entity);
         }
     }
 
@@ -150,6 +127,29 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
                 }
             } else {
                 ItemHelper.addDrops(event, new ItemStack(Items.ghast_tear, 1));
+            }
+        }
+    }
+
+    @Optional.Method(modid = "mobsinfo")
+    @Override
+    public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
+            @Nonnull MobRecipe recipe) {
+        if (recipe.entity.getClass() == EntityGhast.class) {
+            if (PHConstruct.uhcGhastDrops) {
+                for (MobDrop drop : drops) {
+                    if (drop.stack.getItem() == Items.ghast_tear) {
+                        drop.stack = new ItemStack(Items.gold_ingot);
+                        drop.reconstructableStack = new ConstructableItemStack(drop.stack);
+                    }
+                }
+            } else {
+                for (MobDrop drop : drops) {
+                    if (drop.stack.getItem() == Items.ghast_tear) {
+                        drop.chance += 10000;
+                        drop.clampChance();
+                    }
+                }
             }
         }
     }
