@@ -19,6 +19,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.kuba6000.mobsinfo.api.IMobExtraInfoProvider;
 import com.kuba6000.mobsinfo.api.MobDrop;
@@ -38,39 +39,6 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
 
     public void registerEvents() {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
-    }
-
-    @Optional.Method(modid = "mobsinfo")
-    @Override
-    public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
-            @Nonnull MobRecipe recipe) {
-        if (recipe.entity instanceof IMob) {
-            MobDrop drop = new MobDrop(
-                    new ItemStack(TinkerArmor.heartCanister, 1, 1),
-                    MobDrop.DropType.Normal,
-                    50,
-                    null,
-                    null,
-                    false,
-                    false);
-            drops.add(drop);
-        }
-
-        if (recipe.entity instanceof IBossDisplayData) {
-            String entityName = recipe.entity.getClass().getSimpleName().toLowerCase();
-            for (String name : PHConstruct.heartDropBlacklist)
-                if (name.toLowerCase(Locale.US).equals(entityName)) return;
-
-            MobDrop drop = new MobDrop(
-                    new ItemStack(TinkerArmor.heartCanister, recipe.entity instanceof EntityDragon ? 5 : 1, 3),
-                    MobDrop.DropType.Normal,
-                    10000,
-                    null,
-                    null,
-                    false,
-                    false);
-            drops.add(drop);
-        }
     }
 
     public void onLivingDrop(LivingDropsEvent event) {
@@ -112,8 +80,41 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
         }
     }
 
+    @Optional.Method(modid = "mobsinfo")
+    @Override
+    public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
+            @Nonnull MobRecipe recipe) {
+        if (recipe.entity instanceof IMob) {
+            MobDrop drop = new MobDrop(
+                    new ItemStack(TinkerArmor.heartCanister, 1, 1),
+                    MobDrop.DropType.Normal,
+                    50,
+                    null,
+                    null,
+                    false,
+                    false);
+            drops.add(drop);
+        }
+
+        if (recipe.entity instanceof IBossDisplayData) {
+            String entityName = recipe.entity.getClass().getSimpleName().toLowerCase();
+            for (String name : PHConstruct.heartDropBlacklist)
+                if (name.toLowerCase(Locale.US).equals(entityName)) return;
+
+            MobDrop drop = new MobDrop(
+                    new ItemStack(TinkerArmor.heartCanister, recipe.entity instanceof EntityDragon ? 5 : 1, 3),
+                    MobDrop.DropType.Normal,
+                    10000,
+                    null,
+                    null,
+                    false,
+                    false);
+            drops.add(drop);
+        }
+    }
+
     /* Abilities */
-    public void armorMineSpeed(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+    public void armorMineSpeed(PlayerEvent.BreakSpeed event) {
         if (event.entityPlayer == null) return;
 
         ItemStack glove = TPlayerStats.get(event.entityPlayer).armor.getStackInSlot(1);
@@ -189,7 +190,7 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
 
         /* Abilities */
         @SubscribeEvent
-        public void armorMineSpeedWrapper(net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed event) {
+        public void armorMineSpeedWrapper(PlayerEvent.BreakSpeed event) {
             TinkerArmorEvents.this.armorMineSpeed(event);
         }
 
