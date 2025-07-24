@@ -1,7 +1,7 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnlyApi('com.github.GTNewHorizons:Angelica:1.0.0-beta51:api')
+    compileOnlyApi('com.github.GTNewHorizons:Angelica:1.0.0-beta53:api')
     api("com.github.GTNewHorizons:Mantle:0.5.1:dev")
     api("com.github.GTNewHorizons:ForgeMultipart:1.6.7:dev")
     implementation("com.github.GTNewHorizons:NotEnoughItems:2.7.66-GTNH:dev")
