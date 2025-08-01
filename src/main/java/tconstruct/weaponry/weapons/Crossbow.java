@@ -145,10 +145,10 @@ public class Crossbow extends ProjectileWeapon {
 
         // remove loaded item
         if (!world.isRemote) {
-            if (ammo.getItem() instanceof IAmmo) {
+            if (ammo.getItem() instanceof IAmmo ammoItem) {
                 if (ammo.hasTagCompound()) {
                     int ammoReinforced = ammo.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");
-                    if (random.nextInt(10) < 10 - ammoReinforced) ((IAmmo) ammo.getItem()).consumeAmmo(1, ammo);
+                    if (random.nextInt(10) < 10 - ammoReinforced) ammoItem.consumeAmmo(1, ammo);
                 }
             } else player.inventory.consumeInventoryItem(ammo.getItem());
         }

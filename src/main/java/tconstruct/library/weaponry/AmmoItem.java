@@ -90,8 +90,9 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
     }
 
     public boolean pickupAmmo(ItemStack stack, ItemStack candidate, EntityPlayer player) {
-        if (stack.getItem() == null || !stack.hasTagCompound() || !(stack.getItem() instanceof IAmmo pickedup))
+        if (stack.getItem() == null || !stack.hasTagCompound() || !(stack.getItem() instanceof IAmmo pickedup)) {
             return false;
+        }
 
         // check if our candidate fits
         if (candidate != null) {
