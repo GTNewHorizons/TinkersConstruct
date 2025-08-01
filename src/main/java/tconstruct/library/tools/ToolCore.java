@@ -334,7 +334,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         list.add("");
         int attack = (int) (tags.getCompoundTag("InfiTool").getInteger("Attack") * this.getDamageModifier());
         list.add(
-                EnumChatFormatting.BLUE.toString() + "+" + attack
+                EnumChatFormatting.BLUE.toString() + "+"
+                        + attack
                         + " "
                         + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
     }
