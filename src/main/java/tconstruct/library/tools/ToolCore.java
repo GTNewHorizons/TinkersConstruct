@@ -394,18 +394,17 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     String getReinforcedString(int reinforced) {
         if (reinforced > 9) return StatCollector.translateToLocal("tool.unbreakable");
-        String ret = StatCollector.translateToLocal("tool.reinforced") + " ";
-        return switch (reinforced) {
-            case 1 -> ret + "I";
-            case 2 -> ret + "II";
-            case 3 -> ret + "III";
-            case 4 -> ret + "IV";
-            case 5 -> ret + "V";
-            case 6 -> ret + "VI";
-            case 7 -> ret + "VII";
-            case 8 -> ret + "VIII";
-            case 9 -> ret + "IX";
-            default -> ret + "X";
+        return StatCollector.translateToLocal("tool.reinforced") + " " + switch (reinforced) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            default -> "X";
         };
     }
 

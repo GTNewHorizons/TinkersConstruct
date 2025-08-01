@@ -72,7 +72,7 @@ public abstract class BowBaseAmmo extends ProjectileWeapon {
 
         if (LoadedMods.baubles) {
             for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
-                if (checkTinkerArrow(bauble) || checkVanillaArrow(bauble)) {
+                if (checkTinkerArrow(bauble)) {
                     return bauble;
                 }
             }

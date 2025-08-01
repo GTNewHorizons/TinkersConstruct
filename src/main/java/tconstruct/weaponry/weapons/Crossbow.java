@@ -68,8 +68,8 @@ public class Crossbow extends ProjectileWeapon {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
 
-        // unload on shift-rightclick
-        if (player.isSneaking()) if (unload(stack, player, tags)) return stack;
+        // unload on sneak right-click
+        if (player.isSneaking() && unload(stack, player, tags)) return stack;
 
         // loaded
         if (tags.getBoolean("Loaded")) fire(stack, world, player);
@@ -94,8 +94,9 @@ public class Crossbow extends ProjectileWeapon {
         if (tags.hasKey("Reloading")) {
             int timeLeft = tags.getInteger("Reloading");
             timeLeft--;
-            if (timeLeft > 0) tags.setInteger("Reloading", timeLeft);
-            else {
+            if (timeLeft > 0) {
+                tags.setInteger("Reloading", timeLeft);
+            } else {
                 tags.removeTag("Reloading");
                 reload(stack, player, world, tags);
             }
@@ -106,20 +107,20 @@ public class Crossbow extends ProjectileWeapon {
     public float getWindupProgress(ItemStack itemStack, EntityPlayer player) {
         NBTTagCompound tags = itemStack.getTagCompound().getCompoundTag("InfiTool");
 
-        // loaded, full accuracy
-        if (tags.getBoolean("Loaded")) return 1.0f;
-        // not loaded, but reloading -> progress
-        else if (tags.hasKey("Reloading"))
+        if (tags.getBoolean("Loaded")) { // loaded, full accuracy
+            return 1.0f;
+        } else if (tags.hasKey("Reloading")) { // not loaded, but reloading -> progress
             return 1.0f - ((float) tags.getInteger("Reloading")) / ((float) getWindupTime(itemStack));
-        // not loaded and not reloading -> no accuracy!
-        else return 0.0f;
+        } else { // not loaded and not reloading -> no accuracy!
+            return 0.0f;
+        }
     }
 
     public void initiateReload(ItemStack stack, EntityPlayer player, NBTTagCompound tags) {
         if (tags.getBoolean("Broken")) return;
 
         // has ammo?
-        if (searchForAmmo(player, stack) != null) if (!tags.hasKey("Reloading"))
+        if (searchForAmmo(player, stack) != null && !tags.hasKey("Reloading"))
             // start reloading
             tags.setInteger("Reloading", getWindupTime(stack));
     }
@@ -150,7 +151,9 @@ public class Crossbow extends ProjectileWeapon {
                     int ammoReinforced = ammo.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");
                     if (random.nextInt(10) < 10 - ammoReinforced) ammoItem.consumeAmmo(1, ammo);
                 }
-            } else player.inventory.consumeInventoryItem(ammo.getItem());
+            } else {
+                player.inventory.consumeInventoryItem(ammo.getItem());
+            }
         }
 
         playReloadSound(world, player, weapon, ammo);
@@ -325,7 +328,6 @@ public class Crossbow extends ProjectileWeapon {
             case 3 -> getCorrectAnimationIcon(animationExtraIcons, tags.getInteger("RenderExtra"), progress);
             default -> emptyIcon;
         };
-
     }
 
     @Override

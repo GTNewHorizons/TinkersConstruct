@@ -96,18 +96,18 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
 
         // check if our candidate fits
         if (candidate != null) {
-            if (ammoCanStack(stack, pickedup, candidate)) return true;
+            if (tryStackAmmo(stack, pickedup, candidate)) return true;
         }
 
         // search the player's inventory
         for (ItemStack invItem : player.inventory.mainInventory) {
-            if (ammoCanStack(stack, pickedup, invItem)) return true;
+            if (tryStackAmmo(stack, pickedup, invItem)) return true;
         }
 
         // search bauble slots
         if (LoadedMods.baubles) {
             for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
-                if (ammoCanStack(stack, pickedup, bauble)) return true;
+                if (tryStackAmmo(stack, pickedup, bauble)) return true;
             }
         }
 
@@ -115,7 +115,7 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
         return false;
     }
 
-    private boolean ammoCanStack(ItemStack stack, IAmmo pickedup, ItemStack bauble) {
+    private boolean tryStackAmmo(ItemStack stack, IAmmo pickedup, ItemStack bauble) {
         if (!testIfAmmoMatches(stack, bauble)) {
             return false;
         }
@@ -274,7 +274,11 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
                 lines.add(StatCollector.translateToLocal("tooltip.compatibleslots"));
                 lines.add(StatCollector.translateToLocal("slot.quiver"));
                 if (LoadedMods.tiCTooltips) lines.add(""); // Required for spacing
-            } else if (!LoadedMods.tiCTooltips) lines.add(StatCollector.translateToLocal("tooltip.shiftprompt"));
-        } else lines.add(StatCollector.translateToLocal("baubletype.any"));
+            } else if (!LoadedMods.tiCTooltips) {
+                lines.add(StatCollector.translateToLocal("tooltip.shiftprompt"));
+            }
+        } else {
+            lines.add(StatCollector.translateToLocal("baubletype.any"));
+        }
     }
 }
