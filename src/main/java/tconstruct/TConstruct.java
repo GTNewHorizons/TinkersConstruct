@@ -12,6 +12,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import baubles.api.expanded.BaubleExpandedSlots;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -42,6 +43,7 @@ import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.player.TPlayerHandler;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.common.TProxyCommon;
+import tconstruct.compat.LoadedMods;
 import tconstruct.gadgets.TinkerGadgets;
 import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructCreativeTab;
@@ -220,6 +222,11 @@ public class TConstruct {
         }
 
         TConstructAPI.PROP_NAME = TPlayerStats.PROP_NAME;
+
+        if (LoadedMods.baublesExpanded) {
+            BaubleExpandedSlots.tryRegisterType(BaubleExpandedSlots.quiverType);
+            BaubleExpandedSlots.tryAssignSlotOfType(BaubleExpandedSlots.quiverType);
+        }
     }
 
     @EventHandler

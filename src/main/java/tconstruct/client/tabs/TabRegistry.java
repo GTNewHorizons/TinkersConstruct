@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 import codechicken.nei.NEIClientConfig;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -17,10 +16,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class TabRegistry {
-
-    public void registerEvent() {
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
-    }
 
     private static final ArrayList<AbstractTab> tabList = new ArrayList<>();
 
@@ -32,7 +27,8 @@ public class TabRegistry {
         return tabList;
     }
 
-    // Client method
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
     public void guiPostInit(GuiScreenEvent.InitGuiEvent.Post event) {
         if ((event.gui instanceof GuiInventory)) {
             int xSize = 176;
@@ -92,14 +88,5 @@ public class TabRegistry {
         }
         // No potions, no offset needed
         return 0;
-    }
-
-    public class EventHandler {
-
-        @SideOnly(Side.CLIENT)
-        @SubscribeEvent
-        public void guiPostInitWrapper(GuiScreenEvent.InitGuiEvent.Post event) {
-            TabRegistry.this.guiPostInit(event);
-        }
     }
 }

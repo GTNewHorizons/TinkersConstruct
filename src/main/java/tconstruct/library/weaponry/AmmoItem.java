@@ -1,22 +1,36 @@
 package tconstruct.library.weaponry;
 
+import java.util.List;
+
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
+import baubles.api.expanded.BaubleExpandedSlots;
+import baubles.api.expanded.IBaubleExpanded;
+import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.TinkerTools;
 
 @Optional.InterfaceList({
-        @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon") })
-public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IAmmo {
+        @Optional.Interface(modid = "battlegear2", iface = "mods.battlegear2.api.weapons.IBattlegearWeapon"),
+        @Optional.Interface(modid = "Baubles|Expanded", iface = "baubles.api.expanded.IBaubleExpanded"),
+        @Optional.Interface(modid = "Baubles", iface = "baubles.api.IBauble") })
+public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IAmmo, IBauble, IBaubleExpanded {
 
     public AmmoItem(int baseDamage, String name) {
         super(baseDamage);
@@ -76,33 +90,40 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
     }
 
     public boolean pickupAmmo(ItemStack stack, ItemStack candidate, EntityPlayer player) {
-        if (stack.getItem() == null || !stack.hasTagCompound() || !(stack.getItem() instanceof IAmmo)) return false;
+        if (stack.getItem() == null || !stack.hasTagCompound() || !(stack.getItem() instanceof IAmmo pickedup)) {
+            return false;
+        }
 
         // check if our candidate fits
         if (candidate != null) {
-            // same item
-            if (testIfAmmoMatches(stack, candidate)) {
-                IAmmo pickedup = ((IAmmo) stack.getItem());
-                IAmmo ininventory = ((IAmmo) candidate.getItem());
-                // we can be sure that it's ammo, since stack is ammo and they're equal
-                int count = pickedup.getAmmoCount(stack);
-                if (count != ininventory.addAmmo(count, candidate)) return true;
-            }
+            if (tryStackAmmo(stack, pickedup, candidate)) return true;
         }
 
-        // search the players inventory
+        // search the player's inventory
         for (ItemStack invItem : player.inventory.mainInventory) {
-            if (testIfAmmoMatches(stack, invItem)) {
-                IAmmo pickedup = ((IAmmo) stack.getItem());
-                IAmmo ininventory = ((IAmmo) invItem.getItem());
-                // we can be sure that it's ammo, since stack is ammo and they're equal
-                int count = pickedup.getAmmoCount(stack);
-                if (count != ininventory.addAmmo(count, invItem)) return true;
+            if (tryStackAmmo(stack, pickedup, invItem)) return true;
+        }
+
+        // search bauble slots
+        if (LoadedMods.baubles) {
+            for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
+                if (tryStackAmmo(stack, pickedup, bauble)) return true;
             }
         }
 
         // couldn't find a matching thing.
         return false;
+    }
+
+    private boolean tryStackAmmo(ItemStack stack, IAmmo pickedup, ItemStack bauble) {
+        if (!testIfAmmoMatches(stack, bauble)) {
+            return false;
+        }
+
+        IAmmo ininventory = ((IAmmo) bauble.getItem());
+        // we can be sure that it's ammo, since stack is ammo and they're equal
+        int count = pickedup.getAmmoCount(stack);
+        return count != ininventory.addAmmo(count, bauble);
     }
 
     private boolean testIfAmmoMatches(ItemStack reference, ItemStack candidate) {
@@ -197,5 +218,67 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
         return (mainhand != null && mainhand.getItem() != TinkerTools.cleaver
                 && mainhand.getItem() != TinkerTools.battleaxe)
                 && (offhand.getItem() != TinkerTools.cleaver && offhand.getItem() != TinkerTools.battleaxe);
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles|Expanded")
+    public String[] getBaubleTypes(ItemStack itemstack) {
+        return new String[] { BaubleExpandedSlots.quiverType };
+    }
+
+    // Fallback for base Baubles
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public BaubleType getBaubleType(ItemStack itemStack) {
+        return BaubleType.RING;
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        onUpdate(itemstack, player.worldObj, player, 0, false);
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
+        return true;
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
+        return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean advanced) {
+        super.addInformation(stack, player, lines, advanced);
+        if (LoadedMods.baubles) addBaubleInformation(lines);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "Baubles")
+    private void addBaubleInformation(List<String> lines) {
+        if (LoadedMods.baublesExpanded) {
+            if (GuiScreen.isShiftKeyDown()) {
+                lines.add(StatCollector.translateToLocal("tooltip.compatibleslots"));
+                lines.add(StatCollector.translateToLocal("slot.quiver"));
+                if (LoadedMods.tiCTooltips) lines.add(""); // Required for spacing
+            } else if (!LoadedMods.tiCTooltips) {
+                lines.add(StatCollector.translateToLocal("tooltip.shiftprompt"));
+            }
+        } else {
+            lines.add(StatCollector.translateToLocal("baubletype.any"));
+        }
     }
 }

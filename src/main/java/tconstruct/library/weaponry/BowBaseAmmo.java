@@ -12,9 +12,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.Loader;
+import baubles.common.lib.PlayerHandler;
 import mods.battlegear2.api.core.IBattlePlayer;
 import tconstruct.compat.Battlegear2Compat;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.BowstringMaterial;
@@ -23,8 +24,6 @@ import tconstruct.weaponry.ammo.ArrowAmmo;
 import tconstruct.weaponry.entity.ArrowEntity;
 
 public abstract class BowBaseAmmo extends ProjectileWeapon {
-
-    private static final boolean isBattlegear2Loaded = Loader.isModLoaded("battlegear2");
 
     public BowBaseAmmo(int baseDamage, String name) {
         super(baseDamage, name);
@@ -62,12 +61,20 @@ public abstract class BowBaseAmmo extends ProjectileWeapon {
 
     @Override
     public ItemStack searchForAmmo(EntityPlayer player, ItemStack weapon) {
-        // arrow priority: hotbar > inventory, tinker arrows > regular arrows
-        if (isBattlegear2Loaded && player instanceof IBattlePlayer battlePlayer
+        // arrow priority: offhand > bauble slots > hotbar > inventory, tinker arrows > regular arrows
+        if (LoadedMods.battlegear2 && player instanceof IBattlePlayer battlePlayer
                 && battlePlayer.battlegear2$isBattlemode()) {
             ItemStack offhand = Battlegear2Compat.getBattlegear2Offhand(player);
             if (checkTinkerArrow(offhand) || checkVanillaArrow(offhand)) {
                 return offhand;
+            }
+        }
+
+        if (LoadedMods.baubles) {
+            for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
+                if (checkTinkerArrow(bauble)) {
+                    return bauble;
+                }
             }
         }
 
@@ -142,7 +149,7 @@ public abstract class BowBaseAmmo extends ProjectileWeapon {
     }
 
     @Override
-    public void buildTool(int id, String name, List list) {
+    public void buildTool(int id, String name, List<ItemStack> list) {
         // does the material have a bow material?
         if (TConstructRegistry.getBowMaterial(id) == null) return;
 

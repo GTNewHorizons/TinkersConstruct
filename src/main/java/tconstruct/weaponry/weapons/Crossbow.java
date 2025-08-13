@@ -11,9 +11,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.Loader;
+import baubles.common.lib.PlayerHandler;
 import mods.battlegear2.api.core.IBattlePlayer;
 import tconstruct.compat.Battlegear2Compat;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.AbilityHelper;
@@ -27,8 +28,6 @@ import tconstruct.weaponry.ammo.BoltAmmo;
 import tconstruct.weaponry.entity.BoltEntity;
 
 public class Crossbow extends ProjectileWeapon {
-
-    private static final boolean isBattlegear2Loaded = Loader.isModLoaded("battlegear2");
 
     public Crossbow() {
         super(0, "Crossbow");
@@ -69,8 +68,8 @@ public class Crossbow extends ProjectileWeapon {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
 
-        // unload on shift-rightclick
-        if (player.isSneaking()) if (unload(stack, player, tags)) return stack;
+        // unload on sneak right-click
+        if (player.isSneaking() && unload(stack, player, tags)) return stack;
 
         // loaded
         if (tags.getBoolean("Loaded")) fire(stack, world, player);
@@ -87,17 +86,17 @@ public class Crossbow extends ProjectileWeapon {
 
         if (!stack.hasTagCompound()) return;
 
-        if (!(entity instanceof EntityPlayer)) return;
+        if (!(entity instanceof EntityPlayer player)) return;
 
-        EntityPlayer player = (EntityPlayer) entity;
         if (player.inventory.getCurrentItem() != stack) return;
 
         NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
         if (tags.hasKey("Reloading")) {
             int timeLeft = tags.getInteger("Reloading");
             timeLeft--;
-            if (timeLeft > 0) tags.setInteger("Reloading", timeLeft);
-            else {
+            if (timeLeft > 0) {
+                tags.setInteger("Reloading", timeLeft);
+            } else {
                 tags.removeTag("Reloading");
                 reload(stack, player, world, tags);
             }
@@ -108,20 +107,20 @@ public class Crossbow extends ProjectileWeapon {
     public float getWindupProgress(ItemStack itemStack, EntityPlayer player) {
         NBTTagCompound tags = itemStack.getTagCompound().getCompoundTag("InfiTool");
 
-        // loaded, full accuracy
-        if (tags.getBoolean("Loaded")) return 1.0f;
-        // not loaded, but reloading -> progress
-        else if (tags.hasKey("Reloading"))
+        if (tags.getBoolean("Loaded")) { // loaded, full accuracy
+            return 1.0f;
+        } else if (tags.hasKey("Reloading")) { // not loaded, but reloading -> progress
             return 1.0f - ((float) tags.getInteger("Reloading")) / ((float) getWindupTime(itemStack));
-        // not loaded and not reloading -> no accuracy!
-        else return 0.0f;
+        } else { // not loaded and not reloading -> no accuracy!
+            return 0.0f;
+        }
     }
 
     public void initiateReload(ItemStack stack, EntityPlayer player, NBTTagCompound tags) {
         if (tags.getBoolean("Broken")) return;
 
         // has ammo?
-        if (searchForAmmo(player, stack) != null) if (!tags.hasKey("Reloading"))
+        if (searchForAmmo(player, stack) != null && !tags.hasKey("Reloading"))
             // start reloading
             tags.setInteger("Reloading", getWindupTime(stack));
     }
@@ -146,13 +145,15 @@ public class Crossbow extends ProjectileWeapon {
         tags.setBoolean("Loaded", true);
 
         // remove loaded item
-        if (ammo.getItem() instanceof IAmmo) {
-            if (ammo.hasTagCompound()) {
-                int ammoReinforced = ammo.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");
-                if (random.nextInt(10) < 10 - ammoReinforced) ((IAmmo) ammo.getItem()).consumeAmmo(1, ammo);
+        if (!world.isRemote) {
+            if (ammo.getItem() instanceof IAmmo ammoItem) {
+                if (ammo.hasTagCompound()) {
+                    int ammoReinforced = ammo.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");
+                    if (random.nextInt(10) < 10 - ammoReinforced) ammoItem.consumeAmmo(1, ammo);
+                }
+            } else {
+                player.inventory.consumeInventoryItem(ammo.getItem());
             }
-        } else {
-            player.inventory.consumeInventoryItem(ammo.getItem());
         }
 
         playReloadSound(world, player, weapon, ammo);
@@ -224,30 +225,34 @@ public class Crossbow extends ProjectileWeapon {
 
     @Override
     public ItemStack searchForAmmo(EntityPlayer player, ItemStack weapon) {
-        // arrow priority: hotbar > inventory, tinker arrows > regular arrows
-        if (isBattlegear2Loaded && player instanceof IBattlePlayer battlePlayer
+        // bolt priority: offhand > bauble slots > hotbar > inventory
+        if (LoadedMods.battlegear2 && player instanceof IBattlePlayer battlePlayer
                 && battlePlayer.battlegear2$isBattlemode()) {
             ItemStack offhand = Battlegear2Compat.getBattlegear2Offhand(player);
-            if (offhand != null && (offhand.getItem() instanceof BoltAmmo)
-                    && ((IAmmo) offhand.getItem()).getAmmoCount(offhand) > 0) {
-                return offhand;
+            if (checkTinkerBolt(offhand)) return offhand;
+        }
+
+        if (LoadedMods.baubles) {
+            for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
+                if (checkTinkerBolt(bauble)) return bauble;
             }
         }
 
         ItemStack[] inventory = player.inventory.mainInventory;
 
-        // check hotbar for tinker arrows
+        // check hotbar for bolts
         for (ItemStack stack : inventory) {
-            if (stack == null) continue;
-            if (!(stack.getItem() instanceof BoltAmmo)) continue;
-            if (((IAmmo) stack.getItem()).getAmmoCount(stack) <= 0) continue;
-            return stack;
+            if (checkTinkerBolt(stack)) return stack;
         }
 
         if (player.capabilities.isCreativeMode && TinkerWeaponry.creativeBolt != null)
             return TinkerWeaponry.creativeBolt.copy();
 
         return null;
+    }
+
+    private static boolean checkTinkerBolt(ItemStack stack) {
+        return stack != null && (stack.getItem() instanceof BoltAmmo bolt) && bolt.getAmmoCount(stack) > 0;
     }
 
     @Override
@@ -316,36 +321,25 @@ public class Crossbow extends ProjectileWeapon {
         }
 
         // get the correct icon
-        switch (renderPass) {
-            case 0:
-                return getCorrectAnimationIcon(animationHandleIcons, tags.getInteger("RenderHandle"), progress);
-            case 1:
-                return getCorrectAnimationIcon(animationHeadIcons, tags.getInteger("RenderHead"), progress);
-            case 2:
-                return getCorrectAnimationIcon(animationAccessoryIcons, tags.getInteger("RenderAccessory"), progress);
-            case 3:
-                return getCorrectAnimationIcon(animationExtraIcons, tags.getInteger("RenderExtra"), progress);
-        }
-
-        return emptyIcon;
+        return switch (renderPass) {
+            case 0 -> getCorrectAnimationIcon(animationHandleIcons, tags.getInteger("RenderHandle"), progress);
+            case 1 -> getCorrectAnimationIcon(animationHeadIcons, tags.getInteger("RenderHead"), progress);
+            case 2 -> getCorrectAnimationIcon(animationAccessoryIcons, tags.getInteger("RenderAccessory"), progress);
+            case 3 -> getCorrectAnimationIcon(animationExtraIcons, tags.getInteger("RenderExtra"), progress);
+            default -> emptyIcon;
+        };
     }
 
     @Override
     public String getIconSuffix(int partType) {
-        switch (partType) {
-            case 0:
-                return "_crossbow_bow"; // head
-            case 1:
-                return ""; // broken
-            case 2:
-                return "_crossbow_body"; // handle
-            case 3:
-                return "_crossbow_string"; // accessory
-            case 4:
-                return "_crossbow_binding"; // extra
-            default:
-                return "";
-        }
+        return switch (partType) {
+            case 0 -> "_crossbow_bow"; // head
+            case 1 -> ""; // broken
+            case 2 -> "_crossbow_body"; // handle
+            case 3 -> "_crossbow_string"; // accessory
+            case 4 -> "_crossbow_binding"; // extra
+            default -> "";
+        };
     }
 
     @Override
@@ -394,7 +388,7 @@ public class Crossbow extends ProjectileWeapon {
     }
 
     @Override
-    public void buildTool(int id, String name, List list) {
+    public void buildTool(int id, String name, List<ItemStack> list) {
         // does the material have a bow material?
         if (TConstructRegistry.getBowMaterial(id) == null) return;
 
@@ -418,14 +412,11 @@ public class Crossbow extends ProjectileWeapon {
         // bowstring: custom material -> custom coloring
         // todo: move this into the custom material itself
         int mat = stack.getTagCompound().getCompoundTag("InfiTool").getInteger("Accessory");
-        switch (mat) {
-            case 0:
-                return 0xffffffff; // string = white
-            case 1:
-                return 0xffccccff; // macig string = light blue
-            case 2:
-                return 0xffffcccc; // flamestring = light red
-        }
-        return super.getColorFromItemStack(stack, renderPass);
+        return switch (mat) {
+            case 0 -> 0xffffffff; // string = white
+            case 1 -> 0xffccccff; // magic string = light blue
+            case 2 -> 0xffffcccc; // flamestring = light red
+            default -> super.getColorFromItemStack(stack, renderPass);
+        };
     }
 }

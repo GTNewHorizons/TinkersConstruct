@@ -34,7 +34,7 @@ public class ShortBow extends BowBaseAmmo {
     protected Entity createProjectile(ItemStack arrows, World world, EntityPlayer player, float speed, float accuracy,
             float windup) {
         if (arrows.getItem() instanceof ArrowAmmo) {
-            // modify accuraccy of the arrow depending on its accuraccy and weight
+            // modify accuracy of the arrow depending on its accuracy and weight
             NBTTagCompound tags = arrows.getTagCompound().getCompoundTag("InfiTool");
             float matAccuracy = tags.getFloat("Accuracy");
             float weight = tags.getFloat("Mass");
@@ -49,18 +49,13 @@ public class ShortBow extends BowBaseAmmo {
 
     @Override
     public String getIconSuffix(int partType) {
-        switch (partType) {
-            case 0:
-                return "_bow_top";
-            case 1:
-                return "_bowstring_broken";
-            case 2:
-                return "_bowstring";
-            case 3:
-                return "_bow_bottom";
-            default:
-                return "";
-        }
+        return switch (partType) {
+            case 0 -> "_bow_top";
+            case 1 -> "_bowstring_broken";
+            case 2 -> "_bowstring";
+            case 3 -> "_bow_bottom";
+            default -> "";
+        };
     }
 
     @Override
@@ -71,11 +66,6 @@ public class ShortBow extends BowBaseAmmo {
     @Override
     public String getDefaultFolder() {
         return "shortbow";
-    }
-
-    @Override
-    public int getPartAmount() {
-        return 3;
     }
 
     @Override
@@ -103,8 +93,7 @@ public class ShortBow extends BowBaseAmmo {
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
         // shortbows are smaller and more mobile than longbows
         super.onUpdate(stack, world, entity, par4, par5);
-        if (entity instanceof EntityPlayerSP) {
-            EntityPlayerSP player = (EntityPlayerSP) entity;
+        if (entity instanceof EntityPlayerSP player) {
             ItemStack usingItem = player.getItemInUse();
             if (usingItem != null && usingItem.getItem() == this) {
                 player.movementInput.moveForward *= 1.5F;

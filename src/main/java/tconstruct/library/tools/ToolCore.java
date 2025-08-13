@@ -260,7 +260,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     /* Tags and information about the tool */
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
         if (!stack.hasTagCompound()) return;
 
         NBTTagCompound tags = stack.getTagCompound();
@@ -269,9 +269,9 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
             int RF = tags.getInteger("Energy");
 
             if (RF != 0) {
-                if (RF <= this.getMaxEnergyStored(stack) / 3) color = "\u00a74";
-                else if (RF > this.getMaxEnergyStored(stack) * 2 / 3) color = "\u00a72";
-                else color = "\u00a76";
+                if (RF <= this.getMaxEnergyStored(stack) / 3) color = EnumChatFormatting.DARK_RED.toString();
+                else if (RF > this.getMaxEnergyStored(stack) * 2 / 3) color = EnumChatFormatting.DARK_GREEN.toString();
+                else color = EnumChatFormatting.GOLD.toString();
             }
 
             String energy = color + tags.getInteger("Energy") + "/" + getMaxEnergyStored(stack) + " RF";
@@ -279,7 +279,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         }
         if (tags.hasKey("InfiTool")) {
             boolean broken = tags.getCompoundTag("InfiTool").getBoolean("Broken");
-            if (broken) list.add("\u00A7o" + StatCollector.translateToLocal("tool.core.broken"));
+            if (broken) list.add(EnumChatFormatting.ITALIC + StatCollector.translateToLocal("tool.core.broken"));
             else {
                 int head = tags.getCompoundTag("InfiTool").getInteger("Head");
                 int handle = tags.getCompoundTag("InfiTool").getInteger("Handle");
@@ -287,26 +287,26 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
                 int extra = tags.getCompoundTag("InfiTool").getInteger("Extra");
 
                 String headName = getAbilityNameForType(head, 0);
-                if (!headName.equals("")) list.add(getStyleForType(head) + headName);
+                if (!headName.isEmpty()) list.add(getStyleForType(head) + headName);
 
                 String handleName = getAbilityNameForType(handle, 1);
-                if (!handleName.equals("") && handle != head) list.add(getStyleForType(handle) + handleName);
+                if (!handleName.isEmpty() && handle != head) list.add(getStyleForType(handle) + handleName);
 
                 if (getPartAmount() >= 3) {
                     String bindingName = getAbilityNameForType(binding, 2);
-                    if (!bindingName.equals("") && binding != head && binding != handle)
+                    if (!bindingName.isEmpty() && binding != head && binding != handle)
                         list.add(getStyleForType(binding) + bindingName);
                 }
 
                 if (getPartAmount() >= 4) {
                     String extraName = getAbilityNameForType(extra, 3);
-                    if (!extraName.equals("") && extra != head && extra != handle && extra != binding)
+                    if (!extraName.isEmpty() && extra != head && extra != handle && extra != binding)
                         list.add(getStyleForType(extra) + extraName);
                 }
 
                 int unbreaking = tags.getCompoundTag("InfiTool").getInteger("Unbreaking");
                 String reinforced = getReinforcedName(head, handle, binding, extra, unbreaking);
-                if (!reinforced.equals("")) list.add(reinforced);
+                if (!reinforced.isEmpty()) list.add(reinforced);
 
                 boolean displayToolTips = true;
                 int tipNum = 0;
@@ -315,7 +315,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
                     String tooltip = "Tooltip" + tipNum;
                     if (tags.getCompoundTag("InfiTool").hasKey(tooltip)) {
                         String tipName = tags.getCompoundTag("InfiTool").getString(tooltip);
-                        if (!tipName.equals("")) {
+                        if (!tipName.isEmpty()) {
                             // let's see if we can translate it somehow
                             // strip color information
                             String locString = "modifier.tooltip."
@@ -334,7 +334,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         list.add("");
         int attack = (int) (tags.getCompoundTag("InfiTool").getInteger("Attack") * this.getDamageModifier());
         list.add(
-                "\u00A79+" + attack
+                EnumChatFormatting.BLUE.toString() + "+"
+                        + attack
                         + " "
                         + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
     }
@@ -344,7 +345,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     }
 
     /**
-     * Returns the localized name of the materials ability. Only use this for display purposes, not for logic.
+     * Returns the localized name of the material's ability. Only use this for display purposes, not for logic.
      */
     public String getAbilityNameForType(int type, int part) {
         return TConstructRegistry.getMaterial(type).ability();
@@ -393,40 +394,18 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     String getReinforcedString(int reinforced) {
         if (reinforced > 9) return StatCollector.translateToLocal("tool.unbreakable");
-        String ret = StatCollector.translateToLocal("tool.reinforced") + " ";
-        switch (reinforced) {
-            case 1:
-                ret += "I";
-                break;
-            case 2:
-                ret += "II";
-                break;
-            case 3:
-                ret += "III";
-                break;
-            case 4:
-                ret += "IV";
-                break;
-            case 5:
-                ret += "V";
-                break;
-            case 6:
-                ret += "VI";
-                break;
-            case 7:
-                ret += "VII";
-                break;
-            case 8:
-                ret += "VIII";
-                break;
-            case 9:
-                ret += "IX";
-                break;
-            default:
-                ret += "X";
-                break;
-        }
-        return ret;
+        return StatCollector.translateToLocal("tool.reinforced") + " " + switch (reinforced) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            default -> "X";
+        };
     }
 
     // Used for sounds and the like
@@ -435,15 +414,14 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     /* Creative mode tools */
 
     @Override
-    public void getSubItems(Item id, CreativeTabs tab, List list) {
+    public void getSubItems(Item id, CreativeTabs tab, List<ItemStack> list) {
         for (Map.Entry<Integer, tconstruct.library.tools.ToolMaterial> integerToolMaterialEntry : TConstructRegistry.toolMaterials
                 .entrySet()) {
-            tconstruct.library.tools.ToolMaterial material = integerToolMaterialEntry.getValue();
             buildTool(integerToolMaterialEntry.getKey(), null, list);
         }
     }
 
-    public void buildTool(int id, String name, List list) {
+    public void buildTool(int id, String name, List<ItemStack> list) {
         Item accessory = getAccessoryItem();
         ItemStack accessoryStack = accessory != null ? new ItemStack(getAccessoryItem(), 1, id) : null;
         Item extra = getExtraItem();
@@ -566,17 +544,14 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         if (tags != null) {
             tags = stack.getTagCompound().getCompoundTag("InfiTool");
             if (renderPass < getPartAmount()) {
-                switch (renderPass) {
-                    case 0:
-                        return getCorrectColor(stack, renderPass, tags, "Handle", handleIcons);
-                    case 1:
-                        return tags.getBoolean("Broken") ? getCorrectColor(stack, renderPass, tags, "Head", brokenIcons)
-                                : getCorrectColor(stack, renderPass, tags, "Head", headIcons);
-                    case 2:
-                        return getCorrectColor(stack, renderPass, tags, "Accessory", accessoryIcons);
-                    case 3:
-                        return getCorrectColor(stack, renderPass, tags, "Extra", extraIcons);
-                }
+                return switch (renderPass) {
+                    case 0 -> getCorrectColor(stack, renderPass, tags, "Handle", handleIcons);
+                    case 1 -> tags.getBoolean("Broken") ? getCorrectColor(stack, renderPass, tags, "Head", brokenIcons)
+                            : getCorrectColor(stack, renderPass, tags, "Head", headIcons);
+                    case 2 -> getCorrectColor(stack, renderPass, tags, "Accessory", accessoryIcons);
+                    case 3 -> getCorrectColor(stack, renderPass, tags, "Extra", extraIcons);
+                    default -> super.getColorFromItemStack(stack, renderPass);
+                };
             }
         }
         return super.getColorFromItemStack(stack, renderPass);
@@ -604,7 +579,6 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        boolean used = false;
         int hotbarSlot = player.inventory.currentItem;
         int itemSlot = hotbarSlot == 0 ? 8 : hotbarSlot + 1;
         ItemStack nearbyStack;
@@ -637,18 +611,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
-        return false;
-    }
-
-    @Override
     public boolean isRepairable() {
         return false;
-    }
-
-    @Override
-    public int getItemEnchantability() {
-        return 0;
     }
 
     @Override
