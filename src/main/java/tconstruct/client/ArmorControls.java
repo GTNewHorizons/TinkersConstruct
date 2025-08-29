@@ -15,6 +15,7 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import cpw.mods.fml.common.gameevent.InputEvent.MouseInputEvent;
 import mantle.common.network.AbstractPacket;
 import modwarriors.notenoughkeys.api.Api;
 import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
@@ -88,6 +89,13 @@ public class ArmorControls {
         if (!isNotEnoughKeysLoaded) {
             checkAndPerformKeyActions(null, false);
         }
+    }
+
+    /**
+     * handles keybinds on mouse buttons
+     */
+    public void mouseEvent(MouseInputEvent event) {
+        checkAndPerformKeyActions(null, false);
     }
 
     @Optional.Method(modid = "notenoughkeys")
@@ -217,6 +225,11 @@ public class ArmorControls {
         @SubscribeEvent
         public void keyEventWrapper(KeyInputEvent event) {
             ArmorControls.this.keyEvent(event);
+        }
+
+        @SubscribeEvent
+        public void mouseEventWrapper(MouseInputEvent event) {
+            ArmorControls.this.mouseEvent(event);
         }
 
         @Optional.Method(modid = "notenoughkeys")
