@@ -239,12 +239,6 @@ public class SearedBlock extends InventoryBlock {
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
-    /* Redstone */
-    @Override
-    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
-        return world.getBlockMetadata(x, y, z) == 1;
-    }
-
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block neighborBlockID) {
         if (world.getBlockMetadata(x, y, z) == 1) {
