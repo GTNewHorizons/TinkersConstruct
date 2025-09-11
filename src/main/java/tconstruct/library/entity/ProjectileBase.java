@@ -501,8 +501,8 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
                         this.motionZ);
             }
 
-            // more slowdown in water
-            slowdown = 1d - 20d * getSlowdown();
+            // more slowdown in water, clamped at 0 to prevent reversal
+            slowdown = Math.max(0, 1d - 20d * getSlowdown());
         }
 
         // phshshshshshs
