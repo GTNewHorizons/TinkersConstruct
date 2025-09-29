@@ -95,11 +95,20 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
                         ? sidedIvn.getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length
                         : inv.getSizeInventory();
 
-                if (tile instanceof TileEntityChest) {
-                    checkForChest(world, xPos, yPos, zPos, 1, 0);
-                    checkForChest(world, xPos, yPos, zPos, -1, 0);
-                    checkForChest(world, xPos, yPos, zPos, 0, 1);
-                    checkForChest(world, xPos, yPos, zPos, 0, -1);
+                if (tile instanceof TileEntityChest tileChest) {
+                    if (tileChest.adjacentChestZPos != null) {
+                        doubleChest = new WeakReference<>(tileChest.adjacentChestZPos);
+                        doubleFirst = false;
+                    } else if (tileChest.adjacentChestZNeg != null) {
+                        doubleChest = new WeakReference<>(tileChest.adjacentChestZNeg);
+                        doubleFirst = true;
+                    } else if (tileChest.adjacentChestXPos != null) {
+                        doubleChest = new WeakReference<>(tileChest.adjacentChestXPos);
+                        doubleFirst = false;
+                    } else if (tileChest.adjacentChestXNeg != null) {
+                        doubleChest = new WeakReference<>(tileChest.adjacentChestXNeg);
+                        doubleFirst = true;
+                    }
                 }
                 slotCount = chestSize * (doubleChest != null ? 2 : 1);
                 invRows = (int) Math.ceil((double) slotCount / invColumns);
@@ -111,14 +120,6 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
 
     private boolean isBlacklisted(Class<? extends TileEntity> clazz) {
         return PHConstruct.craftingStationBlacklist.contains(clazz.getName());
-    }
-
-    void checkForChest(World world, int x, int y, int z, int dx, int dz) {
-        TileEntity tile = world.getTileEntity(x + dx, y, z + dz);
-        if (tile instanceof TileEntityChest) {
-            doubleChest = new WeakReference<>((IInventory) tile);
-            doubleFirst = dx + dz < 0;
-        }
     }
 
     public boolean isDoubleChest() {
