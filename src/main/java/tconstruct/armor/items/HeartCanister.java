@@ -88,7 +88,11 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory {
                 list.add(StatCollector.translateToLocal("canister.red.tooltip1"));
                 list.add(StatCollector.translateToLocal("canister.red.tooltip2"));
                 break;
-            case 2:
+            case 3:
+                list.add(StatCollector.translateToLocal("canister.yellow.tooltip1"));
+                list.add(StatCollector.translateToLocal("canister.yellow.tooltip2"));
+                break;
+            case 5:
                 list.add(StatCollector.translateToLocal("canister.green.tooltip1"));
                 list.add(StatCollector.translateToLocal("canister.green.tooltip2"));
                 break;
