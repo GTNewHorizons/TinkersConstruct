@@ -10,6 +10,7 @@ import tconstruct.library.modifier.ItemModifier;
 public abstract class ItemModTypeFilter extends ItemModifier {
 
     public final List<Integer> increase;
+    protected int max;
 
     public ItemModTypeFilter(int effect, String dataKey, ItemStack[] items, int[] values) {
         super(items, effect, dataKey);
@@ -54,14 +55,15 @@ public abstract class ItemModTypeFilter extends ItemModifier {
     public int matchingAmount(ItemStack[] input) {
         int amount = 0;
         for (ItemStack inputStack : input) {
-            if (inputStack != null) {
-                for (int iter = 0; iter < stacks.size(); iter++) {
-                    ItemStack stack = (ItemStack) stacks.get(iter);
-                    if (stack.getItemDamage() == Short.MAX_VALUE) {
-                        if (this.areItemsEquivalent(inputStack, stack)) amount += increase.get(iter);
-                    } else {
-                        if (this.areItemStacksEquivalent(inputStack, stack)) amount += increase.get(iter);
-                    }
+            if(inputStack == null){
+                continue;
+            }
+            for (int iter = 0; iter < stacks.size(); iter++) {
+                ItemStack stack = (ItemStack) stacks.get(iter);
+                if (stack.getItemDamage() == Short.MAX_VALUE) {
+                    if (this.areItemsEquivalent(inputStack, stack)) amount += increase.get(iter);
+                } else {
+                    if (this.areItemStacksEquivalent(inputStack, stack)) amount += increase.get(iter);
                 }
             }
         }

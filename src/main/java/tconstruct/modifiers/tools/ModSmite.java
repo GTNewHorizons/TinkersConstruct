@@ -6,13 +6,13 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ModSmite extends ItemModTypeFilter {
 
     String tooltipName;
-    int max = 36;
     String tagName;
 
     public ModSmite(String type, int effect, ItemStack[] items, int[] values) {
         super(effect, "ModSmite", items, values);
         tooltipName = "\u00a7eSmite";
         tagName = type;
+        this.max = 36;
     }
 
     @Override

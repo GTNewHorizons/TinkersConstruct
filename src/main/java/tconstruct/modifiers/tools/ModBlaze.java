@@ -11,12 +11,11 @@ import tconstruct.library.tools.ToolCore;
 public class ModBlaze extends ItemModTypeFilter {
 
     String tooltipName;
-    int max;
 
     public ModBlaze(int effect, ItemStack[] items, int[] values) {
         super(effect, "Blaze", items, values);
         tooltipName = "\u00a76Fiery";
-        max = 25;
+        this.max = 25;
     }
 
     @Override

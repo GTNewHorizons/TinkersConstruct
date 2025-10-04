@@ -6,13 +6,13 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ModAntiSpider extends ItemModTypeFilter {
 
     String tooltipName;
-    int max = 4;
     String guiType;
 
     public ModAntiSpider(String type, int effect, ItemStack[] items, int[] values) {
         super(effect, "ModAntiSpider", items, values);
         tooltipName = "\u00a72Bane of Arthropods";
         guiType = type;
+        this.max = 4;
     }
 
     @Override

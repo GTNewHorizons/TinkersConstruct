@@ -16,11 +16,11 @@ import tconstruct.library.tools.ToolCore;
 public class ModLapis extends ItemModTypeFilter {
 
     String tooltipName;
-    int max = 450;
 
     public ModLapis(int effect, ItemStack[] items, int[] values) {
         super(effect, "Lapis", items, values);
         tooltipName = "\u00a79Luck";
+        this.max = 450;
     }
 
     @Override

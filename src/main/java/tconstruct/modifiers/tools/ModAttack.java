@@ -11,7 +11,6 @@ import tconstruct.library.tools.ToolCore;
 public class ModAttack extends ItemModTypeFilter {
 
     String tooltipName;
-    int max;
     int threshold;
     String guiType;
     String modifierType;
@@ -22,7 +21,7 @@ public class ModAttack extends ItemModTypeFilter {
         super(effect, "ModAttack", items, value);
         tooltipName = "\u00a7fSharpness";
         guiType = type;
-        max = 72;
+        this.max = 72;
         threshold = 24;
         modifierType = "Tool";
         ammoOnly = false;
@@ -33,7 +32,7 @@ public class ModAttack extends ItemModTypeFilter {
         super(effect, "ModAttack", items, value);
         tooltipName = "\u00a7fSharpness";
         guiType = type;
-        max = 48;
+        this.max = 48;
         threshold = 24;
         modifierType = "Tool";
         this.ammoOnly = ammoOnly;
