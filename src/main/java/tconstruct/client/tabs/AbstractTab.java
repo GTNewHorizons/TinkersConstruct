@@ -23,6 +23,18 @@ public abstract class AbstractTab extends GuiButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        drawButton(mc, this.renderStack, false);
+    }
+
+    /**
+     * Draws inventory tab
+     * 
+     * @param mc
+     * @param tabIcon                 Item to use as tab icon
+     * @param enableItemIconDepthTest whether to enable GL_DEPTH_TEST for rendering the item icon
+     */
+
+    protected void drawButton(Minecraft mc, ItemStack tabIcon, boolean enableItemIconDepthTest) {
         if (this.visible) {
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -39,18 +51,16 @@ public abstract class AbstractTab extends GuiButton {
             this.itemRenderer.zLevel = 100.0F;
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            if (enableItemIconDepthTest) GL11.glEnable(GL11.GL_DEPTH_TEST);
             this.itemRenderer.renderItemAndEffectIntoGUI(
                     mc.fontRenderer,
                     mc.renderEngine,
-                    renderStack,
+                    tabIcon,
                     xPosition + 6,
                     yPosition + 8);
-            this.itemRenderer.renderItemOverlayIntoGUI(
-                    mc.fontRenderer,
-                    mc.renderEngine,
-                    renderStack,
-                    xPosition + 6,
-                    yPosition + 8);
+            this.itemRenderer
+                    .renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, tabIcon, xPosition + 6, yPosition + 8);
+            if (enableItemIconDepthTest) GL11.glDisable(GL11.GL_DEPTH_TEST);
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_BLEND);
             this.itemRenderer.zLevel = 0.0F;
