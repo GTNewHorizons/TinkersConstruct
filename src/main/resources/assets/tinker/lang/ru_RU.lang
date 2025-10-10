@@ -1509,7 +1509,7 @@ tool.javelin.ardite=Ардитовое копьё
 tool.javelin.manyullyn=Мануллиновое копьё
 tool.javelin.copper=Медное копьё
 tool.javelin.bronze=Бронзовое копьё
-tool.javelin.alumite=Алюмитовое копьё
+tool.javelin.alumite=Обзинитовое копьё
 tool.javelin.steel=Стальное копьё
 
 toolpart.ToolRod.netherrack=Стержень из камня Нижнего мира
@@ -1645,7 +1645,7 @@ toolpart.Binding.ardite=Ардитовое крепление
 toolpart.Binding.manyullyn=Мануллиновое крепление
 toolpart.Binding.copper=Медное крепление
 toolpart.Binding.bronze=Бронзовое крепление
-toolpart.Binding.alumite=Алюмитовое крепление
+toolpart.Binding.alumite=Обзинитовое крепление
 toolpart.Binding.steel=Стальное крепление
 toolpart.Binding.thaumium=Таумическое крепление
 
@@ -1663,7 +1663,7 @@ toolpart.ToughBinding.ardite=Ардитовое прочное креплени�
 toolpart.ToughBinding.manyullyn=Мануллиновое прочное крепление
 toolpart.ToughBinding.copper=Медное прочное крепление
 toolpart.ToughBinding.bronze=Бронзовое прочное крепление
-toolpart.ToughBinding.alumite=Алюмитовое прочное крепление
+toolpart.ToughBinding.alumite=Обзинитовое прочное крепление
 toolpart.ToughBinding.steel=Стальное прочное крепление
 toolpart.ToughBinding.thaumium=Таумическое прочное крепление
 
@@ -1681,7 +1681,7 @@ toolpart.SwordBlade.ardite=Ардитовое лезвие меча
 toolpart.SwordBlade.manyullyn=Мануллиновое лезвие меча
 toolpart.SwordBlade.copper=Медное лезвие меча
 toolpart.SwordBlade.bronze=Бронзовое лезвие меча
-toolpart.SwordBlade.alumite=Алюмитовое лезвие меча
+toolpart.SwordBlade.alumite=Обзинитовое лезвие меча
 toolpart.SwordBlade.steel=Стальное лезвие меча
 toolpart.SwordBlade.thaumium=Таумическое лезвие меча
 
@@ -1699,7 +1699,7 @@ toolpart.ChiselHead.ardite=Ардитовое лезвие стамески
 toolpart.ChiselHead.manyullyn=Мануллиновое лезвие стамески
 toolpart.ChiselHead.copper=Медное лезвие стамески
 toolpart.ChiselHead.bronze=Бронзовое лезвие стамески
-toolpart.ChiselHead.alumite=Алюмитовое лезвие стамески
+toolpart.ChiselHead.alumite=Обзинитовое лезвие стамески
 toolpart.ChiselHead.steel=Стальное лезвие стамески
 toolpart.ChiselHead.thaumium=Таумическое лезвие стамески
 
@@ -1717,7 +1717,7 @@ toolpart.ScytheHead.ardite=Ардитовое лезвие косы
 toolpart.ScytheHead.manyullyn=Мануллиновое лезвие косы
 toolpart.ScytheHead.copper=Медное лезвие косы
 toolpart.ScytheHead.bronze=Бронзовое лезвие косы
-toolpart.ScytheHead.alumite=Алюмитовое лезвие косы
+toolpart.ScytheHead.alumite=Обзинитовое лезвие косы
 toolpart.ScytheHead.steel=Стальное лезвие косы
 toolpart.ScytheHead.thaumium=Таумическое лезвие косы
 
@@ -1735,7 +1735,7 @@ toolpart.LargeSwordBlade.ardite=Ардитовое большое лезвие �
 toolpart.LargeSwordBlade.manyullyn=Мануллиновое большое лезвие меча
 toolpart.LargeSwordBlade.copper=Медное большое лезвие меча
 toolpart.LargeSwordBlade.bronze=Бронзовое большое лезвие меча
-toolpart.LargeSwordBlade.alumite=Алюмитовое большое лезвие меча
+toolpart.LargeSwordBlade.alumite=Обзинитовое большое лезвие меча
 toolpart.LargeSwordBlade.steel=Стальное большое лезвие меча
 toolpart.LargeSwordBlade.thaumium=Таумическое большое лезвие меча
 
@@ -1753,7 +1753,7 @@ toolpart.KnifeBlade.ardite=Ардитовое лезвие ножа
 toolpart.KnifeBlade.manyullyn=Мануллиновое лезвие ножа
 toolpart.KnifeBlade.copper=Медное лезвие ножа
 toolpart.KnifeBlade.bronze=Бронзовое лезвие ножа
-toolpart.KnifeBlade.alumite=Алюмитовое лезвие ножа
+toolpart.KnifeBlade.alumite=Обзинитовое лезвие ножа
 toolpart.KnifeBlade.steel=Стальное лезвие ножа
 toolpart.KnifeBlade.thaumium=Таумическое лезвие ножа
 
@@ -1933,7 +1933,7 @@ toolpart.CrossbowLimb.ardite=Ардитовое плечо арбалета
 toolpart.CrossbowLimb.manyullyn=Мануллиновое плечо арбалета
 toolpart.CrossbowLimb.copper=Медное плечо арбалета
 toolpart.CrossbowLimb.bronze=Бронзовое плечо арбалета
-toolpart.CrossbowLimb.alumite=Алюмитовое плечо арбалета
+toolpart.CrossbowLimb.alumite=Обзинитовое плечо арбалета
 toolpart.CrossbowLimb.steel=Стальное плечо арбалета
 toolpart.CrossbowLimb.thaumium=Таумическое плечо арбалета
 
@@ -1951,7 +1951,7 @@ toolpart.BowLimb.ardite=Ардитовое плечо лука
 toolpart.BowLimb.manyullyn=Мануллиновое плечо лука
 toolpart.BowLimb.copper=Медное плечо лука
 toolpart.BowLimb.bronze=Бронзовое плечо лука
-toolpart.BowLimb.alumite=Алюмитовое плечо лука
+toolpart.BowLimb.alumite=Обзинитовое плечо лука
 toolpart.BowLimb.steel=Стальное плечо лука
 toolpart.BowLimb.thaumium=Таумическое плечо лука
 
