@@ -23,18 +23,13 @@ public class BoltAmmo extends AmmoItem {
 
     @Override
     public String getIconSuffix(int partType) {
-        switch (partType) {
-            case 0:
-                return "_bolt_head";
-            case 1:
-                return ""; // Doesn't break
-            case 2:
-                return "_bolt_shaft";
-            case 3:
-                return "_bolt_fletching";
-            default:
-                return "";
-        }
+        return switch (partType) {
+            case 0 -> "_bolt_head";
+            case 1 -> ""; // Doesn't break
+            case 2 -> "_bolt_shaft";
+            case 3 -> "_bolt_fletching";
+            default -> "";
+        };
     }
 
     @Override
@@ -79,7 +74,7 @@ public class BoltAmmo extends AmmoItem {
     }
 
     @Override
-    public void buildTool(int id, String name, List list) {
+    public void buildTool(int id, String name, List<ItemStack> list) {
         if (TConstructRegistry.getArrowMaterial(id) == null) return;
 
         // dual material head: we use wooden shafts

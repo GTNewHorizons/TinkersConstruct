@@ -37,7 +37,7 @@ public class SpeedSlab extends SlabBase {
     }
 
     @Override
-    public void getSubBlocks(Item b, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 7; iter++) {
             list.add(new ItemStack(b, 1, iter));
         }

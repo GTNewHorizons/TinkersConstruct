@@ -334,7 +334,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
     }
 
     @Override
-    public void setVelocity(double p_70016_1_, double p_70016_3_, double p_70016_5_) {
+    public void setVelocity(double x, double y, double z) {
         // don't do anything, we set it ourselves at spawn
         // Mojangs code has a hard cap of 3.9 speed, but our projectiles can go faster, which desyncs client and server
         // speeds
@@ -501,8 +501,8 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
                         this.motionZ);
             }
 
-            // more slowdown in water
-            slowdown = 1d - 20d * getSlowdown();
+            // more slowdown in water, clamped at 0 to prevent reversal
+            slowdown = Math.max(0, 1d - 20d * getSlowdown());
         }
 
         // phshshshshshs

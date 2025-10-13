@@ -1,8 +1,13 @@
 package tconstruct.tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntitySkeleton;
@@ -14,17 +19,27 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
 
+import com.kuba6000.mobsinfo.api.IChanceModifier;
+import com.kuba6000.mobsinfo.api.IMobExtraInfoProvider;
+import com.kuba6000.mobsinfo.api.MobDrop;
+import com.kuba6000.mobsinfo.api.MobRecipe;
+import com.kuba6000.mobsinfo.loader.extras.Translations;
+
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
+import io.netty.buffer.ByteBuf;
 import tconstruct.TConstruct;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.TConstructRegistry;
@@ -41,7 +56,8 @@ import tconstruct.util.ItemHelper;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.MovementUpdatePacket;
 
-public class TinkerToolEvents {
+@Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
+public class TinkerToolEvents implements IMobExtraInfoProvider {
 
     @SubscribeEvent
     public void onCrafting(ItemCraftedEvent event) {
@@ -280,6 +296,7 @@ public class TinkerToolEvents {
 
     @SubscribeEvent
     public void onLivingDrop(LivingDropsEvent event) {
+        // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideDropsInformation!
         if (event.entityLiving == null) return;
 
         if (event.recentlyHit) {
@@ -368,6 +385,140 @@ public class TinkerToolEvents {
                     }
                 }
             }
+        }
+    }
+
+    @Optional.Method(modid = "mobsinfo")
+    @Override
+    public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
+            @Nonnull MobRecipe recipe) {
+        if (recipe.entity instanceof EntitySkeleton) {
+
+            MobDrop drop = new MobDrop(
+                    new ItemStack(Items.skull, 1, ((EntitySkeleton) recipe.entity).getSkeletonType()),
+                    MobDrop.DropType.Normal,
+                    0,
+                    null,
+                    null,
+                    false,
+                    false);
+            drop.variableChance = true;
+            drop.chanceModifiers.add(new BeheadingModifier(10d, 20d));
+            drops.add(drop);
+
+            if (((EntitySkeleton) recipe.entity).getSkeletonType() == 1) {
+                MobDrop drop2 = new MobDrop(
+                        new ItemStack(TinkerTools.materials, 1, 8),
+                        MobDrop.DropType.Normal,
+                        2000,
+                        null,
+                        null,
+                        true,
+                        false);
+                drops.add(drop2);
+            }
+
+        }
+
+        if (recipe.entity.getClass() == EntityZombie.class) {
+            MobDrop drop = new MobDrop(
+                    new ItemStack(Items.skull, 1, 2),
+                    MobDrop.DropType.Normal,
+                    0,
+                    null,
+                    null,
+                    false,
+                    false);
+            drop.variableChance = true;
+            drop.chanceModifiers.add(new BeheadingModifier(10d, 20d));
+            drops.add(drop);
+
+            MobDrop drop2 = new MobDrop(
+                    new ItemStack(TinkerTools.materials, 1, 2),
+                    MobDrop.DropType.Normal,
+                    0,
+                    null,
+                    null,
+                    true,
+                    false);
+            drop2.variableChance = true;
+            drop2.chanceModifiers.addAll(
+                    Arrays.asList(
+                            new IChanceModifier.NormalChance(10d),
+                            new IChanceModifier.DropsOnlyUsing(TinkerTools.cleaver)));
+            drops.add(drop2);
+        }
+
+        if (recipe.entity.getClass() == EntityCreeper.class) {
+            MobDrop drop = new MobDrop(
+                    new ItemStack(Items.skull, 1, 4),
+                    MobDrop.DropType.Normal,
+                    0,
+                    null,
+                    null,
+                    false,
+                    false);
+            drop.variableChance = true;
+            drop.chanceModifiers.add(new BeheadingModifier(5d, 10d));
+            drops.add(drop);
+        }
+    }
+
+    private static class BeheadingModifier implements IChanceModifier {
+
+        double m1, m2;
+
+        @SuppressWarnings("unused")
+        BeheadingModifier() {
+            // Constructor is called via reflection in IChanceModifier.loadFromByteBuf()
+        }
+
+        BeheadingModifier(double m1, double m2) {
+            this.m1 = m1;
+            this.m2 = m2;
+        }
+
+        @Override
+        public String getDescription() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void applyTooltip(List<String> currentTooltip) {
+            currentTooltip.addAll(
+                    Arrays.asList(
+                            Translations.BASE_CHANCE.get(0d),
+                            StatCollector.translateToLocalFormatted(
+                                    "tconstruct.mobsinfocompat.tinkers_construct_beheading",
+                                    m1),
+                            StatCollector.translateToLocalFormatted(
+                                    "tconstruct.mobsinfocompat.tinkers_construct_beheading_1",
+                                    m2)));
+        }
+
+        @Override
+        public double apply(double chance, @Nonnull World world, @Nonnull List<ItemStack> drops, Entity attacker,
+                EntityLiving victim) {
+            if (!(attacker instanceof EntityPlayer)) return 0d;
+            ItemStack stack = ((EntityPlayer) attacker).getCurrentEquippedItem();
+            if (stack != null && stack.hasTagCompound() && stack.getItem() instanceof ToolCore) {
+                int beheading = stack.getTagCompound().getCompoundTag("InfiTool").getInteger("Beheading");
+                if (stack.getItem() == TinkerTools.cleaver) beheading += 2;
+                return m1 * beheading;
+            }
+            return 0d;
+        }
+
+        @Override
+        public void writeToByteBuf(ByteBuf byteBuf) {
+            byteBuf.writeDouble(m1);
+            byteBuf.writeDouble(m2);
+        }
+
+        @Override
+        public void readFromByteBuf(ByteBuf byteBuf) {
+            m1 = byteBuf.readDouble();
+            m2 = byteBuf.readDouble();
         }
     }
 

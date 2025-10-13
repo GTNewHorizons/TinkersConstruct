@@ -35,10 +35,8 @@ import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import mantle.lib.client.MantleClientRegistry;
-import tconstruct.mechworks.model.CartRender;
 import tconstruct.tools.TinkerTools;
 import tconstruct.world.entity.BlueSlime;
-import tconstruct.world.entity.CartEntity;
 import tconstruct.world.entity.KingBlueSlime;
 import tconstruct.world.model.BarricadeRender;
 import tconstruct.world.model.OreberryRender;
@@ -69,7 +67,6 @@ public class TinkerWorldProxyClient extends TinkerWorldProxyCommon {
         SlimeRender slimeRender = new SlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25F);
         RenderingRegistry.registerEntityRenderingHandler(BlueSlime.class, slimeRender);
         RenderingRegistry.registerEntityRenderingHandler(KingBlueSlime.class, slimeRender);
-        RenderingRegistry.registerEntityRenderingHandler(CartEntity.class, new CartRender());
 
         VillagerRegistry.instance()
                 .registerVillagerSkin(78943, new ResourceLocation("tinker", "textures/mob/villagertools.png"));

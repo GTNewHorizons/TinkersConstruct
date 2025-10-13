@@ -72,7 +72,7 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
     /**
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
-    public void getSubBlocks(Block b, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Block b, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
         for (int j = 0; j < 1; ++j) {
             par3List.add(new ItemStack(b, 1, j));
         }

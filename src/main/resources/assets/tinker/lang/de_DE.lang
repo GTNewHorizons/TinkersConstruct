@@ -328,7 +328,7 @@ item.tconstruct.travelvest.name=Weste des Reisenden
 item.tconstruct.travelwings.name=Flügel des Reisenden
 item.tconstruct.travelboots.name=Stiefel des Reisenden
 item.tconstruct.travelgloves.name=Handschuhe des Reisenden
-item.tconstruct.travelbelt.name=Gürterl des Reisenden
+item.tconstruct.travelbelt.name=Gürtel des Reisenden
 
 item.tconstruct.jerky.beef.name=Rindfleisch-Charqui
 item.tconstruct.jerky.pig.name=Schweinefleisch-Charqui
@@ -381,8 +381,8 @@ StorageMetals.Alumite.name=Alumitblock
 StorageMetals.Steel.name=Stahlblock
 StorageMetals.Ender.name=Block Soliden Enders
 
-tile.decoration.stonetorch.name=Fackel
-tile.decoration.stoneladder.name=Leiter
+tile.decoration.stonetorch.name=Steinfackel
+tile.decoration.stoneladder.name=Steinleiter
 tile.CraftingStation.name=Werkstation
 
 block.glass.pure.name=Klares Glas
@@ -589,7 +589,7 @@ entity.TConstruct.MiniGardy.name=Guardeschleim
 
 tconstruct.keybindings=Tinkers Construct
 key.tarmor=Rüstungs-GUI
-key.tcapes.reload=Lade Capes neu
+key.tcapes.reload=Capes aktualisieren
 key.tbelt=Gürtel
 key.tgoggles=Brille
 key.tzoom=Zoom
@@ -773,7 +773,7 @@ smeltery.castingtable.tooltip=Standardzubehör der Schmelzerei
 smeltery.castingfaucet.tooltip=Die Schmelzerei ist undicht
 smeltery.castingbasin.tooltip=Für die ambitionierte Schmelzerei
 #Dear translators, only translate these lines if the jokes are applicable in your language.
-grout.tooltip=I am Grout!
+grout.tooltip=Ich bin Grout!
 frypankill.tooltip=Das arme Tier traf sein Ende mit einem lauten *Knall*
 
 tconstruct.waila.empty=Leer
@@ -785,11 +785,11 @@ tconstruct.waila.invalidstructure=Ungültige Struktur
 
 tconstruct.nei.toolmaterials=Werkzeugwerkstoffe
 tconstruct.nei.projectilematerials=Pfeil und Bogen
-tconstruct.nei.alloying=Schmelzerei Legierungen
+tconstruct.nei.alloying=Legieren
 tconstruct.nei.castingbasin=Gießbecken
-tconstruct.nei.castingtable=Gießbecken
+tconstruct.nei.castingtable=Gießtisch
 tconstruct.nei.dryingrack=Trockengestell
-tconstruct.nei.melting=Smeltery Melting
+tconstruct.nei.melting=Schmelzen
 
 gui.smeltery.fuel=Brennstoff
 gui.smeltery.emerald=Smaragde:
@@ -954,9 +954,9 @@ manual.page.material8=Steingebundenes Level
 manual.page.material9=Zersplitterungs Level
 
 manual.page.material.attack=Standardangriff
-manual.page.material.durability=Haldbarkeit
-manual.page.material.handle=Griff Modifikator
-manual.page.material.level=Abbau Level
+manual.page.material.durability=Haltbarkeit
+manual.page.material.handle=Griffmodifikator
+manual.page.material.level=Abbaulevel
 manual.page.material.material=Material
 manual.page.material.rod=Stange
 manual.page.material.shard=Scherbe
@@ -971,7 +971,7 @@ manual.page.tool1=Crafting Teile
 
 tool.glassarrows=Glaspfeile
 tool.glassarrows.lore=Gecraftet von einem legendären Glasmacher
-tool.boneana.lore=Es klang wie eine gute Idee, damals
+tool.boneana.lore=Es klang damals wie eine gute Idee
 tool.baneofpigs=Fluch die Schweine
 tool.infiminer=InfiMiner
 
@@ -1063,4 +1063,4 @@ option.tcon.searedtank=Verbrannter Tank
 option.tcon.castingchannel=Gießkanal
 option.tcon.basin=Gießbecken
 option.tcon.table=Gießtisch
-option.tcon.smeltery=Schmelzerei Status
+option.tcon.smeltery=Schmelzerei-Status

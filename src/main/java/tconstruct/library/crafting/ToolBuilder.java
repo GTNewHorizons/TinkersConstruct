@@ -268,12 +268,7 @@ public class ToolBuilder {
 
         if (name != null && !name.equals("")) {
             compound.setTag("display", new NBTTagCompound());
-            compound.getCompoundTag("display").setString("Name", "\u00A7f" + name);
-        }
-        // set a nice default name
-        else {
-            compound.setTag("display", new NBTTagCompound());
-            compound.getCompoundTag("display").setString("Name", "\u00A7f" + defaultToolName(headMat, item));
+            compound.getCompoundTag("display").setString("Name", name);
         }
 
         ToolCraftEvent.NormalTool event = new ToolCraftEvent.NormalTool(
@@ -355,7 +350,10 @@ public class ToolBuilder {
             return StatCollector.translateToLocal("tool." + toolName + "." + matName);
         }
 
-        return String.format("%s %s", headMat.prefixName(), tool.getLocalizedToolName());
+        return String.format(
+                StatCollector.translateToLocal("tool.nameformat"),
+                headMat.prefixName(),
+                tool.getLocalizedToolName());
     }
 
     // Passthrough for now

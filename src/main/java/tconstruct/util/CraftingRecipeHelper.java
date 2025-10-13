@@ -32,8 +32,7 @@ public class CraftingRecipeHelper {
         List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
         for (int i = 0; i < recipes.size(); i++) {
             IRecipe tmpRecipe = recipes.get(i);
-            if (tmpRecipe instanceof ShapedRecipes) {
-                ShapedRecipes recipe = (ShapedRecipes) tmpRecipe;
+            if (tmpRecipe instanceof ShapedRecipes recipe) {
                 ItemStack recipeResult = recipe.getRecipeOutput();
 
                 if (ItemStack.areItemStacksEqual(resultItem, recipeResult)) {
@@ -47,8 +46,7 @@ public class CraftingRecipeHelper {
         List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
         for (int i = 0; i < recipes.size(); i++) {
             IRecipe tmpRecipe = recipes.get(i);
-            if (tmpRecipe instanceof ShapelessRecipes) {
-                ShapelessRecipes recipe = (ShapelessRecipes) tmpRecipe;
+            if (tmpRecipe instanceof ShapelessRecipes recipe) {
                 ItemStack recipeResult = recipe.getRecipeOutput();
 
                 if (ItemStack.areItemStacksEqual(resultItem, recipeResult)) {
@@ -58,7 +56,7 @@ public class CraftingRecipeHelper {
         }
     }
 
-    public static void addShapedRecipeFirst(List recipeList, ItemStack itemstack, Object... objArray) {
+    public static void addShapedRecipeFirst(List<ShapedRecipes> recipeList, ItemStack itemstack, Object... objArray) {
         StringBuilder var3 = new StringBuilder();
         int var4 = 0;
         int var5 = 0;

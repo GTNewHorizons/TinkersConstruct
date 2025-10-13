@@ -33,14 +33,11 @@ public class BattlesignBlock extends EquipBlock {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_,
-            int p_149646_5_) {
-        return p_149646_5_ == 0 && this.minY > 0.0D || (p_149646_5_ == 1 && this.maxY < 1.0D || (p_149646_5_ == 2
-                && this.minZ > 0.0D
-                || (p_149646_5_ == 3 && this.maxZ < 1.0D || (p_149646_5_ == 4 && this.minX > 0.0D || (p_149646_5_ == 5
-                        && this.maxX < 1.0D
-                        || !(p_149646_1_.getBlock(p_149646_2_, p_149646_3_, p_149646_4_).isOpaqueCube()
-                                && p_149646_1_.getBlock(p_149646_2_, p_149646_3_ + 1, p_149646_4_).isOpaqueCube()))))));
+    public boolean shouldSideBeRendered(IBlockAccess worldIn, int x, int y, int z, int side) {
+        return side == 0 && this.minY > 0.0D || (side == 1 && this.maxY < 1.0D
+                || (side == 2 && this.minZ > 0.0D || (side == 3 && this.maxZ < 1.0D || (side == 4 && this.minX > 0.0D
+                        || (side == 5 && this.maxX < 1.0D || !(worldIn.getBlock(x, y, z).isOpaqueCube()
+                                && worldIn.getBlock(x, y + 1, z).isOpaqueCube()))))));
     }
 
     @Override
@@ -54,22 +51,14 @@ public class BattlesignBlock extends EquipBlock {
         super.onBlockPlacedBy(par1World, par2, par3, par4, par5EntityLivingBase, par6ItemStack);
         int i3 = MathHelper.floor_double((par5EntityLivingBase.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-        int newMeta = 0;
+        int newMeta = switch (i3) {
+            case 3 -> 0;
+            case 0 -> 3;
+            case 1 -> 1;
+            case 2 -> 2;
+            default -> 0;
+        };
 
-        switch (i3) {
-            case 3:
-                newMeta = 0;
-                break;
-            case 0:
-                newMeta = 3;
-                break;
-            case 1:
-                newMeta = 1;
-                break;
-            case 2:
-                newMeta = 2;
-                break;
-        }
         par1World.setBlockMetadataWithNotify(par2, par3, par4, newMeta, 2);
     }
 
@@ -92,7 +81,7 @@ public class BattlesignBlock extends EquipBlock {
     }
 
     @Override
-    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list,
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List<AxisAlignedBB> list,
             Entity entity) {
         setBlockBoundsBasedOnState(world, x, y, z);
 

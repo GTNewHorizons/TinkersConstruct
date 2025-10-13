@@ -39,8 +39,8 @@ public class SlabBase extends MantleBlock {
     }
 
     @Override
-    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisalignedbb, List arraylist,
-            Entity entity) {
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisalignedbb,
+            List<AxisAlignedBB> arraylist, Entity entity) {
         setBlockBoundsBasedOnState(world, x, y, z);
         super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, arraylist, entity);
     }
@@ -84,7 +84,7 @@ public class SlabBase extends MantleBlock {
     }
 
     @Override
-    public void getSubBlocks(Item id, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < totalSize; iter++) {
             list.add(new ItemStack(id, 1, iter));
         }

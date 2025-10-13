@@ -11,6 +11,8 @@ public class NEITConstructConfig implements IConfigureNEI {
         API.registerGuiOverlay(CraftingStationGui.class, "crafting", new CraftingStationStackPositioner());
         API.registerGuiOverlayHandler(CraftingStationGui.class, new CraftingStationOverlayHandler(), "crafting");
 
+        API.registerBookmarkContainerHandler(CraftingStationGui.class, new NEITConstructBookmarkContainerHandler());
+
         registerHandler(new RecipeHandlerDryingRack());
         registerHandler(new RecipeHandlerToolMaterials());
         registerHandler(new RecipeHandlerMelting());

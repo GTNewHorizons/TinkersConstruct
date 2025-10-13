@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -50,6 +49,7 @@ import tconstruct.modifiers.armor.TravelModDoubleJump;
 import tconstruct.modifiers.armor.TravelModRepair;
 import tconstruct.modifiers.tools.ModAttack;
 import tconstruct.tools.TinkerTools;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.world.TinkerWorld;
 
 @ObjectHolder(TConstruct.modID)
@@ -90,7 +90,7 @@ public class TinkerArmor {
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit();
 
-        MinecraftForge.EVENT_BUS.register(new TinkerArmorEvents());
+        new TinkerArmorEvents().registerEvents();
         FMLCommonHandler.instance().bus().register(new ArmorAbilities());
 
         TinkerArmor.dryingRack = new DryingRack().setBlockName("Armor.DryingRack");
@@ -146,9 +146,11 @@ public class TinkerArmor {
 
     @Handler
     public void init(FMLInitializationEvent event) {
-        craftingTableRecipes();
+        if (!PHConstruct.disableAllRecipes) {
+            craftingTableRecipes();
+            addRecipesForDryingRack();
+        }
         registerModifiers();
-        addRecipesForDryingRack();
         TConstructRegistry.equipableTab.init(travelGoggles.getDefaultItem());
         proxy.initialize();
     }

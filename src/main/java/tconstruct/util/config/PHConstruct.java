@@ -9,6 +9,7 @@ import net.minecraftforge.common.config.Property;
 
 import com.google.common.collect.Sets;
 
+import cpw.mods.fml.common.Loader;
 import tconstruct.TConstruct;
 import tconstruct.library.tools.AbilityHelper;
 
@@ -58,7 +59,11 @@ public class PHConstruct {
         vanillaMetalBlocks = config.get("Difficulty Changes", "Craft vanilla metal blocks", true).getBoolean(true);
         lavaFortuneInteraction = config.get("Difficulty Changes", "Enable Auto-Smelt and Fortune interaction", true)
                 .getBoolean(true);
-        removeGoldCastRecipes = config.get("Difficulty Changes", "Remove Gold Cast Recipes", true).getBoolean(true);
+
+        boolean removeGoldCastsDefault = Loader.isModLoaded("dreamcraft");
+        removeGoldCastRecipes = config.get("Difficulty Changes", "Remove Gold Cast Recipes", removeGoldCastsDefault)
+                .getBoolean(removeGoldCastsDefault);
+
         removeVanillaToolRecipes = config.get("Difficulty Changes", "Remove Vanilla Tool Recipes", false)
                 .getBoolean(false);
         labotimizeVanillaTools = config.get("Difficulty Changes", "Remove Vanilla Tool Effectiveness", false)
@@ -200,7 +205,7 @@ public class PHConstruct {
         copperBushRarity = config.get("Worldgen", "Copper Bush Rarity", 3).getInt(3);
         tinBushRarity = config.get("Worldgen", "Tin Bush Rarity", 3).getInt(3);
         aluminumBushRarity = config.get("Worldgen", "Aluminum Bush Rarity", 2).getInt(2);
-        essenceBushRarity = config.get("Worldgen", "Essence Bush Rarity", 6).getInt(6);
+        essenceBushRarity = config.get("Worldgen", "Essence Bush Rarity", 5).getInt(5);
 
         copperBushMinY = config.get("Worldgen", "Copper Bush Min Y", 20).getInt(20);
         copperBushMaxY = config.get("Worldgen", "Copper Bush Max Y", 60).getInt(60);
@@ -215,6 +220,17 @@ public class PHConstruct {
                 "Always cast TConstruct ingots",
                 true,
                 "You will always get a TConstruct item from casting an ingot or block.").getBoolean();
+        consumeXPBerryStacks = config.get(
+                "general",
+                "Allow stackwise consumption",
+                true,
+                "Allow stacks of essence berries to be consumed at once when shifting (this does not spawn XP orbs in world).")
+                .getBoolean();
+        disableAllRecipes = config.get(
+                "general",
+                "Disable All Recipes",
+                false,
+                "Disable all TiC recipes (smeltery, drying rack, crafting, etc)").getBoolean();
 
         enableHealthRegen = config.get("Ultra Hardcore Changes", "Passive Health Regen", true).getBoolean(true);
         goldAppleRecipe = config.get(
@@ -243,6 +259,8 @@ public class PHConstruct {
         Property conTexMode = config.get("Looks", "Connected Textures Enabled", true);
         conTexMode.comment = "0 = disabled, 1 = enabled, 2 = enabled + ignore stained glass meta";
         connectedTexturesMode = conTexMode.getInt(2);
+
+        showTravellerAccessories = config.get("Looks", "Show Traveller Gear Accessories", true).getBoolean(true);
 
         // dimension blacklist
         cfgForbiddenDim = config
@@ -274,6 +292,9 @@ public class PHConstruct {
                 .getBoolean(false);
 
         // Experimental functionality
+        coloredHeartRender = config
+                .get("Experimental", "Renders one row of colored hearts instead of multiple rows of hearts", true)
+                .getBoolean(true);
         throwableSmeltery = config.get("Experimental", "Items can be thrown into smelteries", true).getBoolean(true);
         meltableHorses = config.get("Experimental", "Allow horses to be melted down for glue", true).getBoolean(true);
         meltableVillagers = config.get("Experimental", "Allow villagers to be melted down for emeralds", true)
@@ -298,6 +319,18 @@ public class PHConstruct {
                         "tileEntities",
                         new String[] { "wanion.avaritiaddons.block.chest.infinity.TileEntityInfinityChest" })
                         .getStringList());
+
+        metalCastFluidTypeName = config.get(
+                "CrossmodInteractions",
+                "Metal cast FluidType",
+                "AluminumBrass",
+                "For pack maintainers. Defines the LiquidType used to create metal casts.").getString();
+
+        scytheAoeHarvest = config.get(
+                "NewFeatures",
+                "Scythe AOE harvest",
+                true,
+                "Can the Scythe harvest crops in an AOE on right click?.").getBoolean();
 
         /* Save the configuration file only if it has changed */
         if (config.hasChanged()) config.save();
@@ -401,6 +434,10 @@ public class PHConstruct {
     public static int seaLevel;
     public static boolean tconComesFirst;
 
+    public static boolean consumeXPBerryStacks;
+
+    public static boolean disableAllRecipes;
+
     // Mobs
     public static int naturalSlimeSpawn;
 
@@ -471,6 +508,7 @@ public class PHConstruct {
 
     // Looks
     public static int connectedTexturesMode;
+    public static boolean showTravellerAccessories;
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;
@@ -481,6 +519,7 @@ public class PHConstruct {
     public static boolean genOresFlat;
 
     // Experimental functionality
+    public static boolean coloredHeartRender;
     public static boolean throwableSmeltery;
     public static boolean meltableHorses;
     public static boolean meltableVillagers;
@@ -488,4 +527,10 @@ public class PHConstruct {
     public static boolean extraBlockUpdates;
     public static String[] heartDropBlacklist;
     public static Set<String> craftingStationBlacklist;
+
+    // Crossmod interactions
+    public static String metalCastFluidTypeName;
+
+    // New features
+    public static boolean scytheAoeHarvest;
 }

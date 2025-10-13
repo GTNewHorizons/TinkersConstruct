@@ -1,5 +1,6 @@
 package tconstruct;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Random;
 
@@ -11,7 +12,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import baubles.api.expanded.BaubleExpandedSlots;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -35,16 +36,21 @@ import mantle.pulsar.control.PulseManager;
 import tconstruct.achievements.AchievementEvents;
 import tconstruct.achievements.TAchievements;
 import tconstruct.api.TConstructAPI;
+import tconstruct.api.harvesting.AoeCropHarvestHandler;
+import tconstruct.api.harvesting.CropHarvestHandlers;
+import tconstruct.api.harvesting.VanillaCropsHarvestHandler;
 import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.player.TPlayerHandler;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.common.TProxyCommon;
+import tconstruct.compat.LoadedMods;
 import tconstruct.gadgets.TinkerGadgets;
 import tconstruct.library.SlimeBounceHandler;
 import tconstruct.library.TConstructCreativeTab;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.Detailing;
 import tconstruct.library.crafting.LiquidCasting;
+import tconstruct.library.util.AoEExclusionList;
 import tconstruct.mechworks.TinkerMechworks;
 import tconstruct.mechworks.landmine.behavior.Behavior;
 import tconstruct.mechworks.landmine.behavior.stackCombo.SpecialStackHandler;
@@ -57,6 +63,7 @@ import tconstruct.plugins.imc.TinkerBuildCraft;
 import tconstruct.plugins.imc.TinkerMystcraft;
 import tconstruct.plugins.imc.TinkerRfTools;
 import tconstruct.plugins.mfr.TinkerMFR;
+import tconstruct.plugins.natura.TinkerNatura;
 import tconstruct.plugins.te4.TinkerTE4;
 import tconstruct.plugins.te4.TinkersThermalFoundation;
 import tconstruct.plugins.ubc.TinkerUBC;
@@ -103,7 +110,7 @@ import tconstruct.world.village.VillageToolStationHandler;
                 + "before:UndergroundBiomes")
 public class TConstruct {
 
-    public static final String modVersion = "GRADLETOKEN_VERSION";
+    public static final String modVersion = Tags.VERSION;
     /** The value of one ingot in millibuckets */
     public static final int ingotLiquidValue = 144;
 
@@ -170,6 +177,7 @@ public class TConstruct {
         pulsar.registerPulse(new TinkerUBC());
         pulsar.registerPulse(new TinkerGears());
         pulsar.registerPulse(new TinkerRfTools());
+        pulsar.registerPulse(new TinkerNatura());
 
         TConstructRegistry.materialTab = new TConstructCreativeTab("TConstructMaterials");
         TConstructRegistry.toolTab = new TConstructCreativeTab("TConstructTools");
@@ -183,9 +191,9 @@ public class TConstruct {
         basinCasting = new LiquidCasting();
         chiselDetailing = new Detailing();
 
+        AoEExclusionList.init(new File(event.getModConfigurationDirectory(), "TConstruct_AOEExclusions.cfg"));
+
         playerTracker = new TPlayerHandler();
-        FMLCommonHandler.instance().bus().register(playerTracker);
-        MinecraftForge.EVENT_BUS.register(playerTracker);
         NetworkRegistry.INSTANCE.registerGuiHandler(TConstruct.instance, proxy);
 
         if (PHConstruct.globalDespawn != 6000 && PHConstruct.globalDespawn != 0) {
@@ -214,19 +222,24 @@ public class TConstruct {
         }
 
         TConstructAPI.PROP_NAME = TPlayerStats.PROP_NAME;
+
+        if (LoadedMods.baublesExpanded) {
+            BaubleExpandedSlots.tryRegisterType(BaubleExpandedSlots.quiverType);
+            BaubleExpandedSlots.tryAssignSlotOfType(BaubleExpandedSlots.quiverType);
+        }
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
         packetPipeline.initalise();
-        // if (event.getSide() == Side.CLIENT) {
-        // MinecraftForge.EVENT_BUS.register(new EventCloakRender());
-        // }
-
         DimensionBlacklist.getBadBimensions();
         GameRegistry.registerWorldGenerator(new SlimeIslandGen(TinkerWorld.slimePool, 2), 2);
 
         pulsar.init(event);
+        if (PHConstruct.scytheAoeHarvest) {
+            CropHarvestHandlers.registerCropHarvestHandler(new VanillaCropsHarvestHandler());
+            MinecraftForge.EVENT_BUS.register(new AoeCropHarvestHandler());
+        }
     }
 
     @EventHandler
@@ -291,8 +304,7 @@ public class TConstruct {
 
         @SubscribeEvent
         public void onEntitySpawn(EntityJoinWorldEvent event) {
-            if (event.entity instanceof EntityItem) {
-                EntityItem ourGuy = (EntityItem) event.entity;
+            if (event.entity instanceof EntityItem ourGuy) {
                 if (ourGuy.lifespan == 6000) {
                     ourGuy.lifespan = PHConstruct.globalDespawn;
                 }

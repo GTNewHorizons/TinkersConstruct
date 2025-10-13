@@ -126,22 +126,22 @@ public class StoneTorch extends MantleBlock {
     }
 
     // JAVADOC METHOD $$ func_149726_b
-    public void onBlockAdded(World p_149726_1_, int p_149726_2_, int p_149726_3_, int p_149726_4_) {
-        if (p_149726_1_.getBlockMetadata(p_149726_2_, p_149726_3_, p_149726_4_) == 0) {
-            if (p_149726_1_.isSideSolid(p_149726_2_ - 1, p_149726_3_, p_149726_4_, EAST, true)) {
-                p_149726_1_.setBlockMetadataWithNotify(p_149726_2_, p_149726_3_, p_149726_4_, 1, 2);
-            } else if (p_149726_1_.isSideSolid(p_149726_2_ + 1, p_149726_3_, p_149726_4_, WEST, true)) {
-                p_149726_1_.setBlockMetadataWithNotify(p_149726_2_, p_149726_3_, p_149726_4_, 2, 2);
-            } else if (p_149726_1_.isSideSolid(p_149726_2_, p_149726_3_, p_149726_4_ - 1, SOUTH, true)) {
-                p_149726_1_.setBlockMetadataWithNotify(p_149726_2_, p_149726_3_, p_149726_4_, 3, 2);
-            } else if (p_149726_1_.isSideSolid(p_149726_2_, p_149726_3_, p_149726_4_ + 1, NORTH, true)) {
-                p_149726_1_.setBlockMetadataWithNotify(p_149726_2_, p_149726_3_, p_149726_4_, 4, 2);
-            } else if (this.canPlaceTorchOn(p_149726_1_, p_149726_2_, p_149726_3_ - 1, p_149726_4_)) {
-                p_149726_1_.setBlockMetadataWithNotify(p_149726_2_, p_149726_3_, p_149726_4_, 5, 2);
+    public void onBlockAdded(World worldIn, int x, int y, int z) {
+        if (worldIn.getBlockMetadata(x, y, z) == 0) {
+            if (worldIn.isSideSolid(x - 1, y, z, EAST, true)) {
+                worldIn.setBlockMetadataWithNotify(x, y, z, 1, 2);
+            } else if (worldIn.isSideSolid(x + 1, y, z, WEST, true)) {
+                worldIn.setBlockMetadataWithNotify(x, y, z, 2, 2);
+            } else if (worldIn.isSideSolid(x, y, z - 1, SOUTH, true)) {
+                worldIn.setBlockMetadataWithNotify(x, y, z, 3, 2);
+            } else if (worldIn.isSideSolid(x, y, z + 1, NORTH, true)) {
+                worldIn.setBlockMetadataWithNotify(x, y, z, 4, 2);
+            } else if (this.canPlaceTorchOn(worldIn, x, y - 1, z)) {
+                worldIn.setBlockMetadataWithNotify(x, y, z, 5, 2);
             }
         }
 
-        this.dropTorchIfCantStay(p_149726_1_, p_149726_2_, p_149726_3_, p_149726_4_);
+        this.dropTorchIfCantStay(worldIn, x, y, z);
     }
 
     @Override

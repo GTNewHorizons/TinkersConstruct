@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+// unused?
 public class MetalSlime extends BlueSlime {
 
     public MetalSlime(World world) {

@@ -152,31 +152,101 @@ public class HealthBarRenderer extends Gui {
         }
 
         if (health > 20) {
-            // Render tinkers' hearts
+            // Render tinkers' hearts with texture looping
             mc.getTextureManager().bindTexture(TINKER_HEARTS);
             for (int i = Math.max(0, health / 20 - 2); i < health / 20; i++) {
                 // uncomment the line below to help with debugging
-                // yBasePos -=20;
+                // yBasePos -= 20;
                 final int heartIndexMax = Math.min(10, (health - 20 * (i + 1)) / 2);
+
+                // Determines the correct heart texture column from newhearts.png.
+                // After displaying up to the white hearts (index 10), it loops
+                // back through a defined range starting from loopStartPoint.
+                int loopStartPoint = 0; // 0 (Orange hearts)
+                int loopEnd = 10; // 10 (White hearts)
+                int textureColumn;
+
+                if (i <= loopEnd) {
+                    textureColumn = i;
+                } else {
+                    int span = loopEnd - loopStartPoint + 1;
+                    textureColumn = ((i - loopStartPoint) % span) + loopStartPoint;
+                }
+
+                // Calculate overlay count for 240-260 range
+                int overlayCount = 0;
+                if (health > 240 && health <= 260) {
+                    overlayCount = health - 240;
+                }
+
                 for (int j = 0; j < heartIndexMax; j++) {
                     int y = 0;
                     if (j == regen) y -= 2;
                     if ((i + 1) * 20 + j * 2 + 21 >= health) {
                         // full heart texture
-                        this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * i, tinkerTextureY, 9, 9);
+                        if (health <= 240) {
+                            this.drawTexturedModalRect(
+                                    xBasePos + 8 * j,
+                                    yBasePos + y,
+                                    18 * textureColumn,
+                                    tinkerTextureY,
+                                    9,
+                                    9);
+                        } else {
+                            this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 18 * 10, tinkerTextureY, 9, 9);
+                            if (health <= 260) {
+                                int fullOverlays = overlayCount / 2;
+                                if (j < fullOverlays) {
+                                    this.drawTexturedModalRect(xBasePos + 8 * j, yBasePos + y, 0, 54, 9, 9);
+                                }
+                            } else {
+                                this.drawTexturedModalRect(
+                                        xBasePos + 8 * j,
+                                        yBasePos + y,
+                                        18 * textureColumn,
+                                        54,
+                                        9,
+                                        9);
+                            }
+                        }
                     }
                 }
                 if (health % 2 == 1 && heartIndexMax < 10) {
                     int y = 0;
                     if (heartIndexMax == regen) y -= 2;
                     // half heart texture
-                    this.drawTexturedModalRect(
-                            xBasePos + 8 * heartIndexMax,
-                            yBasePos + y,
-                            9 + 18 * i,
-                            tinkerTextureY,
-                            9,
-                            9);
+                    if (health <= 240) {
+                        this.drawTexturedModalRect(
+                                xBasePos + 8 * heartIndexMax,
+                                yBasePos + y,
+                                9 + 18 * textureColumn,
+                                tinkerTextureY,
+                                9,
+                                9);
+                    } else {
+                        this.drawTexturedModalRect(
+                                xBasePos + 8 * heartIndexMax,
+                                yBasePos + y,
+                                9 + 18 * 10,
+                                tinkerTextureY,
+                                9,
+                                9);
+                        if (health <= 260) {
+                            int fullOverlays = overlayCount / 2;
+                            boolean hasHalfOverlay = (overlayCount % 2) == 1;
+                            if (heartIndexMax == fullOverlays && hasHalfOverlay) {
+                                this.drawTexturedModalRect(xBasePos + 8 * heartIndexMax, yBasePos + y, 9, 54, 9, 9);
+                            }
+                        } else {
+                            this.drawTexturedModalRect(
+                                    xBasePos + 8 * heartIndexMax,
+                                    yBasePos + y,
+                                    9 + 18 * textureColumn,
+                                    54,
+                                    9,
+                                    9);
+                        }
+                    }
                 }
             }
             mc.getTextureManager().bindTexture(icons);
@@ -188,7 +258,5 @@ public class HealthBarRenderer extends Gui {
         mc.mcProfiler.endSection();
         event.setCanceled(true);
         MinecraftForge.EVENT_BUS.post(new RenderGameOverlayEvent.Post(event, HEALTH));
-
     }
-
 }

@@ -46,7 +46,7 @@ public class SlimeExplosive extends TConstructBlock {
     }
 
     @Override
-    public void getSubBlocks(Item b, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < 2; iter++) {
             list.add(new ItemStack(b, 1, iter * 2));
         }
@@ -121,8 +121,7 @@ public class SlimeExplosive extends TConstructBlock {
 
     @Override
     public void onEntityCollidedWithBlock(World par1World, int par2, int par3, int par4, Entity par5Entity) {
-        if (par5Entity instanceof EntityArrow && !par1World.isRemote) {
-            EntityArrow entityarrow = (EntityArrow) par5Entity;
+        if (par5Entity instanceof EntityArrow entityarrow && !par1World.isRemote) {
 
             if (entityarrow.isBurning()) {
                 this.primeTnt(

@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.TConstruct;
@@ -17,6 +19,7 @@ import tconstruct.smeltery.logic.CastingTableLogic;
 import tconstruct.smeltery.logic.FaucetLogic;
 import tconstruct.util.ItemHelper;
 
+@ThreadSafeISBRH(perThread = false)
 public class CastingBlockRender implements ISimpleBlockRenderingHandler {
 
     public static int searedModel = RenderingRegistry.getNextAvailableRenderId();

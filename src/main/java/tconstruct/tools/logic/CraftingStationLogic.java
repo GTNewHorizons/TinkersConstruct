@@ -68,11 +68,9 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         for (final ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             final int xPos = x + dir.offsetX, yPos = y + dir.offsetY, zPos = z + dir.offsetZ;
             final TileEntity tile = world.getTileEntity(xPos, yPos, zPos);
-            if (!(tile instanceof IInventory) || (tile instanceof CraftingStationLogic)
+            if (!(tile instanceof IInventory inv) || (tile instanceof CraftingStationLogic)
                     || isBlacklisted(tile.getClass()))
                 continue;
-
-            final IInventory inv = (IInventory) tile;
 
             if (patternChest == null && tile instanceof PatternChestLogic) {
                 patternChest = new WeakReference<>(inv);
@@ -85,23 +83,32 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
                 continue;
             }
 
-            if (tile instanceof ISidedInventory
-                    && ((ISidedInventory) tile).getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length == 0)
+            if (tile instanceof ISidedInventory sidedIvn
+                    && sidedIvn.getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length == 0)
                 continue;
 
             if (chest == null && inv.isUseableByPlayer(inventoryplayer.player)) {
                 chest = new WeakReference<>(inv);
                 chestDirection = dir;
                 invColumns = 6;
-                chestSize = tile instanceof ISidedInventory
-                        ? ((ISidedInventory) tile).getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length
+                chestSize = tile instanceof ISidedInventory sidedIvn
+                        ? sidedIvn.getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length
                         : inv.getSizeInventory();
 
-                if (tile instanceof TileEntityChest) {
-                    checkForChest(world, xPos, yPos, zPos, 1, 0);
-                    checkForChest(world, xPos, yPos, zPos, -1, 0);
-                    checkForChest(world, xPos, yPos, zPos, 0, 1);
-                    checkForChest(world, xPos, yPos, zPos, 0, -1);
+                if (tile instanceof TileEntityChest tileChest) {
+                    if (tileChest.adjacentChestZPos != null) {
+                        doubleChest = new WeakReference<>(tileChest.adjacentChestZPos);
+                        doubleFirst = false;
+                    } else if (tileChest.adjacentChestZNeg != null) {
+                        doubleChest = new WeakReference<>(tileChest.adjacentChestZNeg);
+                        doubleFirst = true;
+                    } else if (tileChest.adjacentChestXPos != null) {
+                        doubleChest = new WeakReference<>(tileChest.adjacentChestXPos);
+                        doubleFirst = false;
+                    } else if (tileChest.adjacentChestXNeg != null) {
+                        doubleChest = new WeakReference<>(tileChest.adjacentChestXNeg);
+                        doubleFirst = true;
+                    }
                 }
                 slotCount = chestSize * (doubleChest != null ? 2 : 1);
                 invRows = (int) Math.ceil((double) slotCount / invColumns);
@@ -115,14 +122,6 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         return PHConstruct.craftingStationBlacklist.contains(clazz.getName());
     }
 
-    void checkForChest(World world, int x, int y, int z, int dx, int dz) {
-        TileEntity tile = world.getTileEntity(x + dx, y, z + dz);
-        if (tile instanceof TileEntityChest) {
-            doubleChest = new WeakReference<>((IInventory) tile);
-            doubleFirst = dx + dz < 0;
-        }
-    }
-
     public boolean isDoubleChest() {
         return this.doubleChest != null;
     }
@@ -131,7 +130,7 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         if (doubleFirst && doubleChest != null) {
             return doubleChest.get();
         } else {
-            return chest.get();
+            return chest != null ? chest.get() : null;
         }
     }
 

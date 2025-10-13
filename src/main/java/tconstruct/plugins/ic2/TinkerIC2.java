@@ -11,8 +11,10 @@ import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 import mantle.pulsar.pulse.Handler;
 import mantle.pulsar.pulse.Pulse;
 import tconstruct.TConstruct;
+import tconstruct.api.harvesting.CropHarvestHandlers;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.LiquidCasting;
+import tconstruct.util.config.PHConstruct;
 
 @ObjectHolder(TConstruct.modID)
 @Pulse(
@@ -28,6 +30,8 @@ public class TinkerIC2 {
     public void init(FMLInitializationEvent event) {
         TConstruct.logger.info("IC2 detected. Preparing for shenanigans.");
 
+        CropHarvestHandlers.registerCropHarvestHandler(new Ic2CropHarvestHandler());
+
         Fluid fluidUUM = FluidRegistry.getFluid(IC2_UUM_FLUIDNAME);
         if (fluidUUM == null) return;
 
@@ -35,11 +39,13 @@ public class TinkerIC2 {
         LiquidCasting basinCasting = TConstructRegistry.getBasinCasting();
 
         // Block casting
-        basinCasting.addCastingRecipe(
-                new ItemStack(Blocks.diamond_block),
-                fluidStackBlock,
-                new ItemStack(Blocks.dirt),
-                true,
-                50);
+        if (!PHConstruct.disableAllRecipes) {
+            basinCasting.addCastingRecipe(
+                    new ItemStack(Blocks.diamond_block),
+                    fluidStackBlock,
+                    new ItemStack(Blocks.dirt),
+                    true,
+                    50);
+        }
     }
 }

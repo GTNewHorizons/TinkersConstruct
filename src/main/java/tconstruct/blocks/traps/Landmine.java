@@ -147,7 +147,7 @@ public class Landmine extends MantleBlock {
         boolean var5 = world.getBlockMetadata(posX, posY, posZ) == 1;
         boolean var6 = false;
         float var7 = 0.125F;
-        List<Entity> var8 = null;
+        List<? extends Entity> var8 = null;
 
         if (this.triggerMobType == EnumCreatureType.creature) {
             var8 = world.getEntitiesWithinAABBExcludingEntity(

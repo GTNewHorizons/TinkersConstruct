@@ -23,20 +23,19 @@ public class BlockFalling extends Block {
     }
 
     @Override
-    public void onBlockAdded(World p_149726_1_, int p_149726_2_, int p_149726_3_, int p_149726_4_) {
-        p_149726_1_.scheduleBlockUpdate(p_149726_2_, p_149726_3_, p_149726_4_, this, this.tickRate(p_149726_1_));
+    public void onBlockAdded(World worldIn, int x, int y, int z) {
+        worldIn.scheduleBlockUpdate(x, y, z, this, this.tickRate(worldIn));
     }
 
     @Override
-    public void onNeighborBlockChange(World p_149695_1_, int p_149695_2_, int p_149695_3_, int p_149695_4_,
-            Block p_149695_5_) {
-        p_149695_1_.scheduleBlockUpdate(p_149695_2_, p_149695_3_, p_149695_4_, this, this.tickRate(p_149695_1_));
+    public void onNeighborBlockChange(World worldIn, int x, int y, int z, Block neighbor) {
+        worldIn.scheduleBlockUpdate(x, y, z, this, this.tickRate(worldIn));
     }
 
     @Override
-    public void updateTick(World p_149674_1_, int p_149674_2_, int p_149674_3_, int p_149674_4_, Random p_149674_5_) {
-        if (!p_149674_1_.isRemote) {
-            this.func_149830_m(p_149674_1_, p_149674_2_, p_149674_3_, p_149674_4_);
+    public void updateTick(World worldIn, int x, int y, int z, Random random) {
+        if (!worldIn.isRemote) {
+            this.func_149830_m(worldIn, x, y, z);
         }
     }
 
@@ -79,7 +78,7 @@ public class BlockFalling extends Block {
     protected void func_149829_a(EntityFallingBlock p_149829_1_) {}
 
     @Override
-    public int tickRate(World p_149738_1_) {
+    public int tickRate(World worldIn) {
         return 2;
     }
 

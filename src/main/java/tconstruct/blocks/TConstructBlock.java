@@ -57,7 +57,7 @@ public class TConstructBlock extends MantleBlock {
 
     // TODO getSubBlocks
     @Override
-    public void getSubBlocks(Item block, CreativeTabs tab, List list) {
+    public void getSubBlocks(Item block, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < icons.length; iter++) {
             list.add(new ItemStack(block, 1, iter));
         }

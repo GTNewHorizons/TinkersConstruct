@@ -1,5 +1,6 @@
 package tconstruct.smeltery.logic;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -9,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -21,6 +23,7 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.common.eventhandler.Event;
 import mantle.blocks.abstracts.InventoryLogic;
+import mantle.blocks.iface.IFacingLogic;
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.CastingRecipe;
 import tconstruct.library.crafting.LiquidCasting;
@@ -30,9 +33,11 @@ import tconstruct.library.event.SmelteryEvent;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.library.util.IPattern;
 
-public abstract class CastingBlockLogic extends InventoryLogic implements IFluidTank, IFluidHandler, ISidedInventory {
+public abstract class CastingBlockLogic extends InventoryLogic
+        implements IFluidTank, IFluidHandler, ISidedInventory, IFacingLogic {
 
     public FluidStack liquid;
+    protected byte direction;
     protected int maxCastingDelay = 0;
     protected int castingDelay = 0;
     protected int renderOffset = 0;
@@ -289,7 +294,7 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
                     player);
             MinecraftForge.EVENT_BUS.post(event);
 
-            // try to transfer thes tack to the player inventory
+            // try to transfer the stack to the player inventory
             ItemStack output = event.item;
             AbilityHelper.spawnItemAtPlayer(player, output);
 
@@ -431,6 +436,7 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
         this.castingDelay = tags.getInteger("castingDelay");
         this.maxCastingDelay = tags.getInteger("maxCastingDelay");
         this.renderOffset = tags.getInteger("RenderOffset");
+        this.direction = tags.getByte("direction");
     }
 
     @Override
@@ -451,6 +457,7 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
         tags.setInteger("castingDelay", castingDelay);
         tags.setInteger("maxCastingDelay", maxCastingDelay);
         tags.setInteger("RenderOffset", renderOffset);
+        tags.setByte("direction", direction);
     }
 
     /* Packets */
@@ -473,5 +480,29 @@ public abstract class CastingBlockLogic extends InventoryLogic implements IFluid
         }
 
         return (int) (((maxCastingDelay - castingDelay) / (double) maxCastingDelay) * 100);
+    }
+
+    @Override
+    public byte getRenderDirection() {
+        return direction;
+    }
+
+    @Override
+    public ForgeDirection getForgeDirection() {
+        return ForgeDirection.VALID_DIRECTIONS[direction];
+    }
+
+    @Override
+    public void setDirection(int side) {}
+
+    @Override
+    public void setDirection(float yaw, float pitch, EntityLivingBase player) {
+        int facing = MathHelper.floor_double((double) (yaw / 360) + 0.5D) & 3;
+        switch (facing) {
+            case 1 -> direction = 5;
+            case 2 -> direction = 3;
+            case 3 -> direction = 4;
+            default -> direction = 2;
+        }
     }
 }

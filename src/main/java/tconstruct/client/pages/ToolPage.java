@@ -1,5 +1,7 @@
 package tconstruct.client.pages;
 
+import java.util.Arrays;
+
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
@@ -48,8 +50,7 @@ public class ToolPage extends BookPage {
         String cParts = StatCollector.translateToLocal("manual.page.tool1");
         if (isTranslatable) {
             title = StatCollector.translateToLocal(title);
-            iconText[0] = StatCollector.translateToLocal(iconText[0]);
-            iconText[1] = StatCollector.translateToLocal(iconText[1]);
+            iconText = Arrays.stream(iconText).map(StatCollector::translateToLocal).toArray(String[]::new);
             cParts = StatCollector.translateToLocal(cParts);
         }
 

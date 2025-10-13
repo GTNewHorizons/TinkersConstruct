@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.w3c.dom.Document;
 
+import cpw.mods.fml.common.Loader;
 import mantle.client.SmallFontRenderer;
 import mantle.lib.client.MantleClientRegistry;
 import tconstruct.TConstruct;
@@ -57,6 +58,15 @@ public class TProxyClient extends TProxyCommon {
     public static ManualInfo manualData;
 
     public void readManuals() {
+        initManualIcons();
+        initManualRecipes();
+        initManualPages();
+        if (!Loader.isModLoaded("dreamcraft")) {
+            readTinkersConstructManuals();
+        }
+    }
+
+    private void readTinkersConstructManuals() {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         String CurrentLanguage = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
 
@@ -73,9 +83,6 @@ public class TProxyClient extends TProxyCommon {
         weaponry = weaponry_cl != null ? weaponry_cl
                 : readManual("/assets/tinker/manuals/en_US/weaponry.xml", dbFactory);
 
-        initManualIcons();
-        initManualRecipes();
-        initManualPages();
         manualData = new ManualInfo();
     }
 

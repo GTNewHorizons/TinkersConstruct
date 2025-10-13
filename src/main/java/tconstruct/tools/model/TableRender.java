@@ -7,10 +7,13 @@ import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.tools.TinkerTools;
 
+@ThreadSafeISBRH(perThread = false)
 public class TableRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();

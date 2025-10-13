@@ -14,6 +14,11 @@ public class Excavator extends AOEHarvestTool {
     }
 
     @Override
+    protected String getAOEToolName() {
+        return "excavator";
+    }
+
+    @Override
     protected Material[] getEffectiveMaterials() {
         return materials;
     }

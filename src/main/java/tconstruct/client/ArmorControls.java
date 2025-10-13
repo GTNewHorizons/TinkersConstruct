@@ -5,14 +5,17 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import cpw.mods.fml.common.gameevent.InputEvent.MouseInputEvent;
 import mantle.common.network.AbstractPacket;
 import modwarriors.notenoughkeys.api.Api;
 import modwarriors.notenoughkeys.api.KeyBindingPressedEvent;
@@ -55,6 +58,9 @@ public class ArmorControls {
     public ArmorControls() {
         getVanillaKeyBindings();
         keys = new KeyBinding[] { armorKey, toggleGoggles, beltSwap, zoomKey, null, null };
+        EventHandler handler = new EventHandler();
+        FMLCommonHandler.instance().bus().register(handler);
+        MinecraftForge.EVENT_BUS.register(handler);
     }
 
     public void registerKeys() {
@@ -79,15 +85,20 @@ public class ArmorControls {
         invKey = mc.gameSettings.keyBindInventory;
     }
 
-    @SubscribeEvent
     public void keyEvent(KeyInputEvent event) {
         if (!isNotEnoughKeysLoaded) {
             checkAndPerformKeyActions(null, false);
         }
     }
 
+    /**
+     * handles keybinds on mouse buttons
+     */
+    public void mouseEvent(MouseInputEvent event) {
+        checkAndPerformKeyActions(null, false);
+    }
+
     @Optional.Method(modid = "notenoughkeys")
-    @SubscribeEvent
     public void keyEventSpecial(KeyBindingPressedEvent event) {
         if (event.keyBinding != null && event.isKeyBindingPressed) {
             checkAndPerformKeyActions(event.keyBinding, true);
@@ -207,5 +218,24 @@ public class ArmorControls {
 
     static void updateServer(AbstractPacket abstractPacket) {
         TConstruct.packetPipeline.sendToServer(abstractPacket);
+    }
+
+    public class EventHandler {
+
+        @SubscribeEvent
+        public void keyEventWrapper(KeyInputEvent event) {
+            ArmorControls.this.keyEvent(event);
+        }
+
+        @SubscribeEvent
+        public void mouseEventWrapper(MouseInputEvent event) {
+            ArmorControls.this.mouseEvent(event);
+        }
+
+        @Optional.Method(modid = "notenoughkeys")
+        @SubscribeEvent
+        public void keyEventSpecialWrapper(KeyBindingPressedEvent event) {
+            ArmorControls.this.keyEventSpecial(event);
+        }
     }
 }

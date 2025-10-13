@@ -521,9 +521,11 @@ public class TinkerTools {
     @Handler
     public void init(FMLInitializationEvent event) {
         addPartMapping();
-        addRecipesForToolBuilder();
-        addRecipesForChisel();
-        craftingTableRecipes();
+        if (!PHConstruct.disableAllRecipes) {
+            addRecipesForToolBuilder();
+            addRecipesForChisel();
+            craftingTableRecipes();
+        }
         setupToolTabs();
         proxy.initialize();
     }

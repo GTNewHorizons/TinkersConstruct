@@ -54,8 +54,24 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
     }
 
     @Override
+    public void setInventorySlotContents(int slot, ItemStack stack) {
+        super.setInventorySlotContents(slot, stack);
+        if (slot != 0) {
+            buildTool(toolName);
+        }
+    }
+
+    @Override
+    public ItemStack decrStackSize(int slot, int amount) {
+        ItemStack itemstack = super.decrStackSize(slot, amount);
+        if (slot != 0) {
+            buildTool(toolName);
+        }
+        return itemstack;
+    }
+
+    @Override
     public void markDirty() {
-        buildTool(toolName);
         if (this.worldObj != null) {
             this.blockMetadata = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
             this.worldObj.markTileEntityChunkModified(this.xCoord, this.yCoord, this.zCoord, this);
@@ -101,10 +117,6 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
         if (output != null) temp = output;
         else temp = inventory[1].copy();
 
-        if (temp == null) {
-            return null; // output is null or not a tool :(
-        }
-
         NBTTagCompound tags = temp.getTagCompound();
         if (tags == null) {
             tags = new NBTTagCompound();
@@ -112,17 +124,16 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
         }
 
         NBTTagCompound display = null;
-        if (!(tags.hasKey("display"))) display = new NBTTagCompound();
-        else if (tags.getCompoundTag("display").hasKey("Name")) display = tags.getCompoundTag("display");
-
-        if (display == null) return output;
+        if (tags.hasKey("display") && tags.getCompoundTag("display").hasKey("Name"))
+            display = tags.getCompoundTag("display");
 
         boolean doRename = false;
-        if (canRename(display, temp)) {
+        if (display == null) {
+            display = new NBTTagCompound();
             doRename = true;
         }
         // we only allow renaming with a nametag otherwise
-        else if (!("\u00A7f" + name).equals(display.getString("Name")) && !name.equals(display.getString("Name"))) {
+        else if (!name.equals(display.getString("Name"))) {
             int nametagCount = 0;
             for (ItemStack itemStack : inventory)
                 if (itemStack != null && itemStack.getItem() == Items.name_tag) nametagCount++;
@@ -132,8 +143,7 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
 
         if (!doRename) return output;
 
-        String dName = temp.getItem() instanceof IModifyable ? "\u00A7f" + name : name;
-        display.setString("Name", dName);
+        display.setString("Name", name);
         tags.setTag("display", display);
         temp.setRepairCost(2);
         output = temp;
@@ -178,6 +188,7 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
     public void closeInventory() {}
 
     public static boolean canRename(NBTTagCompound tags, ItemStack tool) {
-        return !tags.hasKey("Name") || tags.getString("Name").equals("\u00A7f" + ToolBuilder.defaultToolName(tool));
+        return tags != null && (!tags.hasKey("Name")
+                || tags.getString("Name").equals("\u00A7f" + ToolBuilder.defaultToolName(tool)));
     }
 }

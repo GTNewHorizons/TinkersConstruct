@@ -26,6 +26,11 @@ public class TravelGlove extends AccessoryCore implements IAccessoryModel {
     }
 
     @Override
+    public boolean isItemTool(ItemStack stack) {
+        return true;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     protected void registerModifiers(IIconRegister iconRegister) {
         this.modifiers = new IIcon[4];

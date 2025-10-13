@@ -7,10 +7,13 @@ import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.util.ItemHelper;
 
+@ThreadSafeISBRH(perThread = false)
 public class DryingRackRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();
@@ -64,7 +67,7 @@ public class DryingRackRender implements ISimpleBlockRenderingHandler {
     }
 
     public static void renderStandardInvBlock(RenderBlocks renderblocks, Block block, int meta) {
-        Tessellator tessellator = Tessellator.instance;
+        final Tessellator tessellator = Tessellator.instance;
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1F, 0.0F);

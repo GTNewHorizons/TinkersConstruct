@@ -135,7 +135,10 @@ public class SmelteryGui extends ActiveContainerGui {
             int topY = (cornerY + 68) - fluidHeights[i] - base;
 
             if (mouseX >= leftX && mouseX <= leftX + 52 && mouseY >= topY && mouseY < topY + fluidHeights[i]) {
-                drawFluidStackTooltip(logic.moltenMetal.get(i), mouseX - cornerX + 36, mouseY - cornerY, false);
+                drawFluidStackTooltip(
+                        getLiquidTooltip(logic.moltenMetal.get(i)),
+                        mouseX - cornerX + 36,
+                        mouseY - cornerY);
             }
             base += fluidHeights[i];
         }
@@ -147,7 +150,7 @@ public class SmelteryGui extends ActiveContainerGui {
             int sizeX = 12;
             int sizeY = logic.getScaledFuelGague(52);
             if (mouseX >= leftX && mouseX <= leftX + sizeX && mouseY >= topY && mouseY < topY + sizeY) {
-                drawFluidStackTooltip(logic.getFuel(), mouseX - cornerX + 36, mouseY - cornerY, true);
+                drawFluidStackTooltip(getFuelTooltip(logic.getFuel()), mouseX - cornerX + 36, mouseY - cornerY);
             }
         }
     }
@@ -334,63 +337,66 @@ public class SmelteryGui extends ActiveContainerGui {
         return fluidHeights;
     }
 
-    protected void drawFluidStackTooltip(FluidStack par1ItemStack, int par2, int par3, boolean fuel) {
+    protected void drawFluidStackTooltip(List<String> tooltip, int x, int y) {
         this.zLevel = 100;
-        List<String> list = getLiquidTooltip(par1ItemStack, this.mc.gameSettings.advancedItemTooltips, fuel);
-        for (int k = 0; k < list.size(); ++k) {
-            list.set(k, EnumChatFormatting.GRAY + list.get(k));
+        for (int k = 0; k < tooltip.size(); ++k) {
+            tooltip.set(k, EnumChatFormatting.GRAY + tooltip.get(k));
         }
-        this.drawToolTip(list, par2, par3);
+        this.drawToolTip(tooltip, x, y);
         this.zLevel = 0;
     }
 
-    public List<String> getLiquidTooltip(FluidStack liquid, boolean advanced, boolean fuel) {
+    private List<String> getFuelTooltip(FluidStack liquid) {
         ArrayList<String> list = new ArrayList<>();
-        if (fuel || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            list.add("\u00A7f" + StatCollector.translateToLocal("gui.smeltery.fuel"));
+        list.add("\u00A7f" + StatCollector.translateToLocal("gui.smeltery.fuel"));
+        list.add("mB: " + liquid.amount);
+        return list;
+    }
+
+    private List<String> getLiquidTooltip(FluidStack liquid) {
+        ArrayList<String> list = new ArrayList<>();
+        String name = liquid.getFluid().getLocalizedName(liquid);
+        list.add("\u00A7f" + name);
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             list.add("mB: " + liquid.amount);
-        } else {
-            String name = liquid.getFluid().getLocalizedName(liquid);
-            list.add("\u00A7f" + name);
-            if (name.equals(StatCollector.translateToLocal("fluid.emerald.liquid"))) {
-                list.add(StatCollector.translateToLocal("gui.smeltery.emerald") + liquid.amount / 640f);
-            } else if (name.equals(StatCollector.translateToLocal("fluid.quartz.molten"))) {
-                list.add(StatCollector.translateToLocal("gui.smeltery.quartz") + liquid.amount / 250f);
-            } else if (name.equals(StatCollector.translateToLocal("fluid.glass.molten"))) {
-                int blocks = liquid.amount / 1000;
+        } else if (name.equals(StatCollector.translateToLocal("fluid.emerald.liquid"))) {
+            list.add(StatCollector.translateToLocal("gui.smeltery.emerald") + liquid.amount / 640f);
+        } else if (name.equals(StatCollector.translateToLocal("fluid.quartz.molten"))) {
+            list.add(StatCollector.translateToLocal("gui.smeltery.quartz") + liquid.amount / 250f);
+        } else if (name.equals(StatCollector.translateToLocal("fluid.glass.molten"))) {
+            int blocks = liquid.amount / 1000;
+            if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
+            int panels = (liquid.amount % 1000) / 250;
+            if (panels > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.pannel") + panels);
+            int mB = (liquid.amount % 1000) % 250;
+            if (mB > 0) list.add("mB: " + mB);
+        } else if (name.equals(StatCollector.translateToLocal("fluid.stone.seared"))) {
+            if (Loader.isModLoaded("dreamcraft")) {
+                int blocks = liquid.amount / 360; // in gtnh each seared stone block is 360 mb of fluid
                 if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
-                int panels = (liquid.amount % 1000) / 250;
-                if (panels > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.pannel") + panels);
-                int mB = (liquid.amount % 1000) % 250;
+                // we also have no casting recipe for seared bricks
+                int mB = liquid.amount % 360;
                 if (mB > 0) list.add("mB: " + mB);
-            } else if (name.equals(StatCollector.translateToLocal("fluid.stone.seared"))) {
-                if (Loader.isModLoaded("dreamcraft")) {
-                    int blocks = liquid.amount / 360; // in gtnh each seared stone block is 360 mb of fluid
-                    if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
-                    // we also have no casting recipe for seared bricks
-                    int mB = liquid.amount % 360;
-                    if (mB > 0) list.add("mB: " + mB);
-                } else {
-                    int blocks = liquid.amount / TConstruct.ingotLiquidValue;
-                    if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
-                    int ingots = (liquid.amount % TConstruct.ingotLiquidValue) / (TConstruct.ingotLiquidValue / 4);
-                    if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + ingots);
-                    int mB = (liquid.amount % TConstruct.ingotLiquidValue) % (TConstruct.ingotLiquidValue / 4);
-                    if (mB > 0) list.add("mB: " + mB);
-                }
-            } else if (isMolten(name)) {
-                int ingots = liquid.amount / TConstruct.ingotLiquidValue;
-                if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + ingots);
-                int mB = liquid.amount % TConstruct.ingotLiquidValue;
-                if (mB > 0) {
-                    int nuggets = mB / TConstruct.nuggetLiquidValue;
-                    int junk = (mB % TConstruct.nuggetLiquidValue);
-                    if (nuggets > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.nugget") + nuggets);
-                    if (junk > 0) list.add("mB: " + junk);
-                }
             } else {
-                list.add("mB: " + liquid.amount);
+                int blocks = liquid.amount / TConstruct.ingotLiquidValue;
+                if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
+                int ingots = (liquid.amount % TConstruct.ingotLiquidValue) / (TConstruct.ingotLiquidValue / 4);
+                if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + ingots);
+                int mB = (liquid.amount % TConstruct.ingotLiquidValue) % (TConstruct.ingotLiquidValue / 4);
+                if (mB > 0) list.add("mB: " + mB);
             }
+        } else if (isMolten(name)) {
+            int ingots = liquid.amount / TConstruct.ingotLiquidValue;
+            if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + ingots);
+            int mB = liquid.amount % TConstruct.ingotLiquidValue;
+            if (mB > 0) {
+                int nuggets = mB / TConstruct.nuggetLiquidValue;
+                int junk = (mB % TConstruct.nuggetLiquidValue);
+                if (nuggets > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.nugget") + nuggets);
+                if (junk > 0) list.add("mB: " + junk);
+            }
+        } else {
+            list.add("mB: " + liquid.amount);
         }
         return list;
     }
@@ -407,27 +413,27 @@ public class SmelteryGui extends ActiveContainerGui {
         return molten;
     }
 
-    protected void drawToolTip(List<String> par1List, int par2, int par3) {
-        if (!par1List.isEmpty()) {
+    private void drawToolTip(List<String> tooltip, int x, int y) {
+        if (!tooltip.isEmpty()) {
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
             int k = 0;
 
-            for (String s : par1List) {
+            for (String s : tooltip) {
                 int l = this.fontRendererObj.getStringWidth(s);
                 if (l > k) {
                     k = l;
                 }
             }
 
-            int i1 = par2 + 12;
-            int j1 = par3 - 12;
+            int i1 = x + 12;
+            int j1 = y - 12;
             int k1 = 8;
 
-            if (par1List.size() > 1) {
-                k1 += 2 + (par1List.size() - 1) * 10;
+            if (tooltip.size() > 1) {
+                k1 += 2 + (tooltip.size() - 1) * 10;
             }
 
             if (i1 + k > this.width) {
@@ -453,8 +459,8 @@ public class SmelteryGui extends ActiveContainerGui {
             this.drawGradientRect(i1 - 3, j1 - 3, i1 + k + 3, j1 - 3 + 1, i2, i2);
             this.drawGradientRect(i1 - 3, j1 + k1 + 2, i1 + k + 3, j1 + k1 + 3, j2, j2);
 
-            for (int k2 = 0; k2 < par1List.size(); ++k2) {
-                String s1 = par1List.get(k2);
+            for (int k2 = 0; k2 < tooltip.size(); ++k2) {
+                String s1 = tooltip.get(k2);
                 this.fontRendererObj.drawStringWithShadow(s1, i1, j1, -1);
 
                 if (k2 == 0) {

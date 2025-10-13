@@ -83,7 +83,7 @@ public class TitleIcon extends Item {
 
     @Override
     public String getItemStackDisplayName(ItemStack par1ItemStack) {
-        String s = ("" + StatCollector.translateToLocal(this.getUnlocalizedName() + ".name")).trim();
+        String s = (StatCollector.translateToLocal(this.getUnlocalizedName() + ".name")).trim();
         String s1 = mobNames[par1ItemStack.getItemDamage()];
 
         if (s1 != null) {
@@ -94,7 +94,7 @@ public class TitleIcon extends Item {
     }
 
     @Override
-    public void getSubItems(Item b, CreativeTabs tab, List list) {
+    public void getSubItems(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int i = 0; i < mobNames.length; i++) list.add(new ItemStack(b, 1, i));
     }
 

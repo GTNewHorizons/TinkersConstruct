@@ -53,11 +53,30 @@ public class CastingTableSpecialRenderer extends TileEntitySpecialRenderer {
         entityitem.hoverStart = 0.0F;
         GL11.glPushMatrix();
         GL11.glTranslatef(1F, 1.48F, 0.55F);
-        GL11.glRotatef(90F, 1, 0F, 0F);
+
+        float rotationY = switch (logic.getRenderDirection()) {
+            case 3 -> 180F;
+            case 4 -> 90F;
+            case 5 -> 270F;
+            default -> 0F;
+        };
+        GL11.glRotatef(rotationY, 0F, 1F, 0F);
+
+        if (logic.getRenderDirection() == 3) {
+            GL11.glTranslatef(0F, 0F, -0.9F);
+        } else if (logic.getRenderDirection() == 4) {
+            GL11.glTranslatef(-0.45F, 0F, -0.45F);
+        } else if (logic.getRenderDirection() == 5) {
+            GL11.glTranslatef(0.45F, 0F, -0.45F);
+        }
+
+        GL11.glRotatef(90F, 1F, 0F, 0F);
         GL11.glScalef(2F, 2F, 2F);
+
         if (stack.getItem() instanceof ItemBlock || stack.getItem() instanceof ItemBlocklike) {
-            GL11.glRotatef(90F, -1, 0F, 0F);
-            GL11.glTranslatef(0F, -0.1F, 0.2275F);
+            GL11.glRotatef(-90F, 0F, 0F, 1F);
+            GL11.glRotatef(90F, -1F, 0F, 0F);
+            GL11.glTranslatef(-0.2275F, -0.1F, 0F);
         }
 
         if (stack.isItemEqual(new ItemStack(TinkerSmeltery.glassPane))) {

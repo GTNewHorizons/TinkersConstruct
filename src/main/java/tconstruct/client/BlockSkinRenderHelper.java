@@ -10,8 +10,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.FluidRegistry;
 
-import org.lwjgl.opengl.GL11;
-
 public class BlockSkinRenderHelper {
 
     public static boolean renderMetadataBlock(Block block, int metadata, int x, int y, int z, RenderBlocks renderer,
@@ -983,14 +981,11 @@ public class BlockSkinRenderHelper {
         }
 
         // safety
+        if (flowingIcon == null) flowingIcon = stillIcon != null ? stillIcon : FluidRegistry.WATER.getFlowingIcon();
         if (stillIcon == null) stillIcon = FluidRegistry.WATER.getStillIcon();
-        if (flowingIcon == null) flowingIcon = FluidRegistry.WATER.getFlowingIcon();
 
         boolean raf = renderer.renderAllFaces;
         renderer.renderAllFaces = true;
-
-        // alpha blending etc.
-        GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT);
 
         boolean ret;
         if (Minecraft.isAmbientOcclusionEnabled()) ret = renderFakeBlockWithAmbientOcclusion(
@@ -1015,8 +1010,6 @@ public class BlockSkinRenderHelper {
                 blue,
                 renderer,
                 world);
-
-        GL11.glPopAttrib();
 
         renderer.renderAllFaces = raf;
         return ret;

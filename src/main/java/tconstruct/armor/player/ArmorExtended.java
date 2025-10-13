@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -218,14 +219,8 @@ public class ArmorExtended implements IInventory {
 
     public static boolean isSoulBounded(ItemStack stack) {
         int soulBound = getSoulBoundID();
-        NBTTagList stackEnch = stack.getEnchantmentTagList();
-        if (soulBound >= 0 && stackEnch != null) {
-            for (int i = 0; i < stackEnch.tagCount(); i++) {
-                int id = stackEnch.getCompoundTagAt(i).getInteger("id");
-                if (id == soulBound) return true;
-            }
-        }
-        return false;
+        if (soulBound > 0) return EnchantmentHelper.getEnchantmentLevel(soulBound, stack) > 0;
+        else return false;
     }
 
     // ---

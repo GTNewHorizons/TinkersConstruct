@@ -54,8 +54,7 @@ public class FurnaceContainer extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-        for (Object crafter : this.crafters) {
-            ICrafting icrafting = (ICrafting) crafter;
+        for (ICrafting icrafting : this.crafters) {
 
             if (this.lastCookTime != this.furnace.progress) {
                 icrafting.sendProgressBarUpdate(this, 0, this.furnace.progress);

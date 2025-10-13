@@ -18,6 +18,7 @@ import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.tools.TinkerTools;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.world.TinkerWorld;
 
 @ObjectHolder(TConstruct.modID)
@@ -95,15 +96,17 @@ public class TinkerTE4 {
                 0);
 
         // Dust Recipes
-        GameRegistry.addRecipe(
-                new ShapelessOreRecipe(new ItemStack(TinkerTools.materials, 1, 41), "dustArdite", "dustCobalt"));
-        GameRegistry.addRecipe(
-                new ShapelessOreRecipe(
-                        new ItemStack(TinkerTools.materials, 4, 42),
-                        "dustAluminum",
-                        "dustAluminum",
-                        "dustAluminum",
-                        "dustCopper"));
+        if (!PHConstruct.disableAllRecipes) {
+            GameRegistry.addRecipe(
+                    new ShapelessOreRecipe(new ItemStack(TinkerTools.materials, 1, 41), "dustArdite", "dustCobalt"));
+            GameRegistry.addRecipe(
+                    new ShapelessOreRecipe(
+                            new ItemStack(TinkerTools.materials, 4, 42),
+                            "dustAluminum",
+                            "dustAluminum",
+                            "dustAluminum",
+                            "dustCopper"));
+        }
     }
 
     @Handler

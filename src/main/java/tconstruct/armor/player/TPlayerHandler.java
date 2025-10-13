@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -42,17 +43,20 @@ public class TPlayerHandler {
 
     private final ConcurrentHashMap<UUID, TPlayerStats> playerStats = new ConcurrentHashMap<>();
 
-    @SubscribeEvent
+    public TPlayerHandler() {
+        EventHandler handler = new EventHandler();
+        FMLCommonHandler.instance().bus().register(handler);
+        MinecraftForge.EVENT_BUS.register(handler);
+    }
+
     public void PlayerLoggedInEvent(PlayerLoggedInEvent event) {
         onPlayerLogin(event.player);
     }
 
-    @SubscribeEvent
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         onPlayerRespawn(event.player);
     }
 
-    @SubscribeEvent
     public void onEntityConstructing(EntityEvent.EntityConstructing event) {
         if (event.entity instanceof EntityPlayer && TPlayerStats.get((EntityPlayer) event.entity) == null) {
             TPlayerStats.register((EntityPlayer) event.entity);
@@ -210,7 +214,6 @@ public class TPlayerHandler {
         }
     }
 
-    @SubscribeEvent
     public void livingFall(LivingFallEvent evt) // Only for negating fall damage
     {
         if (evt.entityLiving instanceof EntityPlayer) {
@@ -218,7 +221,6 @@ public class TPlayerHandler {
         }
     }
 
-    @SubscribeEvent
     public void playerDeath(LivingDeathEvent event) {
         if (!(event.entity instanceof EntityPlayer)) return;
 
@@ -229,7 +231,6 @@ public class TPlayerHandler {
         }
     }
 
-    @SubscribeEvent
     public void playerDrops(PlayerDropsEvent evt) {
         // After playerDeath event. Modifying saved data.
         TPlayerStats stats = playerStats.get(evt.entityPlayer.getPersistentID());
@@ -318,6 +319,40 @@ public class TPlayerHandler {
             br.close();
         } catch (Exception e) {
             TConstruct.logger.error(e.getMessage() != null ? e.getMessage() : "UNKOWN DL ERROR", e);
+        }
+    }
+
+    public class EventHandler {
+
+        @SubscribeEvent
+        public void PlayerLoggedInEventWrapper(PlayerLoggedInEvent event) {
+            TPlayerHandler.this.PlayerLoggedInEvent(event);
+        }
+
+        @SubscribeEvent
+        public void onPlayerRespawnWrapper(PlayerRespawnEvent event) {
+            TPlayerHandler.this.onPlayerRespawn(event);
+        }
+
+        @SubscribeEvent
+        public void onEntityConstructingWrapper(EntityEvent.EntityConstructing event) {
+            TPlayerHandler.this.onEntityConstructing(event);
+        }
+
+        @SubscribeEvent
+        public void livingFallWrapper(LivingFallEvent evt) // Only for negating fall damage
+        {
+            TPlayerHandler.this.livingFall(evt);
+        }
+
+        @SubscribeEvent
+        public void playerDeathWrapper(LivingDeathEvent event) {
+            TPlayerHandler.this.playerDeath(event);
+        }
+
+        @SubscribeEvent
+        public void playerDropsWrapper(PlayerDropsEvent evt) {
+            TPlayerHandler.this.playerDrops(evt);
         }
     }
 }

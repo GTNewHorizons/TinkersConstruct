@@ -69,7 +69,12 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
     public void drawExtras(int recipe) {
         int time = ((CachedDryingRackRecipe) this.arecipes.get(recipe)).time;
         int seconds = time / 20;
-        GuiDraw.drawStringC(time + " ticks (" + seconds + " secs)", 81, 40, 0x808080, false);
+        GuiDraw.drawStringC(
+                StatCollector.translateToLocalFormatted("tconstruct.nei.dryingrack.duration", time, seconds),
+                81,
+                40,
+                0x808080,
+                false);
     }
 
     @Override

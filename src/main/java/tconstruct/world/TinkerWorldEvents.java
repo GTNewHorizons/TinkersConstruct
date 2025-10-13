@@ -1,5 +1,9 @@
 package tconstruct.world;
 
+import java.util.ArrayList;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,11 +19,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 
+import com.kuba6000.mobsinfo.api.ConstructableItemStack;
+import com.kuba6000.mobsinfo.api.IMobExtraInfoProvider;
+import com.kuba6000.mobsinfo.api.MobDrop;
+import com.kuba6000.mobsinfo.api.MobRecipe;
+
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import tconstruct.TConstruct;
@@ -27,9 +38,13 @@ import tconstruct.tools.TinkerTools;
 import tconstruct.util.ItemHelper;
 import tconstruct.util.config.PHConstruct;
 
-public class TinkerWorldEvents {
+@Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
+public class TinkerWorldEvents implements IMobExtraInfoProvider {
 
-    @SubscribeEvent
+    public void registerEvents() {
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
+    }
+
     public void onLivingSpawn(LivingSpawnEvent.SpecialSpawn event) {
         EntityLivingBase living = event.entityLiving;
         if (living.getClass() == EntitySpider.class && TConstruct.random.nextInt(100) == 0) {
@@ -57,19 +72,18 @@ public class TinkerWorldEvents {
     }
 
     /* Bonemeal */
-    @SubscribeEvent
     public void bonemealEvent(BonemealEvent event) {
         if (!event.world.isRemote) {
             if (event.block == TinkerWorld.slimeSapling) {
                 if (TinkerWorld.slimeSapling
                         .boneFertilize(event.world, event.x, event.y, event.z, event.world.rand, event.entityPlayer))
                     event.setResult(Event.Result.ALLOW);
+                else event.setCanceled(true);
             }
         }
     }
 
     /* Damage */
-    @SubscribeEvent
     public void onHurt(LivingHurtEvent event) {
         EntityLivingBase reciever = event.entityLiving;
         if (reciever instanceof EntityPlayer) {
@@ -100,8 +114,8 @@ public class TinkerWorldEvents {
         }
     }
 
-    @SubscribeEvent
     public void onLivingDrop(LivingDropsEvent event) {
+        // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideExtraDropsInformation!
         if (event.entityLiving == null) return;
 
         if (event.entityLiving.getClass() == EntityGhast.class) {
@@ -114,6 +128,54 @@ public class TinkerWorldEvents {
             } else {
                 ItemHelper.addDrops(event, new ItemStack(Items.ghast_tear, 1));
             }
+        }
+    }
+
+    @Optional.Method(modid = "mobsinfo")
+    @Override
+    public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
+            @Nonnull MobRecipe recipe) {
+        if (recipe.entity.getClass() == EntityGhast.class) {
+            if (PHConstruct.uhcGhastDrops) {
+                for (MobDrop drop : drops) {
+                    if (drop.stack.getItem() == Items.ghast_tear) {
+                        drop.stack = new ItemStack(Items.gold_ingot);
+                        drop.reconstructableStack = new ConstructableItemStack(drop.stack);
+                    }
+                }
+            } else {
+                for (MobDrop drop : drops) {
+                    if (drop.stack.getItem() == Items.ghast_tear) {
+                        drop.chance += 10000;
+                        drop.clampChance();
+                    }
+                }
+            }
+        }
+    }
+
+    public class EventHandler {
+
+        @SubscribeEvent
+        public void onLivingSpawn(LivingSpawnEvent.SpecialSpawn event) {
+            TinkerWorldEvents.this.onLivingSpawn(event);
+        }
+
+        /* Bonemeal */
+        @SubscribeEvent
+        public void bonemealEvent(BonemealEvent event) {
+            TinkerWorldEvents.this.bonemealEvent(event);
+        }
+
+        /* Damage */
+        @SubscribeEvent
+        public void onHurt(LivingHurtEvent event) {
+            TinkerWorldEvents.this.onHurt(event);
+        }
+
+        @SubscribeEvent
+        public void onLivingDrop(LivingDropsEvent event) {
+            TinkerWorldEvents.this.onLivingDrop(event);
         }
     }
 }

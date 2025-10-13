@@ -198,9 +198,17 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
         playFiringSound(world, player, weapon, ammo, projectileSpeed, accuracy);
 
         // use up ammo
-        if (!player.capabilities.isCreativeMode) {
-            if (ammo.getItem() instanceof IAmmo) ((IAmmo) ammo.getItem()).consumeAmmo(1, ammo);
-            else player.inventory.consumeInventoryItem(ammo.getItem());
+        if (!player.capabilities.isCreativeMode && !world.isRemote) {
+            if (ammo.getItem() instanceof IAmmo) {
+                // if we're dealing with tinkers ammo, handle their custom logic
+                if (ammo.hasTagCompound()) {
+                    int ammoReinforced = ammo.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");
+                    if (random.nextInt(10) < 10 - ammoReinforced) ((IAmmo) ammo.getItem()).consumeAmmo(1, ammo);
+                } else player.inventory.consumeInventoryItem(ammo.getItem());
+            } else {
+                // for non-custom IAmmo types (like vanilla arrows), simply consume them like in vanilla
+                player.inventory.consumeInventoryItem(ammo.getItem());
+            }
         }
 
         // FIREEEEEEE

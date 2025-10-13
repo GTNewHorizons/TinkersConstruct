@@ -3,6 +3,8 @@ package tconstruct.armor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -39,6 +41,7 @@ import tconstruct.library.accessory.IAccessoryModel;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.tools.TinkerTools;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.world.TinkerWorld;
 
 public class ArmorProxyClient extends ArmorProxyCommon {
@@ -57,8 +60,6 @@ public class ArmorProxyClient extends ArmorProxyCommon {
     @Override
     public void preInit() {
         controlInstance = new ArmorControls();
-        FMLCommonHandler.instance().bus().register(controlInstance);
-        MinecraftForge.EVENT_BUS.register(controlInstance);
         MinecraftForge.EVENT_BUS.register(new TabRegistry());
     }
 
@@ -69,9 +70,11 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         registerManualIcons();
         registerManualRecipes();
         MinecraftForge.EVENT_BUS.register(this);
-        final HealthBarRenderer healthBarRenderer = new HealthBarRenderer();
-        MinecraftForge.EVENT_BUS.register(healthBarRenderer);
-        FMLCommonHandler.instance().bus().register(healthBarRenderer);
+        if (PHConstruct.coloredHeartRender) {
+            final HealthBarRenderer healthBarRenderer = new HealthBarRenderer();
+            MinecraftForge.EVENT_BUS.register(healthBarRenderer);
+            FMLCommonHandler.instance().bus().register(healthBarRenderer);
+        }
     }
 
     private void registerManualIcons() {
@@ -256,7 +259,7 @@ public class ArmorProxyClient extends ArmorProxyCommon {
                 ArmorProxyClient.belt.isChild = event.renderer.modelBipedMain.isChild;
                 ArmorProxyClient.belt.isSneak = event.renderer.modelBipedMain.isSneak;
 
-                renderArmorExtras(event);
+                if (PHConstruct.showTravellerAccessories) renderArmorExtras(event);
 
                 break;
             case 3:
@@ -267,6 +270,32 @@ public class ArmorProxyClient extends ArmorProxyCommon {
                 break;
         }
     }
+
+    // --- WitchingGadgets Translucent II enchant support
+    private static int translucentID = -6;
+
+    public static int getTranslucentID() {
+        if (translucentID == -6) setTranslucentID();
+        return translucentID;
+    }
+
+    private static void setTranslucentID() {
+        for (Enchantment ench : Enchantment.enchantmentsList) {
+            if (ench != null && ench.getName().equals("enchantment.wg.invisibleGear")) {
+                translucentID = ench.effectId;
+                return;
+            }
+        }
+        translucentID = -1;
+    }
+
+    public static int getTranslucencyLevel(ItemStack stack) {
+        int translucent = getTranslucentID();
+        if (translucent > 0) return EnchantmentHelper.getEnchantmentLevel(translucent, stack);
+        else return 0;
+    }
+
+    // ---
 
     void renderArmorExtras(RenderPlayerEvent.SetArmorModel event) {
 
@@ -310,40 +339,46 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         // TPlayerStats stats = TPlayerStats.get(player);
         ArmorExtended armor = ArmorProxyClient.armorExtended; // TODO: Do this for every player, not just the client
         if (armor != null && armor.inventory[1] != null) {
-            Item item = armor.inventory[1].getItem();
-            ModelBiped model = item.getArmorModel(player, armor.inventory[1], 4);
+            if (getTranslucencyLevel(armor.inventory[1]) != 2
+                    && !(player.isInvisible() && getTranslucencyLevel(armor.inventory[1]) > 0)) {
+                Item item = armor.inventory[1].getItem();
+                ModelBiped model = item.getArmorModel(player, armor.inventory[1], 4);
 
-            if (item instanceof IAccessoryModel) {
-                this.mc.getTextureManager()
-                        .bindTexture(((IAccessoryModel) item).getWearbleTexture(player, armor.inventory[1], 1));
-                model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
-                model.render(
-                        player,
-                        limbSwingMod,
-                        limbSwing,
-                        pitch,
-                        yawRotation - yawOffset,
-                        bodyRotation,
-                        zeropointsixtwofive);
+                if (item instanceof IAccessoryModel) {
+                    this.mc.getTextureManager()
+                            .bindTexture(((IAccessoryModel) item).getWearbleTexture(player, armor.inventory[1], 1));
+                    model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
+                    model.render(
+                            player,
+                            limbSwingMod,
+                            limbSwing,
+                            pitch,
+                            yawRotation - yawOffset,
+                            bodyRotation,
+                            zeropointsixtwofive);
+                }
             }
         }
 
         if (armor != null && armor.inventory[3] != null) {
-            Item item = armor.inventory[3].getItem();
-            ModelBiped model = item.getArmorModel(player, armor.inventory[3], 5);
+            if (getTranslucencyLevel(armor.inventory[3]) != 2
+                    && !(player.isInvisible() && getTranslucencyLevel(armor.inventory[3]) > 0)) {
+                Item item = armor.inventory[3].getItem();
+                ModelBiped model = item.getArmorModel(player, armor.inventory[3], 5);
 
-            if (item instanceof IAccessoryModel) {
-                this.mc.getTextureManager()
-                        .bindTexture(((IAccessoryModel) item).getWearbleTexture(player, armor.inventory[1], 1));
-                model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
-                model.render(
-                        player,
-                        limbSwingMod,
-                        limbSwing,
-                        pitch,
-                        yawRotation - yawOffset,
-                        bodyRotation,
-                        zeropointsixtwofive);
+                if (item instanceof IAccessoryModel) {
+                    this.mc.getTextureManager()
+                            .bindTexture(((IAccessoryModel) item).getWearbleTexture(player, armor.inventory[1], 1));
+                    model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
+                    model.render(
+                            player,
+                            limbSwingMod,
+                            limbSwing,
+                            pitch,
+                            yawRotation - yawOffset,
+                            bodyRotation,
+                            zeropointsixtwofive);
+                }
             }
         }
     }

@@ -126,9 +126,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         if (logic.chest != null) {
-            if (logic.chest.get() instanceof TileEntity) {
-                TileEntity te = (TileEntity) logic.chest.get();
-                if (te == null || te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord) == null
+            if (logic.chest.get() instanceof TileEntity te) {
+                if (te.getWorldObj().getTileEntity(te.xCoord, te.yCoord, te.zCoord) == null
                         && te.getWorldObj().isRemote) {
                     mc.thePlayer.closeScreen();
                     return;
@@ -344,8 +343,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     public boolean isMouseOverFullSlot(int mouseX, int mouseY) {
-        for (final Object slot : inventorySlots.inventorySlots) {
-            if (isMouseOverSlot((Slot) slot, mouseX, mouseY) && ((Slot) slot).getHasStack()) {
+        for (final Slot slot : inventorySlots.inventorySlots) {
+            if (isMouseOverSlot(slot, mouseX, mouseY) && slot.getHasStack()) {
                 return true;
             }
         }
@@ -365,8 +364,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     public boolean shouldDrawSlot(Slot slot) {
-        if (!(slot instanceof ChestSlot)) return true;
-        ChestSlot chestSlot = (ChestSlot) slot;
+        if (!(slot instanceof ChestSlot chestSlot)) return true;
 
         // all visible
         if (!slider.isEnabled()) return true;
@@ -481,9 +479,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         lastSlotId = Math.min(chestSlotCount, firstSlotId + getDisplayedRows() * logic.invColumns);
 
         for (Object o : inventorySlots.inventorySlots) {
-            if (!(o instanceof ChestSlot)) continue;
-
-            final ChestSlot slot = (ChestSlot) o;
+            if (!(o instanceof ChestSlot slot)) continue;
 
             if (shouldDrawSlot(slot)) {
                 slot.enable();

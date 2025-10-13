@@ -70,8 +70,7 @@ public final class ToolStationGuiHelper {
         else if (item instanceof ToolCore || item instanceof ArmorCore) drawDurability(tags);
 
         // tools
-        if (item instanceof ToolCore) {
-            ToolCore tool = (ToolCore) item;
+        if (item instanceof ToolCore tool) {
             // DualHarvest tool?
             if (categories.contains("dualharvest")) drawDualHarvestStats(tool, tags);
             // or regular Harvest tool?
@@ -88,13 +87,11 @@ public final class ToolStationGuiHelper {
             if (categories.contains("projectile")) drawProjectileStats(tags);
         }
         // armor
-        if (item instanceof ArmorCore) {
-            ArmorCore armor = (ArmorCore) item;
+        if (item instanceof ArmorCore armor) {
             drawArmorStats(armor, tags, stack);
         }
         // Accessory
-        if (item instanceof AccessoryCore) {
-            AccessoryCore accessory = (AccessoryCore) item;
+        if (item instanceof AccessoryCore accessory) {
             drawAccessoryStats(accessory, tags);
         }
 
@@ -284,12 +281,7 @@ public final class ToolStationGuiHelper {
     /**
      * Renders the specified text to the screen, center-aligned. Copied out of GUI
      */
-    public static void drawCenteredString(FontRenderer p_73732_1_, String p_73732_2_, int p_73732_3_, int p_73732_4_,
-            int p_73732_5_) {
-        p_73732_1_.drawStringWithShadow(
-                p_73732_2_,
-                p_73732_3_ - p_73732_1_.getStringWidth(p_73732_2_) / 2,
-                p_73732_4_,
-                p_73732_5_);
+    public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
+        fontRendererIn.drawStringWithShadow(text, x - fontRendererIn.getStringWidth(text) / 2, y, color);
     }
 }

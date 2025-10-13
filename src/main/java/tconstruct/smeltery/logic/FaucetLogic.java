@@ -6,6 +6,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -18,7 +19,7 @@ import tconstruct.TConstruct;
 
 public class FaucetLogic extends TileEntity implements IFacingLogic, IActiveLogic, IFluidHandler {
 
-    byte direction;
+    byte direction = 0;
     boolean active;
     public FluidStack liquid;
     public boolean hasRedstonePower = false;
@@ -91,17 +92,20 @@ public class FaucetLogic extends TileEntity implements IFacingLogic, IActiveLogi
     public void setDirection(int side) {
         if (side != 0 && side != 1) {
             direction = (byte) side;
-        } else {
-            direction = 2;
         }
     }
 
     @Override
     public void setDirection(float yaw, float pitch, EntityLivingBase player) {
-        /*
-         * int facing = MathHelper.floor_double((double) (yaw / 360) + 0.5D) & 3; switch (facing) { case 0: direction =
-         * 2; break; case 1: direction = 5; break; case 2: direction = 3; break; case 3: direction = 4; break; }
-         */
+        if (direction > 1) return;
+
+        int facing = MathHelper.floor_double((double) (yaw / 360) + 0.5D) & 3;
+        switch (facing) {
+            case 1 -> direction = 5;
+            case 2 -> direction = 3;
+            case 3 -> direction = 4;
+            default -> direction = 2;
+        }
     }
 
     @Override

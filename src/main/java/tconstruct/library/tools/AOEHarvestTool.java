@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 
+import tconstruct.library.util.AoEExclusionList;
+
 public abstract class AOEHarvestTool extends HarvestTool {
 
     public int breakRadius;
@@ -18,9 +20,14 @@ public abstract class AOEHarvestTool extends HarvestTool {
         this.breakDepth = breakDepth;
     }
 
+    protected String getAOEToolName() {
+        return "tool." + getToolName().toLowerCase();
+    }
+
     @Override
     public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
-        // only effective materials matter. We don't want to aoe when beraking dirt with a hammer.
+        // only effective materials matter. We don't want to aoe when breaking dirt with a hammer.
+        String toolName = "tool." + getAOEToolName().toLowerCase();
         Block block = player.worldObj.getBlock(x, y, z);
         int meta = player.worldObj.getBlockMetadata(x, y, z);
         if (block == null || !isEffective(block, meta) || !stack.hasTagCompound())
@@ -64,8 +71,13 @@ public abstract class AOEHarvestTool extends HarvestTool {
                 // don't break the originally already broken block, duh
                 if (xPos == x && yPos == y && zPos == z) continue;
 
-                if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
-                    breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
+                Block targetBlock = player.worldObj.getBlock(xPos, yPos, zPos);
+                int targetMeta = player.worldObj.getBlockMetadata(xPos, yPos, zPos);
+
+                if (!AoEExclusionList.isBlockExcluded(toolName, targetBlock, targetMeta)) {
+                    if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
+                        breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
+                }
             }
 
         return super.onBlockStartBreak(stack, x, y, z, player);

@@ -1,11 +1,18 @@
 package tconstruct.world.entity;
 
+import java.util.ArrayList;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import com.kuba6000.mobsinfo.api.MobDrop;
+
+import cpw.mods.fml.common.Optional;
 import tconstruct.armor.TinkerArmor;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
@@ -78,6 +85,7 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
 
     @Override
     protected void dropFewItems(boolean par1, int par2) {
+        // ANY CHANGE MADE IN HERE MUST ALSO BE MADE IN provideDropsInformation!
         super.dropFewItems(par1, par2);
 
         ToolCore tool = getValidTool();
@@ -111,11 +119,48 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
         }
     }
 
+    @Optional.Method(modid = "mobsinfo")
+    @Override
+    public void provideDropsInformation(@Nonnull ArrayList<MobDrop> drops) {
+        super.provideDropsInformation(drops);
+        double chance = 1d / TConstructRegistry.tools.size();
+        int validtools = 0;
+        for (ToolCore tool : TConstructRegistry.tools) {
+            final ItemStack headStack = new ItemStack(tool.getHeadItem(), 1, 17);
+            final ItemStack handleStack = new ItemStack(tool.getHandleItem(), 1, 17);
+            final ItemStack accessoryStack = tool.getAccessoryItem() != null
+                    ? new ItemStack(tool.getAccessoryItem(), 1, 17)
+                    : null;
+            final ItemStack extraStack = tool.getExtraItem() != null ? new ItemStack(tool.getExtraItem(), 1, 17) : null;
+
+            String loc = "tool." + tool.getToolName().toLowerCase() + ".kingslime"; // special localization the same way
+                                                                                    // as
+            // materials
+            String name;
+            if (StatCollector.canTranslate(loc)) name = StatCollector.translateToLocal(loc);
+            else name = String.format(
+                    StatCollector.translateToLocal("tool.nameformat"),
+                    StatCollector.translateToLocal("tool.kingslimeprefix"),
+                    tool.getLocalizedToolName());
+
+            ItemStack toolStack = ToolBuilder.instance
+                    .buildTool(headStack, handleStack, accessoryStack, extraStack, name);
+
+            if (toolStack != null) {
+                NBTTagCompound tags = toolStack.getTagCompound().getCompoundTag("InfiTool");
+                tags.setInteger("Attack", 5 + tool.getDamageVsEntity(null));
+                tags.setInteger("TotalDurability", 2500);
+                tags.setInteger("BaseDurability", 2500);
+                tags.setInteger("MiningSpeed", 1400);
+                validtools++;
+                drops.add(MobDrop.create(toolStack).withChance(chance));
+            }
+        }
+        drops.add(
+                MobDrop.create(new ItemStack(TinkerArmor.heartCanister, 1, 1)).withChance((chance / 5d) * validtools));
+    }
+
     ToolCore getValidTool() {
-        ToolCore tool = TConstructRegistry.tools.get(rand.nextInt(TConstructRegistry.tools.size()));
-        /*
-         * if (tool.getExtraItem() != null) tool = getValidTool();
-         */
-        return tool;
+        return TConstructRegistry.tools.get(rand.nextInt(TConstructRegistry.tools.size()));
     }
 }

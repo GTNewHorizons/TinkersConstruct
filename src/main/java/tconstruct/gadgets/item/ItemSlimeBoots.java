@@ -21,6 +21,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 
@@ -48,7 +49,7 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
         armorPart = ArmorPart.Feet;
         textureFolder = "armor";
         textureName = "slime";
-        SlimeBounceHandler.registerEvent(this);
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     @Override
@@ -72,7 +73,6 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
     }
 
     /** Called when an entity lands to handle the event */
-    @SubscribeEvent
     // RUBBERY BOUNCY BOUNCERY WOOOOO
     public void onFall(LivingFallEvent event) {
         final EntityLivingBase living = event.entityLiving;
@@ -230,5 +230,17 @@ public class ItemSlimeBoots extends ItemArmor implements ISpecialArmor {
     @Override
     public Entity createEntity(World world, Entity location, ItemStack itemstack) {
         return new FancyEntityItem(world, location, itemstack);
+    }
+
+    public class EventHandler {
+
+        /**
+         * Called when an entity lands to handle the event
+         */
+        @SubscribeEvent
+        // RUBBERY BOUNCY BOUNCERY WOOOOO
+        public void onFall(LivingFallEvent event) {
+            ItemSlimeBoots.this.onFall(event);
+        }
     }
 }

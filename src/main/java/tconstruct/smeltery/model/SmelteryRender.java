@@ -8,6 +8,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import mantle.world.CoordTuple;
@@ -16,6 +18,7 @@ import tconstruct.library.crafting.Smeltery;
 import tconstruct.smeltery.logic.SmelteryLogic;
 import tconstruct.util.ItemHelper;
 
+@ThreadSafeISBRH(perThread = false)
 public class SmelteryRender implements ISimpleBlockRenderingHandler {
 
     public static int smelteryModel = RenderingRegistry.getNextAvailableRenderId();
@@ -40,8 +43,8 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
     public boolean renderSmeltery(IBlockAccess world, int x, int y, int z, Block block, int modelID,
             RenderBlocks renderer) {
         boolean ret = renderer.renderStandardBlock(block, x, y, z);
-        SmelteryLogic logic = (SmelteryLogic) world.getTileEntity(x, y, z);
-        if (logic.validStructure) {
+        final SmelteryLogic logic = (SmelteryLogic) world.getTileEntity(x, y, z);
+        if (logic != null && logic.validStructure) {
             CoordTuple from = logic.minPos;
             CoordTuple to = logic.maxPos;
 
@@ -56,50 +59,53 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
             float base = 0F;
             int yBase = 0;
             int liquidBase = 0;
-            for (FluidStack liquid : logic.moltenMetal) {
-                int liquidSize = liquid.amount;
-                while (liquidSize > 0) {
-                    int cap = logic.getCapacityPerLayer();
-                    int room = cap - liquidBase;
-                    int countSize = Math.min(liquidSize, room);
-                    liquidSize -= countSize;
 
-                    float height = countSize > cap ? 1.0F : (float) countSize / (float) cap;
-                    float renderBase = base;
-                    float renderHeight = height + base;
-                    base += height;
-                    liquidBase += countSize;
+            synchronized (logic.moltenMetal) {
+                for (FluidStack liquid : logic.moltenMetal) {
+                    int liquidSize = liquid.amount;
+                    while (liquidSize > 0) {
+                        int cap = logic.getCapacityPerLayer();
+                        int room = cap - liquidBase;
+                        int countSize = Math.min(liquidSize, room);
+                        liquidSize -= countSize;
 
-                    if (renderHeight < 0.01) renderHeight = 0.01f;
+                        float height = countSize > cap ? 1.0F : (float) countSize / (float) cap;
+                        float renderBase = base;
+                        float renderHeight = height + base;
+                        base += height;
+                        liquidBase += countSize;
 
-                    renderer.setRenderBounds(0, renderBase, 0, 1, renderHeight, 1);
-                    Fluid fluid = liquid.getFluid();
-                    for (int xi = from.x; xi <= to.x; xi++) for (int zi = from.z; zi <= to.z; zi++) {
-                        float minX = xi == from.x ? -0.001F : 0F;
-                        float minZ = zi == from.z ? -0.001F : 0F;
-                        float maxX = xi == to.x ? 1.001F : 1F;
-                        float maxZ = zi == to.z ? 1.001F : 1F;
-                        renderer.setRenderBounds(minX, renderBase, minZ, maxX, renderHeight, maxZ);
-                        if (fluid.canBePlacedInWorld()) BlockSkinRenderHelper
-                                .renderMetadataBlock(fluid.getBlock(), 0, xi, from.y + yBase, zi, renderer, world);
-                        else BlockSkinRenderHelper.renderLiquidBlock(
-                                fluid.getStillIcon(),
-                                fluid.getFlowingIcon(),
-                                xi,
-                                from.y + yBase,
-                                zi,
-                                renderer,
-                                world,
-                                false,
-                                fluid.getColor(liquid));
+                        if (renderHeight < 0.01) renderHeight = 0.01f;
+
+                        renderer.setRenderBounds(0, renderBase, 0, 1, renderHeight, 1);
+                        Fluid fluid = liquid.getFluid();
+                        for (int xi = from.x; xi <= to.x; xi++) for (int zi = from.z; zi <= to.z; zi++) {
+                            float minX = xi == from.x ? -0.001F : 0F;
+                            float minZ = zi == from.z ? -0.001F : 0F;
+                            float maxX = xi == to.x ? 1.001F : 1F;
+                            float maxZ = zi == to.z ? 1.001F : 1F;
+                            renderer.setRenderBounds(minX, renderBase, minZ, maxX, renderHeight, maxZ);
+                            if (fluid.canBePlacedInWorld()) BlockSkinRenderHelper
+                                    .renderMetadataBlock(fluid.getBlock(), 0, xi, from.y + yBase, zi, renderer, world);
+                            else BlockSkinRenderHelper.renderLiquidBlock(
+                                    fluid.getStillIcon(),
+                                    fluid.getFlowingIcon(),
+                                    xi,
+                                    from.y + yBase,
+                                    zi,
+                                    renderer,
+                                    world,
+                                    false,
+                                    fluid.getColor(liquid));
+                        }
+
+                        if (countSize == room) {
+                            base = 0F;
+                            yBase++;
+                            liquidBase = 0;
+                        }
+                        ret = true;
                     }
-
-                    if (countSize == room) {
-                        base = 0F;
-                        yBase++;
-                        liquidBase = 0;
-                    }
-                    ret = true;
                 }
             }
         }

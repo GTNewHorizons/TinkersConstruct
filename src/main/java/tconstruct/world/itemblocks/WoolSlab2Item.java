@@ -1,11 +1,11 @@
 package tconstruct.world.itemblocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import mantle.blocks.abstracts.MultiItemBlock;
@@ -29,8 +29,14 @@ public class WoolSlab2Item extends MultiItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack par1ItemStack) {
-        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 7, 15);
-        return super.getUnlocalizedName() + "." + ItemDye.field_150923_a[15 - i] + ".slab";
+        int dyePos = par1ItemStack.getItemDamage();
+
+        if (dyePos < 8) {
+            dyePos += 8;
+        }
+
+        int dye = BlockColored.func_150032_b(dyePos);
+        return super.getUnlocalizedName() + "." + ItemDye.field_150923_a[dye] + ".slab";
     }
 
     @Override

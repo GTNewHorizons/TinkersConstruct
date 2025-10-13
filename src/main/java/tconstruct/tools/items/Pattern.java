@@ -100,7 +100,7 @@ public class Pattern extends CraftingItem implements IPattern {
     /* Tags and information about the pattern */
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
         float cost = getPatternCost(stack) / 2f;
         if (cost > 0) {
             if (cost - (int) cost < 0.1) list.add(StatCollector.translateToLocal("pattern1.tooltip") + (int) cost);

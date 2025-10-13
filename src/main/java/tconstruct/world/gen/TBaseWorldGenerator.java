@@ -39,10 +39,10 @@ public class TBaseWorldGenerator implements IWorldGenerator {
             generateNether(random, chunkX * 16, chunkZ * 16, world);
         } else if (world.provider.terrainType != WorldType.FLAT || PHConstruct.genOresFlat) {
             generateSurface(random, chunkX * 16, chunkZ * 16, world);
-            if (world.provider.dimensionId == 0) generateOreBushes(random, chunkX * 16, chunkZ * 16, world);
+            if (world.provider.isSurfaceWorld()) generateOreBushes(random, chunkX * 16, chunkZ * 16, world);
         }
 
-        if (PHConstruct.superfunWorld && world.provider.dimensionId == 0) {
+        if (PHConstruct.superfunWorld && world.provider.isSurfaceWorld()) {
             superfunGenerate(random, chunkX * 16, chunkZ * 16, world);
         }
 
@@ -190,7 +190,7 @@ public class TBaseWorldGenerator implements IWorldGenerator {
                 }
             }
         }
-        if (PHConstruct.generateEssenceBush && random.nextInt(PHConstruct.essenceBushRarity) == 0) {
+        if (PHConstruct.generateEssenceBush && random.nextInt(PHConstruct.essenceBushRarity + 1) == 0) {
             for (int i = 0; i < PHConstruct.silverBushDensity; i++) {
                 xPos = xChunk + random.nextInt(16);
                 yPos = PHConstruct.seaLevel - 16;

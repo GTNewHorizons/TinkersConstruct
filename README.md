@@ -12,7 +12,7 @@ See the general [GTNH Developement](https://gtnh.miraheze.org/wiki/Development) 
 
 ## License
 
-GTNH Modifications Copyright (c) 2021-2022 The GTNH Team
+GTNH Modifications Copyright (c) 2021-2024 The GTNH Team
 
 This code is licensed LGPL v3.0 or later. Feel free to use our changes, just give back any changes you make to the community as well!
 
