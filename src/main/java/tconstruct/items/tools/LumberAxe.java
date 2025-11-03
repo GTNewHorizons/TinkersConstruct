@@ -1,6 +1,11 @@
 package tconstruct.items.tools;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.TreeSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
