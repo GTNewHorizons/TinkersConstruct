@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Collections;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
