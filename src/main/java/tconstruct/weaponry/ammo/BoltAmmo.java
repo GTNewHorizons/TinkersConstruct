@@ -2,9 +2,19 @@ package tconstruct.weaponry.ammo;
 
 import java.util.List;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
+import baubles.api.expanded.BaubleExpandedSlots;
+import baubles.api.expanded.IBaubleExpanded;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.CustomMaterial;
@@ -15,7 +25,10 @@ import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.TinkerWeaponry;
 
-public class BoltAmmo extends AmmoItem {
+@Optional.InterfaceList({
+        @Optional.Interface(modid = "Baubles|Expanded", iface = "baubles.api.expanded.IBaubleExpanded"),
+        @Optional.Interface(modid = "Baubles", iface = "baubles.api.IBauble") })
+public class BoltAmmo extends AmmoItem implements IBauble, IBaubleExpanded {
 
     public BoltAmmo() {
         super(0, "Bolts");
@@ -108,4 +121,51 @@ public class BoltAmmo extends AmmoItem {
             return "";
         return super.getAbilityNameForType(type, part);
     }
+
+    @Override
+    @Optional.Method(modid = "Baubles|Expanded")
+    public String[] getBaubleTypes(ItemStack itemstack) {
+        return new String[] { BaubleExpandedSlots.quiverType };
+    }
+
+    // Fallback for base Baubles
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public BaubleType getBaubleType(ItemStack itemStack) {
+        return BaubleType.RING;
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        onUpdate(itemstack, player.worldObj, player, 0, false);
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onEquipped(ItemStack itemstack, EntityLivingBase player) {}
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {}
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
+        return true;
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles")
+    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
+        return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> lines, boolean advanced) {
+        super.addInformation(stack, player, lines, advanced);
+        if (LoadedMods.baubles) ArrowAmmo.addBaubleInformation(lines);
+    }
+
 }
