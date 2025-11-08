@@ -1,13 +1,11 @@
 package tconstruct.items.tools;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.Stack;
-import java.util.TreeSet;
-import java.util.HashSet;
-import java.util.Collections;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -139,20 +137,20 @@ public class LumberAxe extends AOEHarvestTool {
                 for (int offX = 0; offX < 3; offX++) {
                     for (int offY = 0; offY < 2; offY++) {
                         for (int offZ = 0; offZ < 3; offZ++) {
-                            ChunkPosition newCandidate = new ChunkPosition(curX - 1 + offX, curY + offY, curZ - 1 + offZ);
-                            if (!(wood.contains(newCandidate)||nonWood.contains(newCandidate))) {
+                            ChunkPosition newCandidate = new ChunkPosition(
+                                    curX - 1 + offX,
+                                    curY + offY,
+                                    curZ - 1 + offZ);
+                            if (!(wood.contains(newCandidate) || nonWood.contains(newCandidate))) {
                                 candidates.add(newCandidate);
                             }
                         }
                     }
                 }
                 wood.add(candidate);
-            } else{
+            } else {
                 nonWood.add(candidate);
             }
-
-
-
 
         }
 
