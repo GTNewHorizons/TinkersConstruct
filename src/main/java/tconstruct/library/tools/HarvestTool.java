@@ -99,6 +99,11 @@ public abstract class HarvestTool extends ToolCore {
         Set<String> set = new HashSet<>();
 
         if (stack != null && stack.getItem() instanceof HarvestTool) {
+
+            // Broken tools are not considered as valid for tool classes
+            NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
+            if (tags.getBoolean("Broken")) return set;
+
             set.add(((HarvestTool) stack.getItem()).getHarvestType());
         }
 
