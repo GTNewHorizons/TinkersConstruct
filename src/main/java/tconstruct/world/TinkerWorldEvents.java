@@ -38,8 +38,7 @@ import tconstruct.tools.TinkerTools;
 import tconstruct.util.ItemHelper;
 import tconstruct.util.config.PHConstruct;
 
-@Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
-public class TinkerWorldEvents implements IMobExtraInfoProvider {
+public class TinkerWorldEvents {
 
     public void registerEvents() {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
@@ -131,30 +130,8 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
         }
     }
 
-    @Optional.Method(modid = "mobsinfo")
-    @Override
-    public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
-            @Nonnull MobRecipe recipe) {
-        if (recipe.entity.getClass() == EntityGhast.class) {
-            if (PHConstruct.uhcGhastDrops) {
-                for (MobDrop drop : drops) {
-                    if (drop.stack.getItem() == Items.ghast_tear) {
-                        drop.stack = new ItemStack(Items.gold_ingot);
-                        drop.reconstructableStack = new ConstructableItemStack(drop.stack);
-                    }
-                }
-            } else {
-                for (MobDrop drop : drops) {
-                    if (drop.stack.getItem() == Items.ghast_tear) {
-                        drop.chance += 10000;
-                        drop.clampChance();
-                    }
-                }
-            }
-        }
-    }
-
-    public class EventHandler {
+    @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
+    public class EventHandler implements IMobExtraInfoProvider {
 
         @SubscribeEvent
         public void onLivingSpawn(LivingSpawnEvent.SpecialSpawn event) {
@@ -176,6 +153,29 @@ public class TinkerWorldEvents implements IMobExtraInfoProvider {
         @SubscribeEvent
         public void onLivingDrop(LivingDropsEvent event) {
             TinkerWorldEvents.this.onLivingDrop(event);
+        }
+
+        @Optional.Method(modid = "mobsinfo")
+        @Override
+        public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
+                @Nonnull MobRecipe recipe) {
+            if (recipe.entity.getClass() == EntityGhast.class) {
+                if (PHConstruct.uhcGhastDrops) {
+                    for (MobDrop drop : drops) {
+                        if (drop.stack.getItem() == Items.ghast_tear) {
+                            drop.stack = new ItemStack(Items.gold_ingot);
+                            drop.reconstructableStack = new ConstructableItemStack(drop.stack);
+                        }
+                    }
+                } else {
+                    for (MobDrop drop : drops) {
+                        if (drop.stack.getItem() == Items.ghast_tear) {
+                            drop.chance += 10000;
+                            drop.clampChance();
+                        }
+                    }
+                }
+            }
         }
     }
 }
