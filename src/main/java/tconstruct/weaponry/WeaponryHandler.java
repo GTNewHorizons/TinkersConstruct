@@ -378,13 +378,15 @@ public class WeaponryHandler {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void boneanaBuilding(ToolCraftEvent.NormalTool event) {
         // is it a boneana?
-        if ("\u00A7f\u2400Bonæna".equals(event.toolTag.getCompoundTag("display").getString("Name"))) {
+        if (!event.toolTag.hasKey("display")) return;
+        final NBTTagCompound display = event.toolTag.getCompoundTag("display");
+        if ("\u00A7f\u2400Bonæna".equals(display.getString("Name"))) {
             // set correct name
-            event.toolTag.getCompoundTag("display").setString("Name", EnumChatFormatting.YELLOW + "Bonæna");
+            display.setString("Name", EnumChatFormatting.YELLOW + "Bonæna");
             // lore!
             NBTTagList lore = new NBTTagList();
             lore.appendTag(new NBTTagString(StatCollector.translateToLocal("tool.boneana.lore")));
-            event.toolTag.getCompoundTag("display").setTag("Lore", lore);
+            display.setTag("Lore", lore);
 
             // let's polish it up a bit!
             NBTTagCompound tag = event.toolTag.getCompoundTag("InfiTool");
