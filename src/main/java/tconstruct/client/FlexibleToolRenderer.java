@@ -94,6 +94,7 @@ public class FlexibleToolRenderer implements IItemRenderer {
         }
 
         GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
         if (type != ItemRenderType.ENTITY) {
@@ -205,6 +206,7 @@ public class FlexibleToolRenderer implements IItemRenderer {
 
         tess.draw();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 
@@ -214,8 +216,8 @@ public class FlexibleToolRenderer implements IItemRenderer {
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
-        // GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.4F);
+        GL11.glEnable(GL11.GL_BLEND);
 
         tess.startDrawingQuads();
 
@@ -235,7 +237,7 @@ public class FlexibleToolRenderer implements IItemRenderer {
         }
         tess.draw();
 
-        // GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
         GL11.glEnable(GL11.GL_LIGHTING);

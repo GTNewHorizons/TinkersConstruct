@@ -11,6 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 
+import com.gtnewhorizon.gtnhlib.api.ITranslucentItem;
+
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mantle.items.abstracts.CraftingItem;
@@ -19,7 +22,8 @@ import tconstruct.library.util.IToolPart;
 import tconstruct.library.util.TextureHelper;
 import tconstruct.util.config.PHConstruct;
 
-public class DynamicToolPart extends CraftingItem implements IToolPart {
+@Optional.Interface(modid = "gtnhlib", iface = "com.gtnewhorizon.gtnhlib.api.ITranslucentItem")
+public class DynamicToolPart extends CraftingItem implements IToolPart, ITranslucentItem {
 
     public String partName;
     public String texture;
