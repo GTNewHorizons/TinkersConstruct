@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.RenderBlockFluid;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -44,7 +43,6 @@ public class SmelteryProxyClient extends SmelteryProxyCommon {
         registerGuiHandler();
         registerManualIcons();
         registerManualRecipes();
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     void registerRenderer() {
