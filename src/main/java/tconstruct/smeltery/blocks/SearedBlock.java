@@ -24,6 +24,7 @@ import tconstruct.smeltery.logic.CastingBlockLogic;
 import tconstruct.smeltery.logic.CastingTableLogic;
 import tconstruct.smeltery.logic.FaucetLogic;
 import tconstruct.smeltery.model.CastingBlockRender;
+import tconstruct.util.config.PHConstruct;
 
 public class SearedBlock extends InventoryBlock {
 
@@ -246,7 +247,7 @@ public class SearedBlock extends InventoryBlock {
             TileEntity te = world.getTileEntity(x, y, z);
             if (!(te instanceof FaucetLogic logic)) return;
             // was it a low->high pulse
-            if (!logic.hasRedstonePower && isPowered) {
+            if (!logic.hasRedstonePower && isPowered && PHConstruct.redstoneFaucet) {
                 logic.hasRedstonePower = true;
                 logic.setActive(true);
             }

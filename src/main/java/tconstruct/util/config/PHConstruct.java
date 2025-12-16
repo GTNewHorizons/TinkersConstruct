@@ -72,6 +72,8 @@ public class PHConstruct {
                 .getBoolean(true);
         denyMattock = config.get("Difficulty Changes", "Deny creation of non-metal mattocks", false).getBoolean(false);
         craftEndstone = config.get("Difficulty Changes", "Allow creation of endstone", true).getBoolean(true);
+        redstoneFaucet = config.get("Difficulty Changes", "Allow Faucets to be activated by Redstone", true)
+                .getBoolean(true);
         alternativeBoltRecipe = config.get(
                 "Difficulty Changes",
                 "Add alternative recipe for bolt parts: arrowhead + toolrod in a crafting grid",
@@ -501,6 +503,9 @@ public class PHConstruct {
     public static double ingotsPigironAlloy;
 
     public static boolean craftEndstone;
+
+    public static boolean redstoneFaucet;
+
     // Ultra Hardcore modifiers
     public static boolean enableHealthRegen;
     public static boolean goldAppleRecipe;
