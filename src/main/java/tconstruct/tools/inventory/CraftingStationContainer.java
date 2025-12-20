@@ -434,4 +434,20 @@ public class CraftingStationContainer extends Container {
 
         return didSomething;
     }
+
+    // Dump crafting grid to connected chests
+    public void dumpCraftingGrid() {
+        if (logic.slotCount == 0) return;
+
+        for (int i = 1; i < 10; i++) {
+            ItemStack stack = craftMatrix.getStackInSlot(i - 1);
+            if (stack != null && stack.stackSize > 0) {
+                if (mergeItemStack(stack, 46, 46 + logic.slotCount, false)) {
+                    craftMatrix.setInventorySlotContents(i - 1, stack.stackSize > 0 ? stack : null);
+                }
+            }
+        }
+
+        this.onCraftMatrixChanged(this.craftMatrix);
+    }
 }
