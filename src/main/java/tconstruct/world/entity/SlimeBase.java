@@ -28,9 +28,10 @@ import cpw.mods.fml.common.Optional;
 public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoProvider {
 
 
-    private float oldHealth;
 
-    /** the time between each jump of the slime, used for counting */
+    /**
+     * the time between each jump of the slime, used for counting
+     */
     protected int slimeJumpDelay = 0;
 
     public SlimeBase(World world) {
@@ -39,27 +40,22 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
     }
 
 
-
-
-
-
-
-
     @Override
     public void setSlimeSize(int size) {
         this.dataWatcher.updateObject(16, (byte) size);
         this.setSize(0.6F * (float) size, 0.6F * (float) size);
         this.setPosition(this.posX, this.posY, this.posZ);
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(this.getMaxHealthForSize());
-        this.oldHealth = this.getHealth();
         this.setHealth(this.getMaxHealthForSize());
 
         this.jumpMovementFactor = 0.004F * size + 0.01F;
 
-        this.experienceValue = size + (int)Math.pow(2, size);
+        this.experienceValue = size + (int) Math.pow(2, size);
     }
 
-    /** returns the health for the slime depending on its size */
+    /**
+     * returns the health for the slime depending on its size
+     */
     protected float getMaxHealthForSize() {
         int i = this.getSlimeSize();
         if (i == 1) return 4;
@@ -67,12 +63,13 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         return (float) Math.min(i * i + 8, 49);
     }
 
-    /** Gets the amount of time the slime needs to wait between jumps. */
+    /**
+     * Gets the amount of time the slime needs to wait between jumps.
+     */
     @Override
     protected int getJumpDelay() {
         return this.rand.nextInt(120) + 40;
     }
-
 
 
     /**
@@ -92,7 +89,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
     }
 
 
-
     @Override
     public void jump() {
         this.motionY = 0.05 * getSlimeSize() + 0.37;
@@ -110,9 +106,9 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         if (!(this instanceof IBossDisplayData) && this.getBrightness(1.0F) > 0.9F
                 && rand.nextInt(5) == 0
                 && this.worldObj.canBlockSeeTheSky(
-                        MathHelper.floor_double(this.posX),
-                        MathHelper.floor_double(this.posY),
-                        MathHelper.floor_double(this.posZ))) {
+                MathHelper.floor_double(this.posX),
+                MathHelper.floor_double(this.posY),
+                MathHelper.floor_double(this.posZ))) {
             int size = this.getSlimeSize() - 1;
             if (size <= 0) this.kill();
             else this.setSlimeSize(size);
@@ -121,8 +117,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         this.isAirBorne = true;
         ForgeHooks.onLivingJump(this);
     }
-
-
 
 
     @Override
@@ -165,7 +159,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
             }
         }
     }
-
 
 
     @Override
@@ -260,7 +253,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
     }
 
 
-
     /**
      * Returns the volume for the sounds this mob makes.
      */
@@ -269,14 +261,4 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         return Math.min(0.05F * (float) this.getSlimeSize(), 0.3f);
     }
 
-
-
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
-    @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        this.setHealth(this.oldHealth);
-    }
 }
