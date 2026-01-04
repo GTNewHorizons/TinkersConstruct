@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -27,11 +28,12 @@ import cpw.mods.fml.common.Optional;
 import tconstruct.world.TinkerWorld;
 
 @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobInfoProvider", modid = "mobsinfo")
-public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoProvider {
+public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoProvider {
 
     public float sizeOffset;
     public float sizeFactor;
     public float sizeHeight;
+    private float oldHealth;
 
     /** the time between each jump of the slime, used for counting */
     protected int slimeJumpDelay = 0;
@@ -41,38 +43,25 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
         initializeSlime();
     }
 
-    /** Returns the name of the particle used by the slime */
-    protected abstract String getSlimeParticle();
 
-    /** Returns the name of the sound played when the slime jumps. */
-    protected String getJumpSound() {
-        return "mob.slime." + (this.getSlimeSize() > 1 ? "big" : "small");
-    }
 
-    /** Returns true if the slime makes a sound when it jumps (based upon the slime's size) */
-    protected boolean makesSoundOnJump() {
-        return this.getSlimeSize() > 0;
-    }
 
-    /** Returns true if the slime makes a sound when it lands after a jump (based upon the slime's size) */
-    protected boolean makesSoundOnLand() {
-        return this.getSlimeSize() > 2;
-    }
 
-    public int getSlimeSize() {
-        return this.dataWatcher.getWatchableObjectByte(16);
-    }
 
+
+
+    @Override
     public void setSlimeSize(int size) {
         this.dataWatcher.updateObject(16, (byte) size);
         this.setSize(0.6F * (float) size, 0.6F * (float) size);
         this.setPosition(this.posX, this.posY, this.posZ);
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(this.getMaxHealthForSize());
+        this.oldHealth = this.getHealth();
         this.setHealth(this.getMaxHealthForSize());
 
         this.jumpMovementFactor = 0.004F * size + 0.01F;
 
-        this.experienceValue = size + 2 ^ (size);
+        this.experienceValue = size + (int)Math.pow(2, size);
     }
 
     /** returns the health for the slime depending on its size */
@@ -84,23 +73,12 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
     }
 
     /** Gets the amount of time the slime needs to wait between jumps. */
+    @Override
     protected int getJumpDelay() {
         return this.rand.nextInt(120) + 40;
     }
 
-    /**
-     * Indicates weather the slime is able to damage the player (based upon the slime's size)
-     */
-    protected boolean canDamagePlayer() {
-        return this.getSlimeSize() > 1;
-    }
 
-    /**
-     * Gets the amount of damage dealt to the player when "attacked" by the slime.
-     */
-    protected int getAttackStrength() {
-        return this.getSlimeSize();
-    }
 
     /**
      * Return an instance of the implementing entity here. Used for the slime splitting on death.
@@ -118,11 +96,7 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
         this.setSlimeSize(size);
     }
 
-    @Override
-    protected void entityInit() {
-        super.entityInit();
-        this.dataWatcher.addObject(16, (byte) 1);
-    }
+
 
     @Override
     public void jump() {
@@ -153,63 +127,8 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
         ForgeHooks.onLivingJump(this);
     }
 
-    /**
-     * Called to update the entity's position/logic.
-     */
-    @Override
-    public void onUpdate() {
-        if (!this.worldObj.isRemote && this.worldObj.difficultySetting == EnumDifficulty.PEACEFUL
-                && this.getSlimeSize() > 0) {
-            this.isDead = true;
-        }
 
-        this.sizeFactor += (this.sizeOffset - this.sizeFactor) * 0.5F;
-        this.sizeHeight = this.sizeFactor;
-        boolean flag = this.onGround;
-        super.onUpdate();
-        int i;
 
-        if (this.onGround && !flag) {
-            i = this.getSlimeSize();
-
-            for (int j = 0; j < i * 8; ++j) {
-                float f = this.rand.nextFloat() * (float) Math.PI * 2.0F;
-                float offset = this.rand.nextFloat() * 0.5F + 0.5F;
-                float xPos = MathHelper.sin(f) * (float) i * 0.5F * offset;
-                float zPos = MathHelper.cos(f) * (float) i * 0.5F * offset;
-                TinkerWorld.proxy.spawnParticle(
-                        this.getSlimeParticle(),
-                        this.posX + (double) xPos,
-                        this.boundingBox.minY,
-                        this.posZ + (double) zPos,
-                        0.0D,
-                        0.0D,
-                        0.0D);
-            }
-
-            if (this.makesSoundOnLand()) {
-                this.playSound(
-                        this.getJumpSound(),
-                        this.getSoundVolume(),
-                        ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F) / 0.8F);
-            }
-
-            this.sizeOffset = -0.5F;
-        } else if (!this.onGround && flag) {
-            this.sizeOffset = 1.0F;
-        }
-
-        this.alterSquishAmount();
-
-        if (this.worldObj.isRemote) {
-            i = this.getSlimeSize();
-            this.setSize(0.6F * (float) i, 0.6F * (float) i);
-        }
-    }
-
-    protected void alterSquishAmount() {
-        this.sizeOffset *= 0.6F;
-    }
 
     @Override
     protected void updateEntityActionState() {
@@ -252,18 +171,7 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
         }
     }
 
-    @Override
-    public void onCollideWithPlayer(EntityPlayer par1EntityPlayer) {
-        if (this.canDamagePlayer()) {
-            int i = this.getSlimeSize();
 
-            if (this.canEntityBeSeen(par1EntityPlayer)
-                    && this.getDistanceSqToEntity(par1EntityPlayer) < 0.6D * (double) i * 0.6D * (double) i
-                    && par1EntityPlayer.attackEntityFrom(DamageSource.causeMobDamage(this), this.getAttackStrength())) {
-                this.playSound("mob.attack", 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
-            }
-        }
-    }
 
     @Override
     public void setDead() {
@@ -283,7 +191,7 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
             this.worldObj.spawnEntityInWorld(entityslime);
         }
 
-        super.setDead();
+        this.isDead = true;
     }
 
     // Drops items depending on slime size
@@ -356,21 +264,7 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
         return this.height * 0.3;
     }
 
-    /**
-     * Returns the sound this mob makes when it is hurt.
-     */
-    @Override
-    protected String getHurtSound() {
-        return getJumpSound();
-    }
 
-    /**
-     * Returns the sound this mob makes on death.
-     */
-    @Override
-    protected String getDeathSound() {
-        return getJumpSound();
-    }
 
     /**
      * Returns the volume for the sounds this mob makes.
@@ -380,19 +274,10 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
         return Math.min(0.05F * (float) this.getSlimeSize(), 0.3f);
     }
 
-    @Override
-    public int getVerticalFaceSpeed() {
-        return 0;
-    }
 
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
-    @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("Size", this.getSlimeSize() - 1);
-    }
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
@@ -400,6 +285,6 @@ public abstract class SlimeBase extends EntityLiving implements IMob, IMobInfoPr
     @Override
     public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
         super.readEntityFromNBT(par1NBTTagCompound);
-        this.setSlimeSize(par1NBTTagCompound.getInteger("Size") + 1);
+        this.setHealth(this.oldHealth);
     }
 }
