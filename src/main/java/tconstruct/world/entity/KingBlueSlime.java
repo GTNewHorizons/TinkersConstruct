@@ -44,6 +44,7 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
         this.yOffset = 0.0F;
         this.slimeJumpDelay = this.rand.nextInt(120) + 40;
         this.setSlimeSize(8);
+        this.experienceValue = 500;
     }
 
     @Override
@@ -162,5 +163,11 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
 
     ToolCore getValidTool() {
         return TConstructRegistry.tools.get(rand.nextInt(TConstructRegistry.tools.size()));
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
+        super.readEntityFromNBT(par1NBTTagCompound);
+        this.experienceValue = 500;
     }
 }
