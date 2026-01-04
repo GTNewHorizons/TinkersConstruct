@@ -1,6 +1,11 @@
 package tconstruct.items.tools;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.TreeSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -113,48 +118,41 @@ public class LumberAxe extends AOEHarvestTool {
 
     public static boolean detectTree(World world, int pX, int pY, int pZ) {
         Stack<ChunkPosition> candidates = new Stack<>();
-        Set<ChunkPosition> wood = new HashSet<>();
-        Set<ChunkPosition> nonWood = new HashSet<>();
+        SortedSet<ChunkPosition> visited = new TreeSet<>(Comparator.comparingInt((ChunkPosition a) -> a.chunkPosY));
 
         candidates.add(new ChunkPosition(pX, pY, pZ));
 
         while (!candidates.isEmpty()) {
             ChunkPosition candidate = candidates.pop();
-
-            if (wood.contains(candidate) || nonWood.contains(candidate)) {
-                continue;
-            }
-
             int curX = candidate.chunkPosX, curY = candidate.chunkPosY, curZ = candidate.chunkPosZ;
 
             Block block = world.getBlock(curX, curY, curZ);
-            if (block.isWood(world, curX, curY, curZ)) {
-                for (int offX = 0; offX < 3; offX++) {
-                    for (int offY = 0; offY < 2; offY++) {
-                        for (int offZ = 0; offZ < 3; offZ++) {
-                            ChunkPosition newCandidate = new ChunkPosition(curX - 1 + offX, curY + offY, curZ - 1 + offZ);
-                            if (!(wood.contains(newCandidate)||nonWood.contains(newCandidate))) {
-                                candidates.add(newCandidate);
-                            }
+            if (!block.isWood(world, curX, curY, curZ)) {
+                continue;
+            }
+            if (!visited.add(candidate)) {
+                continue;
+            }
+
+            // add the current layer and above
+            for (int offX = 0; offX < 3; offX++) {
+                for (int offY = 0; offY < 2; offY++) {
+                    for (int offZ = 0; offZ < 3; offZ++) {
+                        ChunkPosition newCandidate = new ChunkPosition(curX - 1 + offX, curY + offY, curZ - 1 + offZ);
+                        if (!visited.contains(newCandidate)) {
+                            candidates.add(newCandidate);
                         }
                     }
                 }
-                wood.add(candidate);
-            } else{
-                nonWood.add(candidate);
             }
-
-
-
-
         }
 
         // not even one match, so there were no logs.
-        if (wood.isEmpty()) {
+        if (visited.isEmpty()) {
             return false;
         }
 
-        ChunkPosition topmost = Collections.max(wood, Comparator.comparingInt((ChunkPosition a) -> a.chunkPosY));
+        ChunkPosition topmost = visited.last();
 
         // check if there were enough leaves around the last position
         // pos now contains the block above the topmost log
