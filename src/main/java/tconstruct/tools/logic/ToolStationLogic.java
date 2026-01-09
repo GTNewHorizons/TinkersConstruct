@@ -56,6 +56,10 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
         super.setInventorySlotContents(slot, stack);
+        tryBuildTool(slot);
+    }
+
+    public void tryBuildTool(int slot) {
         if (slot != 0) {
             buildTool(toolName);
         }
