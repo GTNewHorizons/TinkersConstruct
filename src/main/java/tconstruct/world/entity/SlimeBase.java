@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
-
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.monster.EntitySlime;
@@ -12,7 +11,6 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
@@ -27,8 +25,6 @@ import cpw.mods.fml.common.Optional;
 @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobInfoProvider", modid = "mobsinfo")
 public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoProvider {
 
-
-
     /**
      * the time between each jump of the slime, used for counting
      */
@@ -38,7 +34,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         super(world);
         initializeSlime();
     }
-
 
     @Override
     public void setSlimeSize(int size) {
@@ -71,7 +66,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         return this.rand.nextInt(120) + 40;
     }
 
-
     /**
      * Return an instance of the implementing entity here. Used for the slime splitting on death.
      */
@@ -87,7 +81,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         this.slimeJumpDelay = this.rand.nextInt(120) + 40;
         this.setSlimeSize(size);
     }
-
 
     @Override
     public void jump() {
@@ -106,9 +99,9 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         if (!(this instanceof IBossDisplayData) && this.getBrightness(1.0F) > 0.9F
                 && rand.nextInt(5) == 0
                 && this.worldObj.canBlockSeeTheSky(
-                MathHelper.floor_double(this.posX),
-                MathHelper.floor_double(this.posY),
-                MathHelper.floor_double(this.posZ))) {
+                        MathHelper.floor_double(this.posX),
+                        MathHelper.floor_double(this.posY),
+                        MathHelper.floor_double(this.posZ))) {
             int size = this.getSlimeSize() - 1;
             if (size <= 0) this.kill();
             else this.setSlimeSize(size);
@@ -117,7 +110,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
         this.isAirBorne = true;
         ForgeHooks.onLivingJump(this);
     }
-
 
     @Override
     protected void updateEntityActionState() {
@@ -159,7 +151,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
             }
         }
     }
-
 
     @Override
     public void setDead() {
@@ -251,7 +242,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
     public double getMountedYOffset() {
         return this.height * 0.3;
     }
-
 
     /**
      * Returns the volume for the sounds this mob makes.

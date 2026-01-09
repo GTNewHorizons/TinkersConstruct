@@ -165,7 +165,7 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
     }
 
     @Override
-    public void setSlimeSize(int size){
+    public void setSlimeSize(int size) {
         super.setSlimeSize(size);
         this.experienceValue = 500;
     }
