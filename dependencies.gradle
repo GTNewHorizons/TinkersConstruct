@@ -21,8 +21,6 @@ dependencies {
     compileOnlyApi("com.github.GTNewHorizons:Natura:2.8.12:dev")
     compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.6-GTNH:dev')
 
-
-    runtimeOnlyNonPublishable("curse.maven:journeymap-32274:6706111")
     // For testing scythe crop harvesting
     // devOnlyNonPublishable("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
     // devOnlyNonPublishable("com.github.GTNewHorizons:harvestcraft:1.3.8-GTNH:dev")
