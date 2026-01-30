@@ -1,7 +1,7 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnlyApi('com.github.GTNewHorizons:Angelica:2.0.0-alpha16:api')
+    compileOnlyApi('com.github.GTNewHorizons:Angelica:1.0.0-beta66a:api')
     api("com.github.GTNewHorizons:Mantle:0.5.1:dev")
     api("com.github.GTNewHorizons:ForgeMultipart:1.7.2:dev")
     // gtnhlib is compileOnlyApi by us, but needed at runtime by nei, so require the correct version
