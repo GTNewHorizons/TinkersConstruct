@@ -35,10 +35,8 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     public ToolStationLogic logic;
     public ToolStationContainer toolSlots;
     public GuiTextField text;
-    public String toolName;
-    public int guiType;
+    public int selectedButton;
     public int[] slotX, slotY, iconX, iconY;
-    public boolean active;
     public String title, body = "";
 
     public ToolStationGui(InventoryPlayer inventoryplayer, ToolStationLogic stationlogic, World world, int x, int y,
@@ -46,38 +44,23 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         super(stationlogic.getGuiContainer(inventoryplayer, world, x, y, z));
         this.logic = stationlogic;
         toolSlots = (ToolStationContainer) inventorySlots;
-        text = new GuiTextField(this.fontRendererObj, 83, 8, 30, 12);
-        this.text.setMaxStringLength(40);
-        this.text.setEnableBackgroundDrawing(false);
-        this.text.setVisible(true);
-        this.text.setCanLoseFocus(false);
-        this.text.setFocused(true);
-        this.text.setTextColor(0xffffff);
-        toolName = "";
-        resetGui();
+        selectedButton = 0;
+        setSlotType(0);
+        setIconUVs();
+        title = "§n" + StatCollector.translateToLocal("gui.toolforge1");
+        body = StatCollector.translateToLocal("gui.toolforge2");
         Keyboard.enableRepeatEvents(true);
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (mouseButton == 0) {
-            int gLeft = this.guiLeft + 68 + 110;
-            int gTop = this.guiTop + 6;
-            int gwidth = 102;
-            int gheight = 12;
-            active = mouseX > gLeft && mouseX < gLeft + gwidth && mouseY > gTop && mouseY < gTop + gheight;
-        }
+        this.text.mouseClicked(mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton);
     }
 
-    void resetGui() {
-        this.text.setText("");
-        guiType = 0;
-        setSlotType(0);
+    protected void setIconUVs() {
         iconX = new int[] { 0, 1, 2 };
         iconY = new int[] { 13, 13, 13 };
-        title = "\u00A7n" + StatCollector.translateToLocal("gui.toolforge1");
-        body = StatCollector.translateToLocal("gui.toolforge2");
     }
 
     @Override
@@ -85,6 +68,16 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         super.initGui();
         this.xSize = 176 + 110;
         this.guiLeft = (this.width - 176) / 2 - 110;
+
+        if (this.text == null) {
+            this.text = new GuiTextField(this.fontRendererObj, 70 + 110, 8, 102, 12);
+            this.text.setMaxStringLength(40);
+            this.text.setEnableBackgroundDrawing(false);
+            this.text.setVisible(true);
+            this.text.setCanLoseFocus(true);
+            this.text.setFocused(false);
+            this.text.setTextColor(0xffffff);
+        }
 
         this.buttonList.clear();
         ToolGuiElement repair = TConstructClientRegistry.toolButtons.get(0);
@@ -117,27 +110,19 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        ((GuiButton) this.buttonList.get(guiType)).enabled = true;
-        guiType = button.id;
+        this.buttonList.get(selectedButton).enabled = true;
+        selectedButton = button.id;
         button.enabled = false;
 
-        ToolGuiElement element = TConstructClientRegistry.toolButtons.get(guiType);
+        ToolGuiElement element = ((GuiButtonTool) button).element;
         setSlotType(element.slotType);
         iconX = element.iconsX;
         iconY = element.iconsY;
-        title = "\u00A7n" + element.title;
-        body = StatCollector.translateToLocal(element.body);
-        if (body != null) {
-            int i;
-            // for some really weird reason replaceAll doesn't find "\\n", but indexOf does. We have to replace
-            // manually.
-            while ((i = body.indexOf("\\n")) >= 0) {
-                body = body.substring(0, i) + '\n' + body.substring(i + 2);
-            }
-        }
+        title = "§n" + StatCollector.translateToLocal(element.title);
+        body = StatCollector.translateToLocal(element.body).replaceAll("\\\\n", "\n");
     }
 
-    void setSlotType(int type) {
+    protected void setSlotType(int type) {
         switch (type) {
             case 0:
                 slotX = new int[] { 56, 38, 38 }; // Repair
@@ -177,10 +162,13 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         this.fontRendererObj.drawString(StatCollector.translateToLocal(logic.getInvName()), 116, 8, 0x000000);
         this.fontRendererObj
                 .drawString(StatCollector.translateToLocal("container.inventory"), 118, this.ySize - 96 + 2, 0x000000);
-        this.fontRendererObj.drawString(toolName + "_", 180, 8, 0xffffff);
+        this.text.drawTextBox();
 
-        if (logic.isStackInSlot(0)) ToolStationGuiHelper.drawToolStats(logic.getStackInSlot(0), 294, 0);
-        else drawToolInformation();
+        if (logic.isStackInSlot(0)) {
+            ToolStationGuiHelper.drawToolStats(logic.getStackInSlot(0), 294, 0);
+        } else {
+            drawToolInformation();
+        }
     }
 
     protected void drawToolInformation() {
@@ -203,7 +191,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         final int cornerX = this.guiLeft + 110;
         this.drawTexturedModalRect(cornerX, this.guiTop, 0, 0, 176, this.ySize);
 
-        if (active) {
+        if (this.text.isFocused()) {
             this.drawTexturedModalRect(cornerX + 62, this.guiTop, 0, this.ySize, 112, 22);
         }
 
@@ -231,38 +219,22 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     @Override
-    protected void keyTyped(char par1, int keyCode) {
-        if (keyCode == 1 || (!active && keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode())) {
+    protected void keyTyped(char typedChar, int keyCode) {
+        if (keyCode == 1 || (!this.text.isFocused() && keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode())) {
             logic.setToolname("");
             updateServer("");
             Keyboard.enableRepeatEvents(false);
             this.mc.thePlayer.closeScreen();
-        } else if (active) {
-            text.textboxKeyTyped(par1, keyCode);
-            toolName = text.getText().trim();
+        } else if (text.textboxKeyTyped(typedChar, keyCode)) {
+            final var toolName = text.getText().trim();
             logic.setToolname(toolName);
             updateServer(toolName);
         }
     }
 
-    void updateServer(String name) {
-        /*
-         * ByteArrayOutputStream bos = new ByteArrayOutputStream(8); DataOutputStream outputStream = new
-         * DataOutputStream(bos); try { outputStream.writeByte(1);
-         * outputStream.writeInt(logic.getWorld().provider.dimensionId); outputStream.writeInt(logic.xCoord);
-         * outputStream.writeInt(logic.yCoord); outputStream.writeInt(logic.zCoord); outputStream.writeUTF(name); }
-         * catch (Exception ex) { ex.printStackTrace(); } Packet250CustomPayload packet = new Packet250CustomPayload();
-         * packet.channel = "TConstruct"; packet.data = bos.toByteArray(); packet.length = bos.size();
-         * PacketDispatcher.sendPacketToServer(packet);
-         */
-
+    private void updateServer(String name) {
         TConstruct.packetPipeline.sendToServer(new ToolStationPacket(logic.xCoord, logic.yCoord, logic.zCoord, name));
     }
-
-    /*
-     * protected void mouseClicked(int par1, int par2, int par3) { super.mouseClicked(par1, par2, par3);
-     * text.mouseClicked(par1, par2, par3); }
-     */
 
     @Override
     public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {

@@ -1,8 +1,6 @@
 package tconstruct.tools.gui;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
@@ -13,8 +11,6 @@ import tconstruct.tools.logic.ToolForgeLogic;
 
 @SideOnly(Side.CLIENT)
 public class ToolForgeGui extends ToolStationGui {
-
-    int selectedButton;
 
     public ToolForgeGui(InventoryPlayer inventoryplayer, ToolForgeLogic stationlogic, World world, int x, int y,
             int z) {
@@ -70,40 +66,13 @@ public class ToolForgeGui extends ToolStationGui {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
-        GuiButtonTool b = (GuiButtonTool) button;
-        ((GuiButton) this.buttonList.get(selectedButton)).enabled = true;
-        selectedButton = button.id;
-        button.enabled = false;
-
-        setSlotType(b.element.slotType);
-        iconX = b.element.iconsX;
-        iconY = b.element.iconsY;
-        title = "\u00A7n" + b.element.title;
-        body = StatCollector.translateToLocal(b.element.body);
-        if (body != null) {
-            int i;
-            // for some really weird reason replaceAll doesn't find "\\n", but indexOf does. We have to replace
-            // manually.
-            while ((i = body.indexOf("\\n")) >= 0) {
-                body = body.substring(0, i) + '\n' + body.substring(i + 2);
-            }
-        }
-    }
-
-    @Override
-    void resetGui() {
-        this.text.setText("");
-        selectedButton = 0;
-        setSlotType(0);
+    protected void setIconUVs() {
         iconX = new int[] { 0, 1, 2, 13 };
         iconY = new int[] { 13, 13, 13, 13 };
-        title = "\u00A7n" + StatCollector.translateToLocal("gui.toolforge1");
-        body = StatCollector.translateToLocal("gui.toolforge2");
     }
 
     @Override
-    void setSlotType(int type) {
+    protected void setSlotType(int type) {
         switch (type) {
             case 0:
                 slotX = new int[] { 56, 38, 38, 14 }; // Repair

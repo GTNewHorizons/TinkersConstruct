@@ -111,8 +111,12 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         return this.getClass().getSimpleName();
     }
 
+    public String getUnlocalizedToolName() {
+        return "tool." + this.getToolName().toLowerCase();
+    }
+
     public String getLocalizedToolName() {
-        return StatCollector.translateToLocal("tool." + getToolName().toLowerCase());
+        return StatCollector.translateToLocal(this.getUnlocalizedToolName());
     }
 
     /* Rendering */
@@ -334,7 +338,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         list.add("");
         int attack = (int) (tags.getCompoundTag("InfiTool").getInteger("Attack") * this.getDamageModifier());
         list.add(
-                EnumChatFormatting.BLUE.toString() + "+"
+                EnumChatFormatting.BLUE + "+"
                         + attack
                         + " "
                         + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
