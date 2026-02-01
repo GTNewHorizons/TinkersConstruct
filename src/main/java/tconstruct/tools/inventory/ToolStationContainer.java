@@ -201,10 +201,11 @@ public class ToolStationContainer extends ActiveContainer {
 
     @Override
     public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer player) {
+        ItemStack output = super.slotClick(slotId, clickedButton, mode, player);
         Slot slot2 = this.inventorySlots.get(slotId);
-        if (slot2.inventory instanceof ToolStationLogic toolStation) {
-            toolStation.tryBuildTool(slot2.getSlotIndex());
+        if (slot2.inventory == this.logic) {
+            this.logic.tryBuildTool(slot2.getSlotIndex());
         }
-        return super.slotClick(slotId, clickedButton, mode, player);
+        return output;
     }
 }
