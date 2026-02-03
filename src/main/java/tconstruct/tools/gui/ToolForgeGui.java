@@ -18,10 +18,7 @@ public class ToolForgeGui extends ToolStationGui {
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-
-        this.buttonList.clear();
+    protected void createToolButtons() {
         ToolGuiElement repair = TConstructClientRegistry.toolButtons.get(0);
         GuiButtonTool repairButton = new GuiButtonTool(
                 0,

@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -47,7 +48,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         selectedButton = 0;
         setSlotType(0);
         setIconUVs();
-        title = "§n" + StatCollector.translateToLocal("gui.toolforge1");
+        title = EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("gui.toolforge1");
         body = StatCollector.translateToLocal("gui.toolforge2");
         Keyboard.enableRepeatEvents(true);
     }
@@ -80,20 +81,11 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         }
 
         this.buttonList.clear();
-        ToolGuiElement repair = TConstructClientRegistry.toolButtons.get(0);
-        GuiButtonTool repairButton = new GuiButtonTool(
-                0,
-                this.guiLeft,
-                this.guiTop,
-                repair.buttonIconX,
-                repair.buttonIconY,
-                repair.domain,
-                repair.texture,
-                repair); // Repair
-        repairButton.enabled = false;
-        this.buttonList.add(repairButton);
+        createToolButtons();
+    }
 
-        for (int iter = 1; iter < TConstructClientRegistry.toolButtons.size(); iter++) {
+    protected void createToolButtons() {
+        for (int iter = 0; iter < TConstructClientRegistry.toolButtons.size(); iter++) {
             ToolGuiElement element = TConstructClientRegistry.toolButtons.get(iter);
             GuiButtonTool button = new GuiButtonTool(
                     iter,
@@ -106,6 +98,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
                     element);
             this.buttonList.add(button);
         }
+        this.buttonList.get(0).enabled = false;
     }
 
     @Override
@@ -226,7 +219,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
             Keyboard.enableRepeatEvents(false);
             this.mc.thePlayer.closeScreen();
         } else if (text.textboxKeyTyped(typedChar, keyCode)) {
-            final var toolName = text.getText().trim();
+            final String toolName = text.getText().trim();
             logic.setToolname(toolName);
             updateServer(toolName);
         }
