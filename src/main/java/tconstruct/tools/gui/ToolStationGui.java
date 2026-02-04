@@ -112,7 +112,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         iconX = element.iconsX;
         iconY = element.iconsY;
         title = "§n" + StatCollector.translateToLocal(element.title);
-        body = StatCollector.translateToLocal(element.body).replaceAll("\\\\n", "\n");
+        body = StatCollector.translateToLocal(element.body).replace("\\n", "\n");
     }
 
     protected void setSlotType(int type) {
