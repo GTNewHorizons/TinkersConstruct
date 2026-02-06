@@ -7,13 +7,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
+import com.gtnewhorizon.gtnhlib.api.ITranslucentItem;
+
+import cpw.mods.fml.common.Optional;
 import mantle.items.abstracts.CraftingItem;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.IToolPart;
 import tconstruct.tools.TinkerTools;
 
+@Optional.Interface(modid = "gtnhlib", iface = "com.gtnewhorizon.gtnhlib.api.ITranslucentItem")
 @Deprecated
-public class ToolPart extends CraftingItem implements IToolPart {
+public class ToolPart extends CraftingItem implements IToolPart, ITranslucentItem {
 
     public String partName;
 

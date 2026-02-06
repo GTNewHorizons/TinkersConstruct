@@ -23,7 +23,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
@@ -762,7 +761,7 @@ public class ToolProxyClient extends ToolProxyCommon {
                 0,
                 new int[] { 0, 1, 2, 13 },
                 new int[] { 13, 13, 13, 13 },
-                StatCollector.translateToLocal("gui.toolforge1"),
+                "gui.toolforge1",
                 "gui.toolforge2");
 
         // tier 1 tools
@@ -774,7 +773,7 @@ public class ToolProxyClient extends ToolProxyCommon {
                     itemIconsT1[i][2],
                     iconCoordsT1[i * 2],
                     iconCoordsT1[i * 2 + 1],
-                    tier1Tools[i].getLocalizedToolName(),
+                    tier1Tools[i].getUnlocalizedToolName(),
                     locString);
         }
 
@@ -787,7 +786,7 @@ public class ToolProxyClient extends ToolProxyCommon {
                     itemIconsT2[i][2],
                     iconCoordsT2[i * 2],
                     iconCoordsT2[i * 2 + 1],
-                    tier2Tools[i].getLocalizedToolName(),
+                    tier2Tools[i].getUnlocalizedToolName(),
                     locString);
         }
     }

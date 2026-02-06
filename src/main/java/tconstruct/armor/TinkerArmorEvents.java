@@ -34,8 +34,7 @@ import tconstruct.library.modifier.IModifyable;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.ArmourGuiSyncPacket;
 
-@Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
-public class TinkerArmorEvents implements IMobExtraInfoProvider {
+public class TinkerArmorEvents {
 
     public void registerEvents() {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
@@ -77,39 +76,6 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
                 entityitem.delayBeforeCanPickup = 10;
                 event.drops.add(entityitem);
             }
-        }
-    }
-
-    @Optional.Method(modid = "mobsinfo")
-    @Override
-    public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
-            @Nonnull MobRecipe recipe) {
-        if (recipe.entity instanceof IMob) {
-            MobDrop drop = new MobDrop(
-                    new ItemStack(TinkerArmor.heartCanister, 1, 1),
-                    MobDrop.DropType.Normal,
-                    50,
-                    null,
-                    null,
-                    false,
-                    false);
-            drops.add(drop);
-        }
-
-        if (recipe.entity instanceof IBossDisplayData) {
-            String entityName = recipe.entity.getClass().getSimpleName().toLowerCase();
-            for (String name : PHConstruct.heartDropBlacklist)
-                if (name.toLowerCase(Locale.US).equals(entityName)) return;
-
-            MobDrop drop = new MobDrop(
-                    new ItemStack(TinkerArmor.heartCanister, recipe.entity instanceof EntityDragon ? 5 : 1, 3),
-                    MobDrop.DropType.Normal,
-                    10000,
-                    null,
-                    null,
-                    false,
-                    false);
-            drops.add(drop);
         }
     }
 
@@ -181,7 +147,8 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
         }
     }
 
-    public class EventHandler {
+    @Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobExtraInfoProvider", modid = "mobsinfo")
+    public class EventHandler implements IMobExtraInfoProvider {
 
         @SubscribeEvent
         public void onLivingDropWrapper(LivingDropsEvent event) {
@@ -212,6 +179,39 @@ public class TinkerArmorEvents implements IMobExtraInfoProvider {
         @SubscribeEvent
         public void joinWorldWrapper(EntityJoinWorldEvent event) {
             TinkerArmorEvents.this.joinWorld(event);
+        }
+
+        @Optional.Method(modid = "mobsinfo")
+        @Override
+        public void provideExtraDropsInformation(@Nonnull String entityString, @Nonnull ArrayList<MobDrop> drops,
+                @Nonnull MobRecipe recipe) {
+            if (recipe.entity instanceof IMob) {
+                MobDrop drop = new MobDrop(
+                        new ItemStack(TinkerArmor.heartCanister, 1, 1),
+                        MobDrop.DropType.Normal,
+                        50,
+                        null,
+                        null,
+                        false,
+                        false);
+                drops.add(drop);
+            }
+
+            if (recipe.entity instanceof IBossDisplayData) {
+                String entityName = recipe.entity.getClass().getSimpleName().toLowerCase();
+                for (String name : PHConstruct.heartDropBlacklist)
+                    if (name.toLowerCase(Locale.US).equals(entityName)) return;
+
+                MobDrop drop = new MobDrop(
+                        new ItemStack(TinkerArmor.heartCanister, recipe.entity instanceof EntityDragon ? 5 : 1, 3),
+                        MobDrop.DropType.Normal,
+                        10000,
+                        null,
+                        null,
+                        false,
+                        false);
+                drops.add(drop);
+            }
         }
     }
 }

@@ -4,9 +4,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import baubles.common.lib.PlayerHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.PlayerEventChild;
@@ -50,7 +52,7 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
         NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
         int oldCount = tags.getInteger("Ammo");
         int newCount = Math.min(oldCount + toAdd, getMaxAmmo(stack));
-        tags.setInteger("Ammo", newCount);
+        setAmmo(newCount, stack);
         return toAdd - (newCount - oldCount);
     }
 
@@ -60,8 +62,23 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
         NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
         int oldCount = tags.getInteger("Ammo");
         int newCount = Math.max(oldCount - toUse, 0);
-        tags.setInteger("Ammo", newCount);
+        setAmmo(newCount, stack);
         return toUse - (oldCount - newCount);
+    }
+
+    private void syncBaubles(ItemStack stack) {
+        if (LoadedMods.baubles && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+            var players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+            for (var player : players) {
+                var baubles = PlayerHandler.getPlayerBaubles(player);
+                for (int i = 0; i < baubles.stackList.length; i++) {
+                    if (baubles.stackList[i] == stack) {
+                        baubles.syncSlotToClients(i);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -70,6 +87,8 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
 
         NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
         tags.setInteger("Ammo", count);
+
+        syncBaubles(stack);
     }
 
     public float getAmmoModifier() {

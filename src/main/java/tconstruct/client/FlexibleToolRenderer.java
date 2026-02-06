@@ -1,5 +1,6 @@
 package tconstruct.client;
 
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +10,7 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
 
 import tconstruct.TConstruct;
 import tconstruct.library.tools.ToolCore;
@@ -94,7 +96,14 @@ public class FlexibleToolRenderer implements IItemRenderer {
         }
 
         GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+        int srcRGB = GL11.glGetInteger(GL14.GL_BLEND_SRC_RGB);
+        int dstRGB = GL11.glGetInteger(GL14.GL_BLEND_DST_RGB);
+        int srcAlpha = GL11.glGetInteger(GL14.GL_BLEND_SRC_ALPHA);
+        int dstAlpha = GL11.glGetInteger(GL14.GL_BLEND_DST_ALPHA);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
         if (type != ItemRenderType.ENTITY) {
             specialAnimation(type, item);
@@ -204,7 +213,10 @@ public class FlexibleToolRenderer implements IItemRenderer {
         }
 
         tess.draw();
+
+        OpenGlHelper.glBlendFunc(srcRGB, dstRGB, srcAlpha, dstAlpha);
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 
@@ -214,8 +226,8 @@ public class FlexibleToolRenderer implements IItemRenderer {
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
-        // GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.4F);
+        GL11.glEnable(GL11.GL_BLEND);
 
         tess.startDrawingQuads();
 
@@ -235,7 +247,7 @@ public class FlexibleToolRenderer implements IItemRenderer {
         }
         tess.draw();
 
-        // GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
         GL11.glEnable(GL11.GL_LIGHTING);
