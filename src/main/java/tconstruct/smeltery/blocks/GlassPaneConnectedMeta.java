@@ -14,20 +14,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.util.config.PHConstruct;
 
-/**
- * @author fuj1n
- *
- */
-public class GlassBlockConnectedMeta extends GlassBlockConnected {
+public class GlassPaneConnectedMeta extends GlassPaneConnected {
 
     public String[] textures;
     public IIcon[][] icons;
+    public IIcon[] sideIcons;
     public static final boolean ignoreMetaForConnectedGlass = PHConstruct.connectedTexturesMode == 2;
 
-    public GlassBlockConnectedMeta(String location, boolean hasAlpha, String... textures) {
+    public GlassPaneConnectedMeta(String location, boolean hasAlpha, String... textures) {
         super(location, hasAlpha);
         this.textures = textures;
         this.icons = new IIcon[textures.length][16];
+        this.sideIcons = new IIcon[textures.length];
     }
 
     @Override
@@ -63,7 +61,13 @@ public class GlassBlockConnectedMeta extends GlassBlockConnected {
     public void registerBlockIcons(IIconRegister iconRegister) {
         for (int i = 0; i < textures.length; i++) {
             registerBlockIcons(iconRegister, icons[i], folder + "/" + textures[i]);
+            sideIcons[i] = iconRegister.registerIcon("tinker:glass/" + folder + "/" + textures[i] + "/glass_side");
         }
+    }
+
+    @Override
+    public IIcon getSideTextureIndex(int meta) {
+        return sideIcons[meta];
     }
 
     @Override
