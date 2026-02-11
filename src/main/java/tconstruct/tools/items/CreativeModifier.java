@@ -24,41 +24,41 @@ public class CreativeModifier extends Item {
         this.setCreativeTab(TConstructRegistry.materialTab);
     }
 
-    @SideOnly(Side.CLIENT)
     /**
      * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
      */
     @Override
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
-        par3List.add(new ItemStack(par1, 1, 0));
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item item1, CreativeTabs creativeTabs, List<ItemStack> list) {
+        list.add(new ItemStack(item1, 1, 0));
 
         for (ToolRecipe recipe : ToolBuilder.instance.combos) {
             ToolCore tool = recipe.getType();
-            ItemStack item = new ItemStack(par1, 1, 0);
+            ItemStack item = new ItemStack(item1, 1, 0);
             NBTTagCompound compound = new NBTTagCompound();
             compound.setString("TargetLock", tool.getToolName());
 
             item.setTagCompound(compound);
-            par3List.add(item);
+            list.add(item);
         }
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
         this.itemIcon = iconRegister.registerIcon("tinker:skull_char_gold");
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean adv) {
         list.add(
                 StatCollector.translateToLocal("modifier.tooltip.Main") + " "
                         + StatCollector.translateToLocal("modifier.tooltip.Creative"));
         if (stack.hasTagCompound()) {
             String targetLock;
             targetLock = stack.getTagCompound().getString("TargetLock");
-            targetLock = StatCollector.translateToLocal("infitool." + targetLock.toLowerCase());
+            targetLock = StatCollector.translateToLocal("tool." + targetLock.toLowerCase());
             list.add(StatCollector.translateToLocal("creativeModLock.tooltip") + targetLock);
         }
     }

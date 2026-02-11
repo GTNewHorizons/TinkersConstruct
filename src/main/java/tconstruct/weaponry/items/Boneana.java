@@ -38,12 +38,7 @@ public class Boneana extends Broadsword {
     }
 
     @Override
-    public String getLocalizedToolName() {
-        return "Bonæna";
-    }
-
-    @Override
-    public void getSubItems(Item id, CreativeTabs tab, List list) {
+    public void getSubItems(Item id, CreativeTabs tab, List<ItemStack> list) {
         // you are not welcome here >:C
     }
 }
