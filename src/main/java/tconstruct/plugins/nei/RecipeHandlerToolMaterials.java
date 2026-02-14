@@ -28,6 +28,23 @@ import tconstruct.util.config.PHConstruct;
 
 public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
 
+    private static final int DefaultTextColor = 0x404040;
+    private static final String ColorKey = "tconstruct.nei.color.";
+
+    private static int getLocalizedColor(String colorName, int fallbackColor) {
+        String colorKey = ColorKey + colorName;
+        String colorValue = StatCollector.translateToLocal(colorKey);
+        if (colorKey.equals(colorValue)) {
+            return fallbackColor;
+        }
+
+        try {
+            return Integer.decode(colorValue.trim());
+        } catch (NumberFormatException ignored) {
+            return fallbackColor;
+        }
+    }
+
     public class CachedToolMaterialsRecipe extends CachedBaseRecipe {
 
         public List<PositionedStack> toolParts;
@@ -151,7 +168,12 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
             }
             int abilityY = 85;
             if (crecipe.material.reinforced > 0) {
-                GuiDraw.drawString(getReinforcedString(crecipe.material.reinforced), 35, 85, 0x404040, false);
+                GuiDraw.drawString(
+                        getReinforcedString(crecipe.material.reinforced),
+                        35,
+                        85,
+                        getLocalizedColor("materialReinforced", DefaultTextColor),
+                        false);
                 abilityY += 10;
             }
             String ability = crecipe.material.ability();
@@ -161,10 +183,15 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                             ability + " (" + Math.abs(crecipe.material.stonebound) + ")",
                             35,
                             abilityY,
-                            0x404040,
+                            getLocalizedColor("materialStonebound", DefaultTextColor),
                             false);
                 } else {
-                    GuiDraw.drawString(ability, 35, abilityY, 0x404040, false);
+                    GuiDraw.drawString(
+                            ability,
+                            35,
+                            abilityY,
+                            getLocalizedColor("materialAbility", DefaultTextColor),
+                            false);
                 }
             }
         }
