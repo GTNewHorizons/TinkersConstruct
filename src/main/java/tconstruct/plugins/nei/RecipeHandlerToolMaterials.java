@@ -116,7 +116,12 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
     public void drawExtras(int recipe) {
         CachedToolMaterialsRecipe crecipe = (CachedToolMaterialsRecipe) this.arecipes.get(recipe);
         if (crecipe.material != null) {
-            GuiDraw.drawString(EnumChatFormatting.BOLD + crecipe.material.localizedName(), 35, 10, getLocalizedColor("materialName", DefaultTextColor), false);
+            GuiDraw.drawString(
+                    EnumChatFormatting.BOLD + crecipe.material.localizedName(),
+                    35,
+                    10,
+                    getLocalizedColor("materialName", DefaultTextColor),
+                    false);
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.partcrafter4") + crecipe.material.durability,
                     35,
