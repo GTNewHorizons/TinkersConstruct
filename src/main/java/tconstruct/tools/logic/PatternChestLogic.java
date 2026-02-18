@@ -50,4 +50,16 @@ public class PatternChestLogic extends InventoryLogic {
 
     @Override
     public void closeInventory() {}
+
+    public boolean insertItemStackIntoInventory(ItemStack stack) {
+        for (int i = 0; i < this.inventory.length; i++) {
+            if (this.inventory[i] == null) {
+                this.inventory[i] = stack.copy();
+                stack.stackSize = 0;
+                this.markDirty();
+                return true;
+            }
+        }
+        return false;
+    }
 }

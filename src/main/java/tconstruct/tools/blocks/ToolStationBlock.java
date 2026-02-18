@@ -243,4 +243,25 @@ public class ToolStationBlock extends InventoryBlock {
         }
         super.onBlockPlacedBy(world, x, y, z, living, stack);
     }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,
+            float clickY, float clickZ) {
+        int blockMeta = world.getBlockMetadata(x, y, z);
+        if (blockMeta <= 9 && blockMeta >= 5 && !player.isSneaking()) {
+            // is the pattern chest and player is not holding shift key
+            ItemStack itemInHand = player.getHeldItem();
+            PatternChestLogic logic = (PatternChestLogic) world.getTileEntity(x, y, z);
+            if (logic.isItemValidForSlot(0, itemInHand)) {
+                // is the player holding a tinker pattern
+                if (!logic.insertItemStackIntoInventory(itemInHand)) {
+                    // try insert into chest
+                    // if fail, just do the same thing as default
+                    super.onBlockActivated(world, x, y, z, player, side, clickX, clickY, clickZ);
+                }
+                return true;
+            }
+        }
+        return super.onBlockActivated(world, x, y, z, player, side, clickX, clickY, clickZ);
+    }
 }
