@@ -59,8 +59,8 @@ public class SlimeRender extends RenderLiving {
      */
     protected void scaleSlime(SlimeBase par1EdibleSlime, float par2) {
         float f1 = (float) par1EdibleSlime.getSlimeSize();
-        float f2 = (par1EdibleSlime.sizeHeight + (par1EdibleSlime.sizeFactor - par1EdibleSlime.sizeHeight) * par2)
-                / (f1 * 0.5F + 1.0F);
+        float f2 = (par1EdibleSlime.prevSquishFactor
+                + (par1EdibleSlime.squishFactor - par1EdibleSlime.prevSquishFactor) * par2) / (f1 * 0.5F + 1.0F);
         float f3 = 1.0F / (f2 + 1.0F);
         GL11.glScalef(f3 * f1, 1.0F / f3 * f1, f3 * f1);
     }

@@ -163,4 +163,10 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
     ToolCore getValidTool() {
         return TConstructRegistry.tools.get(rand.nextInt(TConstructRegistry.tools.size()));
     }
+
+    @Override
+    public void setSlimeSize(int size) {
+        super.setSlimeSize(size);
+        this.experienceValue = 500;
+    }
 }

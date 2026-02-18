@@ -42,6 +42,7 @@ public class ModDurability extends ItemModifier {
 
         bonus += durability;
         modDur += modifier;
+        tags.setBoolean("Broken", false);
 
         int total = (int) ((base + bonus) * (modDur + 1f));
         if (total <= 0) total = 1;

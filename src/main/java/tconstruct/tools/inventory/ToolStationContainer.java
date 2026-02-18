@@ -198,4 +198,13 @@ public class ToolStationContainer extends ActiveContainer {
 
         return failedToMerge;
     }
+
+    @Override
+    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer player) {
+        ItemStack output = super.slotClick(slotId, clickedButton, mode, player);
+        if (slotId > 0) {
+            this.logic.buildTool(this.logic.toolName);
+        }
+        return output;
+    }
 }
