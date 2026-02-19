@@ -210,7 +210,7 @@ public abstract class HarvestTool extends ToolCore {
     }
 
     public void breakExtraBlock(World world, int x, int y, int z, int sidehit, EntityPlayer playerEntity, int refX,
-            int refY, int refZ) {
+            int refY, int refZ, float miningSpeed) {
         // prevent calling that stuff for air blocks, could lead to unexpected behaviour since it fires events
         if (world.isAirBlock(x, y, z)) return;
 
@@ -231,8 +231,11 @@ public abstract class HarvestTool extends ToolCore {
         float strength = ForgeHooks.blockStrength(block, player, world, x, y, z);
 
         // only harvestable blocks that aren't impossibly slow to harvest
+        // don't exclude blocks that would be broken in 1-2 ticks, regardless of hardness diff
+        // blocks are instantly broken if the mining speed is more than 30x the block hardness/strength
         if (!ForgeHooks.canHarvestBlock(block, player, meta)
-                || refStrength / strength > PHConstruct.HarvestToolAOERelativeStrength)
+                || (refStrength / strength > PHConstruct.HarvestToolAOERelativeStrength
+                        && refStrength * 15 - miningSpeed > 0))
             return;
 
         // send the blockbreak event
