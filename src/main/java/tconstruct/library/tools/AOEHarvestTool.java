@@ -65,7 +65,6 @@ public abstract class AOEHarvestTool extends HarvestTool {
                 zRange = breakRadius;
                 break;
         }
-        float miningSpeed = getDigSpeed(stack, block, meta);
 
         for (int xPos = x - xRange; xPos <= x + xRange; xPos++) for (int yPos = y - yRange; yPos <= y + yRange; yPos++)
             for (int zPos = z - zRange; zPos <= z + zRange; zPos++) {
@@ -77,7 +76,7 @@ public abstract class AOEHarvestTool extends HarvestTool {
 
                 if (!AoEExclusionList.isBlockExcluded(toolName, targetBlock, targetMeta)) {
                     if (!super.onBlockStartBreak(stack, xPos, yPos, zPos, player))
-                        breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z, miningSpeed);
+                        breakExtraBlock(player.worldObj, xPos, yPos, zPos, sideHit, player, x, y, z);
                 }
             }
 

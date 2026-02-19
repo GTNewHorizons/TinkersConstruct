@@ -266,7 +266,7 @@ public class LumberAxe extends AOEHarvestTool {
                         cancelHarvest = true;
                     }
                 }
-                if (!cancelHarvest) tool.breakExtraBlock(player.worldObj, x, y, z, 0, player, x, y, z, 1F);
+                if (!cancelHarvest) tool.breakExtraBlock(player.worldObj, x, y, z, 0, player, x, y, z);
 
                 left--;
             }
