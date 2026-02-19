@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,12 +22,14 @@ import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
 import cpw.mods.fml.common.Optional;
+import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.tools.logic.CraftingStationLogic;
+import tconstruct.util.network.CraftingStationDumpPacket;
 
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
@@ -121,6 +124,22 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
         this.craftingTextLeft = this.craftingLeft - this.guiLeft;
         this.descTextLeft = this.descLeft - this.guiLeft;
+
+        // Add dump button if chest is connected
+        this.buttonList.clear();
+        if (logic.chest != null) {
+            int bothOffset = 0;
+            if (logic.slotCount > 54) bothOffset += 12;
+            bothOffset += 122;
+            this.buttonList.add(new GuiButtonDump(0, this.guiLeft + bothOffset + 159, this.guiTop + 5));
+        }
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        if (button.id == 0 && logic.chest != null) {
+            TConstruct.packetPipeline.sendToServer(new CraftingStationDumpPacket());
+        }
     }
 
     @Override
