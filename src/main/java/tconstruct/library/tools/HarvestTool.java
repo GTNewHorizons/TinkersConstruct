@@ -231,7 +231,9 @@ public abstract class HarvestTool extends ToolCore {
         float strength = ForgeHooks.blockStrength(block, player, world, x, y, z);
 
         // only harvestable blocks that aren't impossibly slow to harvest
-        if (!ForgeHooks.canHarvestBlock(block, player, meta) || refStrength / strength > 10f) return;
+        if (!ForgeHooks.canHarvestBlock(block, player, meta)
+                || refStrength / strength > PHConstruct.HarvestToolAOERelativeStrength)
+            return;
 
         // send the blockbreak event
         BlockEvent.BreakEvent event = ForgeHooks
