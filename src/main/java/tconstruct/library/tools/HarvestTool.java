@@ -229,9 +229,14 @@ public abstract class HarvestTool extends ToolCore {
         Block refBlock = world.getBlock(refX, refY, refZ);
         float refStrength = ForgeHooks.blockStrength(refBlock, player, world, refX, refY, refZ);
         float strength = ForgeHooks.blockStrength(block, player, world, x, y, z);
+        if (strength <= 0) strength = 0.00001F; // don't div by zero or go below 0.
 
         // only harvestable blocks that aren't impossibly slow to harvest
-        if (!ForgeHooks.canHarvestBlock(block, player, meta) || refStrength / strength > 10f) return;
+        // don't exclude blocks that would be broken in 1-2 ticks, regardless of hardness diff
+        // blocks are instantly broken if the mining speed is more than 30x the block hardness/strength
+        if (!ForgeHooks.canHarvestBlock(block, player, meta)
+                || (refStrength / strength > PHConstruct.HarvestToolAOERelativeStrength && strength * 2 < 1))
+            return; // the Forgehooks method returns mining speed / hardness / 30
 
         // send the blockbreak event
         BlockEvent.BreakEvent event = ForgeHooks
