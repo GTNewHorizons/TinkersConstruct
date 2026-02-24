@@ -12,6 +12,7 @@ crafters.PartBuilder=部件加工台
 crafters.PatternShaper=模具加工台
 crafters.CraftingStation=合成站
 inventory.PatternChest=模具箱
+inventory.PartChest=部件箱
 crafters.Smeltery=冶炼炉
 crafters.Frypan=煎锅
 inventory.knapsack=背包

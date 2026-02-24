@@ -638,13 +638,8 @@ public class ToolProxyClient extends ToolProxyCommon {
                 x,
                 y,
                 z);
-        if (ID == ToolProxyCommon.partChestID) return new PartChestGui(
-                player.inventory,
-                (PartChestLogic) world.getTileEntity(x, y, z),
-                world,
-                x,
-                y,
-                z);
+        if (ID == ToolProxyCommon.partChestID)
+            return new PartChestGui(player.inventory, (PartChestLogic) world.getTileEntity(x, y, z), world, x, y, z);
         if (ID == ToolProxyCommon.frypanGuiID)
             return new FrypanGui(player.inventory, (FrypanLogic) world.getTileEntity(x, y, z), world, x, y, z);
         if (ID == ToolProxyCommon.battlesignTextID)

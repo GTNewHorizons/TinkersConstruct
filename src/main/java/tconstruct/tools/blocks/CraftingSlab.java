@@ -48,8 +48,8 @@ public class CraftingSlab extends InventorySlab {
                 "toolstation_top", "toolstation_slab_side", "toolstation_bottom", "partbuilder_oak_top",
                 "partbuilder_slab_side", "partbuilder_oak_bottom", "stenciltable_oak_top", "stenciltable_slab_side",
                 "stenciltable_oak_bottom", "patternchest_top", "patternchest_slab_side", "patternchest_bottom",
-                "toolforge_top", "toolforge_slab_side", "toolforge_top",
-                "partchest_top", "partchest_slab_side", "partchest_bottom" };
+                "toolforge_top", "toolforge_slab_side", "toolforge_top", "partchest_top", "partchest_slab_side",
+                "partchest_bottom" };
     }
 
     @Override
@@ -126,7 +126,7 @@ public class CraftingSlab extends InventorySlab {
 
     @Override
     public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
-        for (int iter = 0; iter < 6; iter++) {
+        for (int iter = 0; iter < 7; iter++) {
             list.add(new ItemStack(b, 1, iter));
         }
     }

@@ -1,12 +1,13 @@
 package tconstruct.tools.inventory;
 
-import invtweaks.api.container.ChestContainer;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import invtweaks.api.container.ChestContainer;
 import tconstruct.library.util.IToolPart;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.logic.PartChestLogic;

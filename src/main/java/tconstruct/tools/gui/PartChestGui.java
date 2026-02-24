@@ -9,14 +9,12 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import tconstruct.tools.logic.PartChestLogic;
-import tconstruct.tools.logic.PatternChestLogic;
 
 public class PartChestGui extends GuiContainer {
 
     public PartChestLogic logic;
 
-    public PartChestGui(InventoryPlayer inventoryplayer, PartChestLogic holder, World world, int x, int y,
-            int z) {
+    public PartChestGui(InventoryPlayer inventoryplayer, PartChestLogic holder, World world, int x, int y, int z) {
         super(holder.getGuiContainer(inventoryplayer, world, x, y, z));
         logic = holder;
         xSize = 194;

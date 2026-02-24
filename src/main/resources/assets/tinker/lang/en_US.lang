@@ -13,6 +13,7 @@ crafters.PartBuilder=Part Builder
 crafters.PatternShaper=Stencil Table
 crafters.CraftingStation=Crafting Station
 inventory.PatternChest=Pattern Chest
+inventory.PartChest=Part Chest
 crafters.Smeltery=Smeltery
 crafters.Frypan=Frying Pan
 inventory.knapsack=Knapsack
