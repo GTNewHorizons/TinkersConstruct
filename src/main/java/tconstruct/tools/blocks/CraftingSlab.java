@@ -25,6 +25,7 @@ import tconstruct.tools.TinkerTools;
 import tconstruct.tools.ToolProxyCommon;
 import tconstruct.tools.logic.CraftingStationLogic;
 import tconstruct.tools.logic.PartBuilderLogic;
+import tconstruct.tools.logic.PartChestLogic;
 import tconstruct.tools.logic.PatternChestLogic;
 import tconstruct.tools.logic.StencilTableLogic;
 import tconstruct.tools.logic.ToolForgeLogic;
@@ -47,7 +48,8 @@ public class CraftingSlab extends InventorySlab {
                 "toolstation_top", "toolstation_slab_side", "toolstation_bottom", "partbuilder_oak_top",
                 "partbuilder_slab_side", "partbuilder_oak_bottom", "stenciltable_oak_top", "stenciltable_slab_side",
                 "stenciltable_oak_bottom", "patternchest_top", "patternchest_slab_side", "patternchest_bottom",
-                "toolforge_top", "toolforge_slab_side", "toolforge_top" };
+                "toolforge_top", "toolforge_slab_side", "toolforge_top",
+                "partchest_top", "partchest_slab_side", "partchest_bottom" };
     }
 
     @Override
@@ -71,7 +73,7 @@ public class CraftingSlab extends InventorySlab {
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
         int metadata = world.getBlockMetadata(x, y, z);
-        if (metadata == 5) return AxisAlignedBB.getBoundingBox(
+        if (metadata == 5 || metadata == 6) return AxisAlignedBB.getBoundingBox(
                 (double) x + this.minX,
                 (double) y + this.minY,
                 (double) z + this.minZ,
@@ -96,6 +98,7 @@ public class CraftingSlab extends InventorySlab {
             case 3 -> new StencilTableLogic();
             case 4 -> new PatternChestLogic();
             case 5 -> new ToolForgeLogic();
+            case 6 -> new PartChestLogic();
             default -> null;
         };
     }
@@ -110,6 +113,7 @@ public class CraftingSlab extends InventorySlab {
             case 3 -> ToolProxyCommon.stencilTableID;
             case 4 -> ToolProxyCommon.patternChestID;
             case 5 -> ToolProxyCommon.toolForgeID;
+            case 6 -> ToolProxyCommon.partChestID;
             default -> -1;
         };
 
@@ -163,6 +167,7 @@ public class CraftingSlab extends InventorySlab {
             case 3 -> new StencilTableLogic();
             case 4 -> new PatternChestLogic();
             case 5 -> new ToolForgeLogic();
+            case 6 -> new PartChestLogic();
             default -> null;
         };
     }

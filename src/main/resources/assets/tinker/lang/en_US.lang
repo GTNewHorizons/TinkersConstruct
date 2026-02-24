@@ -23,6 +23,7 @@ tile.ToolStation.name=Tool Station
 ToolStation.Crafter.name=Tool Station
 ToolStation.Parts.name=Part Builder
 ToolStation.PatternChest.name=Pattern Chest
+ToolStation.PartChest.name=Part Chest
 ToolStation.PatternShaper.name=Stencil Table
 ToolStation.CastingTable.name=Casting Table
 tile.FurnaceSlab.name=Slab Furnace

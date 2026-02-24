@@ -21,6 +21,7 @@ nei.options.keys.gui.tinkers_belt=切换旅行者腰带
 ToolStation.Crafter.name=工具组装台
 ToolStation.Parts.name=部件加工台
 ToolStation.PatternChest.name=模具箱
+ToolStation.PartChest.name=部件箱
 ToolStation.PatternShaper.name=模具加工台
 ToolStation.CastingTable.name=浇铸台
 tile.FurnaceSlab.name=半砖熔炉

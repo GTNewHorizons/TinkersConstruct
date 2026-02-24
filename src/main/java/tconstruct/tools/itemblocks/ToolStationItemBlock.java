@@ -7,7 +7,7 @@ import mantle.blocks.abstracts.MultiItemBlock;
 public class ToolStationItemBlock extends MultiItemBlock {
 
     public static final String[] blockTypes = { "Crafter", "Parts", "Parts", "Parts", "Parts", "PatternChest",
-            "PatternChest", "PatternChest", "PatternChest", "PatternChest", "PatternShaper", "PatternShaper",
+            "PartChest", "PartChest", "PartChest", "PartChest", "PatternShaper", "PatternShaper",
             "PatternShaper", "PatternShaper", "CastingTable" };
 
     public ToolStationItemBlock(Block b) {

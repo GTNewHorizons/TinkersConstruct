@@ -52,6 +52,7 @@ import tconstruct.tools.gui.BattlesignGui;
 import tconstruct.tools.gui.CraftingStationGui;
 import tconstruct.tools.gui.FrypanGui;
 import tconstruct.tools.gui.FurnaceGui;
+import tconstruct.tools.gui.PartChestGui;
 import tconstruct.tools.gui.PartCrafterGui;
 import tconstruct.tools.gui.PatternChestGui;
 import tconstruct.tools.gui.StencilTableGui;
@@ -62,6 +63,7 @@ import tconstruct.tools.logic.CraftingStationLogic;
 import tconstruct.tools.logic.FrypanLogic;
 import tconstruct.tools.logic.FurnaceLogic;
 import tconstruct.tools.logic.PartBuilderLogic;
+import tconstruct.tools.logic.PartChestLogic;
 import tconstruct.tools.logic.PatternChestLogic;
 import tconstruct.tools.logic.StencilTableLogic;
 import tconstruct.tools.logic.ToolForgeLogic;
@@ -297,6 +299,7 @@ public class ToolProxyClient extends ToolProxyCommon {
         MantleClientRegistry.registerManualIcon("toolstation", new ItemStack(TinkerTools.toolStationWood, 1, 0));
         MantleClientRegistry.registerManualIcon("partcrafter", new ItemStack(TinkerTools.toolStationWood, 1, 1));
         MantleClientRegistry.registerManualIcon("patternchest", new ItemStack(TinkerTools.toolStationWood, 1, 5));
+        MantleClientRegistry.registerManualIcon("partchest", new ItemStack(TinkerTools.toolStationWood, 1, 6));
         MantleClientRegistry.registerManualIcon("stenciltable", new ItemStack(TinkerTools.toolStationWood, 1, 10));
 
         // TODO: Untwine this
@@ -395,6 +398,13 @@ public class ToolProxyClient extends ToolProxyCommon {
                 new ItemStack(TinkerTools.toolStationWood, 1, 5),
                 null,
                 pattern,
+                null,
+                chest);
+        MantleClientRegistry.registerManualSmallRecipe(
+                "partchest",
+                new ItemStack(TinkerTools.toolStationWood, 1, 6),
+                null,
+                stick,
                 null,
                 chest);
         MantleClientRegistry.registerManualSmallRecipe(
@@ -596,6 +606,7 @@ public class ToolProxyClient extends ToolProxyCommon {
         TProxyCommon.registerClientGuiHandler(toolStationID, this);
         TProxyCommon.registerClientGuiHandler(partBuilderID, this);
         TProxyCommon.registerClientGuiHandler(patternChestID, this);
+        TProxyCommon.registerClientGuiHandler(partChestID, this);
         TProxyCommon.registerClientGuiHandler(stencilTableID, this);
         TProxyCommon.registerClientGuiHandler(frypanGuiID, this);
         TProxyCommon.registerClientGuiHandler(toolForgeID, this);
@@ -623,6 +634,13 @@ public class ToolProxyClient extends ToolProxyCommon {
         if (ID == ToolProxyCommon.patternChestID) return new PatternChestGui(
                 player.inventory,
                 (PatternChestLogic) world.getTileEntity(x, y, z),
+                world,
+                x,
+                y,
+                z);
+        if (ID == ToolProxyCommon.partChestID) return new PartChestGui(
+                player.inventory,
+                (PartChestLogic) world.getTileEntity(x, y, z),
                 world,
                 x,
                 y,

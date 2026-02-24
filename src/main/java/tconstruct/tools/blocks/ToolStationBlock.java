@@ -26,6 +26,7 @@ import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.IPattern;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.logic.PartBuilderLogic;
+import tconstruct.tools.logic.PartChestLogic;
 import tconstruct.tools.logic.PatternChestLogic;
 import tconstruct.tools.logic.StencilTableLogic;
 import tconstruct.tools.logic.ToolStationLogic;
@@ -51,6 +52,7 @@ public class ToolStationBlock extends InventoryBlock {
                 "partbuilder_spruce_bottom", "partbuilder_birch_top", "partbuilder_birch_side",
                 "partbuilder_birch_bottom", "partbuilder_jungle_top", "partbuilder_jungle_side",
                 "partbuilder_jungle_bottom", "patternchest_top", "patternchest_side", "patternchest_bottom",
+                "partchest_top", "partchest_side", "partchest_bottom",
                 "stenciltable_oak_top", "stenciltable_oak_side", "stenciltable_oak_bottom", "stenciltable_spruce_top",
                 "stenciltable_spruce_side", "stenciltable_spruce_bottom", "stenciltable_birch_top",
                 "stenciltable_birch_side", "stenciltable_birch_bottom", "stenciltable_jungle_top",
@@ -61,11 +63,17 @@ public class ToolStationBlock extends InventoryBlock {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         if (meta <= 4) {
+        	// toolstation && partbuilder
             return icons[meta * 3 + getTextureIndex(side)];
-        } else if (meta <= 9) {
+        } else if (meta == 5) {
+        	// patternchest meta == 5
             return icons[15 + getTextureIndex(side)];
+        } else if (meta <= 9) {
+        	// partchest meta == 6
+            return icons[18 + getTextureIndex(side)];
         } else {
-            return icons[meta * 3 + getTextureIndex(side) - 12];
+        	// stenciltable
+            return icons[meta * 3 + getTextureIndex(side) - 9];
         }
     }
 
@@ -104,7 +112,7 @@ public class ToolStationBlock extends InventoryBlock {
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
         int metadata = world.getBlockMetadata(x, y, z);
-        if (metadata == 5) return AxisAlignedBB.getBoundingBox(
+        if (metadata == 5 || metadata == 6) return AxisAlignedBB.getBoundingBox(
                 (double) x + this.minX,
                 (double) y + this.minY,
                 (double) z + this.minZ,
@@ -125,7 +133,8 @@ public class ToolStationBlock extends InventoryBlock {
         return switch (metadata) {
             case 0 -> new ToolStationLogic();
             case 1, 3, 2, 4 -> new PartBuilderLogic();
-            case 5, 9, 8, 7, 6 -> new PatternChestLogic();
+            case 5, 9, 8, 7 -> new PatternChestLogic();
+            case 6 -> new PartChestLogic();
             case 10, 13, 12, 11 -> new StencilTableLogic();
             default -> null;
         };
