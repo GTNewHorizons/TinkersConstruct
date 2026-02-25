@@ -21,9 +21,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mantle.blocks.abstracts.InventoryBlock;
+import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.util.IPattern;
+import tconstruct.library.util.IToolPart;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.logic.PartBuilderLogic;
 import tconstruct.tools.logic.PartChestLogic;
@@ -133,8 +135,8 @@ public class ToolStationBlock extends InventoryBlock {
         return switch (metadata) {
             case 0 -> new ToolStationLogic();
             case 1, 3, 2, 4 -> new PartBuilderLogic();
-            case 5, 9, 8, 7 -> new PatternChestLogic();
-            case 6 -> new PartChestLogic();
+            case 5 -> new PatternChestLogic();
+            case 6, 9, 8, 7 -> new PartChestLogic();
             case 10, 13, 12, 11 -> new StencilTableLogic();
             default -> null;
         };
@@ -190,9 +192,27 @@ public class ToolStationBlock extends InventoryBlock {
         if (!world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
             int meta = world.getBlockMetadata(x, y, z);
             if (meta >= 5 && meta <= 9) {
-                ItemStack chest = new ItemStack(this, 1, 5);
+            	ItemStack chest = null;
+            	InventoryLogic logic = null;
+            	switch(meta) {
+            	case 5:{
+                    chest = new ItemStack(this, 1, 5);
+                    logic = (PatternChestLogic) world.getTileEntity(x, y, z);
+                    break;
+            	}
+            	case 6:{
+                    chest = new ItemStack(this, 1, 6);
+                    logic = (PartChestLogic) world.getTileEntity(x, y, z);
+                    break;
+            	}
+            	default:{
+                    chest = new ItemStack(this, 1, 5);
+                    logic = (PatternChestLogic) world.getTileEntity(x, y, z);
+                    break;
+            	}
+            	}
                 NBTTagCompound inventory = new NBTTagCompound();
-                PatternChestLogic logic = (PatternChestLogic) world.getTileEntity(x, y, z);
+                
                 logic.writeInventoryToNBT(inventory);
                 NBTTagCompound baseTag = new NBTTagCompound();
                 baseTag.setTag("Inventory", inventory);
@@ -240,6 +260,12 @@ public class ToolStationBlock extends InventoryBlock {
                 logic.yCoord = y;
                 logic.zCoord = z;
                 keptInventory = true;
+            }else if(inventory != null && te instanceof PartChestLogic logic) {
+                logic.readInventoryFromNBT(inventory);
+                logic.xCoord = x;
+                logic.yCoord = y;
+                logic.zCoord = z;
+                keptInventory = true;
             }
         }
         if (!keptInventory && PHConstruct.freePatterns) {
@@ -261,8 +287,18 @@ public class ToolStationBlock extends InventoryBlock {
         if (world.getTileEntity(x, y, z) instanceof PatternChestLogic logic && !player.isSneaking()) {
             // is the pattern chest and player is not holding shift key
             ItemStack itemInHand = player.getHeldItem();
-            if (itemInHand.getItem() instanceof IPattern) {
+            if (itemInHand != null && itemInHand.getItem() instanceof IPattern) {
                 // is the player holding a tinker pattern
+                if (logic.insertItemStackIntoInventory(itemInHand)) {
+                    // try insert into chest
+                    return true;
+                }
+            }
+        }else if(world.getTileEntity(x, y, z) instanceof PartChestLogic logic && !player.isSneaking()) {
+            // is the part chest and player is not holding shift key
+            ItemStack itemInHand = player.getHeldItem();
+            if (itemInHand != null && itemInHand.getItem() instanceof IToolPart) {
+                // is the player holding a tinker part
                 if (logic.insertItemStackIntoInventory(itemInHand)) {
                     // try insert into chest
                     return true;
