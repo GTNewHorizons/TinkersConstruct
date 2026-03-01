@@ -23,7 +23,7 @@ public class PartChestGui extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        fontRendererObj.drawString(StatCollector.translateToLocal("inventory.PartChest"), 60, 6, 0x404040);
+        fontRendererObj.drawString(StatCollector.translateToLocal("inventory.PartChest"), 8, 8, 0x404040);
         fontRendererObj
                 .drawString(StatCollector.translateToLocal("container.inventory"), 17, (ySize - 96) + 2, 0x404040);
     }
