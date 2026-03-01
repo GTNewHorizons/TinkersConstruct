@@ -21,23 +21,34 @@ import tconstruct.TConstruct;
 import tconstruct.library.client.StencilGuiElement;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.StencilBuilder;
-import tconstruct.tools.inventory.PatternShaperContainer;
+import tconstruct.tools.inventory.PatternShaperChestContainer;
 import tconstruct.tools.logic.StencilTableLogic;
 import tconstruct.util.network.PatternTablePacket;
 
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
 
+    private static final int CHEST_WIDTH = 122;
+    private static final int CHEST_HEIGHT = 114;
+
+    private static final int TEXTURE_WIDTH = 176;
+    private static final int TEXTURE_HEIGHT = 166;
+
+    private int chestLeft = 0;
+    private int chestTop = 0;
+
     int[] buttonsLeftRect = new int[] { Integer.MAX_VALUE, Integer.MIN_VALUE };
     int[] buttonsRightRect = new int[] { Integer.MIN_VALUE, Integer.MIN_VALUE };
     StencilTableLogic logic;
     int activeButton;
+    boolean drawChestPart;
 
     public StencilTableGui(InventoryPlayer inventoryplayer, StencilTableLogic shaper, World world, int x, int y,
             int z) {
-        super(new PatternShaperContainer(inventoryplayer, shaper));
+        super(shaper.getGuiContainer(inventoryplayer, world, x, y, z));
         logic = shaper;
         activeButton = 0;
+        drawChestPart = inventorySlots instanceof PatternShaperChestContainer;
     }
 
     @Override
@@ -47,28 +58,49 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+        if (drawChestPart) {
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("inventory.PatternChest"),
+                    TEXTURE_WIDTH + 5,
+                    17,
+                    0x404040);
+        }
+
         fontRendererObj.drawString(StatCollector.translateToLocal("crafters.PatternShaper"), 50, 6, 0x404040);
         fontRendererObj
                 .drawString(StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/patternshaper.png");
+    private static final ResourceLocation minichest = new ResourceLocation(
+            "tinker",
+            "textures/gui/patternchestminiright.png");
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(background);
-        int cornerX = (this.width - this.xSize) / 2;
-        int cornerY = (this.height - this.ySize) / 2;
-        this.drawTexturedModalRect(cornerX, cornerY, 0, 0, this.xSize, this.ySize);
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         if (!logic.isStackInSlot(0)) {
-            this.drawTexturedModalRect(cornerX + 47, cornerY + 34, 176, 0, 18, 18);
+            this.drawTexturedModalRect(this.guiLeft + 47, this.guiTop + 34, 176, 0, 18, 18);
+        }
+
+        // Draw chest
+        if (drawChestPart) {
+            this.mc.getTextureManager().bindTexture(minichest);
+            this.drawTexturedModalRect(chestLeft, chestTop, 0, 0, CHEST_WIDTH, CHEST_HEIGHT);
         }
     }
 
     @Override
     public void initGui() {
         super.initGui();
+
+        this.xSize = TEXTURE_WIDTH;
+        this.ySize = TEXTURE_HEIGHT;
+
+        this.guiLeft = (this.width - TEXTURE_WIDTH) / 2;
+        this.guiTop = (this.height - TEXTURE_HEIGHT) / 2;
 
         int bpr = 4; // buttons per row!
         int cornerX = this.guiLeft - 22 * bpr;
@@ -98,7 +130,7 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
 
         // secondary buttons, yay!
         // these are to use for other mods :I
-        cornerX = this.guiLeft + this.xSize + 4;
+        cornerX = this.guiLeft + TEXTURE_WIDTH + 4;
         for (int iter = 0; iter < TConstructClientRegistry.stencilButtons2.size(); iter++) {
             StencilGuiElement element = TConstructClientRegistry.stencilButtons2.get(iter);
             if (element.stencilIndex == -1) continue;
@@ -130,6 +162,16 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
         if (stack != null) {
             logic.setSelectedPattern(stack);
             updateServer(stack);
+        }
+
+        if (drawChestPart) {
+            this.chestLeft = this.guiLeft + TEXTURE_WIDTH;
+            this.chestTop = this.guiTop + 11;
+
+            this.xSize += CHEST_WIDTH;
+            // don't know why need add those buttons size
+            // other wise nei will cover the chest
+            this.xSize += 27 * bpr;
         }
     }
 

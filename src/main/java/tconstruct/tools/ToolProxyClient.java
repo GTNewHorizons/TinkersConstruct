@@ -52,6 +52,7 @@ import tconstruct.tools.gui.BattlesignGui;
 import tconstruct.tools.gui.CraftingStationGui;
 import tconstruct.tools.gui.FrypanGui;
 import tconstruct.tools.gui.FurnaceGui;
+import tconstruct.tools.gui.PartChestGui;
 import tconstruct.tools.gui.PartCrafterGui;
 import tconstruct.tools.gui.PatternChestGui;
 import tconstruct.tools.gui.StencilTableGui;
@@ -62,6 +63,7 @@ import tconstruct.tools.logic.CraftingStationLogic;
 import tconstruct.tools.logic.FrypanLogic;
 import tconstruct.tools.logic.FurnaceLogic;
 import tconstruct.tools.logic.PartBuilderLogic;
+import tconstruct.tools.logic.PartChestLogic;
 import tconstruct.tools.logic.PatternChestLogic;
 import tconstruct.tools.logic.StencilTableLogic;
 import tconstruct.tools.logic.ToolForgeLogic;
@@ -297,6 +299,7 @@ public class ToolProxyClient extends ToolProxyCommon {
         MantleClientRegistry.registerManualIcon("toolstation", new ItemStack(TinkerTools.toolStationWood, 1, 0));
         MantleClientRegistry.registerManualIcon("partcrafter", new ItemStack(TinkerTools.toolStationWood, 1, 1));
         MantleClientRegistry.registerManualIcon("patternchest", new ItemStack(TinkerTools.toolStationWood, 1, 5));
+        MantleClientRegistry.registerManualIcon("partchest", new ItemStack(TinkerTools.toolStationWood, 1, 6));
         MantleClientRegistry.registerManualIcon("stenciltable", new ItemStack(TinkerTools.toolStationWood, 1, 10));
 
         // TODO: Untwine this
@@ -395,6 +398,13 @@ public class ToolProxyClient extends ToolProxyCommon {
                 new ItemStack(TinkerTools.toolStationWood, 1, 5),
                 null,
                 pattern,
+                null,
+                chest);
+        MantleClientRegistry.registerManualSmallRecipe(
+                "partchest",
+                new ItemStack(TinkerTools.toolStationWood, 1, 6),
+                null,
+                stick,
                 null,
                 chest);
         MantleClientRegistry.registerManualSmallRecipe(
@@ -596,6 +606,7 @@ public class ToolProxyClient extends ToolProxyCommon {
         TProxyCommon.registerClientGuiHandler(toolStationID, this);
         TProxyCommon.registerClientGuiHandler(partBuilderID, this);
         TProxyCommon.registerClientGuiHandler(patternChestID, this);
+        TProxyCommon.registerClientGuiHandler(partChestID, this);
         TProxyCommon.registerClientGuiHandler(stencilTableID, this);
         TProxyCommon.registerClientGuiHandler(frypanGuiID, this);
         TProxyCommon.registerClientGuiHandler(toolForgeID, this);
@@ -627,6 +638,8 @@ public class ToolProxyClient extends ToolProxyCommon {
                 x,
                 y,
                 z);
+        if (ID == ToolProxyCommon.partChestID)
+            return new PartChestGui(player.inventory, (PartChestLogic) world.getTileEntity(x, y, z), world, x, y, z);
         if (ID == ToolProxyCommon.frypanGuiID)
             return new FrypanGui(player.inventory, (FrypanLogic) world.getTileEntity(x, y, z), world, x, y, z);
         if (ID == ToolProxyCommon.battlesignTextID)
@@ -683,13 +696,13 @@ public class ToolProxyClient extends ToolProxyCommon {
                 { 10, 2 }, // excavator head
                 { 6, 2 }, // lumberaxe head
                 { 9, 2 }, // large plate
-                {}, { 4, 2 }, // frying pan
+                { 4, 2 }, // frying pan
                 { 5, 2 }, // battlesign
                 { 7, 3 }, // chisel
-                {}, { 7, 2 }, // knifeblade
+                { 7, 2 }, // knifeblade
                 { 1, 2 }, // swordblade
                 { 6, 3 }, // cleaver blade
-                {}, { 4, 3 }, // crossbar
+                { 4, 3 }, // crossbar
                 { 3, 3 }, // small guard
                 { 2, 3 }, // wide guard
         };

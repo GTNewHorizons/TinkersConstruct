@@ -1,5 +1,6 @@
 package tconstruct.tools.gui;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,10 +19,15 @@ import codechicken.nei.api.TaggedInventoryArea;
 import cpw.mods.fml.common.Optional;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder;
+import tconstruct.library.tools.ArrowMaterial;
+import tconstruct.library.tools.BowMaterial;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.HarvestLevels;
+import tconstruct.library.weaponry.ArrowShaftMaterial;
+import tconstruct.tools.TinkerTools.MaterialID;
 import tconstruct.tools.inventory.PartCrafterChestContainer;
 import tconstruct.tools.logic.PartBuilderLogic;
+import tconstruct.util.McTextFormatter;
 
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
@@ -29,9 +35,12 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     PartBuilderLogic logic;
     String title, otherTitle = "";
     boolean drawChestPart;
-    boolean hasTop, hasBottom;
-    ItemStack topMaterial, bottomMaterial;
+    boolean hasTop;
+    ItemStack topMaterial;
     ToolMaterial topEnum, bottomEnum;
+    ArrowMaterial arrowTop;
+    BowMaterial bowTop;
+    ArrowShaftMaterial arrowShaftTop;
 
     private static final int CRAFT_WIDTH = 176;
     private static final int CRAFT_HEIGHT = 166;
@@ -53,13 +62,15 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     private int chestLeft = 0;
     private int chestTop = 0;
 
+    private static DecimalFormat df = new DecimalFormat("##.##");
+
     public PartCrafterGui(InventoryPlayer inventoryplayer, PartBuilderLogic partlogic, World world, int x, int y,
             int z) {
         super(partlogic.getGuiContainer(inventoryplayer, world, x, y, z));
         logic = partlogic;
         drawChestPart = inventorySlots instanceof PartCrafterChestContainer;
 
-        title = "\u00A7n" + (StatCollector.translateToLocal("gui.partcrafter1"));
+        title = McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter1"));
     }
 
     @Override
@@ -93,140 +104,174 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         if (drawChestPart) {
-            this.fontRendererObj.drawString(StatCollector.translateToLocal("inventory.PatternChest"), 14, 17, 4210752);
+            this.fontRendererObj.drawString(StatCollector.translateToLocal("inventory.PatternChest"), 8, 17, 0x404040);
         }
 
         this.fontRendererObj
-                .drawString(StatCollector.translateToLocal("crafters.PartBuilder"), craftingTextLeft + 6, 6, 4210752);
+                .drawString(StatCollector.translateToLocal("crafters.PartBuilder"), craftingTextLeft + 6, 6, 0x404040);
         this.fontRendererObj.drawString(
                 StatCollector.translateToLocal("container.inventory"),
                 craftingTextLeft + 8,
                 this.ySize - 96 + 2,
-                4210752);
+                0x404040);
 
         drawMaterialInformation();
     }
 
     void drawDefaultInformation() {
-        title = "\u00A7n" + StatCollector.translateToLocal("gui.partcrafter2");
-        this.drawCenteredString(fontRendererObj, title, descTextLeft + DESC_WIDTH / 2, 8, 16777215);
+        title = McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter2"));
+        this.drawCenteredString(fontRendererObj, title, descTextLeft + DESC_WIDTH / 2, 8, 0xFFFFFF);
         fontRendererObj.drawSplitString(
                 StatCollector.translateToLocal("gui.partcrafter3"),
                 descTextLeft + 8,
                 24,
                 115,
-                16777215);
+                0xFFFFFF);
     }
 
     void drawMaterialInformation() {
-        ItemStack top = logic.getStackInSlot(2);
-        // ItemStack topResult = logic.getStackInSlot(4);
-        ItemStack bottom = logic.getStackInSlot(3);
-        // ItemStack bottomResult = logic.getStackInSlot(6);
-        if (topMaterial != top) {
-            topMaterial = top;
-            int topID = PatternBuilder.instance.getPartID(top);
+        ItemStack met = logic.getStackInSlot(2) != null ? logic.getStackInSlot(2) : logic.getStackInSlot(3);
+
+        if (topMaterial != met) {
+            topMaterial = met;
+            int topID = PatternBuilder.instance.getPartID(met);
 
             if (topID != Short.MAX_VALUE) // && topResult != null)
             {
                 topEnum = TConstructRegistry.getMaterial(topID);
+                arrowTop = TConstructRegistry.getArrowMaterial(topID);
+                bowTop = TConstructRegistry.getBowMaterial(topID);
+                arrowShaftTop = topID <= MaterialID.Wood
+                        ? (ArrowShaftMaterial) TConstructRegistry.getCustomMaterial(topID, ArrowShaftMaterial.class)
+                        : null;
+
                 hasTop = true;
-                title = "\u00A7n" + topEnum.localizedName();
+                title = McTextFormatter.addUnderLine(topEnum.localizedName());
             } else hasTop = false;
         }
 
-        if (bottomMaterial != bottom) {
-            bottomMaterial = bottom;
-            int bottomID = PatternBuilder.instance.getPartID(bottom);
-
-            if (bottomID != Short.MAX_VALUE) // && bottomResult != null)
-            {
-                bottomEnum = TConstructRegistry.getMaterial(bottomID);
-                hasBottom = true;
-                otherTitle = "\u00A7n" + bottomEnum.localizedName();
-            } else hasBottom = false;
-        }
-
-        int offset = 8;
+        int offset = 6;
         if (hasTop) {
-            this.drawCenteredString(fontRendererObj, title, descTextLeft + DESC_WIDTH / 2, offset, 16777215);
+            this.drawCenteredString(
+                    fontRendererObj,
+                    title,
+                    descTextLeft + DESC_WIDTH / 2,
+                    offset,
+                    topEnum.primaryColor());
+            offset += 14;
+
+            GL11.glPushMatrix();
+            GL11.glScaled(0.95f, 0.95f, 1.0f);
+            int scaledDescTextLeft = (int) (descTextLeft / 0.95) + 7;
+
             this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter4") + topEnum.durability(),
-                    descTextLeft + 8,
-                    offset + 16,
-                    16777215);
+                    StatCollector.translateToLocal("gui.partcrafter.durability")
+                            + McTextFormatter.addGreen(String.valueOf(topEnum.durability())),
+                    scaledDescTextLeft,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
             this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter5") + topEnum.handleDurability() + "x",
-                    descTextLeft + 8,
-                    offset + 27,
-                    16777215);
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter6") + topEnum.toolSpeed() / 100f,
-                    descTextLeft + 8,
-                    offset + 38,
-                    16777215);
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter7")
+                    StatCollector.translateToLocal("gui.partcrafter.mininglevel")
                             + HarvestLevels.getHarvestLevelName(topEnum.harvestLevel()),
-                    descTextLeft + 8,
-                    offset + 49,
-                    16777215);
+                    scaledDescTextLeft,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
 
-            int attack = topEnum.attack();
-            String heart = attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
-                    : StatCollector.translateToLocal("gui.partcrafter9");
-            if (attack % 2 == 0) this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter10") + attack / 2 + heart,
-                    descTextLeft + 8,
-                    offset + 60,
-                    0xffffff);
-            else this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter10") + attack / 2f + heart,
-                    descTextLeft + 8,
-                    offset + 60,
-                    0xffffff);
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("gui.partcrafter.miningspeed")
+                            + McTextFormatter.addAqua(String.valueOf(topEnum.toolSpeed() / 100f)),
+                    scaledDescTextLeft,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("gui.partcrafter.attack")
+                            + McTextFormatter.addRed(String.valueOf(topEnum.attack())),
+                    scaledDescTextLeft,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("gui.partcrafter.handlemodifier")
+                            + McTextFormatter.addYellow(String.valueOf(topEnum.handleDurability())),
+                    scaledDescTextLeft,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("gui.partcrafter.drawspeed")
+                            + McTextFormatter.addGray(df.format(bowTop.drawspeed / 20f) + "s"),
+                    scaledDescTextLeft,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("gui.partcrafter.arrowspeed")
+                            + McTextFormatter.addGray(df.format(bowTop.flightSpeedMax)),
+                    scaledDescTextLeft,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
+            if (arrowShaftTop != null) {
+
+                this.fontRendererObj.drawString(
+                        McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter.arrow")),
+                        scaledDescTextLeft,
+                        offset,
+                        0xFFFFFF);
+                offset += 11;
+
+                this.fontRendererObj.drawString(
+                        StatCollector.translateToLocal("gui.partcrafter.weight")
+                                + McTextFormatter.addYellow(df.format(arrowShaftTop.weight)),
+                        scaledDescTextLeft + 4,
+                        offset,
+                        0xFFFFFF);
+                offset += 11;
+
+                this.fontRendererObj.drawString(
+                        StatCollector.translateToLocal("gui.partcrafter.breakchance")
+                                + McTextFormatter.addYellow(df.format(arrowShaftTop.fragility * 100f) + "%"),
+                        scaledDescTextLeft + 4,
+                        offset,
+                        0xFFFFFF);
+                offset += 11;
+            }
+
+            this.fontRendererObj.drawString(
+                    McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter.bolt")),
+                    scaledDescTextLeft,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("gui.partcrafter.weight")
+                            + McTextFormatter.addYellow(df.format(arrowTop.mass)),
+                    scaledDescTextLeft + 4,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("gui.partcrafter.breakchance")
+                            + McTextFormatter.addYellow(df.format(arrowTop.breakChance * 100f) + "%"),
+                    scaledDescTextLeft + 4,
+                    offset,
+                    0xFFFFFF);
+            offset += 11;
+
+            GL11.glPopMatrix();
         }
-
-        offset = 90;
-        if (hasBottom) {
-            this.drawCenteredString(fontRendererObj, otherTitle, descTextLeft + DESC_WIDTH / 2, offset, 16777215);
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter4") + bottomEnum.durability(),
-                    descTextLeft + 8,
-                    offset + 16,
-                    16777215);
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter5") + bottomEnum.handleDurability() + "x",
-                    descTextLeft + 8,
-                    offset + 27,
-                    16777215);
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter6") + bottomEnum.toolSpeed() / 100f,
-                    descTextLeft + 8,
-                    offset + 38,
-                    16777215);
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter7")
-                            + HarvestLevels.getHarvestLevelName(bottomEnum.harvestLevel()),
-                    descTextLeft + 8,
-                    offset + 49,
-                    16777215);
-            int attack = bottomEnum.attack();
-            String heart = attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
-                    : StatCollector.translateToLocal("gui.partcrafter9");
-            if (attack % 2 == 0) this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter10") + attack / 2 + heart,
-                    descTextLeft + 8,
-                    offset + 60,
-                    0xffffff);
-            else this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter10") + attack / 2f + heart,
-                    descTextLeft + 8,
-                    offset + 60,
-                    0xffffff);
-        }
-
-        if (!hasTop && !hasBottom) drawDefaultInformation();
+        if (!hasTop) drawDefaultInformation();
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/toolparts.png");

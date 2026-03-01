@@ -9,7 +9,7 @@ import mantle.blocks.abstracts.MultiItemBlock;
 public class CraftingSlabItemBlock extends MultiItemBlock {
 
     public static final String[] blockTypes = { "tile.CraftingStation", "Crafter", "Parts", "PatternShaper",
-            "PatternChest", "tile.ToolForge" };
+            "PatternChest", "tile.ToolForge", "PartChest" };
 
     public CraftingSlabItemBlock(Block b) {
         super(b, "ToolStation", blockTypes);
