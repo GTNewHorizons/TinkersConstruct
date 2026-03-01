@@ -115,8 +115,10 @@ public class PatternShaperChestContainer extends Container {
                         }
                     }
                 }
+                if (stack.stackSize == 0 && slotId != 1) {
+                    slot.putStack((ItemStack) null);
+                }
                 slot.onSlotChanged();
-
             }
         }
         return super.slotClick(slotId, clickedButton, mode, player);
