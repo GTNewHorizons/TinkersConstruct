@@ -696,13 +696,13 @@ public class ToolProxyClient extends ToolProxyCommon {
                 { 10, 2 }, // excavator head
                 { 6, 2 }, // lumberaxe head
                 { 9, 2 }, // large plate
-                {}, { 4, 2 }, // frying pan
+                { 4, 2 }, // frying pan
                 { 5, 2 }, // battlesign
                 { 7, 3 }, // chisel
-                {}, { 7, 2 }, // knifeblade
+                { 7, 2 }, // knifeblade
                 { 1, 2 }, // swordblade
                 { 6, 3 }, // cleaver blade
-                {}, { 4, 3 }, // crossbar
+                { 4, 3 }, // crossbar
                 { 3, 3 }, // small guard
                 { 2, 3 }, // wide guard
         };
