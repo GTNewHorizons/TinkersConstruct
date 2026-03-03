@@ -164,6 +164,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     void drawToolStats(ItemStack stack) {
+        if (stack == null) return;
+
         if (stack.getItem() instanceof IModifyable) ToolStationGuiHelper.drawToolStats(stack, descTextLeft + 10, 0);
 
         int matID = PatternBuilder.instance.getPartID(stack);
