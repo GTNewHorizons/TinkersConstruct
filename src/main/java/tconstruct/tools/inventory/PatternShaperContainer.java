@@ -15,6 +15,8 @@ public class PatternShaperContainer extends Container {
 
     public StencilTableLogic logic;
 
+    public static ItemStack BLANK_PATTERN = new ItemStack(TinkerTools.blankPattern, 1, 0);
+
     public PatternShaperContainer(InventoryPlayer inventoryplayer, StencilTableLogic shaper) {
         logic = shaper;
         this.addSlotToContainer(new Slot(shaper, 0, 48, 35));
@@ -58,13 +60,36 @@ public class PatternShaperContainer extends Container {
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         return null;
-        /*
-         * ItemStack stack = null; Slot slot = (Slot)this.inventorySlots.get(slotID); if (slot != null &&
-         * slot.getHasStack()) { ItemStack slotStack = slot.getStack(); stack = slotStack.copy(); if (slotID <
-         * logic.getSizeInventory()) { if (!this.mergeItemStack(slotStack, logic.getSizeInventory(),
-         * this.inventorySlots.size(), true)) { return null; } } else if (!this.mergeItemStack(slotStack, 0,
-         * logic.getSizeInventory()-1, false)) { return null; } if (slotStack.stackSize == 0) {
-         * slot.putStack((ItemStack)null); } else { slot.onSlotChanged(); } } return stack;
-         */
+    }
+
+    @Override
+    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer player) {
+        if (mode == 1 && clickedButton == 0) {
+            // is it shift left click?
+            Slot slot = (Slot) this.inventorySlots.get(slotId);
+            if (slot != null && slot.getHasStack()) {
+                ItemStack stack = slot.getStack();
+                if (slotId >= logic.getSizeInventory() && stack.isItemEqual(BLANK_PATTERN)) {
+                    // clicked in player inventory
+                    if (!this.mergeItemStack(stack, 0, 1, false)) {
+                        return null;
+                    }
+                } else if (slotId < logic.getSizeInventory()) {
+                    // pattern slot
+                    if (!this.mergeItemStack(stack, 2, this.inventorySlots.size(), false)) {
+                        return null;
+                    } else if (slotId == 1) {
+                        // special for shift click the output pattern
+                        this.inventorySlots.get(0).decrStackSize(1);
+                    }
+                }
+                if (stack.stackSize == 0) {
+                    slot.putStack((ItemStack) null);
+                } else {
+                    slot.onSlotChanged();
+                }
+            }
+        }
+        return super.slotClick(slotId, clickedButton, mode, player);
     }
 }
