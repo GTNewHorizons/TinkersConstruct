@@ -45,6 +45,9 @@ public abstract class AbstractTab extends GuiButton {
 
             mc.renderEngine.bindTexture(this.texture);
             this.drawTexturedModalRect(this.xPosition, yPos, xOffset * 28, yTexPos, 28, ySize);
+            if (this.enabled) {
+                this.drawUnselectedTabDecorations(mc, xOffset, yTexPos, yPos, ySize);
+            }
 
             RenderHelper.enableGUIStandardItemLighting();
             this.zLevel = 100.0F;
@@ -68,6 +71,9 @@ public abstract class AbstractTab extends GuiButton {
             RenderHelper.disableStandardItemLighting();
         }
     }
+
+    protected void drawUnselectedTabDecorations(Minecraft mc, int textureXOffset, int textureYStart, int tabTopY,
+            int tabHeight) {}
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
