@@ -21,6 +21,7 @@ import mantle.client.SmallFontRenderer;
 import mantle.client.gui.GuiManual;
 import mantle.client.gui.TurnPageButton;
 import mantle.client.pages.BookPage;
+import tconstruct.TConstruct;
 
 @SideOnly(Side.CLIENT)
 public class TiCGuiManual extends GuiManual {
@@ -122,7 +123,7 @@ public class TiCGuiManual extends GuiManual {
                     pageLeft.init(this, 0);
                     pageLeft.readPageFromXML(element);
                 } catch (Exception e) {
-                    System.out.println(e);
+                    TConstruct.logger.error(e);
                 }
             } else {
                 pageLeft = null;
@@ -139,7 +140,7 @@ public class TiCGuiManual extends GuiManual {
                     pageRight.init(this, 1);
                     pageRight.readPageFromXML(element);
                 } catch (Exception e) {
-                    System.out.println(e);
+                    TConstruct.logger.error(e);
                 }
             } else {
                 pageLeft = null;

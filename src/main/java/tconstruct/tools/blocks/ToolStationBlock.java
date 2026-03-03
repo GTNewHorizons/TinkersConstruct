@@ -206,8 +206,8 @@ public class ToolStationBlock extends InventoryBlock {
                         break;
                     }
                     default: {
-                        chest = new ItemStack(this, 1, 5);
-                        logic = (PatternChestLogic) world.getTileEntity(x, y, z);
+                        chest = new ItemStack(this, 1, 6);
+                        logic = (PartChestLogic) world.getTileEntity(x, y, z);
                         break;
                     }
                 }

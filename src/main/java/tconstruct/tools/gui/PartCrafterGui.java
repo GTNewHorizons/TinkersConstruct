@@ -204,21 +204,23 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
                     0xFFFFFF);
             offset += 11;
 
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.drawspeed")
-                            + McTextFormatter.addGray(df.format(bowTop.drawspeed / 20f) + "s"),
-                    scaledDescTextLeft,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
+            if (bowTop != null) {
+                this.fontRendererObj.drawString(
+                        StatCollector.translateToLocal("gui.partcrafter.drawspeed")
+                                + McTextFormatter.addGray(df.format(bowTop.drawspeed / 20f) + "s"),
+                        scaledDescTextLeft,
+                        offset,
+                        0xFFFFFF);
+                offset += 11;
 
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.arrowspeed")
-                            + McTextFormatter.addGray(df.format(bowTop.flightSpeedMax)),
-                    scaledDescTextLeft,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
+                this.fontRendererObj.drawString(
+                        StatCollector.translateToLocal("gui.partcrafter.arrowspeed")
+                                + McTextFormatter.addGray(df.format(bowTop.flightSpeedMax)),
+                        scaledDescTextLeft,
+                        offset,
+                        0xFFFFFF);
+                offset += 11;
+            }
 
             if (arrowShaftTop != null) {
 
@@ -246,28 +248,30 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
                 offset += 11;
             }
 
-            this.fontRendererObj.drawString(
-                    McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter.bolt")),
-                    scaledDescTextLeft,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
+            if (arrowTop != null) {
+                this.fontRendererObj.drawString(
+                        McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter.bolt")),
+                        scaledDescTextLeft,
+                        offset,
+                        0xFFFFFF);
+                offset += 11;
 
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.weight")
-                            + McTextFormatter.addYellow(df.format(arrowTop.mass)),
-                    scaledDescTextLeft + 4,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
+                this.fontRendererObj.drawString(
+                        StatCollector.translateToLocal("gui.partcrafter.weight")
+                                + McTextFormatter.addYellow(df.format(arrowTop.mass)),
+                        scaledDescTextLeft + 4,
+                        offset,
+                        0xFFFFFF);
+                offset += 11;
 
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.breakchance")
-                            + McTextFormatter.addYellow(df.format(arrowTop.breakChance * 100f) + "%"),
-                    scaledDescTextLeft + 4,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
+                this.fontRendererObj.drawString(
+                        StatCollector.translateToLocal("gui.partcrafter.breakchance")
+                                + McTextFormatter.addYellow(df.format(arrowTop.breakChance * 100f) + "%"),
+                        scaledDescTextLeft + 4,
+                        offset,
+                        0xFFFFFF);
+                offset += 11;
+            }
 
             GL11.glPopMatrix();
         }
