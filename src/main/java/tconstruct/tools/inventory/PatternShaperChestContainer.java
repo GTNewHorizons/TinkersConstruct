@@ -46,7 +46,7 @@ public class PatternShaperChestContainer extends Container {
         /* Holder inventory */
         for (int column = 0; column < 5; column++) {
             for (int row = 0; row < 6; row++) {
-                this.addSlotToContainer(new SlotPattern(pLogic, row + column * 6, 180 + row * 18, 30 + column * 18));
+                this.addSlotToContainer(new SlotPattern(pLogic, row + column * 6, 178 + row * 18, 30 + column * 18));
             }
         }
     }

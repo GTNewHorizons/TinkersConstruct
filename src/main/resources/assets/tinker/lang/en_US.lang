@@ -17,6 +17,7 @@ inventory.PartChest=Part Chest
 crafters.Smeltery=Smeltery
 crafters.Frypan=Frying Pan
 inventory.knapsack=Knapsack
+toolstation.partholder=Part Chest
 
 nei.options.keys.gui.tinkers_belt=Toggle Travellers Belt
 

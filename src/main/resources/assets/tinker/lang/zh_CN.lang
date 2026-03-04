@@ -16,6 +16,7 @@ inventory.PartChest=部件箱
 crafters.Smeltery=冶炼炉
 crafters.Frypan=煎锅
 inventory.knapsack=背包
+toolstation.partholder=部件箱
 
 nei.options.keys.gui.tinkers_belt=切换旅行者腰带
 

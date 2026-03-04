@@ -79,16 +79,16 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        // Draw chest
-        if (drawChestPart) {
-            this.mc.getTextureManager().bindTexture(minichest);
-            this.drawTexturedModalRect(chestLeft, chestTop, 0, 0, CHEST_WIDTH, CHEST_HEIGHT);
-        }
-
         this.mc.getTextureManager().bindTexture(background);
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         if (!logic.isStackInSlot(0)) {
             this.drawTexturedModalRect(this.guiLeft + 47, this.guiTop + 34, 176, 0, 18, 18);
+        }
+
+        // Draw chest
+        if (drawChestPart) {
+            this.mc.getTextureManager().bindTexture(minichest);
+            this.drawTexturedModalRect(chestLeft, chestTop, 0, 0, CHEST_WIDTH, CHEST_HEIGHT);
         }
     }
 
@@ -166,7 +166,7 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
 
         if (drawChestPart) {
             // make gui closer to main gui
-            this.chestLeft = this.guiLeft + TEXTURE_WIDTH - 1;
+            this.chestLeft = this.guiLeft + TEXTURE_WIDTH - 3;
             this.chestTop = this.guiTop + 11;
 
             this.xSize += CHEST_WIDTH;
