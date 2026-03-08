@@ -439,11 +439,12 @@ public class CraftingStationContainer extends Container {
     public void dumpCraftingGrid() {
         if (logic.slotCount == 0) return;
 
-        for (int i = 1; i < 10; i++) {
-            ItemStack stack = craftMatrix.getStackInSlot(i - 1);
+        // 46 is the first slot index of the attached inventory
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = craftMatrix.getStackInSlot(i);
             if (stack != null && stack.stackSize > 0) {
                 if (mergeItemStack(stack, 46, 46 + logic.slotCount, false)) {
-                    craftMatrix.setInventorySlotContents(i - 1, stack.stackSize > 0 ? stack : null);
+                    craftMatrix.setInventorySlotContents(i, stack.stackSize > 0 ? stack : null);
                 }
             }
         }
