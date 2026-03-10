@@ -13,11 +13,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mantle.books.BookData;
 import mantle.books.BookDataStore;
-import mantle.client.gui.GuiManual;
 import mantle.items.abstracts.CraftingItem;
 import tconstruct.TConstruct;
 import tconstruct.achievements.TAchievements;
 import tconstruct.library.TConstructRegistry;
+import tconstruct.tools.gui.TiCGuiManual;
+import tconstruct.util.McTextFormatter;
 
 public class Manual extends CraftingItem {
 
@@ -45,7 +46,7 @@ public class Manual extends CraftingItem {
         BookData data = BookDataStore.getBookfromName(TConstruct.modID, getBookName(stack.getItemDamage()));
         if (Objects.nonNull(data)) {
             player.openGui(TConstruct.instance, mantle.client.MProxyClient.manualGuiID, world, 0, 0, 0);
-            FMLClientHandler.instance().displayGuiScreen(player, new GuiManual(stack, data));
+            FMLClientHandler.instance().displayGuiScreen(player, new TiCGuiManual(stack, data));
         }
     }
 
@@ -64,19 +65,19 @@ public class Manual extends CraftingItem {
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
         switch (stack.getItemDamage()) {
             case 0:
-                list.add("\u00a7o" + StatCollector.translateToLocal("manual1.tooltip"));
+                list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual1.tooltip")));
                 break;
             case 1:
-                list.add("\u00a7o" + StatCollector.translateToLocal("manual2.tooltip"));
+                list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual2.tooltip")));
                 break;
             case 2:
-                list.add("\u00a7o" + StatCollector.translateToLocal("manual3.tooltip"));
+                list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual3.tooltip")));
                 break;
             case 4:
-                list.add("\u00a7o" + StatCollector.translateToLocal("manual4.tooltip"));
+                list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual4.tooltip")));
                 break;
             default:
-                list.add("\u00a7o" + StatCollector.translateToLocal("manual5.tooltip"));
+                list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual5.tooltip")));
                 break;
         }
     }

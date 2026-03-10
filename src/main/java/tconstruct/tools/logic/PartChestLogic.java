@@ -6,12 +6,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import mantle.blocks.abstracts.InventoryLogic;
-import tconstruct.library.util.IPattern;
-import tconstruct.tools.inventory.PatternChestContainer;
+import tconstruct.library.util.IToolPart;
+import tconstruct.tools.inventory.PartChestContainer;
 
-public class PatternChestLogic extends InventoryLogic {
+public class PartChestLogic extends InventoryLogic {
 
-    public PatternChestLogic() {
+    public PartChestLogic() {
         super(30);
     }
 
@@ -22,12 +22,12 @@ public class PatternChestLogic extends InventoryLogic {
 
     @Override
     public String getDefaultName() {
-        return "toolstation.patternholder";
+        return "toolstation.partholder";
     }
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new PatternChestContainer(inventoryplayer, this);
+        return new PartChestContainer(inventoryplayer, this);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class PatternChestLogic extends InventoryLogic {
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-        return itemstack != null && itemstack.getItem() instanceof IPattern;
+        return itemstack != null && itemstack.getItem() instanceof IToolPart;
     }
 
     @Override
