@@ -50,6 +50,7 @@ import tconstruct.smeltery.SmelteryDamageSource;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.inventory.SmelteryContainer;
 import tconstruct.util.config.PHConstruct;
+import toast.specialMobs.entity.creeper.EntityEnderCreeper;
 
 /*
  * Simple class for storing items in the block
@@ -342,7 +343,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
                 if (o instanceof EntityVillager villager && PHConstruct.meltableVillagers) {
                     fluid = TinkerSmeltery.moltenEmeraldFluid;
                     amount = villager.isChild() ? 5 : 40;
-                } else if (o instanceof EntityEnderman) {
+                } else if (o instanceof EntityEnderman || o instanceof EntityEnderCreeper) {
                     fluid = TinkerSmeltery.moltenEnderFluid;
                     amount = 125;
                 } else if (o instanceof EntityIronGolem) {
