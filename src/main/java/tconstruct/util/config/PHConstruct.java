@@ -71,6 +71,12 @@ public class PHConstruct {
         miningLevelIncrease = config.get("Difficulty Changes", "Modifiers increase Mining Level", true)
                 .getBoolean(true);
         denyMattock = config.get("Difficulty Changes", "Deny creation of non-metal mattocks", false).getBoolean(false);
+        HarvestToolAOERelativeStrength = config.get(
+                "general",
+                "AOE Harvest Max Relative Strength",
+                10,
+                "The maximum relative strength of the blocks in the aoe of the tool compared to the broken block to still mine them")
+                .getDouble(10);
         craftEndstone = config.get("Difficulty Changes", "Allow creation of endstone", true).getBoolean(true);
         redstoneFaucet = config.get("Difficulty Changes", "Allow Faucets to be activated by Redstone", true)
                 .getBoolean(true);
@@ -439,6 +445,7 @@ public class PHConstruct {
     public static boolean consumeXPBerryStacks;
 
     public static boolean disableAllRecipes;
+    public static double HarvestToolAOERelativeStrength;
 
     // Mobs
     public static int naturalSlimeSpawn;
