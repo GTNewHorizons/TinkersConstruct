@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiButtonDump extends GuiButton {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("tinker", "textures/gui/dump_button.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation("tinker", "textures/gui/dumpbutton.png");
 
     public GuiButtonDump(int id, int x, int y) {
         super(id, x, y, 10, 10, "");
@@ -21,11 +21,18 @@ public class GuiButtonDump extends GuiButton {
                     && mouseX < this.xPosition + this.width
                     && mouseY < this.yPosition + this.height;
 
-            float brightness = this.enabled ? (this.field_146123_n ? 1.0F : 0.8F) : 0.5F;
-            GL11.glColor4f(brightness, brightness, brightness, 1.0F);
-
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             mc.getTextureManager().bindTexture(TEXTURE);
             func_146110_a(this.xPosition, this.yPosition, 0, 0, this.width, this.height, this.width, this.height);
+
+            if (this.field_146123_n) {
+                drawRect(
+                        this.xPosition,
+                        this.yPosition,
+                        this.xPosition + this.width,
+                        this.yPosition + this.height,
+                        0x80FFFFFF);
+            }
         }
     }
 }
