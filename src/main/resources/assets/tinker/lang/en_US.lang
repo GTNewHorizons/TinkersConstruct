@@ -927,17 +927,17 @@ gui.toolstation21=Ammo:
 gui.toolstation22=Break Chance: 
 gui.toolstation23=Max. Attack: 
 
-gui.partcrafter.durability=Durability: 
-gui.partcrafter.mininglevel=Mining Level: 
-gui.partcrafter.miningspeed=Mining Speed: 
-gui.partcrafter.attack=Attack: 
-gui.partcrafter.handlemodifier=Handle Modifier: 
-gui.partcrafter.drawspeed=Draw Speed: 
-gui.partcrafter.arrowspeed=Arrow Speed: 
+gui.partcrafter.durability=Durability: %s
+gui.partcrafter.mininglevel=Mining Level: %s
+gui.partcrafter.miningspeed=Mining Speed: %s
+gui.partcrafter.attack=Attack: %s
+gui.partcrafter.handlemodifier=Handle Modifier: %s
+gui.partcrafter.drawspeed=Draw Speed: %s s
+gui.partcrafter.arrowspeed=Arrow Speed: %s
 gui.partcrafter.arrow=Arrow
 gui.partcrafter.bolt=Bolt
-gui.partcrafter.weight=Weight: 
-gui.partcrafter.breakchance=Break Chance: 
+gui.partcrafter.weight=Weight: %s
+gui.partcrafter.breakchance=Break Chance: %s %%
 
 gui.mining1=§7Stone§r
 gui.mining2=§fIron§r

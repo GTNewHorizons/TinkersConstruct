@@ -881,17 +881,17 @@ gui.toolstation21=弹药:
 gui.toolstation22=损坏几率: 
 gui.toolstation23=最大攻击: 
 
-gui.partcrafter.durability=耐久: 
-gui.partcrafter.mininglevel=采掘等级: 
-gui.partcrafter.miningspeed=采掘速度: 
-gui.partcrafter.attack=攻击力: 
-gui.partcrafter.handlemodifier=手柄系数: 
-gui.partcrafter.drawspeed=拉弓速度: 
-gui.partcrafter.arrowspeed=箭矢速度: 
+gui.partcrafter.durability=耐久: %s
+gui.partcrafter.mininglevel=采掘等级: %s
+gui.partcrafter.miningspeed=采掘速度: %s
+gui.partcrafter.attack=攻击力: %s
+gui.partcrafter.handlemodifier=手柄系数: %s
+gui.partcrafter.drawspeed=拉弓速度: %s
+gui.partcrafter.arrowspeed=箭矢速度: %ss
 gui.partcrafter.arrow=箭矢
 gui.partcrafter.bolt=弩箭
-gui.partcrafter.weight=重量: 
-gui.partcrafter.breakchance=损坏几率: 
+gui.partcrafter.weight=重量: %s
+gui.partcrafter.breakchance=损坏几率: %s%%
 
 gui.mining1=§7石头§r
 gui.mining2=§f铁§r

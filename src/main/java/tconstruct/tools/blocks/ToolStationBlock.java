@@ -24,13 +24,12 @@ import mantle.blocks.abstracts.InventoryBlock;
 import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
-import tconstruct.library.util.IPattern;
-import tconstruct.library.util.IToolPart;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.logic.PartBuilderLogic;
 import tconstruct.tools.logic.PartChestLogic;
 import tconstruct.tools.logic.PatternChestLogic;
 import tconstruct.tools.logic.StencilTableLogic;
+import tconstruct.tools.logic.TiCChestLogic;
 import tconstruct.tools.logic.ToolStationLogic;
 import tconstruct.tools.model.TableRender;
 import tconstruct.util.config.PHConstruct;
@@ -200,11 +199,6 @@ public class ToolStationBlock extends InventoryBlock {
                         logic = (PatternChestLogic) world.getTileEntity(x, y, z);
                         break;
                     }
-                    case 6: {
-                        chest = new ItemStack(this, 1, 6);
-                        logic = (PartChestLogic) world.getTileEntity(x, y, z);
-                        break;
-                    }
                     default: {
                         chest = new ItemStack(this, 1, 6);
                         logic = (PartChestLogic) world.getTileEntity(x, y, z);
@@ -254,13 +248,7 @@ public class ToolStationBlock extends InventoryBlock {
         if (stack.hasTagCompound()) {
             NBTTagCompound inventory = stack.getTagCompound().getCompoundTag("Inventory");
             TileEntity te = world.getTileEntity(x, y, z);
-            if (inventory != null && te instanceof PatternChestLogic logic) {
-                logic.readInventoryFromNBT(inventory);
-                logic.xCoord = x;
-                logic.yCoord = y;
-                logic.zCoord = z;
-                keptInventory = true;
-            } else if (inventory != null && te instanceof PartChestLogic logic) {
+            if (inventory != null && te instanceof TiCChestLogic logic) {
                 logic.readInventoryFromNBT(inventory);
                 logic.xCoord = x;
                 logic.yCoord = y;
@@ -284,21 +272,11 @@ public class ToolStationBlock extends InventoryBlock {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,
             float clickY, float clickZ) {
-        if (world.getTileEntity(x, y, z) instanceof PatternChestLogic logic && !player.isSneaking()) {
-            // is the pattern chest and player is not holding shift key
+        if (world.getTileEntity(x, y, z) instanceof TiCChestLogic logic && !player.isSneaking()) {
+            // is the pattern/part chest and player is not holding shift key
             ItemStack itemInHand = player.getHeldItem();
-            if (itemInHand != null && itemInHand.getItem() instanceof IPattern) {
-                // is the player holding a tinker pattern
-                if (logic.insertItemStackIntoInventory(itemInHand)) {
-                    // try insert into chest
-                    return true;
-                }
-            }
-        } else if (world.getTileEntity(x, y, z) instanceof PartChestLogic logic && !player.isSneaking()) {
-            // is the part chest and player is not holding shift key
-            ItemStack itemInHand = player.getHeldItem();
-            if (itemInHand != null && itemInHand.getItem() instanceof IToolPart) {
-                // is the player holding a tinker part
+            if (itemInHand != null && logic.isItemValidForSlot(0, itemInHand)) {
+                // is the player holding a tinker pattern/part
                 if (logic.insertItemStackIntoInventory(itemInHand)) {
                     // try insert into chest
                     return true;

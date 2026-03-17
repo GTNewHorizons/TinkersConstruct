@@ -1,6 +1,7 @@
 package tconstruct.tools.gui;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,12 +36,12 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     PartBuilderLogic logic;
     String title, otherTitle = "";
     boolean drawChestPart;
-    boolean hasTop;
-    ItemStack topMaterial;
-    ToolMaterial topEnum, bottomEnum;
-    ArrowMaterial arrowTop;
-    BowMaterial bowTop;
-    ArrowShaftMaterial arrowShaftTop;
+    boolean hasMaterial;
+    ItemStack materialStack;
+    ToolMaterial materialEnum;
+    ArrowMaterial arrowMaterial;
+    BowMaterial bowMaterial;
+    ArrowShaftMaterial arrowShaftMaterial;
 
     private static final int CRAFT_WIDTH = 176;
     private static final int CRAFT_HEIGHT = 166;
@@ -132,150 +133,106 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     void drawMaterialInformation() {
         ItemStack met = logic.getStackInSlot(2) != null ? logic.getStackInSlot(2) : logic.getStackInSlot(3);
 
-        if (topMaterial != met) {
-            topMaterial = met;
+        if (materialStack != met) {
+            materialStack = met;
             int topID = PatternBuilder.instance.getPartID(met);
 
             if (topID != Short.MAX_VALUE) // && topResult != null)
             {
-                topEnum = TConstructRegistry.getMaterial(topID);
-                arrowTop = TConstructRegistry.getArrowMaterial(topID);
-                bowTop = TConstructRegistry.getBowMaterial(topID);
-                arrowShaftTop = topID <= MaterialID.Wood
+                materialEnum = TConstructRegistry.getMaterial(topID);
+                arrowMaterial = TConstructRegistry.getArrowMaterial(topID);
+                bowMaterial = TConstructRegistry.getBowMaterial(topID);
+                arrowShaftMaterial = topID <= MaterialID.Wood
                         ? (ArrowShaftMaterial) TConstructRegistry.getCustomMaterial(topID, ArrowShaftMaterial.class)
                         : null;
 
-                hasTop = true;
-                title = McTextFormatter.addUnderLine(topEnum.localizedName());
-            } else hasTop = false;
+                hasMaterial = true;
+                title = McTextFormatter.addUnderLine(materialEnum.localizedName());
+            } else hasMaterial = false;
         }
 
         int offset = 6;
-        if (hasTop) {
+        if (hasMaterial) {
             this.drawCenteredString(
                     fontRendererObj,
                     title,
                     descTextLeft + DESC_WIDTH / 2,
                     offset,
-                    topEnum.primaryColor());
+                    materialEnum.primaryColor());
             offset += 14;
 
             GL11.glPushMatrix();
             GL11.glScaled(0.95f, 0.95f, 1.0f);
             int scaledDescTextLeft = (int) (descTextLeft / 0.95) + 7;
 
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.durability")
-                            + McTextFormatter.addGreen(String.valueOf(topEnum.durability())),
-                    scaledDescTextLeft,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
+            List<String> strWait2Draw = new ArrayList<>();
 
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.mininglevel")
-                            + HarvestLevels.getHarvestLevelName(topEnum.harvestLevel()),
-                    scaledDescTextLeft,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
+            strWait2Draw.add(
+                    StatCollector.translateToLocalFormatted(
+                            "gui.partcrafter.durability",
+                            McTextFormatter.addGreen(String.valueOf(materialEnum.durability()))));
+            strWait2Draw.add(
+                    StatCollector.translateToLocalFormatted(
+                            "gui.partcrafter.mininglevel",
+                            HarvestLevels.getHarvestLevelName(materialEnum.harvestLevel())));
+            strWait2Draw.add(
+                    StatCollector.translateToLocalFormatted(
+                            "gui.partcrafter.miningspeed",
+                            McTextFormatter.addAqua(String.valueOf(materialEnum.toolSpeed() / 100f))));
+            strWait2Draw.add(
+                    StatCollector.translateToLocalFormatted(
+                            "gui.partcrafter.attack",
+                            McTextFormatter.addRed(String.valueOf(materialEnum.attack()))));
+            strWait2Draw.add(
+                    StatCollector.translateToLocalFormatted(
+                            "gui.partcrafter.handlemodifier",
+                            McTextFormatter.addYellow(String.valueOf(materialEnum.handleDurability()))));
 
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.miningspeed")
-                            + McTextFormatter.addAqua(String.valueOf(topEnum.toolSpeed() / 100f)),
-                    scaledDescTextLeft,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
-
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.attack")
-                            + McTextFormatter.addRed(String.valueOf(topEnum.attack())),
-                    scaledDescTextLeft,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
-
-            this.fontRendererObj.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter.handlemodifier")
-                            + McTextFormatter.addYellow(String.valueOf(topEnum.handleDurability())),
-                    scaledDescTextLeft,
-                    offset,
-                    0xFFFFFF);
-            offset += 11;
-
-            if (bowTop != null) {
-                this.fontRendererObj.drawString(
-                        StatCollector.translateToLocal("gui.partcrafter.drawspeed")
-                                + McTextFormatter.addGray(df.format(bowTop.drawspeed / 20f) + "s"),
-                        scaledDescTextLeft,
-                        offset,
-                        0xFFFFFF);
-                offset += 11;
-
-                this.fontRendererObj.drawString(
-                        StatCollector.translateToLocal("gui.partcrafter.arrowspeed")
-                                + McTextFormatter.addGray(df.format(bowTop.flightSpeedMax)),
-                        scaledDescTextLeft,
-                        offset,
-                        0xFFFFFF);
-                offset += 11;
+            if (bowMaterial != null) {
+                strWait2Draw.add(
+                        StatCollector.translateToLocalFormatted(
+                                "gui.partcrafter.drawspeed",
+                                McTextFormatter.addGray(df.format(bowMaterial.drawspeed / 20f))));
+                strWait2Draw.add(
+                        StatCollector.translateToLocalFormatted(
+                                "gui.partcrafter.arrowspeed",
+                                McTextFormatter.addGray(df.format(bowMaterial.flightSpeedMax))));
             }
 
-            if (arrowShaftTop != null) {
-
-                this.fontRendererObj.drawString(
-                        McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter.arrow")),
-                        scaledDescTextLeft,
-                        offset,
-                        0xFFFFFF);
-                offset += 11;
-
-                this.fontRendererObj.drawString(
-                        StatCollector.translateToLocal("gui.partcrafter.weight")
-                                + McTextFormatter.addYellow(df.format(arrowShaftTop.weight)),
-                        scaledDescTextLeft + 4,
-                        offset,
-                        0xFFFFFF);
-                offset += 11;
-
-                this.fontRendererObj.drawString(
-                        StatCollector.translateToLocal("gui.partcrafter.breakchance")
-                                + McTextFormatter.addYellow(df.format(arrowShaftTop.fragility * 100f) + "%"),
-                        scaledDescTextLeft + 4,
-                        offset,
-                        0xFFFFFF);
-                offset += 11;
+            if (arrowShaftMaterial != null) {
+                strWait2Draw.add(
+                        McTextFormatter.addUnderLine(StatCollector.translateToLocalFormatted("gui.partcrafter.arrow")));
+                strWait2Draw.add(
+                        " " + StatCollector.translateToLocalFormatted(
+                                "gui.partcrafter.weight",
+                                McTextFormatter.addYellow(df.format(arrowShaftMaterial.weight))));
+                strWait2Draw.add(
+                        " " + StatCollector.translateToLocalFormatted(
+                                "gui.partcrafter.breakchance",
+                                McTextFormatter.addYellow(df.format(arrowShaftMaterial.fragility * 100f))));
             }
 
-            if (arrowTop != null) {
-                this.fontRendererObj.drawString(
-                        McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter.bolt")),
-                        scaledDescTextLeft,
-                        offset,
-                        0xFFFFFF);
-                offset += 11;
+            if (arrowMaterial != null) {
+                strWait2Draw.add(
+                        McTextFormatter.addUnderLine(StatCollector.translateToLocalFormatted("gui.partcrafter.bolt")));
+                strWait2Draw.add(
+                        " " + StatCollector.translateToLocalFormatted(
+                                "gui.partcrafter.weight",
+                                McTextFormatter.addYellow(df.format(arrowMaterial.mass))));
+                strWait2Draw.add(
+                        " " + StatCollector.translateToLocalFormatted(
+                                "gui.partcrafter.breakchance",
+                                McTextFormatter.addYellow(df.format(arrowMaterial.breakChance * 100f))));
+            }
 
-                this.fontRendererObj.drawString(
-                        StatCollector.translateToLocal("gui.partcrafter.weight")
-                                + McTextFormatter.addYellow(df.format(arrowTop.mass)),
-                        scaledDescTextLeft + 4,
-                        offset,
-                        0xFFFFFF);
-                offset += 11;
-
-                this.fontRendererObj.drawString(
-                        StatCollector.translateToLocal("gui.partcrafter.breakchance")
-                                + McTextFormatter.addYellow(df.format(arrowTop.breakChance * 100f) + "%"),
-                        scaledDescTextLeft + 4,
-                        offset,
-                        0xFFFFFF);
+            for (String tempStr : strWait2Draw) {
+                this.fontRendererObj.drawString(tempStr, scaledDescTextLeft, offset, 0xFFFFFF);
                 offset += 11;
             }
 
             GL11.glPopMatrix();
         }
-        if (!hasTop) drawDefaultInformation();
+        if (!hasMaterial) drawDefaultInformation();
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/toolparts.png");

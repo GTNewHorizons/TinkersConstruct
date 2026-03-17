@@ -2,22 +2,15 @@ package tconstruct.tools.logic;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.library.util.IPattern;
 import tconstruct.tools.inventory.PatternChestContainer;
 
-public class PatternChestLogic extends InventoryLogic {
+public class PatternChestLogic extends TiCChestLogic {
 
     public PatternChestLogic() {
-        super(30);
-    }
-
-    @Override
-    public boolean canUpdate() {
-        return false;
+        super(IPattern.class);
     }
 
     @Override
@@ -30,36 +23,4 @@ public class PatternChestLogic extends InventoryLogic {
         return new PatternChestContainer(inventoryplayer, this);
     }
 
-    @Override
-    public String getInventoryName() {
-        return getDefaultName();
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
-        return true;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-        return itemstack != null && itemstack.getItem() instanceof IPattern;
-    }
-
-    @Override
-    public void openInventory() {}
-
-    @Override
-    public void closeInventory() {}
-
-    public boolean insertItemStackIntoInventory(ItemStack stack) {
-        for (int i = 0; i < this.inventory.length; i++) {
-            if (this.inventory[i] == null) {
-                this.inventory[i] = stack.copy();
-                stack.stackSize = 0;
-                this.markDirty();
-                return true;
-            }
-        }
-        return false;
-    }
 }
