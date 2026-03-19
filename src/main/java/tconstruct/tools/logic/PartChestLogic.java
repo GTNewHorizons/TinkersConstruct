@@ -5,24 +5,24 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import tconstruct.library.util.IPattern;
-import tconstruct.tools.inventory.PatternChestContainer;
+import tconstruct.library.util.IToolPart;
+import tconstruct.tools.inventory.PartChestContainer;
 
-public class PatternChestLogic extends TiCChestLogic {
+public class PartChestLogic extends TiCChestLogic {
 
     @Override
     public String getDefaultName() {
-        return "toolstation.patternholder";
+        return "toolstation.partholder";
     }
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new PatternChestContainer(inventoryplayer, this);
+        return new PartChestContainer(inventoryplayer, this);
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-        return itemstack != null && itemstack.getItem() instanceof IPattern;
+        return itemstack != null && itemstack.getItem() instanceof IToolPart;
     }
 
 }
