@@ -9,11 +9,8 @@ import mantle.blocks.abstracts.InventoryLogic;
 
 public abstract class TiCChestLogic extends InventoryLogic {
 
-    private final Class<?> partTarget;
-
-    public TiCChestLogic(Class<?> partTarget) {
+    public TiCChestLogic() {
         super(30);
-        this.partTarget = partTarget;
     }
 
     @Override
@@ -50,9 +47,7 @@ public abstract class TiCChestLogic extends InventoryLogic {
     }
 
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-        return itemstack != null && partTarget.isInstance(itemstack.getItem());
-    }
+    public abstract boolean isItemValidForSlot(int slot, ItemStack itemstack);
 
     @Override
     public abstract String getDefaultName();

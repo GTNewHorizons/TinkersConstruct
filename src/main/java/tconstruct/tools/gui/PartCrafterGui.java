@@ -49,6 +49,7 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     private static final int DESC_HEIGHT = 166;
     private static final int CHEST_WIDTH = 122;
     private static final int CHEST_HEIGHT = 114;
+    private static final String SPACE_STRING = " ";
 
     // Panel positions
 
@@ -203,11 +204,11 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
                 strWait2Draw.add(
                         McTextFormatter.addUnderLine(StatCollector.translateToLocalFormatted("gui.partcrafter.arrow")));
                 strWait2Draw.add(
-                        " " + StatCollector.translateToLocalFormatted(
+                        SPACE_STRING + StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.weight",
                                 McTextFormatter.addYellow(df.format(arrowShaftMaterial.weight))));
                 strWait2Draw.add(
-                        " " + StatCollector.translateToLocalFormatted(
+                        SPACE_STRING + StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.breakchance",
                                 McTextFormatter.addYellow(df.format(arrowShaftMaterial.fragility * 100f))));
             }
@@ -216,11 +217,11 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
                 strWait2Draw.add(
                         McTextFormatter.addUnderLine(StatCollector.translateToLocalFormatted("gui.partcrafter.bolt")));
                 strWait2Draw.add(
-                        " " + StatCollector.translateToLocalFormatted(
+                        SPACE_STRING + StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.weight",
                                 McTextFormatter.addYellow(df.format(arrowMaterial.mass))));
                 strWait2Draw.add(
-                        " " + StatCollector.translateToLocalFormatted(
+                        SPACE_STRING + StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.breakchance",
                                 McTextFormatter.addYellow(df.format(arrowMaterial.breakChance * 100f))));
             }
