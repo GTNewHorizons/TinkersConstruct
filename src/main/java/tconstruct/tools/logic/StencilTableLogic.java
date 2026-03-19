@@ -4,11 +4,13 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.library.crafting.StencilBuilder;
+import tconstruct.tools.inventory.PatternShaperChestContainer;
 import tconstruct.tools.inventory.PatternShaperContainer;
 
 public class StencilTableLogic extends InventoryLogic implements ISidedInventory {
@@ -31,6 +33,15 @@ public class StencilTableLogic extends InventoryLogic implements ISidedInventory
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        for (int xPos = x - 1; xPos <= x + 1; xPos++) {
+            for (int zPos = z - 1; zPos <= z + 1; zPos++) {
+                for (int yPos = y - 1; yPos <= y + 1; yPos++) {
+                    TileEntity tile = world.getTileEntity(xPos, yPos, zPos);
+                    if (tile instanceof PatternChestLogic && (x == xPos || z == zPos))
+                        return new PatternShaperChestContainer(inventoryplayer, this, (PatternChestLogic) tile);
+                }
+            }
+        }
         return new PatternShaperContainer(inventoryplayer, this);
     }
 
@@ -41,7 +52,25 @@ public class StencilTableLogic extends InventoryLogic implements ISidedInventory
 
     public void setSelectedPattern(ItemStack stack) {
         selectedStack = stack;
-        this.setInventorySlotContents(1, stack);
+        if (stack == null) this.setInventorySlotContents(1, null);
+        else {
+            ItemStack stackBlank = this.getStackInSlot(0);
+            if (stackBlank != null && stackBlank.stackSize > 0 && StencilBuilder.isBlank(stackBlank)) {
+                boolean warning = true;
+                for (ItemStack tempStack : StencilBuilder.instance.stencils.values()) {
+                    if (tempStack != null && stack.isItemEqual(tempStack)) {
+                        stack = tempStack.copy();
+                        warning = false;
+                        break;
+                    }
+                }
+                if (!warning) this.setInventorySlotContents(1, stack);
+            }
+        }
+    }
+
+    public void setSelectedPattern() {
+        setSelectedPattern(selectedStack);
     }
 
     @Override
