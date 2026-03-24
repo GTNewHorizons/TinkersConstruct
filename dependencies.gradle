@@ -20,6 +20,7 @@ dependencies {
     compileOnlyApi("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
     compileOnlyApi("com.github.GTNewHorizons:Natura:2.8.16:dev")
     compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.11-GTNH:dev')
+    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.2')
     runtimeOnly('com.github.GTNewHorizons:TiC-Tooltips:1.4.1:dev'){transitive = false}
     runtimeOnly("com.github.GTNewHorizons:ServerUtilities:2.2.18:dev")
 
