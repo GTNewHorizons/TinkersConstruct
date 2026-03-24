@@ -45,6 +45,7 @@ import mantle.blocks.iface.IMasterLogic;
 import mantle.blocks.iface.IServantLogic;
 import mantle.world.CoordTuple;
 import tconstruct.TConstruct;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.crafting.Smeltery;
 import tconstruct.smeltery.SmelteryDamageSource;
 import tconstruct.smeltery.TinkerSmeltery;
@@ -343,7 +344,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
                 if (o instanceof EntityVillager villager && PHConstruct.meltableVillagers) {
                     fluid = TinkerSmeltery.moltenEmeraldFluid;
                     amount = villager.isChild() ? 5 : 40;
-                } else if (o instanceof EntityEnderman || o instanceof EntityEnderCreeper) {
+                } else if (o instanceof EntityEnderman || (LoadedMods.specialMobs && o instanceof EntityEnderCreeper)) {
                     fluid = TinkerSmeltery.moltenEnderFluid;
                     amount = 125;
                 } else if (o instanceof EntityIronGolem) {
