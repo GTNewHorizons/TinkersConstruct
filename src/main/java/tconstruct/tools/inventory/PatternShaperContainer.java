@@ -8,6 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import tconstruct.armor.inventory.SlotOnlyTake;
+import tconstruct.library.util.IPattern;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.logic.StencilTableLogic;
 
@@ -78,16 +79,22 @@ public class PatternShaperContainer extends Container {
                     // pattern slot
                     if (!this.mergeItemStack(stack, 2, this.inventorySlots.size(), false)) {
                         return null;
-                    } else if (slotId == 1) {
+                    }
+                    if (stack.getItem() instanceof IPattern && slotId == 1) {
                         // special for shift click the output pattern
                         this.inventorySlots.get(0).decrStackSize(1);
+                        // if there still have blank pattern
+                        if (this.inventorySlots.get(0).getStack().stackSize != 0) {
+                            ItemStack stackCopy = stack.copy();
+                            stackCopy.stackSize = 1;
+                            this.inventorySlots.get(1).putStack(stack.copy());
+                        }
                     }
                 }
-                if (stack.stackSize == 0) {
+                if (stack.stackSize == 0 && slotId != 1) {
                     slot.putStack((ItemStack) null);
-                } else {
-                    slot.onSlotChanged();
                 }
+                slot.onSlotChanged();
             }
         }
         return super.slotClick(slotId, clickedButton, mode, player);
