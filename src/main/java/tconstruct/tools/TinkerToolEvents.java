@@ -528,7 +528,7 @@ public class TinkerToolEvents implements IMobExtraInfoProvider {
         if (evt.Name.equals("crystalQuartz")) {
             TinkerTools.modAttack.addStackToMatchList(evt.Ore, 2);
         } else if (evt.Name.equals("crystalCertusQuartz")) {
-            TinkerTools.modAttack.addStackToMatchList(evt.Ore, 24);
+            TinkerTools.modAttack.addStackToMatchList(evt.Ore, 4);
         }
     }
 
