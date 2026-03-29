@@ -26,6 +26,7 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
@@ -222,24 +223,24 @@ public class TPlayerHandler {
     }
 
     public void playerDeath(LivingDeathEvent event) {
-        if (!(event.entity instanceof EntityPlayer)) return;
+        if (!(event.entity instanceof EntityPlayer player)) return;
 
-        if (!event.entity.worldObj.isRemote) {
-            TPlayerStats properties = (TPlayerStats) event.entity.getExtendedProperties(TPlayerStats.PROP_NAME);
-            properties.hunger = ((EntityPlayer) event.entity).getFoodStats().getFoodLevel();
-            playerStats.put(event.entity.getPersistentID(), properties);
+        if (!player.worldObj.isRemote) {
+            TPlayerStats properties = TPlayerStats.get(player);
+
+            properties.level = player.experienceLevel / 2;
+            int hunger = player.getFoodStats().getFoodLevel();
+            if (hunger < 6) properties.hunger = 6;
+            else properties.hunger = player.getFoodStats().getFoodLevel();
+
+            playerStats.put(player.getPersistentID(), properties);
         }
     }
 
     public void playerDrops(PlayerDropsEvent evt) {
         // After playerDeath event. Modifying saved data.
         TPlayerStats stats = playerStats.get(evt.entityPlayer.getPersistentID());
-
-        stats.level = evt.entityPlayer.experienceLevel / 2;
-        // stats.health = 20;
-        int hunger = evt.entityPlayer.getFoodStats().getFoodLevel();
-        if (hunger < 6) stats.hunger = 6;
-        else stats.hunger = evt.entityPlayer.getFoodStats().getFoodLevel();
+        if (stats == null) stats = TPlayerStats.get(evt.entityPlayer);
 
         if (evt.entityPlayer.capturedDrops != evt.drops) {
             evt.entityPlayer.capturedDrops.clear();
@@ -345,7 +346,8 @@ public class TPlayerHandler {
             TPlayerHandler.this.livingFall(evt);
         }
 
-        @SubscribeEvent
+        // EventPriority.LOW to maintain the order of calling logic from playerDrops
+        @SubscribeEvent(priority = EventPriority.LOW)
         public void playerDeathWrapper(LivingDeathEvent event) {
             TPlayerHandler.this.playerDeath(event);
         }
