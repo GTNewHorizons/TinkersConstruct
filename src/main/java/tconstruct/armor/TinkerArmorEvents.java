@@ -90,7 +90,8 @@ public class TinkerArmorEvents {
             if (ArmorProxyClient.armorExtended != null) glove = ArmorProxyClient.armorExtended.getStackInSlot(1);
             else glove = null;
         }
-        if (glove == null || !glove.hasTagCompound()) return;
+        // original speed <= 0 means the block shouldn't be broken, don't increase further
+        if (glove == null || !glove.hasTagCompound() || event.originalSpeed <= 0) return;
 
         // ok, we got a glove. bonus mining speeeeed
         NBTTagCompound tags = glove.getTagCompound().getCompoundTag(TinkerArmor.travelGlove.getBaseTagName());
