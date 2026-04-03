@@ -35,7 +35,8 @@ public class GlassPaneConnected extends GlassBlockConnected {
                 return icons[15];
             }
 
-            return getSideTextureIndex(blockAccess.getBlockMetadata(x, y, z));
+            int meta = blockAccess.getBlockMetadata(x, y, z);
+            return side == 0 ? getBottomIcon(meta) : getTopIcon(meta);
         }
 
         return super.getConnectedBlockTexture(blockAccess, x, y, z, side, icons);
@@ -117,7 +118,11 @@ public class GlassPaneConnected extends GlassBlockConnected {
         this.setBlockBounds(f, 0.0F, f2, f1, 1.0F, f3);
     }
 
-    public IIcon getSideTextureIndex(int meta) {
+    public IIcon getTopIcon(int meta) {
+        return sideIcon;
+    }
+
+    public IIcon getBottomIcon(int meta) {
         return sideIcon;
     }
 
