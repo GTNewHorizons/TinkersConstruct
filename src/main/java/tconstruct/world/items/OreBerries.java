@@ -55,7 +55,7 @@ public class OreBerries extends CraftingItem {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (stack.getItemDamage() == 5) {
-            if (!PHConstruct.consumeXPBerryStacks || !player.isSneaking()) {
+            if (!PHConstruct.consumeXPBerryStacks || !player.isSneaking() || stack.stackSize == 1) {
                 EntityXPOrb entity = new EntityXPOrb(
                         world,
                         player.posX,
@@ -63,15 +63,13 @@ public class OreBerries extends CraftingItem {
                         player.posZ,
                         itemRand.nextInt(14) + 6);
                 spawnEntity(player.posX, player.posY + 1, player.posZ, entity, world, player);
-                if (!player.capabilities.isCreativeMode) {
-                    stack.stackSize--;
-                    if (PHConstruct.disgustingXPBerries) {
-                        if (applyBerryEffects(player, false)) player.worldObj.playSoundAtEntity(
-                                player,
-                                "game.player.hurt",
-                                0.5F,
-                                player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
-                    }
+                if (!player.capabilities.isCreativeMode) stack.stackSize--;
+                if (PHConstruct.disgustingXPBerries) {
+                    if (applyBerryEffects(player, false) && !world.isRemote) player.worldObj.playSoundAtEntity(
+                            player,
+                            "game.player.hurt",
+                            0.5F,
+                            player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
                 }
             } else if (PHConstruct.consumeXPBerryStacks) {
                 int xpToAdd = 0;
@@ -82,7 +80,7 @@ public class OreBerries extends CraftingItem {
                         wasPlayerDamaged = applyBerryEffects(player, true);
                     }
                 }
-                if (PHConstruct.disgustingXPBerries && wasPlayerDamaged) player.worldObj.playSoundAtEntity(
+                if (PHConstruct.disgustingXPBerries && wasPlayerDamaged && !world.isRemote) player.worldObj.playSoundAtEntity(
                         player,
                         "game.player.hurt",
                         0.5F,
@@ -100,17 +98,17 @@ public class OreBerries extends CraftingItem {
         }
     }
 
-    boolean soundPlayedFlag = false;
 
     /**
      * parameters ID | DURATION | initialAmplifier | maxDuration | maxAmplifier | stackExclusive
      * 
-     * @param player     the player that's eatingthe berries
+     * @param player     the player that's eating the berries
      * @param isShifting is the player shifting?
      * @return Was one of the effects DAMAGE (used properly play the damage sound in account to the player shifting)
      */
     private static boolean applyBerryEffects(EntityPlayer player, boolean isShifting) {
         boolean output = false;
+        if (player.capabilities.isCreativeMode) return false;
         for (String effect : PHConstruct.disgustingXPBerryEffects) {
             try {
                 String[] parameters = effect.replaceAll(" ", "").split(",");
