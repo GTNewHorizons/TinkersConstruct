@@ -108,7 +108,7 @@ public class OreBerries extends CraftingItem {
      */
     private static boolean applyBerryEffects(EntityPlayer player, boolean isShifting) {
         boolean output = false;
-        if (player.capabilities.isCreativeMode) return false;
+        if (player.capabilities.isCreativeMode || player.worldObj.isRemote) return false;
         for (String effect : PHConstruct.disgustingXPBerryEffects) {
             try {
                 String[] parameters = effect.replaceAll(" ", "").split(",");
