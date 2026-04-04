@@ -80,11 +80,12 @@ public class OreBerries extends CraftingItem {
                         wasPlayerDamaged = applyBerryEffects(player, true);
                     }
                 }
-                if (PHConstruct.disgustingXPBerries && wasPlayerDamaged && !world.isRemote) player.worldObj.playSoundAtEntity(
-                        player,
-                        "game.player.hurt",
-                        0.5F,
-                        player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
+                if (PHConstruct.disgustingXPBerries && wasPlayerDamaged && !world.isRemote)
+                    player.worldObj.playSoundAtEntity(
+                            player,
+                            "game.player.hurt",
+                            0.5F,
+                            player.worldObj.rand.nextFloat() * 0.1F + 0.9F);
                 player.addExperience(xpToAdd);
                 if (!player.capabilities.isCreativeMode) stack.stackSize = 0;
             }
@@ -97,7 +98,6 @@ public class OreBerries extends CraftingItem {
             world.spawnEntityInWorld(entity);
         }
     }
-
 
     /**
      * parameters ID | DURATION | initialAmplifier | maxDuration | maxAmplifier | stackExclusive
