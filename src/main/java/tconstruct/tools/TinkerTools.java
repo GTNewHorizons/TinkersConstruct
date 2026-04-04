@@ -109,6 +109,7 @@ import tconstruct.tools.logic.CraftingStationLogic;
 import tconstruct.tools.logic.FrypanLogic;
 import tconstruct.tools.logic.FurnaceLogic;
 import tconstruct.tools.logic.PartBuilderLogic;
+import tconstruct.tools.logic.PartChestLogic;
 import tconstruct.tools.logic.PatternChestLogic;
 import tconstruct.tools.logic.StencilTableLogic;
 import tconstruct.tools.logic.ToolForgeLogic;
@@ -251,6 +252,7 @@ public class TinkerTools {
         GameRegistry.registerTileEntity(ToolStationLogic.class, "ToolStation");
         GameRegistry.registerTileEntity(PartBuilderLogic.class, "PartCrafter");
         GameRegistry.registerTileEntity(PatternChestLogic.class, "PatternHolder");
+        GameRegistry.registerTileEntity(PartChestLogic.class, "PartHolder");
         GameRegistry.registerTileEntity(StencilTableLogic.class, "PatternShaper");
         GameRegistry.registerBlock(TinkerTools.toolForge, MetadataItemBlock.class, "ToolForgeBlock");
         GameRegistry.registerTileEntity(ToolForgeLogic.class, "ToolForge");

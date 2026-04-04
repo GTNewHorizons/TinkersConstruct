@@ -23,27 +23,13 @@ import tconstruct.library.tools.DynamicToolPart;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.library.util.IToolPart;
+import tconstruct.library.util.LocalizedColors;
 import tconstruct.tools.items.ToolPart;
 import tconstruct.util.config.PHConstruct;
 
 public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
 
     private static final int DefaultTextColor = 0x404040;
-    private static final String ColorKey = "tconstruct.nei.color.";
-
-    private static int getLocalizedColor(String colorName, int fallbackColor) {
-        String colorKey = ColorKey + colorName;
-        String colorValue = StatCollector.translateToLocal(colorKey);
-        if (colorKey.equals(colorValue)) {
-            return fallbackColor;
-        }
-
-        try {
-            return Integer.decode(colorValue.trim());
-        } catch (NumberFormatException ignored) {
-            return fallbackColor;
-        }
-    }
 
     public class CachedToolMaterialsRecipe extends CachedBaseRecipe {
 
@@ -120,39 +106,39 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                     EnumChatFormatting.BOLD + crecipe.material.localizedName(),
                     35,
                     10,
-                    getLocalizedColor("materialName", DefaultTextColor),
+                    LocalizedColors.MATERIAL_NAME,
                     false);
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.partcrafter4") + crecipe.material.durability,
                     35,
                     20,
-                    getLocalizedColor("materialDurability", DefaultTextColor),
+                    LocalizedColors.MATERIAL_DURABILITY,
                     false);
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.partcrafter5") + crecipe.material.handleModifier + "x",
                     35,
                     30,
-                    getLocalizedColor("materialHandleModifier1", DefaultTextColor),
+                    LocalizedColors.MATERIAL_HANDLE_MODIFIER1,
                     false);
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.partcrafter11")
                             + Math.round(crecipe.material.durability * crecipe.material.handleModifier),
                     35,
                     40,
-                    getLocalizedColor("materialHandleModifier2", DefaultTextColor),
+                    LocalizedColors.MATERIAL_HANDLE_MODIFIER2,
                     false);
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.partcrafter6") + crecipe.material.miningspeed / 100F,
                     35,
                     50,
-                    getLocalizedColor("materialMiningSpeed", DefaultTextColor),
+                    LocalizedColors.MATERIAL_MINING_SPEED,
                     false);
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.partcrafter7")
                             + HarvestLevels.getHarvestLevelName(crecipe.material.harvestLevel),
                     35,
                     60,
-                    getLocalizedColor("materialHarvestLevel", DefaultTextColor),
+                    LocalizedColors.MATERIAL_HARVEST_LEVEL,
                     false);
             String heart = crecipe.material.attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                     : StatCollector.translateToLocal("gui.partcrafter9");
@@ -161,14 +147,14 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                         StatCollector.translateToLocal("gui.partcrafter10") + crecipe.material.attack / 2 + heart,
                         35,
                         70,
-                        getLocalizedColor("materialAttack1", DefaultTextColor),
+                        LocalizedColors.MATERIAL_ATTACK1,
                         false);
             } else {
                 GuiDraw.drawString(
                         StatCollector.translateToLocal("gui.partcrafter10") + crecipe.material.attack / 2F + heart,
                         35,
                         70,
-                        getLocalizedColor("materialAttack2", DefaultTextColor),
+                        LocalizedColors.MATERIAL_ATTACK2,
                         false);
             }
             int abilityY = 85;
@@ -177,7 +163,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                         getReinforcedString(crecipe.material.reinforced),
                         35,
                         85,
-                        getLocalizedColor("materialReinforced", DefaultTextColor),
+                        LocalizedColors.MATERIAL_REINFORCED,
                         false);
                 abilityY += 10;
             }
@@ -188,15 +174,10 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                             ability + " (" + Math.abs(crecipe.material.stonebound) + ")",
                             35,
                             abilityY,
-                            getLocalizedColor("materialStonebound", DefaultTextColor),
+                            LocalizedColors.MATERIAL_STONEBOUND,
                             false);
                 } else {
-                    GuiDraw.drawString(
-                            ability,
-                            35,
-                            abilityY,
-                            getLocalizedColor("materialAbility", DefaultTextColor),
-                            false);
+                    GuiDraw.drawString(ability, 35, abilityY, LocalizedColors.MATERIAL_ABILITY, false);
                 }
             }
         }
@@ -207,20 +188,20 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                     EnumChatFormatting.BOLD + StatCollector.translateToLocal("tconstruct.nei.projectilematerials"),
                     35,
                     10,
-                    getLocalizedColor("materialBow", DefaultTextColor),
+                    LocalizedColors.MATERIAL_BOW,
                     false);
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.toolstation6") + crecipe.bowMaterial.drawspeed,
                     x,
                     y,
-                    getLocalizedColor("materialBowDrawSpeed", DefaultTextColor),
+                    LocalizedColors.MATERIAL_BOW_DRAW_SPEED,
                     false);
             y += 10;
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.toolstation7") + crecipe.bowMaterial.flightSpeedMax,
                     x,
                     y,
-                    getLocalizedColor("materialBowFlightSpeedMax", DefaultTextColor),
+                    LocalizedColors.MATERIAL_BOW_FLIGHT_SPEED_MAX,
                     false);
         }
         if (crecipe.arrowMaterial != null) {
@@ -230,14 +211,14 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                     StatCollector.translateToLocal("gui.toolstation8") + crecipe.arrowMaterial.mass,
                     x,
                     y,
-                    getLocalizedColor("materialArrowMass", DefaultTextColor),
+                    LocalizedColors.MATERIAL_ARROW_MASS,
                     false);
             y += 10;
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.toolstation22") + crecipe.arrowMaterial.breakChance,
                     x,
                     y,
-                    getLocalizedColor("materialArrowBreakChance", DefaultTextColor),
+                    LocalizedColors.MATERIAL_ARROW_BREAK_CHANCE,
                     false);
         }
     }

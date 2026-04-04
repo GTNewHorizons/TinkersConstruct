@@ -5,20 +5,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.library.util.IPattern;
 import tconstruct.tools.inventory.PatternChestContainer;
 
-public class PatternChestLogic extends InventoryLogic {
-
-    public PatternChestLogic() {
-        super(30);
-    }
-
-    @Override
-    public boolean canUpdate() {
-        return false;
-    }
+public class PatternChestLogic extends TiCChestLogic {
 
     @Override
     public String getDefaultName() {
@@ -31,23 +21,8 @@ public class PatternChestLogic extends InventoryLogic {
     }
 
     @Override
-    public String getInventoryName() {
-        return getDefaultName();
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
-        return true;
-    }
-
-    @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
         return itemstack != null && itemstack.getItem() instanceof IPattern;
     }
 
-    @Override
-    public void openInventory() {}
-
-    @Override
-    public void closeInventory() {}
 }

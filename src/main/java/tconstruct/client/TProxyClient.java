@@ -23,6 +23,7 @@ import tconstruct.TConstruct;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.common.TProxyCommon;
+import tconstruct.library.util.LocalizedColors;
 import tconstruct.tools.items.ManualInfo;
 
 public class TProxyClient extends TProxyCommon {
@@ -38,6 +39,7 @@ public class TProxyClient extends TProxyCommon {
     public void initialize() {
         registerRenderer();
         readManuals();
+        LocalizedColors.reload();
     }
 
     /* Registers any rendering code. */

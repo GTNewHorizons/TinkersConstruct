@@ -21,12 +21,15 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mantle.blocks.abstracts.InventoryBlock;
+import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.logic.PartBuilderLogic;
+import tconstruct.tools.logic.PartChestLogic;
 import tconstruct.tools.logic.PatternChestLogic;
 import tconstruct.tools.logic.StencilTableLogic;
+import tconstruct.tools.logic.TiCChestLogic;
 import tconstruct.tools.logic.ToolStationLogic;
 import tconstruct.tools.model.TableRender;
 import tconstruct.util.config.PHConstruct;
@@ -50,21 +53,28 @@ public class ToolStationBlock extends InventoryBlock {
                 "partbuilder_spruce_bottom", "partbuilder_birch_top", "partbuilder_birch_side",
                 "partbuilder_birch_bottom", "partbuilder_jungle_top", "partbuilder_jungle_side",
                 "partbuilder_jungle_bottom", "patternchest_top", "patternchest_side", "patternchest_bottom",
-                "stenciltable_oak_top", "stenciltable_oak_side", "stenciltable_oak_bottom", "stenciltable_spruce_top",
-                "stenciltable_spruce_side", "stenciltable_spruce_bottom", "stenciltable_birch_top",
-                "stenciltable_birch_side", "stenciltable_birch_bottom", "stenciltable_jungle_top",
-                "stenciltable_jungle_side", "stenciltable_jungle_bottom" };
+                "partchest_top", "partchest_side", "partchest_bottom", "stenciltable_oak_top", "stenciltable_oak_side",
+                "stenciltable_oak_bottom", "stenciltable_spruce_top", "stenciltable_spruce_side",
+                "stenciltable_spruce_bottom", "stenciltable_birch_top", "stenciltable_birch_side",
+                "stenciltable_birch_bottom", "stenciltable_jungle_top", "stenciltable_jungle_side",
+                "stenciltable_jungle_bottom" };
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         if (meta <= 4) {
+            // toolstation && partbuilder
             return icons[meta * 3 + getTextureIndex(side)];
-        } else if (meta <= 9) {
+        } else if (meta == 5) {
+            // patternchest meta == 5
             return icons[15 + getTextureIndex(side)];
+        } else if (meta <= 9) {
+            // partchest meta == 6
+            return icons[18 + getTextureIndex(side)];
         } else {
-            return icons[meta * 3 + getTextureIndex(side) - 12];
+            // stenciltable
+            return icons[meta * 3 + getTextureIndex(side) - 9];
         }
     }
 
@@ -103,7 +113,7 @@ public class ToolStationBlock extends InventoryBlock {
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
         int metadata = world.getBlockMetadata(x, y, z);
-        if (metadata == 5) return AxisAlignedBB.getBoundingBox(
+        if (metadata == 5 || metadata == 6) return AxisAlignedBB.getBoundingBox(
                 (double) x + this.minX,
                 (double) y + this.minY,
                 (double) z + this.minZ,
@@ -124,7 +134,8 @@ public class ToolStationBlock extends InventoryBlock {
         return switch (metadata) {
             case 0 -> new ToolStationLogic();
             case 1, 3, 2, 4 -> new PartBuilderLogic();
-            case 5, 9, 8, 7, 6 -> new PatternChestLogic();
+            case 5 -> new PatternChestLogic();
+            case 6, 9, 8, 7 -> new PartChestLogic();
             case 10, 13, 12, 11 -> new StencilTableLogic();
             default -> null;
         };
@@ -135,6 +146,7 @@ public class ToolStationBlock extends InventoryBlock {
         int md = world.getBlockMetadata(x, y, z);
         if (md == 0) return 0;
         else if (md < 5) return 1;
+        else if (md == 6) return 6;
         else if (md < 10) return 2;
         else return 3;
 
@@ -148,7 +160,7 @@ public class ToolStationBlock extends InventoryBlock {
 
     @Override
     public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
-        for (int iter = 0; iter < 6; iter++) {
+        for (int iter = 0; iter < 7; iter++) {
             list.add(new ItemStack(id, 1, iter));
         }
 
@@ -179,9 +191,22 @@ public class ToolStationBlock extends InventoryBlock {
         if (!world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
             int meta = world.getBlockMetadata(x, y, z);
             if (meta >= 5 && meta <= 9) {
-                ItemStack chest = new ItemStack(this, 1, 5);
+                ItemStack chest = null;
+                InventoryLogic logic = null;
+                switch (meta) {
+                    case 5: {
+                        chest = new ItemStack(this, 1, 5);
+                        logic = (PatternChestLogic) world.getTileEntity(x, y, z);
+                        break;
+                    }
+                    default: {
+                        chest = new ItemStack(this, 1, 6);
+                        logic = (PartChestLogic) world.getTileEntity(x, y, z);
+                        break;
+                    }
+                }
                 NBTTagCompound inventory = new NBTTagCompound();
-                PatternChestLogic logic = (PatternChestLogic) world.getTileEntity(x, y, z);
+
                 logic.writeInventoryToNBT(inventory);
                 NBTTagCompound baseTag = new NBTTagCompound();
                 baseTag.setTag("Inventory", inventory);
@@ -223,7 +248,7 @@ public class ToolStationBlock extends InventoryBlock {
         if (stack.hasTagCompound()) {
             NBTTagCompound inventory = stack.getTagCompound().getCompoundTag("Inventory");
             TileEntity te = world.getTileEntity(x, y, z);
-            if (inventory != null && te instanceof PatternChestLogic logic) {
+            if (inventory != null && te instanceof TiCChestLogic logic) {
                 logic.readInventoryFromNBT(inventory);
                 logic.xCoord = x;
                 logic.yCoord = y;
@@ -242,5 +267,22 @@ public class ToolStationBlock extends InventoryBlock {
             }
         }
         super.onBlockPlacedBy(world, x, y, z, living, stack);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,
+            float clickY, float clickZ) {
+        if (world.getTileEntity(x, y, z) instanceof TiCChestLogic logic && !player.isSneaking()) {
+            // is the pattern/part chest and player is not holding shift key
+            ItemStack itemInHand = player.getHeldItem();
+            if (itemInHand != null && logic.isItemValidForSlot(0, itemInHand)) {
+                // is the player holding a tinker pattern/part
+                if (logic.insertItemStackIntoInventory(itemInHand)) {
+                    // try insert into chest
+                    return true;
+                }
+            }
+        }
+        return super.onBlockActivated(world, x, y, z, player, side, clickX, clickY, clickZ);
     }
 }

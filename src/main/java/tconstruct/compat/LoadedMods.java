@@ -8,5 +8,6 @@ public class LoadedMods {
     public static final boolean baubles = Loader.isModLoaded("Baubles");
     public static final boolean baublesExpanded = Loader.isModLoaded("Baubles|Expanded");
     public static final boolean tiCTooltips = Loader.isModLoaded("TiCTooltips");
+    public static final boolean specialMobs = Loader.isModLoaded("SpecialMobs");
 
 }
