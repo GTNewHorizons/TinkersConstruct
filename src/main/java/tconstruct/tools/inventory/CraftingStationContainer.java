@@ -434,4 +434,21 @@ public class CraftingStationContainer extends Container {
 
         return didSomething;
     }
+
+    // Dump crafting grid to connected chests
+    public void dumpCraftingGrid() {
+        if (logic.slotCount == 0) return;
+
+        // 46 is the first slot index of the attached inventory
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = craftMatrix.getStackInSlot(i);
+            if (stack != null && stack.stackSize > 0) {
+                if (mergeItemStack(stack, 46, 46 + logic.slotCount, false)) {
+                    craftMatrix.setInventorySlotContents(i, stack.stackSize > 0 ? stack : null);
+                }
+            }
+        }
+
+        this.onCraftMatrixChanged(this.craftMatrix);
+    }
 }
