@@ -344,7 +344,7 @@ public class PHConstruct {
                 "Difficulty Changes",
                 "Tinkerer's Glove Bypass Certain Block Restrictions",
                 false,
-                "When true, the Tinkerer's Glove will allow GT tools to bypass block breaking restrictions.")
+                "When true, the Tinkerer's Glove will allow some tools to bypass block breaking restrictions, such as a GT wrench breaking dirt or cable.")
                 .getBoolean(false);
 
         /* Save the configuration file only if it has changed */
