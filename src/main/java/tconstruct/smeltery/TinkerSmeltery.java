@@ -48,7 +48,7 @@ import tconstruct.smeltery.blocks.CastingChannelBlock;
 import tconstruct.smeltery.blocks.GlassBlockConnected;
 import tconstruct.smeltery.blocks.GlassBlockConnectedMeta;
 import tconstruct.smeltery.blocks.GlassPaneConnected;
-import tconstruct.smeltery.blocks.GlassPaneStained;
+import tconstruct.smeltery.blocks.GlassPaneConnectedMeta;
 import tconstruct.smeltery.blocks.GlueBlock;
 import tconstruct.smeltery.blocks.GlueFluid;
 import tconstruct.smeltery.blocks.LavaTankBlock;
@@ -511,7 +511,6 @@ public class TinkerSmeltery {
 
         // Glass
         TinkerSmeltery.clearGlass = new GlassBlockConnected("clear", false).setBlockName("GlassBlock");
-        TinkerSmeltery.clearGlass.stepSound = Block.soundTypeGlass;
         TinkerSmeltery.glassPane = new GlassPaneConnected("clear", false);
         TinkerSmeltery.stainedGlassClear = new GlassBlockConnectedMeta(
                 "stained",
@@ -532,8 +531,25 @@ public class TinkerSmeltery {
                 "green",
                 "red",
                 "black").setBlockName("GlassBlock.StainedClear");
-        TinkerSmeltery.stainedGlassClear.stepSound = Block.soundTypeGlass;
-        TinkerSmeltery.stainedGlassClearPane = new GlassPaneStained();
+        TinkerSmeltery.stainedGlassClearPane = new GlassPaneConnectedMeta(
+                "stained",
+                true,
+                "white",
+                "orange",
+                "magenta",
+                "light_blue",
+                "yellow",
+                "lime",
+                "pink",
+                "gray",
+                "light_gray",
+                "cyan",
+                "purple",
+                "blue",
+                "brown",
+                "green",
+                "red",
+                "black");
 
         GameRegistry.registerBlock(TinkerSmeltery.searedSlab, SearedSlabItem.class, "SearedSlab");
         GameRegistry.registerBlock(TinkerSmeltery.speedSlab, SpeedSlabItem.class, "SpeedSlab");

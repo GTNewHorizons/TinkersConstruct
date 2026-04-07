@@ -11,8 +11,7 @@ import mantle.blocks.abstracts.MultiItemBlock;
 
 public class GlassBlockItem extends MultiItemBlock {
 
-    public static final String[] blockTypes = { "pure" }; // , "soul",
-    // "soul.pure" };
+    public static final String[] blockTypes = { "pure" };
 
     public GlassBlockItem(Block b) {
         super(b, "block.glass", blockTypes);
