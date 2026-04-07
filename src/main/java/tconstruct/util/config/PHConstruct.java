@@ -352,6 +352,13 @@ public class PHConstruct {
                 true,
                 "Can the Scythe harvest crops in an AOE on right click?.").getBoolean();
 
+        bypassGloveSpeedCheck = config.get(
+                "Difficulty Changes",
+                "Tinkerer's Glove Bypass Certain Block Restrictions",
+                false,
+                "When true, the Tinkerer's Glove will allow some tools to bypass block breaking restrictions, such as a GT wrench breaking dirt or cable.")
+                .getBoolean(false);
+
         /* Save the configuration file only if it has changed */
         if (config.hasChanged()) config.save();
 
@@ -559,4 +566,5 @@ public class PHConstruct {
 
     // New features
     public static boolean scytheAoeHarvest;
+    public static boolean bypassGloveSpeedCheck;
 }
