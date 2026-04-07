@@ -91,7 +91,8 @@ public class TinkerArmorEvents {
             else glove = null;
         }
         // original speed <= 0 means the block shouldn't be broken, don't increase further
-        if (glove == null || !glove.hasTagCompound() || (!PHConstruct.bypassGloveSpeedCheck && event.originalSpeed <= 0))
+        if (glove == null || !glove.hasTagCompound()
+                || (!PHConstruct.bypassGloveSpeedCheck && event.originalSpeed <= 0))
             return;
 
         // ok, we got a glove. bonus mining speeeeed
