@@ -21,23 +21,25 @@ public class SpeedBlock extends TConstructBlock {
 
     public SpeedBlock() {
         super(Material.rock, 3.0f, textureNames);
-        // this.setBlockBounds(0f, 0f, 0f, 1.0f, 0.5f, 1.0f);
     }
 
-    @Override
-    public void onEntityWalking(World world, int x, int y, int z, Entity entity) {
-        double boost = 2.2D;
-        int metadata = world.getBlockMetadata(x, y, z);
-        if (metadata == 1 || metadata == 4) boost = 2.7D;
+    /// Invoked whenever the local player walks over this block.
+    /// Only invoked clientside.
+    public void onWalkedOn(World world, int x, int y, int z, Entity entity) {
+        if (entity.motionX == 0 && entity.motionZ == 0) return;
+        if (entity.isInWater()) return;
+        if (entity.isWet()) return;
+        if (entity.isSneaking()) return;
 
-        double mX = Math.abs(entity.motionX);
-        double mZ = Math.abs(entity.motionZ);
-        if (mX < 0.5D) {
-            entity.motionX *= boost;
+        double tSpeed = 1.15;
+
+        int metadata = world.getBlockMetadata(x, y, z);
+        if (metadata == 1 || metadata == 4) {
+            tSpeed = 1.3;
         }
-        if (mZ < 0.5D) {
-            entity.motionZ *= boost;
-        }
+
+        entity.motionX *= tSpeed;
+        entity.motionZ *= tSpeed;
     }
 
     @Override

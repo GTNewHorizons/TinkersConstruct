@@ -9,18 +9,25 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Entity.EnumEntitySize;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 
@@ -34,6 +41,7 @@ import cpw.mods.fml.relauncher.Side;
 import mantle.player.PlayerUtils;
 import tconstruct.TConstruct;
 import tconstruct.library.tools.AbilityHelper;
+import tconstruct.smeltery.blocks.SpeedBlock;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
 
@@ -355,6 +363,24 @@ public class TPlayerHandler {
         @SubscribeEvent
         public void playerDropsWrapper(PlayerDropsEvent evt) {
             TPlayerHandler.this.playerDrops(evt);
+        }
+
+        @SideOnly(Side.CLIENT)
+        @SubscribeEvent
+        public void playerUpdates(LivingEvent.LivingUpdateEvent event) {
+            final EntityLivingBase entity = event.entityLiving;
+
+            // the player should handle its own movement, rest is handled by the server
+            if (entity instanceof EntityClientPlayerMP && entity.onGround) {
+                int tX = MathHelper.floor_double(entity.posX),
+                    tY = MathHelper.floor_double(entity.boundingBox.minY - 0.001F),
+                    tZ = MathHelper.floor_double(entity.posZ);
+                World world = entity.worldObj;
+                Block tBlock = world.getBlock(tX, tY, tZ);
+                if (tBlock instanceof SpeedBlock speedBlock){
+                    speedBlock.onWalkedOn(world, tX, tY, tZ, entity);
+                }
+            }
         }
     }
 }
