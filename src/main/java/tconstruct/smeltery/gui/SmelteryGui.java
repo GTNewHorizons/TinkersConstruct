@@ -44,17 +44,9 @@ public class SmelteryGui extends ActiveContainerGui {
         super((ActiveContainer) smeltery.getGuiContainer(inventoryplayer, world, x, y, z));
         logic = smeltery;
         smelterySize = smeltery.getBlockCapacity();
-        smeltery.updateFuelDisplay();
 
         columns = ((SmelteryContainer) this.inventorySlots).columns;
         xSize = 254 + (columns - 3) * 22; // Adjust for column count
-    }
-
-    @Override
-    public void initGui() {
-        super.initGui();
-
-        if (logic != null) logic.updateFuelDisplay();
     }
 
     @Override
@@ -66,11 +58,13 @@ public class SmelteryGui extends ActiveContainerGui {
             return;
         }
 
+        logic.updateFuelDisplay();
+        updateScrollbar(mouseX, mouseY);
+
         super.drawScreen(mouseX, mouseY, par3);
-        updateScrollbar(mouseX, mouseY, par3);
     }
 
-    protected void updateScrollbar(int mouseX, int mouseY, float par3) {
+    protected void updateScrollbar(int mouseX, int mouseY) {
         if (smelterySize > columns * maxRows) {
             boolean mouseDown = Mouse.isButtonDown(0);
             int lefto = this.guiLeft;
@@ -144,12 +138,11 @@ public class SmelteryGui extends ActiveContainerGui {
         }
 
         // lava/fuel
-        if (logic.fuelGague > 0) {
+        int fuel = logic.getScaledFuelGague(52);
+        if (fuel > 0) {
             int leftX = cornerX + 117;
-            int topY = (cornerY + 68) - logic.getScaledFuelGague(52);
-            int sizeX = 12;
-            int sizeY = logic.getScaledFuelGague(52);
-            if (mouseX >= leftX && mouseX <= leftX + sizeX && mouseY >= topY && mouseY < topY + sizeY) {
+            int topY = (cornerY + 68) - fuel;
+            if (mouseX >= leftX && mouseX <= leftX + 12 && mouseY >= topY && mouseY < topY + fuel) {
                 drawFluidStackTooltip(getFuelTooltip(logic.getFuel()), mouseX - cornerX + 36, mouseY - cornerY);
             }
         }
@@ -170,11 +163,11 @@ public class SmelteryGui extends ActiveContainerGui {
 
         // Fuel - Lava
         this.mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-        if (logic.fuelGague > 0) {
+        int fuel = logic.getScaledFuelGague(52);
+        if (fuel > 0) {
             FluidStack fuelStack = logic.getFuel();
             IIcon lavaIcon = fuelStack.getFluid().getStillIcon();
             if (lavaIcon == null) lavaIcon = Blocks.lava.getIcon(0, 0);
-            int fuel = logic.getScaledFuelGague(52);
             int count = 0;
             while (fuel > 0) {
                 int size = Math.min(fuel, 16);
@@ -349,7 +342,7 @@ public class SmelteryGui extends ActiveContainerGui {
     private List<String> getFuelTooltip(FluidStack liquid) {
         ArrayList<String> list = new ArrayList<>();
         list.add("\u00A7f" + StatCollector.translateToLocal("gui.smeltery.fuel"));
-        list.add("mB: " + liquid.amount);
+        list.add("mB: " + liquid.amount + " / " + logic.fuelCapacity);
         return list;
     }
 
