@@ -507,7 +507,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
         int totalAmount = 0;
         int totalCapacity = 0;
 
-        for (CoordTuple coord : lavaTanks) {
+        for (CoordTuple coord : new ArrayList<>(lavaTanks)) {
             if (!worldObj.blockExists(coord.x, coord.y, coord.z)) continue;
 
             TileEntity te = worldObj.getTileEntity(coord.x, coord.y, coord.z);
@@ -525,12 +525,6 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
         fuelAmount = totalAmount;
         fuelCapacity = totalCapacity;
-
-        if (totalCapacity > 0) {
-            fuelGague = (int) ((float) totalAmount * 52f / (float) totalCapacity);
-        } else {
-            fuelGague = 0;
-        }
     }
 
     // actually is updateFuel.
@@ -607,7 +601,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     public FluidStack getFuel() {
         FluidStack combined = null;
 
-        for (CoordTuple coord : lavaTanks) {
+        for (CoordTuple coord : new ArrayList<>(lavaTanks)) {
             if (!worldObj.blockExists(coord.x, coord.y, coord.z)) continue;
 
             TileEntity te = worldObj.getTileEntity(coord.x, coord.y, coord.z);

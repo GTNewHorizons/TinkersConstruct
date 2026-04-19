@@ -39,6 +39,7 @@ public class SmelteryGui extends ActiveContainerGui {
     private final int columns;
     private final int smelterySize;
     public static final int maxRows = 8;
+    private int fuelDisplayTick = 0;
 
     public SmelteryGui(InventoryPlayer inventoryplayer, SmelteryLogic smeltery, World world, int x, int y, int z) {
         super((ActiveContainer) smeltery.getGuiContainer(inventoryplayer, world, x, y, z));
@@ -58,7 +59,7 @@ public class SmelteryGui extends ActiveContainerGui {
             return;
         }
 
-        logic.updateFuelDisplay();
+        if (fuelDisplayTick++ % 5 == 0) logic.updateFuelDisplay();
         updateScrollbar(mouseX, mouseY);
 
         super.drawScreen(mouseX, mouseY, par3);
@@ -143,7 +144,7 @@ public class SmelteryGui extends ActiveContainerGui {
             int leftX = cornerX + 117;
             int topY = (cornerY + 68) - fuel;
             if (mouseX >= leftX && mouseX <= leftX + 12 && mouseY >= topY && mouseY < topY + fuel) {
-                drawFluidStackTooltip(getFuelTooltip(logic.getFuel()), mouseX - cornerX + 36, mouseY - cornerY);
+                drawFluidStackTooltip(getFuelTooltip(), mouseX - cornerX + 36, mouseY - cornerY);
             }
         }
     }
@@ -339,10 +340,10 @@ public class SmelteryGui extends ActiveContainerGui {
         this.zLevel = 0;
     }
 
-    private List<String> getFuelTooltip(FluidStack liquid) {
+    private List<String> getFuelTooltip() {
         ArrayList<String> list = new ArrayList<>();
         list.add("\u00A7f" + StatCollector.translateToLocal("gui.smeltery.fuel"));
-        list.add("mB: " + liquid.amount + " / " + logic.fuelCapacity);
+        list.add("mB: " + logic.fuelAmount + " / " + logic.fuelCapacity);
         return list;
     }
 
