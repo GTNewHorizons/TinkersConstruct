@@ -75,6 +75,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     public int useTime;
     public int fuelGague;
     public int fuelAmount;
+    public int fuelCapacity;
     protected boolean inUse;
 
     protected ArrayList<CoordTuple> lavaTanks;
@@ -262,8 +263,9 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     }
 
     public int getScaledFuelGague(int scale) {
-        int ret = (fuelGague * scale) / 52;
-        if (ret < 1) ret = 1;
+        if (fuelCapacity <= 0) return 0;
+        int ret = (int) ((float) fuelAmount * (float) scale / (float) fuelCapacity);
+        if (ret < 1 && fuelAmount > 0) ret = 1;
         return ret;
     }
 
@@ -502,22 +504,27 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     }
 
     public void updateFuelDisplay() {
-        // ensure our active tank is valid
-        verifyFuelTank();
-        if (activeLavaTank == null) {
-            fuelAmount = 0;
-            fuelGague = 0;
-            return;
+        int totalAmount = 0;
+        int totalCapacity = 0;
+
+        for (CoordTuple coord : new ArrayList<>(lavaTanks)) {
+            if (!worldObj.blockExists(coord.x, coord.y, coord.z)) continue;
+
+            TileEntity te = worldObj.getTileEntity(coord.x, coord.y, coord.z);
+            if (!(te instanceof IFluidHandler)) continue;
+
+            FluidTankInfo[] info = ((IFluidHandler) te).getTankInfo(ForgeDirection.DOWN);
+            if (info.length <= 0) continue;
+
+            totalCapacity += info[0].capacity;
+
+            if (info[0].fluid != null && info[0].fluid.amount > 0) {
+                totalAmount += info[0].fluid.amount;
+            }
         }
 
-        // checks are all done before in verifyFuelTank. Don't do this without checks!
-        IFluidHandler tankContainer = (IFluidHandler) worldObj
-                .getTileEntity(activeLavaTank.x, activeLavaTank.y, activeLavaTank.z);
-        FluidTankInfo[] info = tankContainer.getTankInfo(ForgeDirection.DOWN);
-
-        int capacity = info[0].capacity;
-        fuelAmount = info[0].fluid.amount;
-        fuelGague = (int) ((float) fuelAmount * 52f / (float) capacity);
+        fuelAmount = totalAmount;
+        fuelCapacity = totalCapacity;
     }
 
     // actually is updateFuel.
@@ -592,15 +599,28 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     @SideOnly(Side.CLIENT)
     public FluidStack getFuel() {
-        if (activeLavaTank == null)
-            // sane default
+        FluidStack combined = null;
+
+        for (CoordTuple coord : new ArrayList<>(lavaTanks)) {
+            if (!worldObj.blockExists(coord.x, coord.y, coord.z)) continue;
+
+            TileEntity te = worldObj.getTileEntity(coord.x, coord.y, coord.z);
+            if (!(te instanceof IFluidHandler)) continue;
+
+            FluidTankInfo[] info = ((IFluidHandler) te).getTankInfo(ForgeDirection.DOWN);
+            if (info.length <= 0 || info[0].fluid == null || info[0].fluid.amount <= 0) continue;
+
+            if (combined == null) {
+                combined = info[0].fluid.copy();
+            } else if (combined.isFluidEqual(info[0].fluid)) {
+                combined.amount += info[0].fluid.amount;
+            }
+        }
+
+        if (combined == null) {
             return new FluidStack(FluidRegistry.LAVA, 0);
-
-        TileEntity tankContainer = worldObj.getTileEntity(activeLavaTank.x, activeLavaTank.y, activeLavaTank.z);
-        if (tankContainer instanceof IFluidHandler)
-            return ((IFluidHandler) tankContainer).getTankInfo(ForgeDirection.DOWN)[0].fluid;
-
-        return new FluidStack(FluidRegistry.LAVA, 0);
+        }
+        return combined;
     }
 
     public FluidStack getResultFor(ItemStack stack) {
