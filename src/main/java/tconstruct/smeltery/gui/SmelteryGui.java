@@ -343,7 +343,7 @@ public class SmelteryGui extends ActiveContainerGui {
     private List<String> getFuelTooltip() {
         ArrayList<String> list = new ArrayList<>();
         list.add("\u00A7f" + StatCollector.translateToLocal("gui.smeltery.fuel"));
-        list.add("mB: " + logic.fuelAmount + " / " + logic.fuelCapacity);
+        list.add(logic.fuelAmount + "/" + logic.fuelCapacity + " mB");
         return list;
     }
 
