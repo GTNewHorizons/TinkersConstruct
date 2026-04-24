@@ -222,6 +222,9 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
             final String toolName = text.getText().trim();
             logic.setToolname(toolName);
             updateServer(toolName);
+        } else {
+            // for nei
+            super.keyTyped(typedChar, keyCode);
         }
     }
 
