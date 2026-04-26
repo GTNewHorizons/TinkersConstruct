@@ -132,7 +132,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
             int bothOffset = 0;
             if (logic.slotCount > 54) bothOffset += 12;
             bothOffset += 122;
-            this.buttonList.add(new GuiButtonDump(0, this.guiLeft + bothOffset + 159, this.guiTop + 5));
+            this.buttonList.add(new GuiButtonDump(0, this.guiLeft + bothOffset + 161, this.guiTop + 5));
         }
     }
 
