@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -139,6 +140,29 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     protected void actionPerformed(GuiButton button) {
         if (button.id == 0 && logic.chest != null) {
             TConstruct.packetPipeline.sendToServer(new CraftingStationDumpPacket());
+        }
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        drawDumpButtonTooltip(mouseX, mouseY);
+    }
+
+    private void drawDumpButtonTooltip(int mouseX, int mouseY) {
+        for (Object obj : this.buttonList) {
+            if (obj instanceof GuiButtonDump) {
+                GuiButtonDump button = (GuiButtonDump) obj;
+                if (button.func_146115_a()) {
+                    this.drawHoveringText(
+                            Collections.singletonList(
+                                    StatCollector.translateToLocal("craftingstation.dump_button.tooltip")),
+                            mouseX,
+                            mouseY,
+                            this.fontRendererObj);
+                    return;
+                }
+            }
         }
     }
 
@@ -539,6 +563,27 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
             slotElement.drawScaledX(xPos, yPos + y, slotsLeft * slotElement.w);
             // empty slots that don't exist
             slotEmptyElement.drawScaledX(xPos + slotsLeft * slotElement.w, yPos + y, width - slotsLeft * slotElement.w);
+        }
+    }
+
+    private static class GuiButtonDump extends GuiButton {
+
+        private GuiButtonDump(int id, int x, int y) {
+            super(id, x, y, 10, 10, "");
+        }
+
+        @Override
+        public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+            if (this.visible) {
+                this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
+                        && mouseX < this.xPosition + this.width
+                        && mouseY < this.yPosition + this.height;
+
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                mc.getTextureManager().bindTexture(CraftingStationGui.icons);
+                int v = this.field_146123_n ? 213 : 223;
+                drawTexturedModalRect(this.xPosition, this.yPosition, 0, v, this.width, this.height);
+            }
         }
     }
 
