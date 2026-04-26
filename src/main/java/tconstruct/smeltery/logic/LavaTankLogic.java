@@ -29,7 +29,7 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
         int amount = tank.fill(resource, doFill);
         if (amount > 0 && doFill) {
-            renderOffset += resource.amount;
+            renderOffset += amount;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
         }
@@ -41,7 +41,7 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
         FluidStack amount = tank.drain(maxDrain, doDrain);
         if (amount != null && doDrain) {
-            renderOffset = -maxDrain;
+            renderOffset = -amount.amount;
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
         }

@@ -2,6 +2,7 @@ package tconstruct.smeltery.logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -75,9 +76,10 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     public int useTime;
     public int fuelGague;
     public int fuelAmount;
+    public int fuelCapacity;
     protected boolean inUse;
 
-    protected ArrayList<CoordTuple> lavaTanks;
+    protected List<CoordTuple> lavaTanks;
     protected ArrayList<CoordTuple> drains;
     protected CoordTuple activeLavaTank;
 
@@ -96,7 +98,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     public SmelteryLogic() {
         super(0);
-        lavaTanks = new ArrayList<>();
+        lavaTanks = Collections.synchronizedList(new ArrayList<>());
         drains = new ArrayList<>();
         activeTemps = new int[0];
         meltingTemps = new int[0];
@@ -262,8 +264,9 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     }
 
     public int getScaledFuelGague(int scale) {
-        int ret = (fuelGague * scale) / 52;
-        if (ret < 1) ret = 1;
+        if (fuelCapacity <= 0) return 0;
+        int ret = (int) ((float) fuelAmount * (float) scale / (float) fuelCapacity);
+        if (ret < 1 && fuelAmount > 0) ret = 1;
         return ret;
     }
 
@@ -502,22 +505,40 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     }
 
     public void updateFuelDisplay() {
-        // ensure our active tank is valid
-        verifyFuelTank();
-        if (activeLavaTank == null) {
-            fuelAmount = 0;
-            fuelGague = 0;
-            return;
+        int totalAmount = 0;
+        int totalCapacity = 0;
+        FluidStack fuelType = null;
+
+        synchronized (lavaTanks) {
+            Iterator<CoordTuple> iter = lavaTanks.iterator();
+            while (iter.hasNext()) {
+                CoordTuple coord = iter.next();
+                if (!worldObj.blockExists(coord.x, coord.y, coord.z)) continue;
+
+                TileEntity te = worldObj.getTileEntity(coord.x, coord.y, coord.z);
+                if (!(te instanceof IFluidHandler)) {
+                    iter.remove();
+                    continue;
+                }
+
+                FluidTankInfo[] info = ((IFluidHandler) te).getTankInfo(ForgeDirection.DOWN);
+                if (info.length <= 0) continue;
+
+                totalCapacity += info[0].capacity;
+
+                if (info[0].fluid != null && info[0].fluid.amount > 0) {
+                    if (fuelType == null) {
+                        fuelType = info[0].fluid;
+                        totalAmount += info[0].fluid.amount;
+                    } else if (fuelType.isFluidEqual(info[0].fluid)) {
+                        totalAmount += info[0].fluid.amount;
+                    }
+                }
+            }
         }
 
-        // checks are all done before in verifyFuelTank. Don't do this without checks!
-        IFluidHandler tankContainer = (IFluidHandler) worldObj
-                .getTileEntity(activeLavaTank.x, activeLavaTank.y, activeLavaTank.z);
-        FluidTankInfo[] info = tankContainer.getTankInfo(ForgeDirection.DOWN);
-
-        int capacity = info[0].capacity;
-        fuelAmount = info[0].fluid.amount;
-        fuelGague = (int) ((float) fuelAmount * 52f / (float) capacity);
+        fuelAmount = totalAmount;
+        fuelCapacity = totalCapacity;
     }
 
     // actually is updateFuel.
@@ -566,24 +587,26 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
         // our tank got derped or is empty. time to look for a new one!
         activeLavaTank = null;
-        for (CoordTuple tank : lavaTanks) {
-            // does the tank still exist?
-            if (!worldObj.blockExists(tank.x, tank.y, tank.z)) continue;
+        synchronized (lavaTanks) {
+            for (CoordTuple tank : lavaTanks) {
+                // does the tank still exist?
+                if (!worldObj.blockExists(tank.x, tank.y, tank.z)) continue;
 
-            // yes, it does, but is it a tank?
-            TileEntity tankContainer = worldObj.getTileEntity(tank.x, tank.y, tank.z);
-            if (!(tankContainer instanceof IFluidHandler)) continue;
+                // yes, it does, but is it a tank?
+                TileEntity tankContainer = worldObj.getTileEntity(tank.x, tank.y, tank.z);
+                if (!(tankContainer instanceof IFluidHandler)) continue;
 
-            // yes it is, but does it contain a liquid?
-            FluidTankInfo[] info = ((IFluidHandler) tankContainer).getTankInfo(ForgeDirection.DOWN);
-            if (info.length <= 0 || info[0].fluid == null || info[0].fluid.amount <= 0) continue;
+                // yes it is, but does it contain a liquid?
+                FluidTankInfo[] info = ((IFluidHandler) tankContainer).getTankInfo(ForgeDirection.DOWN);
+                if (info.length <= 0 || info[0].fluid == null || info[0].fluid.amount <= 0) continue;
 
-            // is it also a smeltery fuel?
-            if (!Smeltery.isSmelteryFuel(info[0].fluid.getFluid())) continue;
+                // is it also a smeltery fuel?
+                if (!Smeltery.isSmelteryFuel(info[0].fluid.getFluid())) continue;
 
-            // we found a tank! :)
-            activeLavaTank = tank;
-            return;
+                // we found a tank! :)
+                activeLavaTank = tank;
+                return;
+            }
         }
 
         // possibly assign default empty tank here (tanks.get(0)) so we don't have a null activeLavaTank if all are
@@ -592,15 +615,35 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     @SideOnly(Side.CLIENT)
     public FluidStack getFuel() {
-        if (activeLavaTank == null)
-            // sane default
+        FluidStack combined = null;
+
+        synchronized (lavaTanks) {
+            Iterator<CoordTuple> iter = lavaTanks.iterator();
+            while (iter.hasNext()) {
+                CoordTuple coord = iter.next();
+                if (!worldObj.blockExists(coord.x, coord.y, coord.z)) continue;
+
+                TileEntity te = worldObj.getTileEntity(coord.x, coord.y, coord.z);
+                if (!(te instanceof IFluidHandler)) {
+                    iter.remove();
+                    continue;
+                }
+
+                FluidTankInfo[] info = ((IFluidHandler) te).getTankInfo(ForgeDirection.DOWN);
+                if (info.length <= 0 || info[0].fluid == null || info[0].fluid.amount <= 0) continue;
+
+                if (combined == null) {
+                    combined = info[0].fluid.copy();
+                } else if (combined.isFluidEqual(info[0].fluid)) {
+                    combined.amount += info[0].fluid.amount;
+                }
+            }
+        }
+
+        if (combined == null) {
             return new FluidStack(FluidRegistry.LAVA, 0);
-
-        TileEntity tankContainer = worldObj.getTileEntity(activeLavaTank.x, activeLavaTank.y, activeLavaTank.z);
-        if (tankContainer instanceof IFluidHandler)
-            return ((IFluidHandler) tankContainer).getTankInfo(ForgeDirection.DOWN)[0].fluid;
-
-        return new FluidStack(FluidRegistry.LAVA, 0);
+        }
+        return combined;
     }
 
     public FluidStack getResultFor(ItemStack stack) {
@@ -736,17 +779,19 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
             if (tempValidStructure) {
                 // try to derive temperature from fueltank
                 activeLavaTank = null;
-                for (CoordTuple tank : lavaTanks) {
-                    TileEntity tankContainer = worldObj.getTileEntity(tank.x, tank.y, tank.z);
-                    if (!(tankContainer instanceof IFluidHandler)) continue;
+                synchronized (lavaTanks) {
+                    for (CoordTuple tank : lavaTanks) {
+                        TileEntity tankContainer = worldObj.getTileEntity(tank.x, tank.y, tank.z);
+                        if (!(tankContainer instanceof IFluidHandler)) continue;
 
-                    FluidStack liquid = ((IFluidHandler) tankContainer).getTankInfo(ForgeDirection.DOWN)[0].fluid;
-                    if (liquid == null) continue;
-                    if (!Smeltery.isSmelteryFuel(liquid.getFluid())) continue;
+                        FluidStack liquid = ((IFluidHandler) tankContainer).getTankInfo(ForgeDirection.DOWN)[0].fluid;
+                        if (liquid == null) continue;
+                        if (!Smeltery.isSmelteryFuel(liquid.getFluid())) continue;
 
-                    internalTemp = Smeltery.getFuelPower(liquid.getFluid());
-                    activeLavaTank = tank;
-                    break;
+                        internalTemp = Smeltery.getFuelPower(liquid.getFluid());
+                        activeLavaTank = tank;
+                        break;
+                    }
                 }
 
                 // no tank with fuel. we reserve the first found one
