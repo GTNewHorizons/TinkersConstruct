@@ -26,6 +26,11 @@ import tconstruct.TConstruct;
 @SideOnly(Side.CLIENT)
 public class TiCGuiManual extends GuiManual {
 
+    private static final int ANIMATIONDURATIONINMILLIS = 600;
+    private static final double FLYIN_DURATION = 0.55; // portion for fly-in
+    private static final double OVERSHOOT_DURATION = 0.1; // portion for overshoot
+    private static final double EXTENT = 0.02; // overshoot amount as fraction of total displacement
+
     ItemStack itemstackBook;
     Document manual;
     public RenderItemCopy renderitem = new RenderItemCopy();
@@ -36,11 +41,17 @@ public class TiCGuiManual extends GuiManual {
     int maxPages;
     BookData bData;
 
+    private boolean needUpdateAnimation;
+
     private TurnPageButton buttonNextPage;
     private TurnPageButton buttonPreviousPage;
     private static ResourceLocation bookRight;// = new ResourceLocation("mantle", "textures/gui/bookright.png");
     private static ResourceLocation bookLeft;// = new ResourceLocation("mantle", "textures/gui/bookleft.png");
 
+    private long guiOpenTime;
+
+    private int baseDrawingX;
+    private int baseDrawingY;
     BookPage pageLeft;
     BookPage pageRight;
 
@@ -56,6 +67,8 @@ public class TiCGuiManual extends GuiManual {
         bookLeft = data.leftImage;
         bookRight = data.rightImage;
         this.bData = data;
+        this.guiOpenTime = System.currentTimeMillis();
+        this.needUpdateAnimation = true;
 
         // renderitem.renderInFrame = true;
     }
@@ -70,7 +83,7 @@ public class TiCGuiManual extends GuiManual {
     public void initGui() {
         maxPages = manual.getElementsByTagName("page").getLength();
         ticUpdateText();
-        int xPos = (this.width) / 2; // TODO Width?
+        int xPos = this.width / 2; // TODO Width?
         // TODO buttonList
         this.buttonList.add(
                 this.buttonNextPage = new TurnPageButton(
@@ -160,33 +173,41 @@ public class TiCGuiManual extends GuiManual {
     }
 
     public void drawScreen(int par1, int par2, float par3) {
+        // aligen to center
+        // int localWidth = (this.width / 2);
+        // int localHeight = ((this.height - this.bookImageHeight) / 2);
+
+        if (this.needUpdateAnimation) {
+            float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
+            int[] point = this.getOvershootPosition(progress);
+            this.baseDrawingX = point[0];
+            this.baseDrawingY = point[1];
+            if (progress >= 1.0f) this.needUpdateAnimation = false;
+        }
+
+        int drawX = this.baseDrawingX;
+        int drawY = this.baseDrawingY;
+
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(bookRight);
+        this.drawTexturedModalRect(drawX, drawY, 0, 0, this.bookImageWidth, this.bookImageHeight);
 
-        // aligen to center
-        int localWidth = (this.width / 2);
-        int localHeight = ((this.height - this.bookImageHeight) / 2);
-
-        this.drawTexturedModalRect(localWidth, localHeight, 0, 0, this.bookImageWidth, this.bookImageHeight);
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(bookLeft);
-        localWidth = localWidth - this.bookImageWidth;
+        drawX = drawX - this.bookImageWidth;
         this.drawTexturedModalRect(
-                localWidth,
-                localHeight,
+                drawX,
+                drawY,
                 256 - this.bookImageWidth,
                 0,
                 this.bookImageWidth,
                 this.bookImageHeight);
 
-        this.drawButtons(par1, par2);
+        if (!this.needUpdateAnimation) this.drawButtons(par1, par2);
 
-        if (pageLeft != null) pageLeft.renderBackgroundLayer(localWidth + 16, localHeight + 12);
-        if (pageRight != null) pageRight.renderBackgroundLayer(localWidth + 220, localHeight + 12);
-        if (pageLeft != null) pageLeft.renderContentLayer(localWidth + 16, localHeight + 12, bData.isTranslatable);
-        if (pageRight != null) pageRight.renderContentLayer(localWidth + 220, localHeight + 12, bData.isTranslatable);
-
+        if (pageLeft != null) pageLeft.renderBackgroundLayer(drawX + 16, drawY + 12);
+        if (pageRight != null) pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
+        if (pageLeft != null) pageLeft.renderContentLayer(drawX + 16, drawY + 12, bData.isTranslatable);
+        if (pageRight != null) pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
     }
 
     /**
@@ -212,4 +233,51 @@ public class TiCGuiManual extends GuiManual {
     public boolean doesGuiPauseGame() {
         return false;
     }
+
+    /**
+     * Computes the current position after applying an overshoot and bounce animation.
+     *
+     * @param progress global animation progress in [0,1], where 0 = start, 1 = end
+     * @return the current (X, Y) point for the given progress
+     */
+    private int[] getOvershootPosition(float progress) {
+
+        int endX = (this.width / 2);
+        int startX = endX;
+
+        int endY = (this.height - this.bookImageHeight) / 2;
+        int startY = this.height + this.bookImageHeight;
+
+        // Clamp progress to [0,1]
+        double t = Math.min(Math.max(progress, 0.0), 1.0);
+
+        double factor; // displacement factor (0 → 1+EXTENT → 1)
+
+        if (t <= FLYIN_DURATION) {
+            // Phase 1: linear fly in
+            double phaseT = t / FLYIN_DURATION; // [0,1]
+            factor = phaseT;
+        } else if (t <= FLYIN_DURATION + OVERSHOOT_DURATION) {
+            // Phase 2: overshoot (1 → 1+EXTENT) with ease out
+            double phaseT = (t - FLYIN_DURATION) / OVERSHOOT_DURATION; // [0,1]
+            double eased = 1.0 - Math.pow(1.0 - phaseT, 2);
+            factor = 1.0 + EXTENT * eased;
+        } else {
+            // Phase 3: correct back to target (1+EXTENT → 1) linear
+            double remaining = 1.0 - (FLYIN_DURATION + OVERSHOOT_DURATION);
+            double phaseT = (t - (FLYIN_DURATION + OVERSHOOT_DURATION)) / remaining; // [0,1]
+            double peak = 1.0 + EXTENT;
+            factor = peak + (1.0 - peak) * phaseT;
+        }
+
+        // Clamp factor to reasonable range (should stay inside [0, 1+EXTENT])
+        factor = Math.min(factor, 1.0 + EXTENT);
+
+        // Linear interpolation
+        int x = (int) (startX + (endX - startX) * factor);
+        int y = (int) (startY + (endY - startY) * factor);
+
+        return new int[] { x, y };
+    }
+
 }
