@@ -177,6 +177,10 @@ public class TiCGuiManual extends GuiManual {
         // int localWidth = (this.width / 2);
         // int localHeight = ((this.height - this.bookImageHeight) / 2);
 
+        float scale = Math.max(
+                1.0f,
+                Math.min(this.width * 0.8f / (this.bookImageWidth * 2), this.height * 0.8f / this.bookImageHeight));
+
         if (this.needUpdateAnimation) {
             float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
             int[] point = this.getOvershootPosition(progress);
@@ -185,10 +189,12 @@ public class TiCGuiManual extends GuiManual {
             if (progress >= 1.0f) this.needUpdateAnimation = false;
         }
 
-        int drawX = this.baseDrawingX;
-        int drawY = this.baseDrawingY;
+        int drawX = (int) (this.baseDrawingX / scale);
+        int drawY = (int) (this.baseDrawingY / scale / scale);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glScalef(scale, scale, 1.0f);
+
         this.mc.getTextureManager().bindTexture(bookRight);
         this.drawTexturedModalRect(drawX, drawY, 0, 0, this.bookImageWidth, this.bookImageHeight);
 
@@ -202,7 +208,7 @@ public class TiCGuiManual extends GuiManual {
                 this.bookImageWidth,
                 this.bookImageHeight);
 
-        if (!this.needUpdateAnimation) this.drawButtons(par1, par2);
+        if (!this.needUpdateAnimation) this.drawButtons(par1, par2, drawX + this.bookImageWidth, drawY);
 
         if (pageLeft != null) pageLeft.renderBackgroundLayer(drawX + 16, drawY + 12);
         if (pageRight != null) pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
@@ -213,13 +219,23 @@ public class TiCGuiManual extends GuiManual {
     /**
      * copy from {@link net.minecraft.client.gui.GuiScreen#drawScreen(int, int, float)}
      */
-    public void drawButtons(int mouseX, int mouseY) {
+    public void drawButtons(int mouseX, int mouseY, int x, int y) {
+
+        this.buttonNextPage.xPosition = (int) (x + this.bookImageWidth * 0.8);
+        this.buttonPreviousPage.xPosition = (int) (x - this.bookImageWidth * 0.9);
+
+        this.buttonNextPage.yPosition = (int) (y + this.bookImageHeight * 0.85);
+        this.buttonPreviousPage.yPosition = (int) (y + this.bookImageHeight * 0.85);
+
+        this.buttonNextPage.drawButton(this.mc, mouseX, mouseY);
+        this.buttonPreviousPage.drawButton(this.mc, mouseX, mouseY);
+
         // copy from @GuiScreen.drawScreen
         int k;
 
-        for (k = 0; k < this.buttonList.size(); ++k) {
-            ((GuiButton) this.buttonList.get(k)).drawButton(this.mc, mouseX, mouseY);
-        }
+        // for (k = 0; k < this.buttonList.size(); ++k) {
+        // ((GuiButton) this.buttonList.get(k)).drawButton(this.mc, mouseX, mouseY);
+        // }
 
         for (k = 0; k < this.labelList.size(); ++k) {
             ((GuiLabel) this.labelList.get(k)).func_146159_a(this.mc, mouseX, mouseY);
