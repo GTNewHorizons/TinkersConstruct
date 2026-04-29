@@ -26,6 +26,9 @@ public class Smeltery {
     private final List<AlloyMix> alloys = new ArrayList<>();
     private final Map<Fluid, Integer[]> smelteryFuels = new HashMap<>(); // fluid -> [power, duration]
 
+    private final Map<ItemMetaWrapper, String> smeltingGroupIdList = new HashMap<>();
+    private final Map<String, List<ItemMetaWrapper>> smeltingGroupList = new HashMap<>();
+
     /**
      * Add a new fluid as a valid Smeltery fuel.
      * 
@@ -226,6 +229,37 @@ public class Smeltery {
                 new FluidStack(type.fluid, fluidAmount));
     }
 
+    public static void addToSmeltingGroup(ItemStack input, String groupName) {
+        ItemMetaWrapper in = new ItemMetaWrapper(input);
+        // Remove from old group
+        if (instance.smeltingGroupIdList.containsKey(in)) {
+            removeFromSmeltingGroup(in);
+        }
+        instance.smeltingGroupIdList.put(in, groupName);
+        List<ItemMetaWrapper> list = instance.smeltingGroupList.computeIfAbsent(groupName, s -> new ArrayList<>());
+        list.add(in);
+    }
+
+    public static void removeFromSmeltingGroup(ItemMetaWrapper in) {
+        String oldKey = instance.smeltingGroupIdList.remove(in);
+        List<ItemMetaWrapper> list = instance.smeltingGroupList.get(oldKey);
+        if (list != null) {
+            list.remove(in);
+        }
+    }
+
+    public static String getSmeltingGroup(ItemMetaWrapper wrapper) {
+        return instance.smeltingGroupIdList.getOrDefault(wrapper, null);
+    }
+
+    public static List<ItemStack> getSmeltingGroupItems(String groupName) {
+        List<ItemStack> list = new ArrayList<>();
+        for (ItemMetaWrapper wrapper : instance.smeltingGroupList.get(groupName)) {
+            list.add(new ItemStack(wrapper.item, 1, wrapper.meta));
+        }
+        return list;
+    }
+
     /**
      * Adds all Items to the Smeltery based on the oreDictionary Name
      *
@@ -238,6 +272,9 @@ public class Smeltery {
      */
     public static void addDictionaryMelting(String oreName, FluidType type, int temperatureDifference,
             int fluidAmount) {
-        for (ItemStack is : OreDictionary.getOres(oreName)) addMelting(type, is, temperatureDifference, fluidAmount);
+        for (ItemStack is : OreDictionary.getOres(oreName)) {
+            addMelting(type, is, temperatureDifference, fluidAmount);
+            addToSmeltingGroup(is, oreName);
+        }
     }
 }
