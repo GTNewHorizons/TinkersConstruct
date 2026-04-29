@@ -13,6 +13,10 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import mantle.utils.ItemMetaWrapper;
 
 /** Melting and hacking, churn and burn */
@@ -27,9 +31,9 @@ public class Smeltery {
     private final Map<Fluid, Integer[]> smelteryFuels = new HashMap<>(); // fluid -> [power, duration]
 
     private int nextSmeltingGroupIndex = 0;
-    private final Map<String, Integer> smeltingGroupIndexList = new HashMap<>();
-    private final Map<ItemMetaWrapper, Integer> smeltingGroupIdList = new HashMap<>();
-    private final Map<Integer, List<ItemMetaWrapper>> smeltingGroupList = new HashMap<>();
+    private final Object2IntMap<String> smeltingGroupIndexList = new Object2IntOpenHashMap<>();
+    private final Object2IntMap<ItemMetaWrapper> smeltingGroupIdList = new Object2IntOpenHashMap<>();
+    private final Int2ObjectMap<List<ItemMetaWrapper>> smeltingGroupList = new Int2ObjectOpenHashMap<>();
 
     /**
      * Add a new fluid as a valid Smeltery fuel.
@@ -245,7 +249,7 @@ public class Smeltery {
 
     public static void removeFromSmeltingGroup(ItemMetaWrapper in) {
         if (instance.smeltingGroupIdList.containsKey(in)) {
-            int oldKey = instance.smeltingGroupIdList.remove(in);
+            int oldKey = instance.smeltingGroupIdList.removeInt(in);
             List<ItemMetaWrapper> list = instance.smeltingGroupList.get(oldKey);
             if (list != null) {
                 list.remove(in);
