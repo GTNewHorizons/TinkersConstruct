@@ -275,7 +275,7 @@ public class SmelteryGui extends ActiveContainerGui {
             int slotTemp = logic.getTempForSlot(iter + slotPos * columns) - 20;
             int maxTemp = logic.getMeltingPointForSlot(iter + slotPos * columns) - 20;
             if (slotTemp > 0 && maxTemp > 0) {
-                int size = 16 * slotTemp / maxTemp + 1;
+                int size = Math.max(1, Math.min(16, 16 * slotTemp / maxTemp));
                 drawTexturedModalRect(
                         cornerX - xleft + (iter % columns * 22),
                         cornerY + 8 + (iter / columns * 18) + 16 - size,
