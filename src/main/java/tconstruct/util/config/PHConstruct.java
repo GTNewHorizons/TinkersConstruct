@@ -281,6 +281,7 @@ public class PHConstruct {
         connectedTexturesMode = conTexMode.getInt(2);
 
         showTravellerAccessories = config.get("Looks", "Show Traveller Gear Accessories", true).getBoolean(true);
+        enableTinkerInventoryTab = config.get("Looks", "Enable Tinker Inventory Tab", true).getBoolean(true);
 
         // dimension blacklist
         cfgForbiddenDim = config
@@ -542,6 +543,7 @@ public class PHConstruct {
     // Looks
     public static int connectedTexturesMode;
     public static boolean showTravellerAccessories;
+    public static boolean enableTinkerInventoryTab;
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;

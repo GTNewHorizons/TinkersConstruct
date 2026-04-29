@@ -23,7 +23,10 @@ import tconstruct.TConstruct;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.ArmorProxyCommon;
 import tconstruct.armor.PlayerAbilityHelper;
+import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.items.TravelGear;
+import tconstruct.compat.LoadedMods;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.AccessoryInventoryPacket;
 import tconstruct.util.network.BeltPacket;
 import tconstruct.util.network.DoubleJumpPacket;
@@ -171,10 +174,27 @@ public class ArmorControls {
     }
 
     public static boolean doBeltSwapIfPossible() {
-        if (ArmorProxyClient.armorExtended.inventory[3] != null) {
+        if (ArmorProxyClient.armorExtended.inventory[3] != null || hasBaublesTravelBelt()) {
             PlayerAbilityHelper.swapBelt(mc.thePlayer, ArmorProxyClient.armorExtended);
             toggleBelt();
             return true;
+        }
+        return false;
+    }
+
+    private static boolean hasBaublesTravelBelt() {
+        if (!LoadedMods.baubles) {
+            return false;
+        }
+        baubles.common.container.InventoryBaubles baubleInventory = baubles.common.lib.PlayerHandler
+                .getPlayerBaubles(mc.thePlayer);
+        if (baubleInventory == null || baubleInventory.stackList == null) {
+            return false;
+        }
+        for (ItemStack bauble : baubleInventory.stackList) {
+            if (bauble != null && bauble.getItem() == TinkerArmor.travelBelt) {
+                return true;
+            }
         }
         return false;
     }
@@ -197,6 +217,9 @@ public class ArmorControls {
     }
 
     public static void openArmorGui() {
+        if (!PHConstruct.enableTinkerInventoryTab) {
+            return;
+        }
         AbstractPacket packet = new AccessoryInventoryPacket(ArmorProxyCommon.armorGuiID);
         updateServer(packet);
     }

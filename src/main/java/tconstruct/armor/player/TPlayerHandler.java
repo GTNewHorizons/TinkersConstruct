@@ -33,6 +33,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import cpw.mods.fml.relauncher.Side;
 import mantle.player.PlayerUtils;
 import tconstruct.TConstruct;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
@@ -67,6 +68,7 @@ public class TPlayerHandler {
     public void onPlayerLogin(EntityPlayer player) {
         // Lookup player
         TPlayerStats stats = TPlayerStats.get(player);
+        migrateDisabledAccessoryInventory(player, stats);
 
         stats.level = player.experienceLevel;
         stats.hunger = player.getFoodStats().getFoodLevel();
@@ -170,6 +172,60 @@ public class TPlayerHandler {
                         .sendChatMessage(player, "Solution 2: Disable Auto-Smelt/Fortune interaction from TConstruct.");
             }
         }
+    }
+
+    private void migrateDisabledAccessoryInventory(EntityPlayer player, TPlayerStats stats) {
+        if (PHConstruct.enableTinkerInventoryTab || stats == null || stats.armor == null) {
+            return;
+        }
+
+        for (int slot = 0; slot < stats.armor.inventory.length; slot++) {
+            ItemStack stack = stats.armor.inventory[slot];
+            if (stack == null) continue;
+
+            ItemStack remaining = stack.copy();
+            if (LoadedMods.baubles) {
+                remaining = tryMoveToBaubles(player, remaining);
+            }
+
+            if (remaining != null && remaining.stackSize > 0) {
+                if (!player.inventory.addItemStackToInventory(remaining)) {
+                    AbilityHelper.spawnItemAtPlayer(player, remaining);
+                }
+            }
+            stats.armor.inventory[slot] = null;
+        }
+        stats.armor.recalculateHealth(player, stats);
+    }
+
+    private ItemStack tryMoveToBaubles(EntityPlayer player, ItemStack stack) {
+        if (stack == null || stack.stackSize <= 0) {
+            return null;
+        }
+        if (!(stack.getItem() instanceof baubles.api.IBauble)) {
+            return stack;
+        }
+
+        baubles.common.container.InventoryBaubles baubleInventory = baubles.common.lib.PlayerHandler
+                .getPlayerBaubles(player);
+        if (baubleInventory == null || baubleInventory.stackList == null) {
+            return stack;
+        }
+
+        ItemStack remaining = stack.copy();
+        for (int i = 0; i < baubleInventory.getSizeInventory() && remaining.stackSize > 0; i++) {
+            if (!baubleInventory.isItemValidForSlot(i, remaining)) {
+                continue;
+            }
+            ItemStack inSlot = baubleInventory.getStackInSlot(i);
+            if (inSlot == null) {
+                ItemStack placed = remaining.copy();
+                placed.stackSize = 1;
+                baubleInventory.setInventorySlotContents(i, placed);
+                remaining.stackSize -= 1;
+            }
+        }
+        return remaining.stackSize > 0 ? remaining : null;
     }
 
     void spawnPigmanModifier(EntityPlayer entityplayer) {
