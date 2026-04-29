@@ -2,7 +2,6 @@ package tconstruct.tools.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,7 +18,6 @@ import mantle.client.MProxyClient;
 import mantle.client.RenderItemCopy;
 import mantle.client.SmallFontRenderer;
 import mantle.client.gui.GuiManual;
-import mantle.client.gui.TurnPageButton;
 import mantle.client.pages.BookPage;
 import tconstruct.TConstruct;
 
@@ -41,10 +39,10 @@ public class TiCGuiManual extends GuiManual {
     int maxPages;
     BookData bData;
 
-    private boolean needUpdateAnimation;
+    private boolean isAnimationDone;
 
-    private TurnPageButton buttonNextPage;
-    private TurnPageButton buttonPreviousPage;
+    private TiCTurnPageButton buttonNextPage;
+    private TiCTurnPageButton buttonPreviousPage;
     private static ResourceLocation bookRight;// = new ResourceLocation("mantle", "textures/gui/bookright.png");
     private static ResourceLocation bookLeft;// = new ResourceLocation("mantle", "textures/gui/bookleft.png");
 
@@ -68,7 +66,7 @@ public class TiCGuiManual extends GuiManual {
         bookRight = data.rightImage;
         this.bData = data;
         this.guiOpenTime = System.currentTimeMillis();
-        this.needUpdateAnimation = true;
+        this.isAnimationDone = false;
 
         // renderitem.renderInFrame = true;
     }
@@ -86,14 +84,14 @@ public class TiCGuiManual extends GuiManual {
         int xPos = this.width / 2; // TODO Width?
         // TODO buttonList
         this.buttonList.add(
-                this.buttonNextPage = new TurnPageButton(
+                this.buttonNextPage = new TiCTurnPageButton(
                         1,
                         xPos + bookImageWidth - 50,
                         (this.height + this.bookImageHeight) / 2 - 28,
                         true,
                         bData));
         this.buttonList.add(
-                this.buttonPreviousPage = new TurnPageButton(
+                this.buttonPreviousPage = new TiCTurnPageButton(
                         2,
                         xPos - bookImageWidth + 24,
                         (this.height + this.bookImageHeight) / 2 - 28,
@@ -181,17 +179,19 @@ public class TiCGuiManual extends GuiManual {
                 1.0f,
                 Math.min(this.width * 0.8f / (this.bookImageWidth * 2), this.height * 0.8f / this.bookImageHeight));
 
-        if (this.needUpdateAnimation) {
-            float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
-            int[] point = this.getOvershootPosition(progress);
-            this.baseDrawingX = point[0];
-            this.baseDrawingY = point[1];
-            if (progress >= 1.0f) this.needUpdateAnimation = false;
+        float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
+        int[] point = this.getOvershootPosition(progress);
+        this.baseDrawingX = point[0];
+        this.baseDrawingY = point[1];
+
+        if (!this.isAnimationDone && progress >= 1.0f) {
+            this.isAnimationDone = true;
         }
 
         int drawX = (int) (this.baseDrawingX / scale);
         int drawY = (int) (this.baseDrawingY / scale / scale);
 
+        GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glScalef(scale, scale, 1.0f);
 
@@ -208,38 +208,46 @@ public class TiCGuiManual extends GuiManual {
                 this.bookImageWidth,
                 this.bookImageHeight);
 
-        if (!this.needUpdateAnimation) this.drawButtons(par1, par2, drawX + this.bookImageWidth, drawY);
+        if (this.isAnimationDone) this.drawButtons(par1, par2, scale);
 
         if (pageLeft != null) pageLeft.renderBackgroundLayer(drawX + 16, drawY + 12);
         if (pageRight != null) pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
         if (pageLeft != null) pageLeft.renderContentLayer(drawX + 16, drawY + 12, bData.isTranslatable);
         if (pageRight != null) pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
+
+        GL11.glPopMatrix();
     }
 
     /**
      * copy from {@link net.minecraft.client.gui.GuiScreen#drawScreen(int, int, float)}
      */
-    public void drawButtons(int mouseX, int mouseY, int x, int y) {
+    public void drawButtons(int mouseX, int mouseY, float scale) {
 
-        this.buttonNextPage.xPosition = (int) (x + this.bookImageWidth * 0.8);
-        this.buttonPreviousPage.xPosition = (int) (x - this.bookImageWidth * 0.9);
+        // base on `xPos + bookImageWidth - 50`, (206 - 50) / 206 ≈ 0.757 and (206 - 24) / 206 ≈ 0.883
+        this.buttonNextPage.xPosition = this.baseDrawingX + (int) (this.bookImageWidth * scale * 0.757);
+        this.buttonPreviousPage.xPosition = this.baseDrawingX - (int) (this.bookImageWidth * scale * 0.883);
 
-        this.buttonNextPage.yPosition = (int) (y + this.bookImageHeight * 0.85);
-        this.buttonPreviousPage.yPosition = (int) (y + this.bookImageHeight * 0.85);
+        // base on scale calculate the real y position of the bottom gui
+        // and base on `(this.height + this.bookImageHeight) / 2 - 28`, the default button height is 13
+        // 28 / 13 ≈ 2.15, so keep the same ratio
+        this.buttonNextPage.yPosition = (int) (this.baseDrawingY / scale)
+                + (int) ((this.bookImageHeight - 13 * 2.15) * scale);
+        this.buttonPreviousPage.yPosition = (int) (this.baseDrawingY / scale)
+                + (int) ((this.bookImageHeight - 13 * 2.15) * scale);
 
-        this.buttonNextPage.drawButton(this.mc, mouseX, mouseY);
-        this.buttonPreviousPage.drawButton(this.mc, mouseX, mouseY);
+        this.buttonNextPage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
+        this.buttonPreviousPage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
 
         // copy from @GuiScreen.drawScreen
-        int k;
+        // int k;
 
         // for (k = 0; k < this.buttonList.size(); ++k) {
         // ((GuiButton) this.buttonList.get(k)).drawButton(this.mc, mouseX, mouseY);
         // }
 
-        for (k = 0; k < this.labelList.size(); ++k) {
-            ((GuiLabel) this.labelList.get(k)).func_146159_a(this.mc, mouseX, mouseY);
-        }
+        // for (k = 0; k < this.labelList.size(); ++k) {
+        // ((GuiLabel) this.labelList.get(k)).func_146159_a(this.mc, mouseX, mouseY);
+        // }
     }
 
     public Minecraft getMC() {
