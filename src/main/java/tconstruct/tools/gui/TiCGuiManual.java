@@ -180,7 +180,7 @@ public class TiCGuiManual extends GuiManual {
                 Math.min(this.width * 0.8f / (this.bookImageWidth * 2), this.height * 0.8f / this.bookImageHeight));
 
         float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
-        int[] point = this.getOvershootPosition(progress);
+        int[] point = this.getOvershootPosition(progress, scale);
         this.baseDrawingX = point[0];
         this.baseDrawingY = point[1];
 
@@ -189,7 +189,7 @@ public class TiCGuiManual extends GuiManual {
         }
 
         int drawX = (int) (this.baseDrawingX / scale);
-        int drawY = (int) (this.baseDrawingY / scale / scale);
+        int drawY = (int) (this.baseDrawingY / scale);
 
         GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -230,10 +230,8 @@ public class TiCGuiManual extends GuiManual {
         // base on scale calculate the real y position of the bottom gui
         // and base on `(this.height + this.bookImageHeight) / 2 - 28`, the default button height is 13
         // 28 / 13 ≈ 2.15, so keep the same ratio
-        this.buttonNextPage.yPosition = (int) (this.baseDrawingY / scale)
-                + (int) ((this.bookImageHeight - 13 * 2.15) * scale);
-        this.buttonPreviousPage.yPosition = (int) (this.baseDrawingY / scale)
-                + (int) ((this.bookImageHeight - 13 * 2.15) * scale);
+        this.buttonNextPage.yPosition = this.baseDrawingY + (int) ((this.bookImageHeight - 13 * 2.15) * scale);
+        this.buttonPreviousPage.yPosition = this.baseDrawingY + (int) ((this.bookImageHeight - 13 * 2.15) * scale);
 
         this.buttonNextPage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
         this.buttonPreviousPage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
@@ -264,13 +262,12 @@ public class TiCGuiManual extends GuiManual {
      * @param progress global animation progress in [0,1], where 0 = start, 1 = end
      * @return the current (X, Y) point for the given progress
      */
-    private int[] getOvershootPosition(float progress) {
-
+    private int[] getOvershootPosition(float progress, float scale) {
         int endX = (this.width / 2);
         int startX = endX;
 
-        int endY = (this.height - this.bookImageHeight) / 2;
-        int startY = this.height + this.bookImageHeight;
+        int endY = (int) ((this.height - this.bookImageHeight * scale) / 2);
+        int startY = (int) (this.height + this.bookImageHeight * scale);
 
         // Clamp progress to [0,1]
         double t = Math.min(Math.max(progress, 0.0), 1.0);
