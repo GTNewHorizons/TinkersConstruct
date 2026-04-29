@@ -97,7 +97,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
     @Override
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals(getRecipeID())) {
-            Set<String> processedGroups = new HashSet<>();
+            Set<Integer> processedGroups = new HashSet<>();
             for (ItemMetaWrapper key : Smeltery.getSmeltingList().keySet()) {
                 loadFromWrapper(key, processedGroups);
             }
@@ -108,7 +108,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
 
     @Override
     public void loadCraftingRecipes(FluidStack result) {
-        Set<String> processedGroups = new HashSet<>();
+        Set<Integer> processedGroups = new HashSet<>();
         for (Entry<ItemMetaWrapper, FluidStack> pair : Smeltery.getSmeltingList().entrySet()) {
             if (areFluidsEqual(pair.getValue(), result)) {
                 loadFromWrapper(pair.getKey(), processedGroups);
@@ -118,7 +118,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
 
     @Override
     public void loadUsageRecipes(ItemStack ingred) {
-        Set<String> processedGroups = new HashSet<>();
+        Set<Integer> processedGroups = new HashSet<>();
         for (ItemMetaWrapper key : Smeltery.getSmeltingList().keySet()) {
             if (NEIServerUtils.areStacksSameTypeCrafting(new ItemStack(key.item, 1, key.meta), ingred)) {
                 loadFromWrapper(key, processedGroups);
@@ -126,9 +126,9 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
         }
     }
 
-    private void loadFromWrapper(ItemMetaWrapper wrapper, Set<String> processedGroups) {
-        String smeltingGroup = Smeltery.getSmeltingGroup(wrapper);
-        if (smeltingGroup != null) {
+    private void loadFromWrapper(ItemMetaWrapper wrapper, Set<Integer> processedGroups) {
+        int smeltingGroup = Smeltery.getSmeltingGroup(wrapper);
+        if (smeltingGroup != -1) {
             if (processedGroups.add(smeltingGroup)) {
                 this.arecipes.add(new CachedMeltingRecipe(Smeltery.getSmeltingGroupItems(smeltingGroup)));
             }
