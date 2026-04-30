@@ -66,6 +66,7 @@ public class TiCGuiManual extends GuiManual {
         bookRight = data.rightImage;
         this.bData = data;
         this.guiOpenTime = System.currentTimeMillis();
+        this.isAnimationDone = false;
 
         // renderitem.renderInFrame = true;
     }
@@ -178,10 +179,13 @@ public class TiCGuiManual extends GuiManual {
                 1.0f,
                 Math.min(this.width * 0.8f / (this.bookImageWidth * 2), this.height * 0.8f / this.bookImageHeight));
 
-        float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
-        int[] point = this.getOvershootPosition(progress, scale);
-        this.baseDrawingX = point[0];
-        this.baseDrawingY = point[1];
+        if (!this.isAnimationDone) {
+            float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
+            int[] point = this.getOvershootPosition(progress, scale);
+            this.baseDrawingX = point[0];
+            this.baseDrawingY = point[1];
+            if (progress >= 1) this.isAnimationDone = true;
+        }
 
         int drawX = (int) (this.baseDrawingX / scale);
         int drawY = (int) (this.baseDrawingY / scale);
