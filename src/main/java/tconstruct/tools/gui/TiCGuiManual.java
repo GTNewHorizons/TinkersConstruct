@@ -20,6 +20,7 @@ import mantle.client.SmallFontRenderer;
 import mantle.client.gui.GuiManual;
 import mantle.client.pages.BookPage;
 import tconstruct.TConstruct;
+import tconstruct.tools.gui.TiCTurnPageButton.ButtonType;
 
 @SideOnly(Side.CLIENT)
 public class TiCGuiManual extends GuiManual {
@@ -28,6 +29,7 @@ public class TiCGuiManual extends GuiManual {
     private static final double FLYIN_DURATION = 0.55; // portion for fly-in
     private static final double OVERSHOOT_DURATION = 0.1; // portion for overshoot
     private static final double EXTENT = 0.02; // overshoot amount as fraction of total displacement
+    private static final float GUIMAXPERCENTAGE = 0.75f; // The maximum percentage that the manual GUI can occupy
 
     ItemStack itemstackBook;
     Document manual;
@@ -43,8 +45,9 @@ public class TiCGuiManual extends GuiManual {
 
     private TiCTurnPageButton buttonNextPage;
     private TiCTurnPageButton buttonPreviousPage;
-    private static ResourceLocation bookRight;// = new ResourceLocation("mantle", "textures/gui/bookright.png");
-    private static ResourceLocation bookLeft;// = new ResourceLocation("mantle", "textures/gui/bookleft.png");
+    private TiCTurnPageButton buttonHomePage;
+    private static final ResourceLocation bookRight = new ResourceLocation("tinker", "textures/gui/bookright.png");
+    private static final ResourceLocation bookLeft = new ResourceLocation("tinker", "textures/gui/bookleft.png");
 
     private long guiOpenTime;
 
@@ -62,8 +65,6 @@ public class TiCGuiManual extends GuiManual {
         currentPage = 0; // Stack page
         manual = data.getDoc();
         if (data.font != null) this.fonts = data.font;
-        bookLeft = data.leftImage;
-        bookRight = data.rightImage;
         this.bData = data;
         this.guiOpenTime = System.currentTimeMillis();
         this.isAnimationDone = false;
@@ -77,25 +78,31 @@ public class TiCGuiManual extends GuiManual {
      * this.initGui(); }
      */
 
-    @SuppressWarnings("unchecked")
     public void initGui() {
         maxPages = manual.getElementsByTagName("page").getLength();
         ticUpdateText();
-        int xPos = this.width / 2; // TODO Width?
-        // TODO buttonList
+        int xPos = this.width / 2;
         this.buttonList.add(
                 this.buttonNextPage = new TiCTurnPageButton(
                         1,
                         xPos + bookImageWidth - 50,
                         (this.height + this.bookImageHeight) / 2 - 28,
-                        true,
+                        ButtonType.nextPage,
                         bData));
         this.buttonList.add(
                 this.buttonPreviousPage = new TiCTurnPageButton(
                         2,
                         xPos - bookImageWidth + 24,
                         (this.height + this.bookImageHeight) / 2 - 28,
-                        false,
+                        ButtonType.previousPage,
+                        bData));
+
+        this.buttonList.add(
+                this.buttonHomePage = new TiCTurnPageButton(
+                        3,
+                        xPos - bookImageWidth - 24,
+                        this.height - this.bookImageHeight,
+                        ButtonType.homePage,
                         bData));
         updateButtonVisibility();
     }
@@ -103,6 +110,7 @@ public class TiCGuiManual extends GuiManual {
     private void updateButtonVisibility() {
         buttonPreviousPage.visible = currentPage > 0;
         buttonNextPage.visible = currentPage < maxPages - 2;
+        buttonHomePage.visible = currentPage != 0;
     }
 
     protected void actionPerformed(GuiButton button) {
@@ -168,6 +176,9 @@ public class TiCGuiManual extends GuiManual {
         if (buttonId == 2) {
             currentPage -= 2;
         }
+        if (buttonId == 3) {
+            currentPage = 0;
+        }
     }
 
     public void drawScreen(int par1, int par2, float par3) {
@@ -176,8 +187,10 @@ public class TiCGuiManual extends GuiManual {
         // int localHeight = ((this.height - this.bookImageHeight) / 2);
 
         float scale = Math.max(
-                1.0f,
-                Math.min(this.width * 0.8f / (this.bookImageWidth * 2), this.height * 0.8f / this.bookImageHeight));
+                0.95f,
+                Math.min(
+                        this.width * GUIMAXPERCENTAGE / (this.bookImageWidth * 2),
+                        this.height * GUIMAXPERCENTAGE / this.bookImageHeight));
 
         if (!this.isAnimationDone) {
             float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
@@ -223,17 +236,24 @@ public class TiCGuiManual extends GuiManual {
     public void drawButtons(int mouseX, int mouseY, float scale) {
 
         // base on `xPos + bookImageWidth - 50`, (206 - 50) / 206 ≈ 0.757 and (206 - 24) / 206 ≈ 0.883
-        this.buttonNextPage.xPosition = this.baseDrawingX + (int) (this.bookImageWidth * scale * 0.757);
-        this.buttonPreviousPage.xPosition = this.baseDrawingX - (int) (this.bookImageWidth * scale * 0.883);
+        this.buttonNextPage.xPosition = this.baseDrawingX + (int) (this.bookImageWidth * scale * 0.8f);
+        this.buttonPreviousPage.xPosition = this.baseDrawingX - (int) (this.bookImageWidth * scale * 0.883f);
+        this.buttonHomePage.xPosition = this.baseDrawingX
+                - (int) ((this.bookImageWidth + TiCTurnPageButton.ButtonType.homePage.textureWidth * 1.15f) * scale);
 
         // base on scale calculate the real y position of the bottom gui
         // and base on `(this.height + this.bookImageHeight) / 2 - 28`, the default button height is 13
         // 28 / 13 ≈ 2.15, so keep the same ratio
-        this.buttonNextPage.yPosition = this.baseDrawingY + (int) ((this.bookImageHeight - 13 * 2.15) * scale);
-        this.buttonPreviousPage.yPosition = this.baseDrawingY + (int) ((this.bookImageHeight - 13 * 2.15) * scale);
+        int yPosition = this.baseDrawingY
+                + (int) ((this.bookImageHeight - TiCTurnPageButton.ButtonType.nextPage.textureHeight * 2.747f) * scale);
+        this.buttonNextPage.yPosition = yPosition;
+        this.buttonPreviousPage.yPosition = yPosition;
+        this.buttonHomePage.yPosition = this.baseDrawingY
+                + (int) (TiCTurnPageButton.ButtonType.homePage.textureHeight * 0.5f);
 
         this.buttonNextPage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
         this.buttonPreviousPage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
+        this.buttonHomePage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
 
         // copy from @GuiScreen.drawScreen
         // int k;

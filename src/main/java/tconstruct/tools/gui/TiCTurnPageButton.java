@@ -10,65 +10,67 @@ import mantle.books.BookData;
 
 public class TiCTurnPageButton extends GuiButton {
 
-    private final boolean nextPage;
-    private static ResourceLocation background;// = new ResourceLocation("tinker", "textures/gui/bookleft.png");
+    enum ButtonType {
 
-    public TiCTurnPageButton(int par1, int par2, int par3, boolean par4, BookData data) {
-        super(par1, par2, par3, 23, 13, "");
-        this.nextPage = par4;
-        background = data.leftImage;
-    }
+        nextPage(0, 194, 18, 10),
+        previousPage(0, 204, 18, 10),
+        homePage(0, 178, 14, 16);
 
-    public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
-        if (this.visible) {
-            boolean var4 = par2 >= this.xPosition && par3 >= this.yPosition
-                    && par2 < this.xPosition + this.width
-                    && par3 < this.yPosition + this.height;
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            par1Minecraft.getTextureManager().bindTexture(background);
-            int var5 = 0;
-            int var6 = 192;
+        int textureX;
+        int textureY;
+        int textureWidth;
+        int textureHeight;
 
-            if (var4) {
-                var5 += 23;
-            }
-
-            if (!this.nextPage) {
-                var6 += 13;
-            }
-
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, var5, var6, 23, 13);
+        ButtonType(int textureX, int textureY, int textureWidth, int textureHeight) {
+            this.textureX = textureX;
+            this.textureY = textureY;
+            this.textureWidth = textureWidth;
+            this.textureHeight = textureHeight;
         }
+
     }
 
-    public void drawButtonWithScale(Minecraft par1Minecraft, int par2, int par3, float scale) {
+    public static int ARROWCOLOR = 0xFFFFD3;
+    public static int ARROWCOLORHOVER = 0xFF541C;
+
+    private final ButtonType buttonType;
+    private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/bookleft.png");
+
+    public TiCTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType, BookData data) {
+        super(id, xPosition, yPosition, buttonType.textureWidth, buttonType.textureHeight, "");
+        this.buttonType = buttonType;
+    }
+
+    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        this.drawButtonWithScale(mc, mouseX, mouseY, 1.0f);
+    }
+
+    public void drawButtonWithScale(Minecraft mc, int mouseX, int mouseY, float scale) {
         if (this.visible) {
-            this.width = (int) (23 * scale);
-            this.height = (int) (13 * scale);
+            this.width = (int) (this.buttonType.textureWidth * scale);
+            this.height = (int) (this.buttonType.textureHeight * scale);
 
-            boolean var4 = par2 >= this.xPosition && par3 >= this.yPosition
-                    && par2 < this.xPosition + this.width
-                    && par3 < this.yPosition + this.height;
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            par1Minecraft.getTextureManager().bindTexture(background);
-            int var5 = 0;
-            int var6 = 192;
+            boolean isMouseInButton = mouseX >= this.xPosition && mouseY >= this.yPosition
+                    && mouseX < this.xPosition + this.width
+                    && mouseY < this.yPosition + this.height;
 
-            if (var4) {
-                var5 += 23;
+            mc.getTextureManager().bindTexture(background);
+
+            if (isMouseInButton) {
+                GL11.glColor4f(255f / 255, 84f / 255, 28f / 255, 1.0F);
+            } else {
+                GL11.glColor4f(255f / 255, 255f / 255, 221f / 255, 1.0F);
             }
 
-            if (!this.nextPage) {
-                var6 += 13;
-            }
             this.drawTexturedModalRect(
                     (int) (this.xPosition / scale),
                     (int) (this.yPosition / scale),
-                    var5,
-                    var6,
-                    23,
-                    13);
+                    this.buttonType.textureX,
+                    this.buttonType.textureY,
+                    this.buttonType.textureWidth,
+                    this.buttonType.textureHeight);
 
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
