@@ -311,6 +311,30 @@ public class PHConstruct {
                 .getBoolean(false);
         genOresFlat = config.get("DimBlacklist", "genOresFlat", false, "Generate ores in flat worlds")
                 .getBoolean(false);
+        slimeIslUseWhiteList = config.get(
+                "DimBlacklist",
+                "SlimeIslandUseWhitelist",
+                false,
+                "True: slime islands only generate in dimensions listed in SlimeIslandDimWhitelist; False: use blacklist behavior")
+                .getBoolean(false);
+        cfgDimWhiteList = config.get(
+                "DimBlacklist",
+                "SlimeIslandDimWhitelist",
+                new int[] { 0 },
+                "Dimension IDs where slime islands are allowed to generate (only used when SlimeIslandUseWhitelist=true)")
+                .getIntList();
+        oreBushUseWhiteList = config.get(
+                "DimBlacklist",
+                "OreBushUseWhitelist",
+                false,
+                "True: ore berry bushes only generate in dimensions listed in OreBushDimWhitelist; False: use isSurfaceWorld() check")
+                .getBoolean(false);
+        cfgOreBushWhiteList = config.get(
+                "DimBlacklist",
+                "OreBushDimWhitelist",
+                new int[] { 0 },
+                "Dimension IDs where ore berry bushes are allowed to generate (only used when OreBushUseWhitelist=true)")
+                .getIntList();
 
         // Experimental functionality
         coloredHeartRender = config
@@ -552,6 +576,10 @@ public class PHConstruct {
     public static boolean slimeIslGenDim0;
     public static boolean genIslandsFlat;
     public static boolean genOresFlat;
+    public static boolean slimeIslUseWhiteList;
+    public static int[] cfgDimWhiteList;
+    public static boolean oreBushUseWhiteList;
+    public static int[] cfgOreBushWhiteList;
 
     // Experimental functionality
     public static boolean coloredHeartRender;
