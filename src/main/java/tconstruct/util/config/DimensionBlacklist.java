@@ -34,6 +34,12 @@ public class DimensionBlacklist {
     }
 
     public static boolean isDimInBlacklist(int dim) {
+        if (PHConstruct.slimeIslUseWhiteList) {
+            for (int whitelistedDim : PHConstruct.cfgDimWhiteList) {
+                if (whitelistedDim == dim) return true;
+            }
+            return false;
+        }
         if (dim < 0) return false;
         if (dim == 0) return PHConstruct.slimeIslGenDim0;
         if (PHConstruct.slimeIslGenDim0Only) {
@@ -41,6 +47,16 @@ public class DimensionBlacklist {
         }
         for (Integer blacklistedDim : blacklistedDims) {
             if (blacklistedDim == dim) return false;
+        }
+        return true;
+    }
+
+    public static boolean isOreBushAllowedInDim(int dim) {
+        if (PHConstruct.oreBushUseWhiteList) {
+            for (int whitelistedDim : PHConstruct.cfgOreBushWhiteList) {
+                if (whitelistedDim == dim) return true;
+            }
+            return false;
         }
         return true;
     }
