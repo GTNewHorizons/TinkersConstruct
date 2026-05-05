@@ -17,7 +17,7 @@ import mantle.items.abstracts.CraftingItem;
 import tconstruct.TConstruct;
 import tconstruct.achievements.TAchievements;
 import tconstruct.library.TConstructRegistry;
-import tconstruct.tools.gui.TiCGuiManual;
+import tconstruct.library.util.TiCGuiManual;
 import tconstruct.util.McTextFormatter;
 
 public class Manual extends CraftingItem {

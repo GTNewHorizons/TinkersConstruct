@@ -1,9 +1,10 @@
-package tconstruct.tools.gui;
+package tconstruct.library.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Document;
@@ -20,7 +21,8 @@ import mantle.client.SmallFontRenderer;
 import mantle.client.gui.GuiManual;
 import mantle.client.pages.BookPage;
 import tconstruct.TConstruct;
-import tconstruct.tools.gui.TiCTurnPageButton.ButtonType;
+import tconstruct.library.TConstructRegistry;
+import tconstruct.library.util.TiCTurnPageButton.ButtonType;
 
 @SideOnly(Side.CLIENT)
 public class TiCGuiManual extends GuiManual {
@@ -46,8 +48,18 @@ public class TiCGuiManual extends GuiManual {
     private TiCTurnPageButton buttonNextPage;
     private TiCTurnPageButton buttonPreviousPage;
     private TiCTurnPageButton buttonHomePage;
-    private static final ResourceLocation bookRight = new ResourceLocation("tinker", "textures/gui/bookright.png");
-    private static final ResourceLocation bookLeft = new ResourceLocation("tinker", "textures/gui/bookleft.png");
+    private static final ResourceLocation bookRightBackGround = new ResourceLocation(
+            "tinker",
+            "textures/gui/bookrightbackground.png");
+    private static final ResourceLocation bookLeftBackGround = new ResourceLocation(
+            "tinker",
+            "textures/gui/bookleftbackground.png");
+    private static final ResourceLocation bookRightPage = new ResourceLocation(
+            "tinker",
+            "textures/gui/bookrightpage.png");
+    private static final ResourceLocation bookLeftPage = new ResourceLocation(
+            "tinker",
+            "textures/gui/bookleftpage.png");
 
     private long guiOpenTime;
 
@@ -68,6 +80,13 @@ public class TiCGuiManual extends GuiManual {
         this.bData = data;
         this.guiOpenTime = System.currentTimeMillis();
         this.isAnimationDone = false;
+
+        TConstructRegistry.toolMaterialStrings.forEach(
+                (str, tm) -> {
+                    System.out.println(
+                            str + " - " + tm.localizationString + " - " + OreDictionary.getOres(tm.localizationString));
+                });
+        System.out.println(TConstructRegistry.getItemStack("flint"));
 
         // renderitem.renderInFrame = true;
     }
@@ -204,21 +223,32 @@ public class TiCGuiManual extends GuiManual {
         int drawY = (int) (this.baseDrawingY / scale);
 
         GL11.glPushMatrix();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glScalef(scale, scale, 1.0f);
 
-        this.mc.getTextureManager().bindTexture(bookRight);
+        int backGroundColor = 0xD89A1D;
+        if (this.bData instanceof TiCBookData tbd) {
+            backGroundColor = tbd.getBookColor();
+        }
+
+        float r = ((backGroundColor >> 16) & 0xFF) / 255.0f;
+        float g = ((backGroundColor >> 8) & 0xFF) / 255.0f;
+        float b = (backGroundColor & 0xFF) / 255.0f;
+
+        GL11.glColor4f(r, g, b, 1.0F);
+        this.mc.getTextureManager().bindTexture(bookRightBackGround);
+        this.drawTexturedModalRect(drawX, drawY, 0, 0, this.bookImageWidth, this.bookImageHeight);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.getTextureManager().bindTexture(bookRightPage);
         this.drawTexturedModalRect(drawX, drawY, 0, 0, this.bookImageWidth, this.bookImageHeight);
 
-        this.mc.getTextureManager().bindTexture(bookLeft);
         drawX = drawX - this.bookImageWidth;
-        this.drawTexturedModalRect(
-                drawX,
-                drawY,
-                256 - this.bookImageWidth,
-                0,
-                this.bookImageWidth,
-                this.bookImageHeight);
+        int textureX = 256 - this.bookImageWidth;
+        GL11.glColor4f(r, g, b, 1.0F);
+        this.mc.getTextureManager().bindTexture(bookLeftBackGround);
+        this.drawTexturedModalRect(drawX, drawY, textureX, 0, this.bookImageWidth, this.bookImageHeight);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.getTextureManager().bindTexture(bookLeftPage);
+        this.drawTexturedModalRect(drawX, drawY, textureX, 0, this.bookImageWidth, this.bookImageHeight);
 
         this.drawButtons(par1, par2, scale);
 

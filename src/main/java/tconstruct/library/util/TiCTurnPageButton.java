@@ -1,4 +1,4 @@
-package tconstruct.tools.gui;
+package tconstruct.library.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -12,9 +12,10 @@ public class TiCTurnPageButton extends GuiButton {
 
     enum ButtonType {
 
-        nextPage(0, 194, 18, 10),
-        previousPage(0, 204, 18, 10),
-        homePage(0, 178, 14, 16);
+        nextPage(0, 16, 18, 10),
+        previousPage(0, 26, 18, 10),
+        backToJumpFrom(0, 36, 18, 10),
+        homePage(0, 0, 14, 16);
 
         int textureX;
         int textureY;
@@ -34,7 +35,9 @@ public class TiCTurnPageButton extends GuiButton {
     public static int ARROWCOLORHOVER = 0xFF541C;
 
     private final ButtonType buttonType;
-    private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/bookleft.png");
+    private static final ResourceLocation background = new ResourceLocation(
+            "tinker",
+            "textures/gui/bookleftbackground.png");
 
     public TiCTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType, BookData data) {
         super(id, xPosition, yPosition, buttonType.textureWidth, buttonType.textureHeight, "");
