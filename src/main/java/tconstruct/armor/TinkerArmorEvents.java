@@ -30,6 +30,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import tconstruct.TConstruct;
 import tconstruct.armor.items.TravelWings;
 import tconstruct.armor.player.TPlayerStats;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.ArmourGuiSyncPacket;
@@ -89,6 +90,18 @@ public class TinkerArmorEvents {
             // properly...
             if (ArmorProxyClient.armorExtended != null) glove = ArmorProxyClient.armorExtended.getStackInSlot(1);
             else glove = null;
+        }
+        if (glove == null && LoadedMods.baubles) {
+            baubles.common.container.InventoryBaubles baubleInventory = baubles.common.lib.PlayerHandler
+                    .getPlayerBaubles(event.entityPlayer);
+            if (baubleInventory != null && baubleInventory.stackList != null) {
+                for (ItemStack bauble : baubleInventory.stackList) {
+                    if (bauble != null && bauble.getItem() == TinkerArmor.travelGlove) {
+                        glove = bauble;
+                        break;
+                    }
+                }
+            }
         }
         // original speed <= 0 means the block shouldn't be broken, don't increase further
         if (glove == null || !glove.hasTagCompound()
