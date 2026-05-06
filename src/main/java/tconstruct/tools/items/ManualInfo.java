@@ -60,6 +60,15 @@ public class ManualInfo {
                         side == Side.CLIENT ? TProxyClient.weaponry : null,
                         "tinker:tinkerbook_green",
                         0x27CD1B));
+
+        BookDataStore.addBook(
+                initManual(
+                        new TiCBookData(),
+                        "tconstruct.manual.materialsandyou",
+                        "\u00a7o" + StatCollector.translateToLocal("manual6.tooltip"),
+                        side == Side.CLIENT ? TProxyClient.materialsandyou : null,
+                        "tinker:tinkerbook_materialsandyou",
+                        0xEB00EF));
     }
 
     public TiCBookData initManual(TiCBookData data, String unlocName, String toolTip, Document xmlDoc, String itemImage,

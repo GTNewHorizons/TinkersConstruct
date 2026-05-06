@@ -6,8 +6,6 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import mantle.books.BookData;
-
 public class TiCTurnPageButton extends GuiButton {
 
     enum ButtonType {
@@ -39,7 +37,7 @@ public class TiCTurnPageButton extends GuiButton {
             "tinker",
             "textures/gui/bookleftbackground.png");
 
-    public TiCTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType, BookData data) {
+    public TiCTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType) {
         super(id, xPosition, yPosition, buttonType.textureWidth, buttonType.textureHeight, "");
         this.buttonType = buttonType;
     }

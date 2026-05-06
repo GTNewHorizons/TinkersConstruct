@@ -1,10 +1,12 @@
 package tconstruct.library.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Document;
@@ -21,16 +23,16 @@ import mantle.client.SmallFontRenderer;
 import mantle.client.gui.GuiManual;
 import mantle.client.pages.BookPage;
 import tconstruct.TConstruct;
-import tconstruct.library.TConstructRegistry;
+import tconstruct.client.pages.NavigationPage;
 import tconstruct.library.util.TiCTurnPageButton.ButtonType;
 
 @SideOnly(Side.CLIENT)
 public class TiCGuiManual extends GuiManual {
 
     private static final int ANIMATIONDURATIONINMILLIS = 600;
-    private static final double FLYIN_DURATION = 0.55; // portion for fly-in
-    private static final double OVERSHOOT_DURATION = 0.1; // portion for overshoot
-    private static final double EXTENT = 0.02; // overshoot amount as fraction of total displacement
+    private static final float FLYIN_DURATION = 0.55f; // portion for fly-in
+    private static final float OVERSHOOT_DURATION = 0.1f; // portion for overshoot
+    private static final float EXTENT = 0.02f; // overshoot amount as fraction of total displacement
     private static final float GUIMAXPERCENTAGE = 0.75f; // The maximum percentage that the manual GUI can occupy
 
     ItemStack itemstackBook;
@@ -42,8 +44,6 @@ public class TiCGuiManual extends GuiManual {
     int currentPage;
     int maxPages;
     BookData bData;
-
-    private boolean isAnimationDone;
 
     private TiCTurnPageButton buttonNextPage;
     private TiCTurnPageButton buttonPreviousPage;
@@ -63,12 +63,15 @@ public class TiCGuiManual extends GuiManual {
 
     private long guiOpenTime;
 
+    public float scale = 1.0f;
     private int baseDrawingX;
     private int baseDrawingY;
     BookPage pageLeft;
     BookPage pageRight;
 
     public SmallFontRenderer fonts = MProxyClient.smallFontRenderer;
+
+    private List<TiCNavigationButton> navigationButtonsList;
 
     public TiCGuiManual(ItemStack stack, BookData data) {
         super(stack, data);
@@ -79,20 +82,18 @@ public class TiCGuiManual extends GuiManual {
         if (data.font != null) this.fonts = data.font;
         this.bData = data;
         this.guiOpenTime = System.currentTimeMillis();
-        this.isAnimationDone = false;
 
-        TConstructRegistry.toolMaterialStrings.forEach(
-                (str, tm) -> {
-                    System.out.println(
-                            str + " - " + tm.localizationString + " - " + OreDictionary.getOres(tm.localizationString));
-                });
-        System.out.println(TConstructRegistry.getItemStack("flint"));
+        // TConstructRegistry.toolMaterialStrings.forEach((str, tm) -> { System.out.println(str + " - " + tm.name());
+        // });
+        // PatternBuilder.instance.materials.forEach(k -> System.out.println(k.key + " - " +
+        // k.item.getUnlocalizedName()));
+        // PatternBuilder.instance.materialSets.forEach((str, mset) -> System.out.println(str + " - " + mset));
 
         // renderitem.renderInFrame = true;
     }
 
     /*
-     * @Override public void setWorldAndResolution (Minecraft minecraft, int w, int h) { this.guiParticles = new
+     * @Override publi c void setWorldAndResolution (Minecraft minecraft, int w, int h) { this.guiParticles = new
      * GuiParticle(minecraft); this.mc = minecraft; this.width = w; this.height = h; this.buttonList.clear();
      * this.initGui(); }
      */
@@ -106,23 +107,20 @@ public class TiCGuiManual extends GuiManual {
                         1,
                         xPos + bookImageWidth - 50,
                         (this.height + this.bookImageHeight) / 2 - 28,
-                        ButtonType.nextPage,
-                        bData));
+                        ButtonType.nextPage));
         this.buttonList.add(
                 this.buttonPreviousPage = new TiCTurnPageButton(
                         2,
                         xPos - bookImageWidth + 24,
                         (this.height + this.bookImageHeight) / 2 - 28,
-                        ButtonType.previousPage,
-                        bData));
+                        ButtonType.previousPage));
 
         this.buttonList.add(
                 this.buttonHomePage = new TiCTurnPageButton(
                         3,
                         xPos - bookImageWidth - 24,
                         this.height - this.bookImageHeight,
-                        ButtonType.homePage,
-                        bData));
+                        ButtonType.homePage));
         updateButtonVisibility();
     }
 
@@ -134,7 +132,11 @@ public class TiCGuiManual extends GuiManual {
 
     protected void actionPerformed(GuiButton button) {
         if (button.enabled) {
-            changePage(button.id);
+            if (button instanceof TiCTurnPageButton) {
+                changePage(button.id);
+            } else if (button instanceof TiCNavigationButton nb) {
+                TConstruct.logger.info("navigation to " + nb.target + "");
+            }
             updateButtonVisibility();
             ticUpdateText();
         }
@@ -200,24 +202,27 @@ public class TiCGuiManual extends GuiManual {
         }
     }
 
-    public void drawScreen(int par1, int par2, float par3) {
-        // aligen to center
-        // int localWidth = (this.width / 2);
-        // int localHeight = ((this.height - this.bookImageHeight) / 2);
+    public void setCurrentPage(int pageNum) {
+        this.currentPage = Math.min(Math.max(pageNum % 2 == 1 ? pageNum - 1 : pageNum, 0), maxPages - 2);
+        updateButtonVisibility();
+        ticUpdateText();
+    }
 
-        float scale = Math.max(
+    public void drawScreen(int par1, int par2, float par3) {
+        navigationButtonsList = new ArrayList<>();
+        this.buttonList.subList(3, this.buttonList.size()).clear();
+
+        this.scale = Math.max(
                 0.95f,
                 Math.min(
                         this.width * GUIMAXPERCENTAGE / (this.bookImageWidth * 2),
                         this.height * GUIMAXPERCENTAGE / this.bookImageHeight));
 
-        if (!this.isAnimationDone) {
-            float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
-            int[] point = this.getOvershootPosition(progress, scale);
-            this.baseDrawingX = point[0];
-            this.baseDrawingY = point[1];
-            if (progress >= 1) this.isAnimationDone = true;
-        }
+        float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
+
+        int[] point = this.getOvershootPosition(progress, scale);
+        this.baseDrawingX = point[0];
+        this.baseDrawingY = point[1];
 
         int drawX = (int) (this.baseDrawingX / scale);
         int drawY = (int) (this.baseDrawingY / scale);
@@ -254,8 +259,24 @@ public class TiCGuiManual extends GuiManual {
 
         if (pageLeft != null) pageLeft.renderBackgroundLayer(drawX + 16, drawY + 12);
         if (pageRight != null) pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
-        if (pageLeft != null) pageLeft.renderContentLayer(drawX + 16, drawY + 12, bData.isTranslatable);
-        if (pageRight != null) pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
+        if (pageLeft != null) {
+            if (pageLeft instanceof NavigationPage np) {
+                navigationButtonsList
+                        .addAll(np.updateButtonPositionAndRender(drawX + 16, drawY + 12, scale, par1, par2));
+            } else {
+                pageLeft.renderContentLayer(drawX + 16, drawY + 12, bData.isTranslatable);
+            }
+        }
+        if (pageRight != null) {
+            if (pageRight instanceof NavigationPage np) {
+                navigationButtonsList
+                        .addAll(np.updateButtonPositionAndRender(drawX + 220, drawY + 12, scale, par1, par2));
+            } else {
+                pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
+            }
+        }
+
+        this.buttonList.addAll(navigationButtonsList);
 
         GL11.glPopMatrix();
     }
@@ -319,29 +340,29 @@ public class TiCGuiManual extends GuiManual {
         int startY = (int) (this.height + this.bookImageHeight * scale);
 
         // Clamp progress to [0,1]
-        double t = Math.min(Math.max(progress, 0.0), 1.0);
+        float t = Math.min(Math.max(progress, 0.0f), 1.0f);
 
-        double factor; // displacement factor (0 → 1+EXTENT → 1)
+        float factor; // displacement factor (0 → 1+EXTENT → 1)
 
         if (t <= FLYIN_DURATION) {
             // Phase 1: linear fly in
-            double phaseT = t / FLYIN_DURATION; // [0,1]
+            float phaseT = t / FLYIN_DURATION; // [0,1]
             factor = phaseT;
         } else if (t <= FLYIN_DURATION + OVERSHOOT_DURATION) {
             // Phase 2: overshoot (1 → 1+EXTENT) with ease out
-            double phaseT = (t - FLYIN_DURATION) / OVERSHOOT_DURATION; // [0,1]
-            double eased = 1.0 - Math.pow(1.0 - phaseT, 2);
-            factor = 1.0 + EXTENT * eased;
+            float phaseT = (t - FLYIN_DURATION) / OVERSHOOT_DURATION; // [0,1]
+            float eased = (float) (1.0f - Math.pow(1.0f - phaseT, 2.0f));
+            factor = 1.0f + EXTENT * eased;
         } else {
             // Phase 3: correct back to target (1+EXTENT → 1) linear
-            double remaining = 1.0 - (FLYIN_DURATION + OVERSHOOT_DURATION);
-            double phaseT = (t - (FLYIN_DURATION + OVERSHOOT_DURATION)) / remaining; // [0,1]
-            double peak = 1.0 + EXTENT;
-            factor = peak + (1.0 - peak) * phaseT;
+            float remaining = 1.0f - (FLYIN_DURATION + OVERSHOOT_DURATION);
+            float phaseT = (t - (FLYIN_DURATION + OVERSHOOT_DURATION)) / remaining; // [0,1]
+            float peak = 1.0f + EXTENT;
+            factor = peak + (1.0f - peak) * phaseT;
         }
 
         // Clamp factor to reasonable range (should stay inside [0, 1+EXTENT])
-        factor = Math.min(factor, 1.0 + EXTENT);
+        factor = Math.min(factor, 1.0f + EXTENT);
 
         // Linear interpolation
         int x = (int) (startX + (endX - startX) * factor);

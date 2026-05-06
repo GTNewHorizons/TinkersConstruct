@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<book>
+<page type="cover">
+<text>tconstruct.manual.materialsandyou.homepage</text>
+</page>
+
+<page type="navigation">
+<button to="intro">tconstruct.manual.materialsandyou.jumptointro</button>
+<button to="tools">tconstruct.manual.materialsandyou.jumptotools</button>
+<button to="materials">tconstruct.manual.materialsandyou.jumptomaterials</button>
+<button to="modifies">tconstruct.manual.materialsandyou.jumptomodifies</button>
+<button to="smeltery">tconstruct.manual.materialsandyou.jumptosmeltery</button>
+<button to="bowmaterials">tconstruct.manual.materialsandyou.jumptobowmaterials</button>
+</page>
+
+</book>

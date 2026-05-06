@@ -516,6 +516,7 @@ item.tconstruct.manual.toolstation.name=Materials and You: Volume 2
 item.tconstruct.manual.smeltery.name=Mighty Smelting
 item.tconstruct.manual.diary.name=Diary of a Tinker
 item.tconstruct.manual.weaponry.name=Tinkers' Weaponry
+item.tconstruct.manual.materialsandyou.name=Materials and You
 
 item.tconstruct.bucket.name=Bucket
 item.tconstruct.bucket.Iron.name=Molten Iron Bucket
@@ -816,6 +817,7 @@ manual2.tooltip=By: Skyla
 manual3.tooltip=By: Thruul M'gon
 manual4.tooltip=By: Sheriff Bownana
 manual5.tooltip=By: Nameless Tinker
+manual5.tooltip=By: MCTBL
 searedtank1.tooltip=Contains
 searedtank2.tooltip=Keeps any fluids it has when harvested
 searedtank3.tooltip=Heart of the Smeltery
@@ -1195,3 +1197,13 @@ tconstruct.mobsinfocompat.tinkers_construct_beheading_1=If you are using a Cleav
 
 #Baubles compat (Baubles Expanded already has the relevant localizations)
 baubletype.any=Equippable in a §aRing§7 slot
+
+
+#manual text
+tconstruct.manual.materialsandyou.homepage=Materials and You\nThis is all of what you need in TiC\nBy MCTBL
+tconstruct.manual.materialsandyou.jumptointro=Introduce
+tconstruct.manual.materialsandyou.jumptotools=Tools
+tconstruct.manual.materialsandyou.jumptomaterials=Materials
+tconstruct.manual.materialsandyou.jumptomodifies=Modifies
+tconstruct.manual.materialsandyou.jumptosmeltery=Smeltery
+tconstruct.manual.materialsandyou.jumptobowmaterials=Bow Materials

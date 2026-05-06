@@ -36,6 +36,8 @@ import tconstruct.client.FlexibleToolRenderer;
 import tconstruct.client.entity.projectile.LaunchedItemRender;
 import tconstruct.client.pages.MaterialPage;
 import tconstruct.client.pages.ModifierPage;
+import tconstruct.client.pages.NavigationPage;
+import tconstruct.client.pages.TiCCoverPage;
 import tconstruct.client.pages.ToolPage;
 import tconstruct.common.TProxyCommon;
 import tconstruct.library.TConstructRegistry;
@@ -321,6 +323,9 @@ public class ToolProxyClient extends ToolProxyCommon {
         MProxyClient.registerManualPage("materialstats", MaterialPage.class);
         MProxyClient.registerManualPage("toolpage", ToolPage.class);
         MProxyClient.registerManualPage("modifier", ModifierPage.class);
+
+        MProxyClient.registerManualPage("cover", TiCCoverPage.class);
+        MProxyClient.registerManualPage("navigation", NavigationPage.class);
     }
 
     void registerManualRecipes() {

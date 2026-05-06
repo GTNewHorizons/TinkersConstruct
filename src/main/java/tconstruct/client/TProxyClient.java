@@ -57,6 +57,7 @@ public class TProxyClient extends TProxyCommon {
     public static Document volume2;
     public static Document smelter;
     public static Document weaponry;
+    public static Document materialsandyou;
     public static ManualInfo manualData;
 
     public void readManuals() {
@@ -77,6 +78,7 @@ public class TProxyClient extends TProxyCommon {
         Document volume2_cl = readManual("/assets/tinker/manuals/" + CurrentLanguage + "/materials.xml", dbFactory);
         Document smelter_cl = readManual("/assets/tinker/manuals/" + CurrentLanguage + "/smeltery.xml", dbFactory);
         Document weaponry_cl = readManual("/assets/tinker/manuals/" + CurrentLanguage + "/weaponry.xml", dbFactory);
+        Document materialsandyou_cl = readManual("/assets/tinker/manuals/materialsandyou.xml", dbFactory);
 
         diary = diary_cl != null ? diary_cl : readManual("/assets/tinker/manuals/en_US/diary.xml", dbFactory);
         volume1 = volume1_cl != null ? volume1_cl : readManual("/assets/tinker/manuals/en_US/firstday.xml", dbFactory);
@@ -84,6 +86,7 @@ public class TProxyClient extends TProxyCommon {
         smelter = smelter_cl != null ? smelter_cl : readManual("/assets/tinker/manuals/en_US/smeltery.xml", dbFactory);
         weaponry = weaponry_cl != null ? weaponry_cl
                 : readManual("/assets/tinker/manuals/en_US/weaponry.xml", dbFactory);
+        materialsandyou = materialsandyou_cl;
 
         manualData = new ManualInfo();
     }
