@@ -1,30 +1,36 @@
 package tconstruct.library.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-public class TiCTurnPageButton extends GuiButton {
+public class TiCTurnPageButton extends TiCGuiButton {
 
     enum ButtonType {
 
-        nextPage(0, 16, 18, 10),
-        previousPage(0, 26, 18, 10),
-        backToJumpFrom(0, 36, 18, 10),
-        homePage(0, 0, 14, 16);
+        nextPage(0, 16, 18, 10, "nextPage"),
+        previousPage(0, 26, 18, 10, "previousPage"),
+        backToJumpFrom(0, 36, 18, 10, "backToJumpFrom"),
+        homePage(0, 0, 14, 16, "homePage");
 
         int textureX;
         int textureY;
         int textureWidth;
         int textureHeight;
+        List<String> tooltips;
 
-        ButtonType(int textureX, int textureY, int textureWidth, int textureHeight) {
+        ButtonType(int textureX, int textureY, int textureWidth, int textureHeight, String tooltips) {
             this.textureX = textureX;
             this.textureY = textureY;
             this.textureWidth = textureWidth;
             this.textureHeight = textureHeight;
+            this.tooltips = Arrays
+                    .asList(StatCollector.translateToLocal("tconstruct.manual.button.tooltip." + tooltips));
         }
 
     }
@@ -51,9 +57,7 @@ public class TiCTurnPageButton extends GuiButton {
             this.width = (int) (this.buttonType.textureWidth * scale);
             this.height = (int) (this.buttonType.textureHeight * scale);
 
-            boolean isMouseInButton = mouseX >= this.xPosition && mouseY >= this.yPosition
-                    && mouseX < this.xPosition + this.width
-                    && mouseY < this.yPosition + this.height;
+            boolean isMouseInButton = this.isHover(mouseX, mouseY);
 
             mc.getTextureManager().bindTexture(background);
 
@@ -75,4 +79,8 @@ public class TiCTurnPageButton extends GuiButton {
         }
     }
 
+    @Override
+    public List<String> getTooltips() {
+        return this.buttonType.tooltips;
+    }
 }

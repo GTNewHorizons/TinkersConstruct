@@ -279,6 +279,17 @@ public class TiCGuiManual extends GuiManual {
         this.buttonList.addAll(navigationButtonsList);
 
         GL11.glPopMatrix();
+        this.renderTooltips(par1, par2);
+    }
+
+    void renderTooltips(int mouseX, int mouseY) {
+        List<String> tooltip = new ArrayList<String>();
+        this.buttonList.forEach(b -> {
+            if (b instanceof TiCGuiButton tgb && tgb.isHover(mouseX, mouseY)) {
+                tooltip.addAll(tgb.getTooltips());
+            }
+        });
+        this.drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
     }
 
     /**

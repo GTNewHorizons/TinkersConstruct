@@ -1199,6 +1199,14 @@ tconstruct.mobsinfocompat.tinkers_construct_beheading_1=If you are using a Cleav
 baubletype.any=Equippable in a §aRing§7 slot
 
 
+#manual button
+tconstruct.manual.button.tooltip.nextPage=Next Page
+tconstruct.manual.button.tooltip.previousPage=Previous Page
+tconstruct.manual.button.tooltip.backToJumpFrom=Back Ward
+tconstruct.manual.button.tooltip.homePage=Home Page
+tconstruct.manual.button.tooltip.navigatto=Jump to %s Page
+
+
 #manual text
 tconstruct.manual.materialsandyou.homepage=Materials and You\nThis is all of what you need in TiC\nBy MCTBL
 tconstruct.manual.materialsandyou.jumptointro=Introduce

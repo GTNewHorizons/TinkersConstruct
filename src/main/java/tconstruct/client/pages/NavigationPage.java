@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 
 import mantle.client.pages.BookPage;
 import tconstruct.library.util.TiCNavigationButton;
+import tconstruct.library.util.TiCNavigationButton.ButtonSize;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.tools.TinkerTools;
 
@@ -25,6 +26,8 @@ public class NavigationPage extends BookPage {
     private static ItemStack[] icons = new ItemStack[] { new ItemStack(TinkerTools.craftingStationWood),
             new ItemStack(Items.iron_pickaxe), new ItemStack(Items.iron_ingot), new ItemStack(Items.redstone),
             new ItemStack(TinkerSmeltery.smeltery), new ItemStack(Items.bow) };
+
+    private static final ButtonSize BS = ButtonSize.large;
 
     @Override
     public void readPageFromXML(Element element) {
@@ -40,7 +43,7 @@ public class NavigationPage extends BookPage {
             navigationButtonList.add(
                     new TiCNavigationButton(
                             buttonStartIdx + navigationButtonList.size(),
-                            TiCNavigationButton.ButtonSize.large,
+                            BS,
                             icons[idx],
                             tempText,
                             naviTo));
@@ -55,17 +58,12 @@ public class NavigationPage extends BookPage {
         int middleY = startY + 165 / 2;
         int buttonGap = 5;
 
-        int[] buttonYArray = new int[] {
-                middleY - buttonGap
-                        - (int) (TiCNavigationButton.defaultHeight * TiCNavigationButton.ButtonSize.large.multi),
+        int[] buttonYArray = new int[] { middleY - buttonGap - (int) (TiCNavigationButton.defaultHeight * BS.multi),
                 middleY + buttonGap };
         int[] buttonXArray = new int[] {
-                middleX - buttonGap
-                        - (int) (TiCNavigationButton.defaultWidth * TiCNavigationButton.ButtonSize.large.multi * 1.5f),
-                middleX - (int) (TiCNavigationButton.defaultWidth * TiCNavigationButton.ButtonSize.large.multi * 0.5),
-                middleX + buttonGap
-                        + (int) (TiCNavigationButton.defaultWidth * TiCNavigationButton.ButtonSize.large.multi
-                                * 0.5f) };
+                middleX - buttonGap - (int) (TiCNavigationButton.defaultWidth * BS.multi * 1.5f),
+                middleX - (int) (TiCNavigationButton.defaultWidth * BS.multi * 0.5),
+                middleX + buttonGap + (int) (TiCNavigationButton.defaultWidth * BS.multi * 0.5f) };
 
         for (int idx = 0; idx < navigationButtonList.size(); idx++) {
             TiCNavigationButton b = navigationButtonList.get(idx);
@@ -76,11 +74,7 @@ public class NavigationPage extends BookPage {
             b.yPosition = (int) (buttonYArray[row] * scale);
             b.drawButtonWithScale(manual.mc, mouseX, mouseY, scale, manual.fonts);
         }
-        // navigationButtonList.forEach(b -> {
-        // b.xPosition = (int) (startX * scale);
-        // b.yPosition = (int) (startY * scale);
-        // b.drawButtonWithScale(manual.mc, mouseX, mouseY, scale, manual.fonts);
-        // });
+
         return navigationButtonList;
     }
 
