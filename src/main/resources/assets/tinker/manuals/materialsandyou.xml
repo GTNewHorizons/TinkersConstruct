@@ -1,17 +1,78 @@
 <?xml version="1.0"?>
 
 <book>
-<page type="cover">
-<text>tconstruct.manual.materialsandyou.homepage</text>
-</page>
+    <page type="cover">
+        <text>tconstruct.manual.materialsandyou.homepage</text>
+    </page>
 
-<page type="navigation">
-<button to="intro">tconstruct.manual.materialsandyou.jumptointro</button>
-<button to="tools">tconstruct.manual.materialsandyou.jumptotools</button>
-<button to="materials">tconstruct.manual.materialsandyou.jumptomaterials</button>
-<button to="modifies">tconstruct.manual.materialsandyou.jumptomodifies</button>
-<button to="smeltery">tconstruct.manual.materialsandyou.jumptosmeltery</button>
-<button to="bowmaterials">tconstruct.manual.materialsandyou.jumptobowmaterials</button>
-</page>
+    <page type="navigation">
+        <button to="intro">
+            <icon>TConstruct:CraftingStation</icon>
+            <text>tconstruct.manual.materialsandyou.jumptointro</text>
+        </button>
+        <button to="tools">
+            <icon>minecraft:iron_pickaxe</icon>
+            <text>tconstruct.manual.materialsandyou.jumptotools</text>
+        </button>
+        <button to="materials">
+            <icon>minecraft:iron_ingot</icon>
+            <text>tconstruct.manual.materialsandyou.jumptomaterials</text>
+        </button>
+        <button to="modifies">
+            <icon>minecraft:redstone</icon>
+            <text>tconstruct.manual.materialsandyou.jumptomodifies</text>
+        </button>
+        <button to="smeltery">
+            <icon>TConstruct:Smeltery</icon>
+            <text>tconstruct.manual.materialsandyou.jumptosmeltery</text>
+        </button>
+        <button to="bowmaterials">
+            <icon>minecraft:bow</icon>
+            <text>tconstruct.manual.materialsandyou.jumptobowmaterials</text>
+        </button>
+    </page>
+
+    <page type="tictext">
+        <text>tconstruct.manual.materialsandyou.welcome1</text>
+    </page>
+
+    <page type="tictext">
+        <text>tconstruct.manual.materialsandyou.welcome2</text>
+    </page>
+
+    <page type="ticcrafting">
+        <text>item.tconstruct.Pattern.blank_pattern.name</text>
+        <icon>TConstruct:blankPattern</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <text>ToolStation.PatternShaper.name</text>
+        <icon>TConstruct:ToolStationBlock:10</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <text>ToolStation.Parts.name</text>
+        <icon>TConstruct:ToolStationBlock:1</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <text>ToolStation.PatternChest.name</text>
+        <icon>TConstruct:ToolStationBlock:5</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <text>ToolStation.Crafter.name</text>
+        <icon>TConstruct:ToolStationBlock</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <text>tile.ToolForge.name</text>
+        <icon>TConstruct:ToolForgeBlock</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <text>tile.Armor.DryingRack.name</text>
+        <icon>TConstruct:Armor.DryingRack</icon>
+    </page>
 
 </book>

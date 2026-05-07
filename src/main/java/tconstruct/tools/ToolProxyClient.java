@@ -38,6 +38,8 @@ import tconstruct.client.pages.MaterialPage;
 import tconstruct.client.pages.ModifierPage;
 import tconstruct.client.pages.NavigationPage;
 import tconstruct.client.pages.TiCCoverPage;
+import tconstruct.client.pages.TiCCraftingPage;
+import tconstruct.client.pages.TiCTextPage;
 import tconstruct.client.pages.ToolPage;
 import tconstruct.common.TProxyCommon;
 import tconstruct.library.TConstructRegistry;
@@ -325,6 +327,8 @@ public class ToolProxyClient extends ToolProxyCommon {
         MProxyClient.registerManualPage("modifier", ModifierPage.class);
 
         MProxyClient.registerManualPage("cover", TiCCoverPage.class);
+        MProxyClient.registerManualPage("tictext", TiCTextPage.class);
+        MProxyClient.registerManualPage("ticcrafting", TiCCraftingPage.class);
         MProxyClient.registerManualPage("navigation", NavigationPage.class);
     }
 

@@ -23,7 +23,7 @@ import mantle.client.SmallFontRenderer;
 import mantle.client.gui.GuiManual;
 import mantle.client.pages.BookPage;
 import tconstruct.TConstruct;
-import tconstruct.client.pages.NavigationPage;
+import tconstruct.client.pages.TiCButtonBookPage;
 import tconstruct.library.util.TiCTurnPageButton.ButtonType;
 
 @SideOnly(Side.CLIENT)
@@ -71,8 +71,6 @@ public class TiCGuiManual extends GuiManual {
 
     public SmallFontRenderer fonts = MProxyClient.smallFontRenderer;
 
-    private List<TiCNavigationButton> navigationButtonsList;
-
     public TiCGuiManual(ItemStack stack, BookData data) {
         super(stack, data);
         this.mc = Minecraft.getMinecraft();
@@ -107,20 +105,23 @@ public class TiCGuiManual extends GuiManual {
                         1,
                         xPos + bookImageWidth - 50,
                         (this.height + this.bookImageHeight) / 2 - 28,
-                        ButtonType.nextPage));
+                        ButtonType.nextPage,
+                        null));
         this.buttonList.add(
                 this.buttonPreviousPage = new TiCTurnPageButton(
                         2,
                         xPos - bookImageWidth + 24,
                         (this.height + this.bookImageHeight) / 2 - 28,
-                        ButtonType.previousPage));
+                        ButtonType.previousPage,
+                        null));
 
         this.buttonList.add(
                 this.buttonHomePage = new TiCTurnPageButton(
                         3,
                         xPos - bookImageWidth - 24,
                         this.height - this.bookImageHeight,
-                        ButtonType.homePage));
+                        ButtonType.homePage,
+                        null));
         updateButtonVisibility();
     }
 
@@ -132,13 +133,15 @@ public class TiCGuiManual extends GuiManual {
 
     protected void actionPerformed(GuiButton button) {
         if (button.enabled) {
-            if (button instanceof TiCTurnPageButton) {
-                changePage(button.id);
-            } else if (button instanceof TiCNavigationButton nb) {
-                TConstruct.logger.info("navigation to " + nb.target + "");
+            if (button instanceof TiCGuiButton tgb) {
+                if (tgb.parentPage != null) {
+                    tgb.parentPage.actionPerformed(button);
+                } else {
+                    changePage(button.id);
+                    updateButtonVisibility();
+                    ticUpdateText();
+                }
             }
-            updateButtonVisibility();
-            ticUpdateText();
         }
     }
 
@@ -209,7 +212,6 @@ public class TiCGuiManual extends GuiManual {
     }
 
     public void drawScreen(int par1, int par2, float par3) {
-        navigationButtonsList = new ArrayList<>();
         this.buttonList.subList(3, this.buttonList.size()).clear();
 
         this.scale = Math.max(
@@ -257,26 +259,22 @@ public class TiCGuiManual extends GuiManual {
 
         this.drawButtons(par1, par2, scale);
 
-        if (pageLeft != null) pageLeft.renderBackgroundLayer(drawX + 16, drawY + 12);
-        if (pageRight != null) pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
         if (pageLeft != null) {
-            if (pageLeft instanceof NavigationPage np) {
-                navigationButtonsList
-                        .addAll(np.updateButtonPositionAndRender(drawX + 16, drawY + 12, scale, par1, par2));
+            if (pageLeft instanceof TiCButtonBookPage tbbp) {
+                tbbp.updateButtonPositionAndRender(drawX + 16, drawY + 12, scale, par1, par2, this.buttonList);
             } else {
                 pageLeft.renderContentLayer(drawX + 16, drawY + 12, bData.isTranslatable);
+                pageLeft.renderBackgroundLayer(drawX + 16, drawY + 12);
             }
         }
         if (pageRight != null) {
-            if (pageRight instanceof NavigationPage np) {
-                navigationButtonsList
-                        .addAll(np.updateButtonPositionAndRender(drawX + 220, drawY + 12, scale, par1, par2));
+            if (pageRight instanceof TiCButtonBookPage tbbp) {
+                tbbp.updateButtonPositionAndRender(drawX + 220, drawY + 12, scale, par1, par2, this.buttonList);
             } else {
                 pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
+                pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
             }
         }
-
-        this.buttonList.addAll(navigationButtonsList);
 
         GL11.glPopMatrix();
         this.renderTooltips(par1, par2);
@@ -285,7 +283,7 @@ public class TiCGuiManual extends GuiManual {
     void renderTooltips(int mouseX, int mouseY) {
         List<String> tooltip = new ArrayList<String>();
         this.buttonList.forEach(b -> {
-            if (b instanceof TiCGuiButton tgb && tgb.isHover(mouseX, mouseY)) {
+            if (b instanceof TiCGuiButton tgb && tgb.isHover(mouseX, mouseY) && tgb.needRenderTips && tgb.visible) {
                 tooltip.addAll(tgb.getTooltips());
             }
         });
@@ -316,17 +314,6 @@ public class TiCGuiManual extends GuiManual {
         this.buttonNextPage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
         this.buttonPreviousPage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
         this.buttonHomePage.drawButtonWithScale(this.mc, mouseX, mouseY, scale);
-
-        // copy from @GuiScreen.drawScreen
-        // int k;
-
-        // for (k = 0; k < this.buttonList.size(); ++k) {
-        // ((GuiButton) this.buttonList.get(k)).drawButton(this.mc, mouseX, mouseY);
-        // }
-
-        // for (k = 0; k < this.labelList.size(); ++k) {
-        // ((GuiLabel) this.labelList.get(k)).func_146159_a(this.mc, mouseX, mouseY);
-        // }
     }
 
     public Minecraft getMC() {

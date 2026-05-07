@@ -9,9 +9,11 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import tconstruct.client.pages.TiCButtonBookPage;
+
 public class TiCTurnPageButton extends TiCGuiButton {
 
-    enum ButtonType {
+    public enum ButtonType {
 
         nextPage(0, 16, 18, 10, "nextPage"),
         previousPage(0, 26, 18, 10, "previousPage"),
@@ -43,9 +45,18 @@ public class TiCTurnPageButton extends TiCGuiButton {
             "tinker",
             "textures/gui/bookleftbackground.png");
 
-    public TiCTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType) {
-        super(id, xPosition, yPosition, buttonType.textureWidth, buttonType.textureHeight, "");
+    public TiCTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType,
+            TiCButtonBookPage parentPage) {
+        super(id, xPosition, yPosition, buttonType.textureWidth, buttonType.textureHeight, "", parentPage);
         this.buttonType = buttonType;
+    }
+
+    public int getWidth() {
+        return this.buttonType.textureWidth;
+    }
+
+    public int getHeight() {
+        return this.buttonType.textureHeight;
     }
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {

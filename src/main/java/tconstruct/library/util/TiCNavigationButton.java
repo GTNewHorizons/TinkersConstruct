@@ -1,5 +1,6 @@
 package tconstruct.library.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,12 +9,12 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import mantle.client.SmallFontRenderer;
+import tconstruct.client.pages.TiCButtonBookPage;
 
 public class TiCNavigationButton extends TiCGuiButton {
 
@@ -39,15 +40,21 @@ public class TiCNavigationButton extends TiCGuiButton {
     public String target;
     public String ButtonStr;
 
-    private final static String PATTERN = StatCollector.translateToLocal("tconstruct.manual.button.tooltip.navigatto");
-
-    public TiCNavigationButton(int id, ButtonSize bs, ItemStack s, String ButtonStr, String target) {
-        this(id, bs, s, ButtonStr, target, Arrays.asList(String.format(PATTERN, ButtonStr)));
+    public TiCNavigationButton(int id, ButtonSize bs, ItemStack s, String ButtonStr, String target,
+            TiCButtonBookPage parentPage) {
+        this(
+                id,
+                bs,
+                s,
+                ButtonStr,
+                target,
+                ButtonStr.length() != 0 ? Arrays.asList(ButtonStr) : new ArrayList<>(),
+                parentPage);
     }
 
     public TiCNavigationButton(int id, ButtonSize bs, ItemStack s, String ButtonStr, String target,
-            List<String> tooltips) {
-        super(id, 0, 0, defaultHeight, defaultWidth, "");
+            List<String> tooltips, TiCButtonBookPage parentPage) {
+        super(id, 0, 0, defaultHeight, defaultWidth, "", parentPage);
         this.bs = bs;
         this.renderStack = s;
         this.ButtonStr = ButtonStr;
@@ -99,13 +106,13 @@ public class TiCNavigationButton extends TiCGuiButton {
                 mc.renderEngine,
                 this.renderStack,
                 Math.round(this.xPosition / scale / this.bs.multi) + 2,
-                Math.round(this.yPosition / scale / this.bs.multi));
+                Math.round(this.yPosition / scale / this.bs.multi) + (this.ButtonStr.length() == 0 ? 2 : 0));
         this.itemRender.renderItemOverlayIntoGUI(
                 mc.fontRenderer,
                 mc.renderEngine,
                 this.renderStack,
                 Math.round(this.xPosition / scale / this.bs.multi) + 2,
-                Math.round(this.yPosition / scale / this.bs.multi));
+                Math.round(this.yPosition / scale / this.bs.multi) + (this.ButtonStr.length() == 0 ? 2 : 0));
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         this.itemRender.zLevel = 0.0F;

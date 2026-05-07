@@ -10,9 +10,6 @@ import mantle.client.pages.BookPage;
 
 public class TiCCoverPage extends BookPage {
 
-    // page height 165
-    // page wdith 190
-
     String[] innerText;
 
     @Override
@@ -34,8 +31,8 @@ public class TiCCoverPage extends BookPage {
     @Override
     public void renderContentLayer(int startX, int startY, boolean isTranslatable) {
 
-        int cousorX = 190 / 2;
-        int cousorY = 165 * 3 / 7;
+        int cousorX = TiCButtonBookPage.PAGECONTENTWIDTH / 2;
+        int cousorY = TiCButtonBookPage.PAGECONTENTHEIGHT * 3 / 7;
 
         float scale = 2.5f;
         GL11.glScalef(scale, scale, 1.0f);

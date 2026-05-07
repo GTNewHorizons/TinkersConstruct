@@ -2,10 +2,16 @@ package tconstruct.library.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+
+import com.google.common.collect.Maps;
 
 import mantle.lib.client.MantleClientRegistry;
 import tconstruct.library.TConstructRegistry;
@@ -19,6 +25,7 @@ public class TConstructClientRegistry {
     public static ArrayList<ToolGuiElement> toolButtons = new ArrayList<>(20);
     public static ArrayList<ToolGuiElement> tierTwoButtons = new ArrayList<>();
     public static Map<String, ItemStack> manualIcons = new HashMap<>();
+    public static Map<String, IRecipe[]> recipeIcons = Maps.newHashMap();
     public static ItemStack defaultStack = new ItemStack(Items.iron_ingot);
 
     public static void addMaterialRenderMapping(int materialID, String domain, String renderName,
@@ -112,6 +119,55 @@ public class TConstructClientRegistry {
         recipe[2] = cast;
         MantleClientRegistry.recipeIcons.put(name, recipe);
     }
+
+    public static boolean checkHadManualIconRegistered(String name) {
+        return manualIcons.containsKey(name);
+    }
+
+    public static void registerManualIcon(String name, ItemStack stack) {
+        manualIcons.put(name, stack);
+    }
+
+    public static ItemStack getManualIcon(String name) {
+        return manualIcons.get(name);
+    }
+
+    public static ItemStack getOrRegisterManualIcon(String name) {
+        if (!checkHadManualIconRegistered(name)) {
+            String[] icon = name.split(":");
+            String iconStackName = name;
+            int iconDamage = 0;
+            if (icon.length == 3) {
+                iconStackName = icon[0] + ":" + icon[1];
+                iconDamage = Integer.parseInt(icon[2]);
+            }
+            ItemStack tempStack = new ItemStack((Item) Item.itemRegistry.getObject(iconStackName), 1, iconDamage);
+            registerManualIcon(name, tempStack);
+        }
+        return getManualIcon(name);
+    }
+
+    public static IRecipe[] getOrRegisterRecipeIcon(String name) {
+        if (!recipeIcons.containsKey(name)) {
+            ItemStack outPutStack = getOrRegisterManualIcon(name);
+            List<IRecipe> recipes = new ArrayList<>();
+            for (IRecipe i : CraftingManager.getInstance().getRecipeList()) {
+                ItemStack output = i.getRecipeOutput();
+                if (output != null && output.isItemEqual(outPutStack)) recipes.add(i);
+            }
+            recipeIcons.put(name, recipes.toArray(new IRecipe[] {}));
+        }
+        return recipeIcons.get(name);
+    }
+
+    // private static ItemStack[] combine(ItemStack single, ItemStack[] array) {
+    // ItemStack[] result = new ItemStack[1 + array.length];
+    // result[0] = single;
+    // for (int i = 0; i < array.length; i++) {
+    // result[i + 1] = array[i];
+    // }
+    // return result;
+    // }
 
     // Gui
     public static void addStencilButton(StencilGuiElement element) {

@@ -4,12 +4,18 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 
+import tconstruct.client.pages.TiCButtonBookPage;
+
 public abstract class TiCGuiButton extends GuiButton {
 
+    public TiCButtonBookPage parentPage;
     public List<String> toolTips;
+    public boolean needRenderTips = true;
 
-    public TiCGuiButton(int stateName, int id, int p_i1021_3_, int p_i1021_4_, int p_i1021_5_, String p_i1021_6_) {
+    public TiCGuiButton(int stateName, int id, int p_i1021_3_, int p_i1021_4_, int p_i1021_5_, String p_i1021_6_,
+            TiCButtonBookPage parentPage) {
         super(stateName, id, p_i1021_3_, p_i1021_4_, p_i1021_5_, p_i1021_6_);
+        this.parentPage = parentPage;
     }
 
     public boolean isHover(int mouseX, int mouseY) {
