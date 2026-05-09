@@ -1217,8 +1217,16 @@ tconstruct.manual.materialsandyou.jumptobowmaterials=Bow Materials
 
 tconstruct.manual.materialsandyou.welcome1=Welcome to the §mfirst§r second edition of Materials and You: Surviving the first day and beyond. Within these pages you will find the first steps to making the tools and materials you need to survive.\n\nThis book is a magic copy; it updates whenever the original has been modified. Check back occasionally for information on new things.
 tconstruct.manual.materialsandyou.welcome2=The first step in making tools is crafting a blank pattern. It is a blank slate to stamp a shape into, providing a reference for future creations. The patterns are shaped on the Stencil Table or are used as tabletops.\n\nYou can then shape a material in a part builder with the pattern, then combine parts in the tool station. Patterns can be stored and accessed in the pattern chest.\n\nTogether these make the Tool Workshop. It is recommended you keep all of these nearby when using any of them.
+tconstruct.manual.materialsandyou.oreberrydesc=Oreberry Bushes\n\nSometime in your travels you will happen upon the bush known as the Oreberry. They grow underground in dark areas, and require close to complete darkness to produce anything.\n\nThe berries can be melted down into nuggets and ingots, making them an invaluable source of metals.
+tconstruct.manual.materialsandyou.oreberrypic=Oreberries in their natural environment
+tconstruct.manual.materialsandyou.slimechannels=Slime Channels\n\nSlime channels are useful for moving items or entities around. They are used as a sort of easily placeable water and can be paired with bounce pads for best effect.
+tconstruct.manual.materialsandyou.trap=A few traps or blockades may help with your early survival experience
+tconstruct.manual.materialsandyou.smelterydesc=Once you're well established, you can begin to process metals in a more efficient manner. The scope of the smeltery is beyond this volume, but a few recipes will help you get started.\n\nNote: The Smeltery is required to process all metals, including iron.
+tconstruct.manual.materialsandyou.makenewbook=If you ever find yourself without this book, a new one is simple to make. Other books can be made from this one as well.
+
 
 tconstruct.manual.materialsandyou.recipetype.ShapedOreRecipe=Shaped Ore Recipe
 tconstruct.manual.materialsandyou.recipetype.ShapelessOreRecipe=Shapeless Ore Recipe
-tconstruct.manual.materialsandyou.recipetype.ShapedRecipes=Shaped Recipes
-tconstruct.manual.materialsandyou.recipetype.ShapelessRecipes=Shapeless Recipes
+tconstruct.manual.materialsandyou.recipetype.ShapedRecipes=Shaped Recipe
+tconstruct.manual.materialsandyou.recipetype.ShapelessRecipes=Shapeless Recipe
+tconstruct.manual.materialsandyou.recipetype.FurnaceRecipes=Furnace Recipe

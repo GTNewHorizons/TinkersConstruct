@@ -41,38 +41,116 @@
     </page>
 
     <page type="ticcrafting">
-        <text>item.tconstruct.Pattern.blank_pattern.name</text>
         <icon>TConstruct:blankPattern</icon>
     </page>
 
     <page type="ticcrafting">
-        <text>ToolStation.PatternShaper.name</text>
         <icon>TConstruct:ToolStationBlock:10</icon>
     </page>
 
     <page type="ticcrafting">
-        <text>ToolStation.Parts.name</text>
         <icon>TConstruct:ToolStationBlock:1</icon>
     </page>
 
     <page type="ticcrafting">
-        <text>ToolStation.PatternChest.name</text>
         <icon>TConstruct:ToolStationBlock:5</icon>
     </page>
 
     <page type="ticcrafting">
-        <text>ToolStation.Crafter.name</text>
         <icon>TConstruct:ToolStationBlock</icon>
     </page>
 
     <page type="ticcrafting">
-        <text>tile.ToolForge.name</text>
         <icon>TConstruct:ToolForgeBlock</icon>
     </page>
 
     <page type="ticcrafting">
-        <text>tile.Armor.DryingRack.name</text>
         <icon>TConstruct:Armor.DryingRack</icon>
+    </page>
+
+    <page type="tictext">
+        <text>tconstruct.manual.materialsandyou.oreberrydesc</text>
+    </page>
+
+    <page type="ticpicture">
+        <text>tconstruct.manual.materialsandyou.oreberrypic</text>
+        <location>tinker:manuals/oreberries.png</location>
+    </page>
+
+    <page type="tictext">
+        <text>tconstruct.manual.materialsandyou.slimechannels</text>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:slime.channel</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:slime.pad</icon>
+    </page>
+
+    <page type="tictext">
+        <text>tconstruct.manual.materialsandyou.trap</text>
+    </page>
+    
+    <page type="ticcrafting">
+        <icon>TConstruct:trap.punji</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:trap.barricade.oak</icon>
+    </page>
+    
+    <page type="tictext">
+        <text>tconstruct.manual.materialsandyou.smelterydesc</text>
+    </page>
+    
+    <page type="ticcrafting">
+        <icon>TConstruct:CraftedSoil:1</icon>
+    </page>
+    
+    <page type="ticcrafting">
+        <icon>TConstruct:materials:2</icon>
+    </page>
+    
+    <page type="ticcrafting">
+        <icon>TConstruct:Smeltery:2</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:Smeltery</icon>
+    </page>
+    
+    <page type="tictext">
+        <text>tconstruct.manual.materialsandyou.makenewbook</text>
+    </page>
+    
+    <page type="ticcrafting">
+        <icon>minecraft:book</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:manualBook</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:manualBook:1</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:manualBook:2</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:manualBook:3</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:manualBook:4</icon>
+    </page>
+
+    <page type="ticcrafting">
+        <icon>TConstruct:manualBook:5</icon>
     </page>
 
 </book>

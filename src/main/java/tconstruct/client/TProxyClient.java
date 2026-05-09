@@ -16,7 +16,6 @@ import net.minecraft.util.ResourceLocation;
 
 import org.w3c.dom.Document;
 
-import cpw.mods.fml.common.Loader;
 import mantle.client.SmallFontRenderer;
 import mantle.lib.client.MantleClientRegistry;
 import tconstruct.TConstruct;
@@ -64,9 +63,9 @@ public class TProxyClient extends TProxyCommon {
         initManualIcons();
         initManualRecipes();
         initManualPages();
-        if (!Loader.isModLoaded("dreamcraft")) {
-            readTinkersConstructManuals();
-        }
+        // if (!Loader.isModLoaded("dreamcraft")) {
+        readTinkersConstructManuals();
+        // }
     }
 
     private void readTinkersConstructManuals() {

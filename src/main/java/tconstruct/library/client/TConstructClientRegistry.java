@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 
 import com.google.common.collect.Maps;
@@ -17,6 +19,7 @@ import mantle.lib.client.MantleClientRegistry;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.tools.ToolCore;
+import tconstruct.util.TiCRecipeHolder;
 
 public class TConstructClientRegistry {
 
@@ -25,7 +28,7 @@ public class TConstructClientRegistry {
     public static ArrayList<ToolGuiElement> toolButtons = new ArrayList<>(20);
     public static ArrayList<ToolGuiElement> tierTwoButtons = new ArrayList<>();
     public static Map<String, ItemStack> manualIcons = new HashMap<>();
-    public static Map<String, IRecipe[]> recipeIcons = Maps.newHashMap();
+    public static Map<String, TiCRecipeHolder[]> recipeIcons = Maps.newHashMap();
     public static ItemStack defaultStack = new ItemStack(Items.iron_ingot);
 
     public static void addMaterialRenderMapping(int materialID, String domain, String renderName,
@@ -147,27 +150,23 @@ public class TConstructClientRegistry {
         return getManualIcon(name);
     }
 
-    public static IRecipe[] getOrRegisterRecipeIcon(String name) {
+    public static TiCRecipeHolder[] getOrRegisterRecipeIcon(String name) {
         if (!recipeIcons.containsKey(name)) {
             ItemStack outPutStack = getOrRegisterManualIcon(name);
-            List<IRecipe> recipes = new ArrayList<>();
+            List<TiCRecipeHolder> recipes = new ArrayList<>();
             for (IRecipe i : CraftingManager.getInstance().getRecipeList()) {
                 ItemStack output = i.getRecipeOutput();
-                if (output != null && output.isItemEqual(outPutStack)) recipes.add(i);
+                if (output != null && output.isItemEqual(outPutStack)) recipes.add(new TiCRecipeHolder(i));
             }
-            recipeIcons.put(name, recipes.toArray(new IRecipe[] {}));
+
+            for (Entry<ItemStack, ItemStack> t : FurnaceRecipes.smelting().getSmeltingList().entrySet()) {
+                if (t.getValue().isItemEqual(outPutStack)) recipes.add(new TiCRecipeHolder(t.getKey(), t.getValue()));
+            }
+
+            recipeIcons.put(name, recipes.toArray(new TiCRecipeHolder[] {}));
         }
         return recipeIcons.get(name);
     }
-
-    // private static ItemStack[] combine(ItemStack single, ItemStack[] array) {
-    // ItemStack[] result = new ItemStack[1 + array.length];
-    // result[0] = single;
-    // for (int i = 0; i < array.length; i++) {
-    // result[i + 1] = array[i];
-    // }
-    // return result;
-    // }
 
     // Gui
     public static void addStencilButton(StencilGuiElement element) {
