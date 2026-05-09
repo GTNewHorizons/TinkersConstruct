@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
@@ -33,18 +32,18 @@ public class TiCRecipeHolder {
 
     public enum RecipeType {
 
-        ShapedOre("ShapedOreRecipe", ShapedOreRecipe.class),
-        ShapelessOre("ShapelessOreRecipe", ShapelessOreRecipe.class),
-        Shaped("ShapedRecipes", ShapedRecipes.class),
-        Shapeless("ShapelessRecipes", ShapelessRecipes.class),
-        Furnace("FurnaceRecipes", FurnaceRecipes.class);
+        ShapedOre("ShapedOreRecipe"),
+        ShapelessOre("ShapelessOreRecipe"),
+        Shaped("ShapedRecipes"),
+        Shapeless("ShapelessRecipes"),
+        Furnace("FurnaceRecipes"),
+        ToolStation("ToolStationRecipe"),
+        ToolForge("ToolForgeRecipe");
 
         public String type;
-        public Class<?> clz;
 
-        private RecipeType(String t, Class<?> clz) {
+        private RecipeType(String t) {
             this.type = t;
-            this.clz = clz;
         }
 
     }
@@ -116,11 +115,15 @@ public class TiCRecipeHolder {
     }
 
     public TiCRecipeHolder(ItemStack input, ItemStack output) {
-        this.inputStacks = new ItemStack[][] { { input } };
+        this(new ItemStack[] { input }, output, RecipeType.Furnace);
+    }
+
+    public TiCRecipeHolder(ItemStack[] input, ItemStack output, RecipeType t) {
+        this.inputStacks = new ItemStack[][] { input };
         this.outputStack = output;
         this.varietyOfOre = 1;
         this.recipeSize = 0;
-        this.recipeType = RecipeType.Furnace;
+        this.recipeType = t;
     }
 
 }

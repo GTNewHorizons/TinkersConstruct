@@ -20,6 +20,7 @@ import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.util.TiCRecipeHolder;
+import tconstruct.util.TiCRecipeHolder.RecipeType;
 
 public class TConstructClientRegistry {
 
@@ -150,6 +151,13 @@ public class TConstructClientRegistry {
         return getManualIcon(name);
     }
 
+    public static ItemStack getOrRegisterManualIcon(String name, ItemStack stack) {
+        if (!checkHadManualIconRegistered(name)) {
+            registerManualIcon(name, stack);
+        }
+        return getManualIcon(name);
+    }
+
     public static TiCRecipeHolder[] getOrRegisterRecipeIcon(String name) {
         if (!recipeIcons.containsKey(name)) {
             ItemStack outPutStack = getOrRegisterManualIcon(name);
@@ -166,6 +174,13 @@ public class TConstructClientRegistry {
             recipeIcons.put(name, recipes.toArray(new TiCRecipeHolder[] {}));
         }
         return recipeIcons.get(name);
+    }
+
+    public static void registerTiCToolRecipeIcon(String name, ItemStack[] inputs, ItemStack output, RecipeType type) {
+        if (!recipeIcons.containsKey(name)) {
+            getOrRegisterManualIcon(name, output);
+            recipeIcons.put(name, new TiCRecipeHolder[] { new TiCRecipeHolder(inputs, output, type) });
+        }
     }
 
     // Gui

@@ -10,20 +10,40 @@ import net.minecraft.util.StatCollector;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import mantle.books.BookData;
 import tconstruct.TConstruct;
 import tconstruct.library.client.TConstructClientRegistry;
+import tconstruct.library.util.TiCBookData;
+import tconstruct.library.util.TiCGuiManual;
 import tconstruct.library.util.TiCNavigationButton;
 import tconstruct.library.util.TiCNavigationButton.ButtonSize;
+import tconstruct.util.McTextFormatter;
 
 public class NavigationPage extends TiCButtonBookPage {
 
-    private static final ButtonSize BS = ButtonSize.large;
+    private static final String namePrefix = "tconstruct.manual.materialsandyou.navigation.";
+
+    private ButtonSize BS;
+
+    private String title;
 
     @Override
     public void readPageFromXML(Element element) {
         this.pageButtonList = new ArrayList<>();
+
+        String size = element.getAttribute("size");
+        this.BS = ButtonSize.getSize(size);
+
+        String name = element.getAttribute("name");
+        if (StatCollector.canTranslate(namePrefix + name)) {
+            this.title = StatCollector.translateToLocal(namePrefix + name);
+        } else {
+            this.title = name;
+        }
+
         NodeList buttonList = element.getElementsByTagName("button");
-        for (int idx = 0; idx < buttonList.getLength(); idx++) {
+        int length = buttonList.getLength();
+        for (int idx = 0; idx < length; idx++) {
             Element b = (Element) buttonList.item(idx);
 
             String naviTo = b.getAttribute("to");
@@ -33,33 +53,46 @@ public class NavigationPage extends TiCButtonBookPage {
             String iconStr = b.getElementsByTagName("icon").item(0).getTextContent();
             ItemStack iconStack = TConstructClientRegistry.getOrRegisterManualIcon(iconStr);
 
-            this.pageButtonList.add(new TiCNavigationButton(0, BS, iconStack, tempText, naviTo, this));
+            this.pageButtonList.add(new TiCNavigationButton(0, this.BS, iconStack, tempText, naviTo, this));
         }
     }
 
     public void updateButtonPositionAndRender(int startX, int startY, float scale, int mouseX, int mouseY,
             List<GuiButton> parentButtonList) {
-        // 2 row and 3 column
+        if (title != null) this.drawStrCenterAt(
+                McTextFormatter.addUnderLine(title),
+                startX + PAGECONTENTWIDTH / 2,
+                startY + 4,
+                1.0f,
+                0x000000);
 
         int middleX = startX + PAGECONTENTWIDTH / 2;
         int middleY = startY + PAGECONTENTHEIGHT / 2;
+
+        int buttonWidth = (int) (TiCNavigationButton.defaultWidth * BS.multi);
+        int buttonHeight = (int) (TiCNavigationButton.defaultHeight * BS.multi);
+        // int buttonGap = buttonWidth / 8;
         int buttonGap = 5;
 
-        int[] buttonYArray = new int[] { middleY - buttonGap - (int) (TiCNavigationButton.defaultHeight * BS.multi),
-                middleY + buttonGap };
-        int[] buttonXArray = new int[] {
-                middleX - buttonGap - (int) (TiCNavigationButton.defaultWidth * BS.multi * 1.5f),
-                middleX - (int) (TiCNavigationButton.defaultWidth * BS.multi * 0.5),
-                middleX + buttonGap + (int) (TiCNavigationButton.defaultWidth * BS.multi * 0.5f) };
+        int buttonRows = this.pageButtonList.size() / this.BS.buttonEachRow;
+
+        int buttonsGroupHeight = buttonRows * buttonHeight + (buttonRows - 1) * buttonGap;
+        int buttonsGroupWidth = this.BS.buttonEachRow * buttonWidth + (this.BS.buttonEachRow - 1) * buttonGap;
+
+        int buttonsGroupStartX = middleX - buttonsGroupWidth / 2;
+        int buttonsGroupStartY = middleY - buttonsGroupHeight / 2;
 
         for (int idx = 0; idx < this.pageButtonList.size(); idx++) {
             TiCNavigationButton b = (TiCNavigationButton) this.pageButtonList.get(idx);
-            int row = idx / 3;
-            int column = idx % 3;
+            int row = idx / this.BS.buttonEachRow;
+            int column = idx % this.BS.buttonEachRow;
+
+            int buttonX = buttonsGroupStartX + column * (buttonWidth + buttonGap);
+            int buttonY = buttonsGroupStartY + row * (buttonHeight + buttonGap);
 
             b.id = idx + parentButtonList.size();
-            b.xPosition = (int) (buttonXArray[column] * scale);
-            b.yPosition = (int) (buttonYArray[row] * scale);
+            b.xPosition = (int) (buttonX * scale);
+            b.yPosition = (int) (buttonY * scale);
             b.drawButtonWithScale(manual.mc, mouseX, mouseY, scale, manual.fonts);
         }
 
@@ -69,9 +102,16 @@ public class NavigationPage extends TiCButtonBookPage {
     }
 
     @Override
-    public void actionPerformed(GuiButton button) {
+    public void actionPerformed(GuiButton button, BookData d) {
         TiCNavigationButton b = (TiCNavigationButton) button;
-        TConstruct.logger.info(b.target + " is clicked");
+        if (d instanceof TiCBookData tcbd) {
+            int pageIndex = tcbd.getIndexFromName(b.target);
+            if (pageIndex != -1) {
+                ((TiCGuiManual) manual).setCurrentPage(pageIndex);
+            } else {
+                TConstruct.logger.error("There's no page name " + b.target);
+            }
+        }
 
     }
 

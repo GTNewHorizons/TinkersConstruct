@@ -97,4 +97,24 @@ public class ToolRecipe {
     public ToolCore getType() {
         return result;
     }
+
+    public LinkedList<Item> getHeadList() {
+        return headList;
+    }
+
+    public LinkedList<Item> getHandleList() {
+        return handleList;
+    }
+
+    public LinkedList<Item> getAccessoryList() {
+        return accessoryList;
+    }
+
+    public LinkedList<Item> getExtraList() {
+        return extraList;
+    }
+
+    public Item getToolRod() {
+        return toolRod;
+    }
 }

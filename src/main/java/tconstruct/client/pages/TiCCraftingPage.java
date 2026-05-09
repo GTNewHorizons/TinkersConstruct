@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL12;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import mantle.books.BookData;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.util.TiCTurnPageButton;
 import tconstruct.library.util.TiCTurnPageButton.ButtonType;
@@ -226,7 +227,7 @@ public class TiCCraftingPage extends TiCButtonBookPage {
     }
 
     @Override
-    public void actionPerformed(GuiButton button) {
+    public void actionPerformed(GuiButton button, BookData d) {
         TiCTurnPageButton b = (TiCTurnPageButton) button;
         if (b == this.previousRecipeButton) {
             this.selectedIdx -= 1;

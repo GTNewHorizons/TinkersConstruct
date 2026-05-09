@@ -20,19 +20,34 @@ public class TiCNavigationButton extends TiCGuiButton {
 
     public enum ButtonSize {
 
-        small(0.5f),
-        large(2f),
-        medium(1f);
+        small(0.5f, 7),
+        large(2f, 3),
+        medium(1f, 5);
 
         public float multi;
+        public int buttonEachRow;
 
-        ButtonSize(float multi) {
+        ButtonSize(float multi, int eachRow) {
             this.multi = multi;
+            this.buttonEachRow = eachRow;
+        }
+
+        public static ButtonSize getSize(String s) {
+            switch (s) {
+                case "large":
+                    return large;
+                case "small":
+                    return small;
+                case "medium":
+                    return medium;
+                default:
+                    return large;
+            }
         }
     }
 
-    public static int defaultHeight = 20;
-    public static int defaultWidth = 20;
+    public static final int defaultHeight = 20;
+    public static final int defaultWidth = 20;
 
     RenderItem itemRender = new RenderItem();
     ButtonSize bs;

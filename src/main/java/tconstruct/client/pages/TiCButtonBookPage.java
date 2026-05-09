@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
+import mantle.books.BookData;
 import mantle.client.pages.BookPage;
 import tconstruct.library.util.TiCGuiButton;
 import tconstruct.util.ItemStackWithPosition;
@@ -36,7 +37,7 @@ public abstract class TiCButtonBookPage extends BookPage {
         this.updateButtonPositionAndRender(localheight, localheight, 1.0f, 0, 0, null);
     }
 
-    public void actionPerformed(GuiButton button) {}
+    public void actionPerformed(GuiButton button, BookData b) {}
 
     void drawStrCenterAt(String str, int X, int Y, float scale, int color) {
         manual.fonts.drawString(
