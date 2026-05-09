@@ -1043,9 +1043,12 @@ public class TinkerWorld {
         ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST)
                 .addItem(new WeightedRandomChestContent(new ItemStack(TinkerArmor.heartCanister, 1, 1), 1, 1, 10));
 
-        TinkerWorld.tinkerHouseChest = new ChestGenHooks("TinkerHouse", new WeightedRandomChestContent[0], 3, 27);
+        TinkerWorld.tinkerHouseChest = ChestGenHooks.getInfo("TinkerHouse");
+        TinkerWorld.tinkerHouseChest.setMin(3);
+        TinkerWorld.tinkerHouseChest.setMax(27);
         TinkerWorld.tinkerHouseChest
                 .addItem(new WeightedRandomChestContent(new ItemStack(TinkerArmor.heartCanister, 1, 1), 1, 1, 1));
+
         int[] validTypes = { 0, 1, 2, 3, 4, 5, 6, 8, 9, 13, 14, 17 };
         Item[] partTypes = { TinkerTools.pickaxeHead, TinkerTools.shovelHead, TinkerTools.hatchetHead,
                 TinkerTools.binding, TinkerTools.swordBlade, TinkerTools.wideGuard, TinkerTools.handGuard,
@@ -1059,7 +1062,9 @@ public class TinkerWorld {
             }
         }
 
-        TinkerWorld.tinkerHousePatterns = new ChestGenHooks("TinkerPatterns", new WeightedRandomChestContent[0], 5, 30);
+        TinkerWorld.tinkerHousePatterns = ChestGenHooks.getInfo("TinkerPatterns");
+        TinkerWorld.tinkerHousePatterns.setMin(5);
+        TinkerWorld.tinkerHousePatterns.setMax(30);
         for (int i = 0; i < 13; i++) {
             TinkerWorld.tinkerHousePatterns.addItem(
                     new WeightedRandomChestContent(new ItemStack(TinkerTools.woodPattern, 1, i + 1), 1, 3, 20));
