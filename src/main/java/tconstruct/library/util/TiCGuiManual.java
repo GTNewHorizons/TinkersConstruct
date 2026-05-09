@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -138,10 +139,21 @@ public class TiCGuiManual extends GuiManual {
                     tgb.parentPage.actionPerformed(button);
                 } else {
                     changePage(button.id);
-                    updateButtonVisibility();
-                    ticUpdateText();
                 }
             }
+        }
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) {
+        // right arrow is 205
+        // left arrow is 203
+        if (keyCode == 205) {
+            this.turnToNextPage();
+        } else if (keyCode == 203) {
+            this.turnToPreviousPage();
+        } else {
+            super.keyTyped(typedChar, keyCode);
         }
     }
 
@@ -193,16 +205,37 @@ public class TiCGuiManual extends GuiManual {
         }
     }
 
+    @Override
+    public void handleMouseInput() {
+        int scrollAmount = Mouse.getEventDWheel();
+
+        if (scrollAmount > 0) {
+            this.turnToPreviousPage();
+        } else if (scrollAmount < 0) {
+            this.turnToNextPage();
+        } else {
+            super.handleMouseInput();
+        }
+    }
+
     private void changePage(int buttonId) {
         if (buttonId == 1) {
-            currentPage += 2;
+            this.turnToNextPage();
         }
         if (buttonId == 2) {
-            currentPage -= 2;
+            this.turnToPreviousPage();
         }
         if (buttonId == 3) {
-            currentPage = 0;
+            this.setCurrentPage(0);
         }
+    }
+
+    public void turnToNextPage() {
+        this.setCurrentPage(this.currentPage + 2);
+    }
+
+    public void turnToPreviousPage() {
+        this.setCurrentPage(this.currentPage - 2);
     }
 
     public void setCurrentPage(int pageNum) {
