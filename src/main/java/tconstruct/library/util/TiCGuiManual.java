@@ -296,16 +296,21 @@ public class TiCGuiManual extends GuiManual {
             if (pageLeft instanceof TiCButtonBookPage tbbp) {
                 tbbp.updateButtonPositionAndRender(drawX + 16, drawY + 12, scale, par1, par2, this.buttonList);
             } else {
-                pageLeft.renderContentLayer(drawX + 16, drawY + 12, bData.isTranslatable);
                 pageLeft.renderBackgroundLayer(drawX + 16, drawY + 12);
+                pageLeft.renderContentLayer(drawX + 16, drawY + 12, bData.isTranslatable);
+                // because of some mantel page will draw some string in content
+                // and it will set color to 0x000000, so reset it
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
         }
+
         if (pageRight != null) {
             if (pageRight instanceof TiCButtonBookPage tbbp) {
                 tbbp.updateButtonPositionAndRender(drawX + 220, drawY + 12, scale, par1, par2, this.buttonList);
             } else {
-                pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
                 pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
+                pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
         }
 

@@ -4,6 +4,8 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 
+import org.lwjgl.opengl.GL11;
+
 import mantle.client.pages.BookPage;
 import tconstruct.library.util.TiCGuiButton;
 
@@ -31,4 +33,13 @@ public abstract class TiCButtonBookPage extends BookPage {
     }
 
     public void actionPerformed(GuiButton button) {}
+
+    void drawStrCenterAt(String str, int X, int Y, float scale, int color) {
+        manual.fonts.drawString(
+                str,
+                (int) (X / scale - manual.fonts.getStringWidth(str) / 2),
+                (int) ((Y - manual.fonts.FONT_HEIGHT / 2) / scale),
+                color);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    }
 }

@@ -60,14 +60,6 @@ public class TiCCraftingPage extends TiCButtonBookPage {
         this.counter = 0;
     }
 
-    private void drawStrCenterAt(String str, int X, int Y, float scale, int color) {
-        manual.fonts.drawString(
-                str,
-                (int) (X / scale - manual.fonts.getStringWidth(str) / 2),
-                (int) ((Y - manual.fonts.FONT_HEIGHT / 2) / scale),
-                color);
-    }
-
     @Override
     public void updateButtonPosition(int startX, int startY, float scale, int mouseX, int mouseY,
             List<GuiButton> parentButtonList) {
@@ -144,9 +136,11 @@ public class TiCCraftingPage extends TiCButtonBookPage {
     }
 
     private void render22CraftingRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe) {
-
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
+
+        manual.getMC().getTextureManager().bindTexture(craftingTableBackground);
+        manual.drawTexturedModalRect(startX + 8, startY + 46, 0, 116, 154, 78);
 
         beforeRenderItem();
 
@@ -173,15 +167,14 @@ public class TiCCraftingPage extends TiCButtonBookPage {
         }
 
         afterRenderItem();
-
-        manual.getMC().getTextureManager().bindTexture(craftingTableBackground);
-        manual.drawTexturedModalRect(startX + 8, startY + 46, 0, 116, 154, 78);
     }
 
     private void render33CraftingRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe) {
-
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
+
+        manual.getMC().getTextureManager().bindTexture(craftingTableBackground);
+        manual.drawTexturedModalRect(startX + (side != 1 ? 6 : 0) - 8, startY + 28, 0, 0, 183, 114);
 
         beforeRenderItem();
 
@@ -209,14 +202,14 @@ public class TiCCraftingPage extends TiCButtonBookPage {
         }
 
         afterRenderItem();
-
-        manual.getMC().getTextureManager().bindTexture(craftingTableBackground);
-        manual.drawTexturedModalRect(startX + (side != 1 ? 6 : 0) - 8, startY + 28, 0, 0, 183, 114);
     }
 
     private void renderFurnaceRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe) {
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
+
+        manual.getMC().getTextureManager().bindTexture(furnaceBackground);
+        manual.drawTexturedModalRect(startX + 32, startY + 32, 0, 0, 111, 114);
 
         beforeRenderItem();
 
@@ -248,9 +241,6 @@ public class TiCCraftingPage extends TiCButtonBookPage {
                 String.valueOf(outputStack.stackSize));
 
         afterRenderItem();
-
-        manual.getMC().getTextureManager().bindTexture(furnaceBackground);
-        manual.drawTexturedModalRect(startX + 32, startY + 32, 0, 0, 111, 114);
     }
 
     @Override

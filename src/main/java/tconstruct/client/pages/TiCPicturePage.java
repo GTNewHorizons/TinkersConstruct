@@ -5,7 +5,6 @@ import static mantle.lib.CoreRepo.logger;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
-import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -41,7 +40,6 @@ public class TiCPicturePage extends BookPage {
 
     public void renderBackgroundLayer(int localWidth, int localHeight) {
         if (background != null) {
-            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             manual.getMC().getTextureManager().bindTexture(background);
 
             manual.drawTexturedModalRect(
