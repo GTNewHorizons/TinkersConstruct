@@ -315,10 +315,10 @@ public class TiCGuiManual extends GuiManual {
         }
 
         GL11.glPopMatrix();
-        this.renderTooltips(par1, par2);
+        this.renderButtonAndStackTooltips(par1, par2);
     }
 
-    void renderTooltips(int mouseX, int mouseY) {
+    void renderButtonAndStackTooltips(int mouseX, int mouseY) {
         List<String> tooltip = new ArrayList<String>();
         this.buttonList.forEach(b -> {
             if (b instanceof TiCGuiButton tgb && tgb.isHover(mouseX, mouseY) && tgb.needRenderTips && tgb.visible) {
@@ -326,6 +326,22 @@ public class TiCGuiManual extends GuiManual {
             }
         });
         this.drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
+
+        if (pageLeft != null && pageLeft instanceof TiCButtonBookPage tbbp) {
+            tbbp.pageItemStackList.forEach(t -> {
+                if (t.isHovered(mouseX, mouseY)) {
+                    this.renderToolTip(t.getItemStack(), mouseX, mouseY);
+                }
+            });
+        }
+
+        if (pageRight != null && pageRight instanceof TiCButtonBookPage tbbp) {
+            tbbp.pageItemStackList.forEach(t -> {
+                if (t.isHovered(mouseX, mouseY)) {
+                    this.renderToolTip(t.getItemStack(), mouseX, mouseY);
+                }
+            });
+        }
     }
 
     /**

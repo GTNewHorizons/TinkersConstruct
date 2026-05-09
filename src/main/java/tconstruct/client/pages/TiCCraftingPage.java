@@ -17,6 +17,7 @@ import org.w3c.dom.NodeList;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.util.TiCTurnPageButton;
 import tconstruct.library.util.TiCTurnPageButton.ButtonType;
+import tconstruct.util.ItemStackWithPosition;
 import tconstruct.util.McTextFormatter;
 import tconstruct.util.TiCRecipeHolder;
 import tconstruct.util.TiCRecipeHolder.RecipeType;
@@ -41,6 +42,8 @@ public class TiCCraftingPage extends TiCButtonBookPage {
     long lastUpdate;
     int counter;
 
+    final static ItemStack fuel = TConstructClientRegistry.getOrRegisterManualIcon("minecraft:coal");
+
     @Override
     public void readPageFromXML(Element element) {
         this.pageButtonList = new ArrayList<>();
@@ -58,6 +61,7 @@ public class TiCCraftingPage extends TiCButtonBookPage {
 
         this.lastUpdate = System.currentTimeMillis();
         this.counter = 0;
+
     }
 
     @Override
@@ -79,6 +83,7 @@ public class TiCCraftingPage extends TiCButtonBookPage {
     @Override
     public void render(int startX, int startY, float scale, int mouseX, int mouseY, List<GuiButton> parentButtonList) {
         this.maxRecipesSize = 1;
+        this.pageItemStackList.clear();
 
         this.previousRecipeButton.drawButtonWithScale(manual.mc, mouseX, mouseY, scale);
         this.nextRecipeButton.drawButtonWithScale(manual.mc, mouseX, mouseY, scale);
@@ -106,11 +111,11 @@ public class TiCCraftingPage extends TiCButtonBookPage {
             this.drawStrCenterAt(craftingType, startX + PAGECONTENTWIDTH / 2, startY + 15, 1.0f, 0x000000);
 
             if (selectedRecipe.recipeType == RecipeType.Furnace) {
-                renderFurnaceRecipe(startX, startY, selectedRecipe);
+                renderFurnaceRecipe(startX, startY, selectedRecipe, scale);
             } else {
                 switch (selectedRecipe.recipeSize) {
-                    case 2 -> render22CraftingRecipe(startX, startY, selectedRecipe);
-                    case 3 -> render33CraftingRecipe(startX, startY, selectedRecipe);
+                    case 2 -> render22CraftingRecipe(startX, startY, selectedRecipe, scale);
+                    case 3 -> render33CraftingRecipe(startX, startY, selectedRecipe, scale);
                 }
             }
 
@@ -135,7 +140,7 @@ public class TiCCraftingPage extends TiCButtonBookPage {
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }
 
-    private void render22CraftingRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe) {
+    private void render22CraftingRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe, float scale) {
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
 
@@ -144,32 +149,30 @@ public class TiCCraftingPage extends TiCButtonBookPage {
 
         beforeRenderItem();
 
-        manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts,
-                manual.getMC().renderEngine,
-                outputStack,
-                (startX + 126) / 2,
-                (startY + 68) / 2);
-        if (outputStack.stackSize > 1) manual.renderitem.renderItemOverlayIntoGUI(
-                manual.fonts,
-                manual.getMC().renderEngine,
-                outputStack,
-                (startX + 126) / 2,
-                (startY + 68) / 2,
-                String.valueOf(outputStack.stackSize));
+        renderItemStackIntoPage(outputStack, (startX + 126) / 2, (startY + 68) / 2);
+        this.pageItemStackList
+                .add(new ItemStackWithPosition(outputStack, (startX + 126) / 2, (startY + 68) / 2, 2 * scale));
+
         for (int i = 0; i < inputStacks.length; i++) {
-            if (inputStacks[i] != null) manual.renderitem.renderItemAndEffectIntoGUI(
-                    manual.fonts,
-                    manual.getMC().renderEngine,
-                    inputStacks[i][this.counter % inputStacks[i].length],
-                    (startX + 14 + 36 * (i % 2)) / 2,
-                    (startY + 36 * (i / 2) + 52) / 2);
+            if (inputStacks[i] != null && inputStacks[i][0] != null) {
+                ItemStack renderStack = inputStacks[i][this.counter % inputStacks[i].length];
+                renderItemStackIntoPage(
+                        renderStack,
+                        (startX + 14 + 36 * (i % 2)) / 2,
+                        (startY + 36 * (i / 2) + 52) / 2);
+                this.pageItemStackList.add(
+                        new ItemStackWithPosition(
+                                renderStack,
+                                (startX + 14 + 36 * (i % 2)) / 2,
+                                (startY + 36 * (i / 2) + 52) / 2,
+                                2 * scale));
+            }
         }
 
         afterRenderItem();
     }
 
-    private void render33CraftingRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe) {
+    private void render33CraftingRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe, float scale) {
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
 
@@ -179,32 +182,28 @@ public class TiCCraftingPage extends TiCButtonBookPage {
         beforeRenderItem();
 
         int biasX = startX + (side != 1 ? 6 : 0);
-        manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts,
-                manual.getMC().renderEngine,
-                outputStack,
-                (biasX + 138) / 2,
-                (startY + 70) / 2);
-        if (outputStack.stackSize > 1) manual.renderitem.renderItemOverlayIntoGUI(
-                manual.fonts,
-                manual.getMC().renderEngine,
-                outputStack,
-                (biasX + 138) / 2,
-                (startY + 68) / 2,
-                String.valueOf(outputStack.stackSize));
+
+        renderItemStackIntoPage(outputStack, (biasX + 138) / 2, (startY + 70) / 2);
+        this.pageItemStackList
+                .add(new ItemStackWithPosition(outputStack, (biasX + 138) / 2, (startY + 70) / 2, 2 * scale));
+
         for (int i = 0; i < inputStacks.length; i++) {
-            if (inputStacks[i] != null) manual.renderitem.renderItemAndEffectIntoGUI(
-                    manual.fonts,
-                    manual.getMC().renderEngine,
-                    inputStacks[i][this.counter % inputStacks[i].length],
-                    (biasX - 2 + 36 * (i % 3)) / 2,
-                    (startY + 36 * (i / 3) + 34) / 2);
+            if (inputStacks[i] != null && inputStacks[i][0] != null) {
+                ItemStack renderStack = inputStacks[i][this.counter % inputStacks[i].length];
+                renderItemStackIntoPage(renderStack, (biasX - 2 + 36 * (i % 3)) / 2, (startY + 36 * (i / 3) + 34) / 2);
+                this.pageItemStackList.add(
+                        new ItemStackWithPosition(
+                                renderStack,
+                                (biasX - 2 + 36 * (i % 3)) / 2,
+                                (startY + 36 * (i / 3) + 34) / 2,
+                                2 * scale));
+            }
         }
 
         afterRenderItem();
     }
 
-    private void renderFurnaceRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe) {
+    private void renderFurnaceRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe, float scale) {
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
 
@@ -213,32 +212,15 @@ public class TiCCraftingPage extends TiCButtonBookPage {
 
         beforeRenderItem();
 
-        manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts,
-                manual.getMC().renderEngine,
-                TConstructClientRegistry.getOrRegisterManualIcon("minecraft:coal"),
-                (startX + 38) / 2,
-                (startY + 110) / 2);
-        manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts,
-                manual.getMC().renderEngine,
-                outputStack,
-                (startX + 106) / 2,
-                (startY + 74) / 2);
-        manual.renderitem.renderItemAndEffectIntoGUI(
-                manual.fonts,
-                manual.getMC().renderEngine,
-                inputStacks[0][0],
-                (startX + 38) / 2,
-                (startY + 38) / 2);
+        renderItemStackIntoPage(fuel, (startX + 38) / 2, (startY + 110) / 2);
+        renderItemStackIntoPage(outputStack, (startX + 106) / 2, (startY + 74) / 2);
+        renderItemStackIntoPage(inputStacks[0][0], (startX + 38) / 2, (startY + 38) / 2);
 
-        if (outputStack.stackSize > 1) manual.renderitem.renderItemOverlayIntoGUI(
-                manual.fonts,
-                manual.getMC().renderEngine,
-                outputStack,
-                (startX + 106) / 2,
-                (startY + 74) / 2,
-                String.valueOf(outputStack.stackSize));
+        this.pageItemStackList.add(new ItemStackWithPosition(fuel, (startX + 38) / 2, (startY + 110) / 2, 2 * scale));
+        this.pageItemStackList
+                .add(new ItemStackWithPosition(outputStack, (startX + 106) / 2, (startY + 74) / 2, 2 * scale));
+        this.pageItemStackList
+                .add(new ItemStackWithPosition(inputStacks[0][0], (startX + 38) / 2, (startY + 38) / 2, 2 * scale));
 
         afterRenderItem();
     }

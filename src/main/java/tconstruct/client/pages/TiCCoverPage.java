@@ -26,6 +26,7 @@ public class TiCCoverPage extends BookPage {
                 (int) (X / scale - manual.fonts.getStringWidth(str) / 2),
                 (int) ((Y - manual.fonts.FONT_HEIGHT / 2) / scale),
                 color);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     @Override

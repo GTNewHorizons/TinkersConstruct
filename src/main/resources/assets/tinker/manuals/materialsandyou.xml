@@ -153,4 +153,8 @@
         <icon>TConstruct:manualBook:5</icon>
     </page>
 
+    <page type="tictoolpages" name="tools">
+        
+    </page>
+
 </book>
