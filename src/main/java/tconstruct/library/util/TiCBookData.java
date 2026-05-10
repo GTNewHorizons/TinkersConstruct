@@ -1,5 +1,6 @@
 package tconstruct.library.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import mantle.books.BookData;
@@ -20,7 +22,7 @@ import tconstruct.util.TiCRecipeHolder.RecipeType;
 
 public class TiCBookData extends BookData {
 
-    private static final String ToolPagesTag = "tictoolpages";
+    private static final String ToolPagesButtonTag = "tictoolbuttons";
 
     private final Map<Element, List<Element>> replaceMap = new HashMap<>();
 
@@ -87,24 +89,43 @@ public class TiCBookData extends BookData {
         }
     }
 
+    private void replaceElementWithMultiple(Element target, List<Element> newElements) {
+        Node parent = target.getParentNode();
+        Node nextSibling = target.getNextSibling();
+
+        parent.removeChild(target);
+
+        while (nextSibling != null && nextSibling.getNodeType() != Node.ELEMENT_NODE) {
+            nextSibling = nextSibling.getNextSibling();
+        }
+
+        for (int i = 0; i < newElements.size(); i++) {
+            parent.insertBefore(newElements.get(i), nextSibling);
+        }
+    }
+
     private void processGenerate() {
-        replaceMap.clear();
+        this.replaceMap.clear();
         if (this.doc != null) {
             NodeList pages = this.doc.getElementsByTagName("page");
             int pagesSize = pages.getLength();
             for (int idx = 0; idx < pagesSize; idx++) {
                 Element e = (Element) pages.item(idx);
-                if (e.getAttribute("type").equals(ToolPagesTag)) {
-                    // replaceMap.put(e, generateTools(e));
-                    generateTools(e);
+                if (e.getAttribute("type").equals(ToolPagesButtonTag)) {
+                    replaceMap.put(e, generateTools(e));
                 }
             }
         }
+
+        replaceMap.entrySet().forEach((e) -> replaceElementWithMultiple(e.getKey(), e.getValue()));
+
     }
 
-    private void generateTools(Element parent) {
-        for (ToolRecipe r : ToolBuilder.instance.combos) {
+    private List<Element> generateTools(Element parent) {
+        List<Element> newPages = new ArrayList<>();
+        newPages.add(parent);
 
+        for (ToolRecipe r : ToolBuilder.instance.combos) {
             ItemStack head = r.getHeadList().size() != 0
                     ? new ItemStack(r.getHeadList().getFirst(), 1, TinkerTools.MaterialID.Cobalt)
                     : null;
@@ -128,7 +149,7 @@ public class TiCBookData extends BookData {
 
             TConstructClientRegistry.registerTiCToolRecipeIcon(
                     toolUnlocalizedName,
-                    new ItemStack[] { head, handle, accessory, extra },
+                    new ItemStack[][] { new ItemStack[] {head}, new ItemStack[] {handle}, new ItemStack[] {accessory}, new ItemStack[] {extra} },
                     output,
                     extra != null ? RecipeType.ToolForge : RecipeType.ToolStation);
 
@@ -144,9 +165,19 @@ public class TiCBookData extends BookData {
             newB.appendChild(itemStack);
             newB.appendChild(desc);
             parent.appendChild(newB);
+
+            Element newP = this.doc.createElement("page");
+            newP.setAttribute("type", "ticcrafting");
+            newP.setAttribute("name", toolUnlocalizedName);
+
+            itemStack = this.doc.createElement("icon");
+            itemStack.setTextContent(toolUnlocalizedName);
+            newP.appendChild(itemStack);
+            newPages.add(newP);
         }
         parent.setAttribute("type", "navigation");
 
+        return newPages;
     }
 
 }

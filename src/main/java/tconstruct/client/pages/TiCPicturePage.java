@@ -44,7 +44,7 @@ public class TiCPicturePage extends BookPage {
 
             manual.drawTexturedModalRect(
                     localWidth,
-                    localHeight + (TiCButtonBookPage.PAGECONTENTHEIGHT - 120) / 2,
+                    localHeight + (TiCBookPage.PAGECONTENTHEIGHT - 120) / 2,
                     0,
                     0,
                     170,

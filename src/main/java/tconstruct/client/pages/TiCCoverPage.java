@@ -32,8 +32,8 @@ public class TiCCoverPage extends BookPage {
     @Override
     public void renderContentLayer(int startX, int startY, boolean isTranslatable) {
 
-        int cousorX = TiCButtonBookPage.PAGECONTENTWIDTH / 2;
-        int cousorY = TiCButtonBookPage.PAGECONTENTHEIGHT * 3 / 7;
+        int cousorX = TiCBookPage.PAGECONTENTWIDTH / 2;
+        int cousorY = TiCBookPage.PAGECONTENTHEIGHT * 3 / 7;
 
         float scale = 2.5f;
         GL11.glScalef(scale, scale, 1.0f);

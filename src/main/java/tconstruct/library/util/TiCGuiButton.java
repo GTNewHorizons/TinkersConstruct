@@ -4,16 +4,16 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 
-import tconstruct.client.pages.TiCButtonBookPage;
+import tconstruct.client.pages.TiCBookPage;
 
 public abstract class TiCGuiButton extends GuiButton {
 
-    public TiCButtonBookPage parentPage;
+    public TiCBookPage parentPage;
     public List<String> toolTips;
     public boolean needRenderTips = true;
 
     public TiCGuiButton(int stateName, int id, int p_i1021_3_, int p_i1021_4_, int p_i1021_5_, String p_i1021_6_,
-            TiCButtonBookPage parentPage) {
+            TiCBookPage parentPage) {
         super(stateName, id, p_i1021_3_, p_i1021_4_, p_i1021_5_, p_i1021_6_);
         this.parentPage = parentPage;
     }

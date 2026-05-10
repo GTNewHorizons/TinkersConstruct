@@ -23,7 +23,7 @@ import tconstruct.util.McTextFormatter;
 import tconstruct.util.TiCRecipeHolder;
 import tconstruct.util.TiCRecipeHolder.RecipeType;
 
-public class TiCCraftingPage extends TiCButtonBookPage {
+public class TiCCraftingPage extends TiCBookPage {
 
     String title;
     TiCRecipeHolder[] recipes;
@@ -40,10 +40,16 @@ public class TiCCraftingPage extends TiCButtonBookPage {
             "mantle",
             "textures/gui/bookfurnace.png");
 
+    private static final ResourceLocation toolStationForgeBackground = new ResourceLocation(
+            "tinker",
+            "textures/gui/bookmodifyandstation.png");
+
     long lastUpdate;
     int counter;
 
     final static ItemStack fuel = TConstructClientRegistry.getOrRegisterManualIcon("minecraft:coal");
+    
+    final static int[][] toolStationOrForgePosition = new int[][] {{28, 28}, {28, 3}, {3, 24}, {7, 50}, {49, 50}, {53, 24}};
 
     @Override
     public void readPageFromXML(Element element) {
@@ -113,12 +119,15 @@ public class TiCCraftingPage extends TiCButtonBookPage {
 
             if (selectedRecipe.recipeType == RecipeType.Furnace) {
                 renderFurnaceRecipe(startX, startY, selectedRecipe, scale);
-            } else {
-                switch (selectedRecipe.recipeSize) {
-                    case 2 -> render22CraftingRecipe(startX, startY, selectedRecipe, scale);
-                    case 3 -> render33CraftingRecipe(startX, startY, selectedRecipe, scale);
-                }
-            }
+            } else if (selectedRecipe.recipeType == RecipeType.ToolForge
+                    || selectedRecipe.recipeType == RecipeType.ToolStation) {
+                        renderToolStationOrForgeRecipe(startX, startY, selectedRecipe, scale);
+                    } else {
+                        switch (selectedRecipe.recipeSize) {
+                            case 2 -> render22CraftingRecipe(startX, startY, selectedRecipe, scale);
+                            case 3 -> render33CraftingRecipe(startX, startY, selectedRecipe, scale);
+                        }
+                    }
 
         }
 
@@ -128,17 +137,32 @@ public class TiCCraftingPage extends TiCButtonBookPage {
     }
 
     private void beforeRenderItem() {
-        GL11.glScalef(2f, 2f, 2f);
+    	beforeRenderItem(2.0F);
+    }
+    
+    private void beforeRenderItem(float scale) {
+    	beforeRenderItem(scale, 100);
+    }
+    
+    private void beforeRenderItem(float scale, int z) {
+        GL11.glPushMatrix();
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glScalef(scale, scale, 2.0F);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableGUIStandardItemLighting();
-        manual.renderitem.zLevel = 100;
+        manual.renderitem.zLevel = z;
     }
 
     private void afterRenderItem() {
+    	afterRenderItem(2.0F);
+    }
+    
+    private void afterRenderItem(float scale) {
         manual.renderitem.zLevel = 0;
-        GL11.glScalef(0.5F, 0.5F, 0.5F);
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopAttrib();
+        GL11.glPopMatrix();
     }
 
     private void render22CraftingRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe, float scale) {
@@ -224,6 +248,41 @@ public class TiCCraftingPage extends TiCButtonBookPage {
                 .add(new ItemStackWithPosition(inputStacks[0][0], (startX + 38) / 2, (startY + 38) / 2, 2 * scale));
 
         afterRenderItem();
+    }
+
+    private void renderToolStationOrForgeRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe, float scale) {
+        ItemStack[][] inputStacks = selectedRecipe.inputStacks;
+        ItemStack outputStack = selectedRecipe.outputStack;
+
+        int recipeStartX = startX + PAGECONTENTWIDTH - 72 - 15;
+        int recipeStartY = startY + PAGECONTENTHEIGHT - 69 - 15;
+
+        manual.getMC().getTextureManager().bindTexture(toolStationForgeBackground);
+        manual.drawTexturedModalRect(recipeStartX + 12, recipeStartY + 12, 208, (selectedRecipe.recipeType == RecipeType.ToolForge ? 48 : 0), 48, 48);
+        
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.85F);
+        manual.drawTexturedModalRect(recipeStartX, recipeStartY, 0, 0, 72, 69);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        
+        int idx = 0;
+        
+        beforeRenderItem(1.0F);
+        
+        renderItemStackIntoPage(outputStack, recipeStartX + toolStationOrForgePosition[idx][0], recipeStartY + toolStationOrForgePosition[idx][1]);
+        this.pageItemStackList
+                .add(new ItemStackWithPosition(outputStack, recipeStartX + toolStationOrForgePosition[idx][0], recipeStartY + toolStationOrForgePosition[idx][1], scale));
+        idx += 1;
+        
+        for(ItemStack[] l : inputStacks) {
+        	if(l[0] != null) {
+                renderItemStackIntoPage(l[0], recipeStartX + toolStationOrForgePosition[idx][0], recipeStartY + toolStationOrForgePosition[idx][1]);
+                this.pageItemStackList
+                        .add(new ItemStackWithPosition(l[0], recipeStartX + toolStationOrForgePosition[idx][0], recipeStartY + toolStationOrForgePosition[idx][1], scale));
+                idx += 1;
+        	}
+        }
+        
+        afterRenderItem(1.0F);
     }
 
     @Override

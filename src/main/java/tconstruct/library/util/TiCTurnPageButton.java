@@ -9,7 +9,7 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import tconstruct.client.pages.TiCButtonBookPage;
+import tconstruct.client.pages.TiCBookPage;
 
 public class TiCTurnPageButton extends TiCGuiButton {
 
@@ -45,8 +45,7 @@ public class TiCTurnPageButton extends TiCGuiButton {
             "tinker",
             "textures/gui/bookleftbackground.png");
 
-    public TiCTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType,
-            TiCButtonBookPage parentPage) {
+    public TiCTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType, TiCBookPage parentPage) {
         super(id, xPosition, yPosition, buttonType.textureWidth, buttonType.textureHeight, "", parentPage);
         this.buttonType = buttonType;
     }

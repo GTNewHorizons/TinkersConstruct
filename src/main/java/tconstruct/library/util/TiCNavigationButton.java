@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import mantle.client.SmallFontRenderer;
-import tconstruct.client.pages.TiCButtonBookPage;
+import tconstruct.client.pages.TiCBookPage;
 
 public class TiCNavigationButton extends TiCGuiButton {
 
@@ -56,7 +56,7 @@ public class TiCNavigationButton extends TiCGuiButton {
     public String ButtonStr;
 
     public TiCNavigationButton(int id, ButtonSize bs, ItemStack s, String ButtonStr, String target,
-            TiCButtonBookPage parentPage) {
+            TiCBookPage parentPage) {
         this(
                 id,
                 bs,
@@ -68,7 +68,7 @@ public class TiCNavigationButton extends TiCGuiButton {
     }
 
     public TiCNavigationButton(int id, ButtonSize bs, ItemStack s, String ButtonStr, String target,
-            List<String> tooltips, TiCButtonBookPage parentPage) {
+            List<String> tooltips, TiCBookPage parentPage) {
         super(id, 0, 0, defaultHeight, defaultWidth, "", parentPage);
         this.bs = bs;
         this.renderStack = s;

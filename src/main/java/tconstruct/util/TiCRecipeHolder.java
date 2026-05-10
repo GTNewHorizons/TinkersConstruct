@@ -115,11 +115,11 @@ public class TiCRecipeHolder {
     }
 
     public TiCRecipeHolder(ItemStack input, ItemStack output) {
-        this(new ItemStack[] { input }, output, RecipeType.Furnace);
+        this(new ItemStack[][] { {input} }, output, RecipeType.Furnace);
     }
 
-    public TiCRecipeHolder(ItemStack[] input, ItemStack output, RecipeType t) {
-        this.inputStacks = new ItemStack[][] { input };
+    public TiCRecipeHolder(ItemStack[][] input, ItemStack output, RecipeType t) {
+        this.inputStacks = input;
         this.outputStack = output;
         this.varietyOfOre = 1;
         this.recipeSize = 0;

@@ -24,7 +24,7 @@ import mantle.client.SmallFontRenderer;
 import mantle.client.gui.GuiManual;
 import mantle.client.pages.BookPage;
 import tconstruct.TConstruct;
-import tconstruct.client.pages.TiCButtonBookPage;
+import tconstruct.client.pages.TiCBookPage;
 import tconstruct.library.util.TiCTurnPageButton.ButtonType;
 
 @SideOnly(Side.CLIENT)
@@ -291,25 +291,25 @@ public class TiCGuiManual extends GuiManual {
         this.drawButtons(par1, par2, scale);
 
         if (pageLeft != null) {
-            if (pageLeft instanceof TiCButtonBookPage tbbp) {
+            if (pageLeft instanceof TiCBookPage tbbp) {
                 tbbp.updateButtonPositionAndRender(drawX + 16, drawY + 12, scale, par1, par2, this.buttonList);
             } else {
                 pageLeft.renderBackgroundLayer(drawX + 16, drawY + 12);
                 pageLeft.renderContentLayer(drawX + 16, drawY + 12, bData.isTranslatable);
-                // because of some mantel page will draw some string in content
-                // and it will set color to 0x000000, so reset it
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
+            // because of some mantel page will draw some string in content
+            // and it will set color to 0x000000, so reset it
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
 
         if (pageRight != null) {
-            if (pageRight instanceof TiCButtonBookPage tbbp) {
+            if (pageRight instanceof TiCBookPage tbbp) {
                 tbbp.updateButtonPositionAndRender(drawX + 220, drawY + 12, scale, par1, par2, this.buttonList);
             } else {
                 pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
                 pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
 
         GL11.glPopMatrix();
@@ -325,7 +325,7 @@ public class TiCGuiManual extends GuiManual {
         });
         this.drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 
-        if (pageLeft != null && pageLeft instanceof TiCButtonBookPage tbbp) {
+        if (pageLeft != null && pageLeft instanceof TiCBookPage tbbp) {
             tbbp.pageItemStackList.forEach(t -> {
                 if (t.isHovered(mouseX, mouseY)) {
                     this.renderToolTip(t.getItemStack(), mouseX, mouseY);
@@ -333,7 +333,7 @@ public class TiCGuiManual extends GuiManual {
             });
         }
 
-        if (pageRight != null && pageRight instanceof TiCButtonBookPage tbbp) {
+        if (pageRight != null && pageRight instanceof TiCBookPage tbbp) {
             tbbp.pageItemStackList.forEach(t -> {
                 if (t.isHovered(mouseX, mouseY)) {
                     this.renderToolTip(t.getItemStack(), mouseX, mouseY);

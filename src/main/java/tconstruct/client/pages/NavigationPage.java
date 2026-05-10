@@ -19,7 +19,7 @@ import tconstruct.library.util.TiCNavigationButton;
 import tconstruct.library.util.TiCNavigationButton.ButtonSize;
 import tconstruct.util.McTextFormatter;
 
-public class NavigationPage extends TiCButtonBookPage {
+public class NavigationPage extends TiCBookPage {
 
     private static final String namePrefix = "tconstruct.manual.materialsandyou.navigation.";
 

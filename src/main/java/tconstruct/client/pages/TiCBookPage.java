@@ -13,7 +13,7 @@ import mantle.client.pages.BookPage;
 import tconstruct.library.util.TiCGuiButton;
 import tconstruct.util.ItemStackWithPosition;
 
-public abstract class TiCButtonBookPage extends BookPage {
+public abstract class TiCBookPage extends BookPage {
 
     public static final int PAGECONTENTHEIGHT = 165;
     public static final int PAGECONTENTWIDTH = 190;
@@ -49,6 +49,8 @@ public abstract class TiCButtonBookPage extends BookPage {
     }
 
     void renderItemStackIntoPage(ItemStack stack, int x, int y) {
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glPushMatrix();
         manual.renderitem.renderItemAndEffectIntoGUI(manual.fonts, manual.getMC().renderEngine, stack, x, y);
         if (stack.stackSize > 1) manual.renderitem.renderItemOverlayIntoGUI(
                 manual.fonts,
@@ -57,5 +59,7 @@ public abstract class TiCButtonBookPage extends BookPage {
                 x,
                 y,
                 String.valueOf(stack.stackSize));
+        GL11.glPopMatrix();
+        GL11.glPopAttrib();
     }
 }

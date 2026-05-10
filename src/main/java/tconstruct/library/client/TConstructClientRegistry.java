@@ -176,7 +176,7 @@ public class TConstructClientRegistry {
         return recipeIcons.get(name);
     }
 
-    public static void registerTiCToolRecipeIcon(String name, ItemStack[] inputs, ItemStack output, RecipeType type) {
+    public static void registerTiCToolRecipeIcon(String name, ItemStack[][] inputs, ItemStack output, RecipeType type) {
         if (!recipeIcons.containsKey(name)) {
             getOrRegisterManualIcon(name, output);
             recipeIcons.put(name, new TiCRecipeHolder[] { new TiCRecipeHolder(inputs, output, type) });

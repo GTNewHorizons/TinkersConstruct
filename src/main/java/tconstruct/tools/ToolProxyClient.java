@@ -332,6 +332,7 @@ public class ToolProxyClient extends ToolProxyCommon {
         MProxyClient.registerManualPage("ticcrafting", TiCCraftingPage.class);
         MProxyClient.registerManualPage("navigation", NavigationPage.class);
         MProxyClient.registerManualPage("ticpicture", TiCPicturePage.class);
+        // MProxyClient.registerManualPage("tictool", TiCToolPage.class);
     }
 
     void registerManualRecipes() {

@@ -1230,6 +1230,8 @@ tconstruct.manual.materialsandyou.recipetype.ShapelessOreRecipe=Shapeless Ore Re
 tconstruct.manual.materialsandyou.recipetype.ShapedRecipes=Shaped Recipe
 tconstruct.manual.materialsandyou.recipetype.ShapelessRecipes=Shapeless Recipe
 tconstruct.manual.materialsandyou.recipetype.FurnaceRecipes=Furnace Recipe
+tconstruct.manual.materialsandyou.recipetype.ToolStationRecipe=Tool Station
+tconstruct.manual.materialsandyou.recipetype.ToolForgeRecipe=Tool Forge
 
 
 tconstruct.manual.materialsandyou.navigation.tools=Tools
