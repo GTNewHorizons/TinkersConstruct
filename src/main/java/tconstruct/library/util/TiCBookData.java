@@ -19,6 +19,7 @@ import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.crafting.ToolRecipe;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.TiCRecipeHolder.RecipeType;
+import tconstruct.weaponry.ammo.ArrowAmmo;
 
 public class TiCBookData extends BookData {
 
@@ -131,7 +132,7 @@ public class TiCBookData extends BookData {
                     : null;
 
             ItemStack handle = r.getHandleList().size() != 0
-                    ? new ItemStack(r.getHandleList().getFirst(), 1, TinkerTools.MaterialID.Iron)
+                    ? new ItemStack(r.getHandleList().getFirst(), 1, TinkerTools.MaterialID.Wood)
                     : null;
 
             ItemStack accessory = r.getAccessoryList().size() != 0
@@ -145,11 +146,16 @@ public class TiCBookData extends BookData {
             ItemStack output = ToolBuilder.instance
                     .buildTool(head, handle, accessory, extra, r.getType().getLocalizedToolName());
 
+            if (r.getType() instanceof ArrowAmmo) {
+                handle = new ItemStack(TinkerTools.toolRod, 1, TinkerTools.MaterialID.Wood);
+            }
+
             String toolUnlocalizedName = r.getType().getUnlocalizedToolName();
 
             TConstructClientRegistry.registerTiCToolRecipeIcon(
                     toolUnlocalizedName,
-                    new ItemStack[][] { new ItemStack[] {head}, new ItemStack[] {handle}, new ItemStack[] {accessory}, new ItemStack[] {extra} },
+                    new ItemStack[][] { new ItemStack[] { head }, new ItemStack[] { handle },
+                            new ItemStack[] { accessory }, new ItemStack[] { extra } },
                     output,
                     extra != null ? RecipeType.ToolForge : RecipeType.ToolStation);
 

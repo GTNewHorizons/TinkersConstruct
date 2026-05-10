@@ -115,7 +115,7 @@ public class TiCRecipeHolder {
     }
 
     public TiCRecipeHolder(ItemStack input, ItemStack output) {
-        this(new ItemStack[][] { {input} }, output, RecipeType.Furnace);
+        this(new ItemStack[][] { { input } }, output, RecipeType.Furnace);
     }
 
     public TiCRecipeHolder(ItemStack[][] input, ItemStack output, RecipeType t) {

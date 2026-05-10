@@ -26,6 +26,7 @@ import tconstruct.util.TiCRecipeHolder.RecipeType;
 public class TiCCraftingPage extends TiCBookPage {
 
     String title;
+    String desc;
     TiCRecipeHolder[] recipes;
     int maxRecipesSize = 1;
 
@@ -48,17 +49,22 @@ public class TiCCraftingPage extends TiCBookPage {
     int counter;
 
     final static ItemStack fuel = TConstructClientRegistry.getOrRegisterManualIcon("minecraft:coal");
-    
-    final static int[][] toolStationOrForgePosition = new int[][] {{28, 28}, {28, 3}, {3, 24}, {7, 50}, {49, 50}, {53, 24}};
+    final static int[][] toolStationOrForgePosition = new int[][] { { 28, 28 }, { 28, 3 }, { 3, 24 }, { 7, 50 },
+            { 49, 50 }, { 53, 24 } };
+
+    final static String manualLangPrefix = "tconstruct.manual.materialsandyou.";
 
     @Override
     public void readPageFromXML(Element element) {
         this.pageButtonList = new ArrayList<>();
         NodeList nodes = element.getElementsByTagName("icon");
         if (nodes != null) {
-            this.recipes = TConstructClientRegistry.getOrRegisterRecipeIcon(nodes.item(0).getTextContent());
-            this.title = TConstructClientRegistry.getOrRegisterManualIcon(nodes.item(0).getTextContent())
-                    .getDisplayName();
+            String textContent = nodes.item(0).getTextContent();
+            this.recipes = TConstructClientRegistry.getOrRegisterRecipeIcon(textContent);
+            this.title = recipes[0].outputStack.getDisplayName();
+            this.desc = StatCollector.canTranslate(manualLangPrefix + textContent)
+                    ? StatCollector.translateToLocal(manualLangPrefix + textContent)
+                    : null;
         }
         this.selectedIdx = 0;
 
@@ -137,13 +143,13 @@ public class TiCCraftingPage extends TiCBookPage {
     }
 
     private void beforeRenderItem() {
-    	beforeRenderItem(2.0F);
+        beforeRenderItem(2.0F);
     }
-    
+
     private void beforeRenderItem(float scale) {
-    	beforeRenderItem(scale, 100);
+        beforeRenderItem(scale, 100);
     }
-    
+
     private void beforeRenderItem(float scale, int z) {
         GL11.glPushMatrix();
         GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
@@ -154,9 +160,9 @@ public class TiCCraftingPage extends TiCBookPage {
     }
 
     private void afterRenderItem() {
-    	afterRenderItem(2.0F);
+        afterRenderItem(2.0F);
     }
-    
+
     private void afterRenderItem(float scale) {
         manual.renderitem.zLevel = 0;
         RenderHelper.disableStandardItemLighting();
@@ -254,34 +260,59 @@ public class TiCCraftingPage extends TiCBookPage {
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
 
+        if (this.desc != null) {
+            manual.fonts.drawSplitString(this.desc, startX + 8, startY + 20, PAGECONTENTWIDTH - 16, 0);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        }
+
         int recipeStartX = startX + PAGECONTENTWIDTH - 72 - 15;
-        int recipeStartY = startY + PAGECONTENTHEIGHT - 69 - 15;
+        int recipeStartY = startY + PAGECONTENTHEIGHT - 69 - 5;
 
         manual.getMC().getTextureManager().bindTexture(toolStationForgeBackground);
-        manual.drawTexturedModalRect(recipeStartX + 12, recipeStartY + 12, 208, (selectedRecipe.recipeType == RecipeType.ToolForge ? 48 : 0), 48, 48);
-        
+        manual.drawTexturedModalRect(
+                recipeStartX + 12,
+                recipeStartY + 12,
+                208,
+                (selectedRecipe.recipeType == RecipeType.ToolForge ? 48 : 0),
+                48,
+                48);
+
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.85F);
         manual.drawTexturedModalRect(recipeStartX, recipeStartY, 0, 0, 72, 69);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        
+
         int idx = 0;
-        
+
         beforeRenderItem(1.0F);
-        
-        renderItemStackIntoPage(outputStack, recipeStartX + toolStationOrForgePosition[idx][0], recipeStartY + toolStationOrForgePosition[idx][1]);
-        this.pageItemStackList
-                .add(new ItemStackWithPosition(outputStack, recipeStartX + toolStationOrForgePosition[idx][0], recipeStartY + toolStationOrForgePosition[idx][1], scale));
+
+        renderItemStackIntoPage(
+                outputStack,
+                recipeStartX + toolStationOrForgePosition[idx][0],
+                recipeStartY + toolStationOrForgePosition[idx][1]);
+        this.pageItemStackList.add(
+                new ItemStackWithPosition(
+                        outputStack,
+                        recipeStartX + toolStationOrForgePosition[idx][0],
+                        recipeStartY + toolStationOrForgePosition[idx][1],
+                        scale));
         idx += 1;
-        
-        for(ItemStack[] l : inputStacks) {
-        	if(l[0] != null) {
-                renderItemStackIntoPage(l[0], recipeStartX + toolStationOrForgePosition[idx][0], recipeStartY + toolStationOrForgePosition[idx][1]);
-                this.pageItemStackList
-                        .add(new ItemStackWithPosition(l[0], recipeStartX + toolStationOrForgePosition[idx][0], recipeStartY + toolStationOrForgePosition[idx][1], scale));
+
+        for (ItemStack[] l : inputStacks) {
+            if (l.length != 0 && l[0] != null) {
+                renderItemStackIntoPage(
+                        l[0],
+                        recipeStartX + toolStationOrForgePosition[idx][0],
+                        recipeStartY + toolStationOrForgePosition[idx][1]);
+                this.pageItemStackList.add(
+                        new ItemStackWithPosition(
+                                l[0],
+                                recipeStartX + toolStationOrForgePosition[idx][0],
+                                recipeStartY + toolStationOrForgePosition[idx][1],
+                                scale));
                 idx += 1;
-        	}
+            }
         }
-        
+
         afterRenderItem(1.0F);
     }
 
