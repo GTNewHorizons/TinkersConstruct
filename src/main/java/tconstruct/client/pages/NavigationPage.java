@@ -46,14 +46,27 @@ public class NavigationPage extends TiCBookPage {
         for (int idx = 0; idx < length; idx++) {
             Element b = (Element) buttonList.item(idx);
 
+            String color = b.getAttribute("color");
             String naviTo = b.getAttribute("to");
             String tempText = b.getElementsByTagName("text").item(0).getTextContent();
             if (StatCollector.canTranslate(tempText)) tempText = StatCollector.translateToLocal(tempText);
 
             String iconStr = b.getElementsByTagName("icon").item(0).getTextContent();
-            ItemStack iconStack = TConstructClientRegistry.getOrRegisterManualIcon(iconStr);
-
-            this.pageButtonList.add(new TiCNavigationButton(0, this.BS, iconStack, tempText, naviTo, this));
+            if (iconStr.startsWith("material_")) {
+                ItemStack[] iconStacks = (ItemStack[]) TConstructClientRegistry.getManualIcon(iconStr);
+                this.pageButtonList.add(
+                        new TiCNavigationButton(
+                                0,
+                                this.BS,
+                                iconStacks,
+                                tempText,
+                                naviTo,
+                                this,
+                                color.length() != 0 ? Integer.parseInt(color) : 0x000000));
+            } else {
+                ItemStack iconStack = TConstructClientRegistry.getOrRegisterManualIcon(iconStr);
+                this.pageButtonList.add(new TiCNavigationButton(0, this.BS, iconStack, tempText, naviTo, this));
+            }
         }
     }
 

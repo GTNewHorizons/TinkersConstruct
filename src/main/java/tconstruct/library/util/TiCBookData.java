@@ -14,20 +14,30 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import mantle.books.BookData;
+import tconstruct.TConstruct;
 import tconstruct.items.tools.Cutlass;
+import tconstruct.library.TConstructRegistry;
 import tconstruct.library.client.TConstructClientRegistry;
+import tconstruct.library.crafting.PatternBuilder;
+import tconstruct.library.crafting.PatternBuilder.ItemKey;
+import tconstruct.library.crafting.PatternBuilder.MaterialSet;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.crafting.ToolRecipe;
 import tconstruct.library.tools.DualMaterialToolPart;
+import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.TiCRecipeHolder.RecipeType;
 import tconstruct.weaponry.ammo.ArrowAmmo;
 import tconstruct.weaponry.ammo.BoltAmmo;
+import tconstruct.weaponry.weapons.Crossbow;
 
 public class TiCBookData extends BookData {
 
     private static final String ToolPagesButtonTag = "tictoolbuttons";
+    private static final String MaterialsPagesButtonTag = "ticmaterialsbuttons";
+
+    public boolean isInit = false;
 
     private final Map<Element, List<Element>> replaceMap = new HashMap<>();
 
@@ -66,10 +76,17 @@ public class TiCBookData extends BookData {
 
     public TiCBookData setDoc(Document doc) {
         this.doc = doc;
-        this.processGenerate();
-
-        this.setupIndexAndMakeSureIsOdd();
         return this;
+    }
+
+    @Override
+    public Document getDoc() {
+        if (!this.isInit) {
+            this.isInit = true;
+            this.processGenerate();
+            this.setupIndexAndMakeSureIsOdd();
+        }
+        return this.doc;
     }
 
     private void setupIndexAndMakeSureIsOdd() {
@@ -121,6 +138,8 @@ public class TiCBookData extends BookData {
                 Element e = (Element) pages.item(idx);
                 if (e.getAttribute("type").equals(ToolPagesButtonTag)) {
                     replaceMap.put(e, generateTools(e));
+                } else if (e.getAttribute("type").equals(MaterialsPagesButtonTag)) {
+                    replaceMap.put(e, generateMaterials(e));
                 }
             }
         }
@@ -157,6 +176,8 @@ public class TiCBookData extends BookData {
 
             if (r.getType() instanceof BoltAmmo) {
                 head = new ItemStack(r.getHeadList().getFirst(), 1, TinkerTools.MaterialID.Iron);
+                accessory = new ItemStack(r.getAccessoryList().getFirst(), 1, 0);
+            } else if (r.getType() instanceof Crossbow) {
                 accessory = new ItemStack(r.getAccessoryList().getFirst(), 1, 0);
             }
 
@@ -219,4 +240,46 @@ public class TiCBookData extends BookData {
         return newPages;
     }
 
+    private List<Element> generateMaterials(Element parent) {
+        List<Element> newPages = new ArrayList<>();
+        newPages.add(parent);
+
+        Map<String, List<ItemStack>> nameToStack = new HashMap<>();
+        for (ItemKey i : PatternBuilder.instance.materials) {
+            nameToStack.computeIfAbsent(i.key, k -> new ArrayList<>()).add(new ItemStack(i.item, 1, i.damage));
+        }
+
+        String formatedName;
+        for (String n : nameToStack.keySet()) {
+            ToolMaterial material = TConstructRegistry.getMaterial(n);
+            if (material == null) {
+                TConstruct.logger.error(n + " is null");
+                continue;
+            }
+            MaterialSet materialSet = PatternBuilder.instance.materialSets.get(n);
+            // materialSet.
+
+            formatedName = "material_" + n;
+            ItemStack[] iconStack = nameToStack.get(n).toArray(new ItemStack[0]);
+            TConstructClientRegistry.registerManualIcon(formatedName, iconStack);
+
+            Element newB = this.doc.createElement("button");
+            newB.setAttribute("to", formatedName);
+            newB.setAttribute("color", String.valueOf(material.primaryColor()));
+
+            Element icons = this.doc.createElement("icon");
+            icons.setTextContent(formatedName);
+
+            Element desc = this.doc.createElement("text");
+            desc.setTextContent(material.prefixName());
+
+            newB.appendChild(icons);
+            newB.appendChild(desc);
+            parent.appendChild(newB);
+        }
+
+        parent.setAttribute("type", "navigation");
+
+        return newPages;
+    }
 }

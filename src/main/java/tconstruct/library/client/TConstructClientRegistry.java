@@ -28,7 +28,7 @@ public class TConstructClientRegistry {
     public static ArrayList<StencilGuiElement> stencilButtons2 = new ArrayList<>();
     public static ArrayList<ToolGuiElement> toolButtons = new ArrayList<>(20);
     public static ArrayList<ToolGuiElement> tierTwoButtons = new ArrayList<>();
-    public static Map<String, ItemStack> manualIcons = new HashMap<>();
+    public static Map<String, Object> manualIcons = new HashMap<>();
     public static Map<String, TiCRecipeHolder[]> recipeIcons = Maps.newHashMap();
     public static ItemStack defaultStack = new ItemStack(Items.iron_ingot);
 
@@ -132,7 +132,11 @@ public class TConstructClientRegistry {
         manualIcons.put(name, stack);
     }
 
-    public static ItemStack getManualIcon(String name) {
+    public static void registerManualIcon(String name, ItemStack[] stacks) {
+        manualIcons.put(name, stacks);
+    }
+
+    public static Object getManualIcon(String name) {
         return manualIcons.get(name);
     }
 
@@ -148,14 +152,14 @@ public class TConstructClientRegistry {
             ItemStack tempStack = new ItemStack((Item) Item.itemRegistry.getObject(iconStackName), 1, iconDamage);
             registerManualIcon(name, tempStack);
         }
-        return getManualIcon(name);
+        return (ItemStack) getManualIcon(name);
     }
 
     public static ItemStack getOrRegisterManualIcon(String name, ItemStack stack) {
         if (!checkHadManualIconRegistered(name)) {
             registerManualIcon(name, stack);
         }
-        return getManualIcon(name);
+        return (ItemStack) getManualIcon(name);
     }
 
     public static TiCRecipeHolder[] getOrRegisterRecipeIcon(String name) {

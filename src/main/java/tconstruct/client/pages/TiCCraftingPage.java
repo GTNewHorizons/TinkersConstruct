@@ -3,7 +3,6 @@ package tconstruct.client.pages;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -123,7 +122,6 @@ public class TiCCraftingPage extends TiCBookPage {
                     1.0f,
                     0x000000);
             this.drawStrCenterAt(craftingType, startX + PAGECONTENTWIDTH / 2, startY + 15, 1.0f, 0x000000);
-            Gui.drawRect(startX, startY, startX + PAGECONTENTWIDTH, startY + PAGECONTENTHEIGHT, 0xAAAAAAAA);
 
             if (selectedRecipe.recipeType == RecipeType.Furnace) {
                 renderFurnaceRecipe(startX, startY, selectedRecipe, scale);
@@ -203,7 +201,7 @@ public class TiCCraftingPage extends TiCBookPage {
         ItemStack outputStack = selectedRecipe.outputStack;
 
         int biasY = startY + 28;
-        
+
         manual.getMC().getTextureManager().bindTexture(craftingTableBackground);
         manual.drawTexturedModalRect(startX, biasY, 0, 0, 183, 114);
 

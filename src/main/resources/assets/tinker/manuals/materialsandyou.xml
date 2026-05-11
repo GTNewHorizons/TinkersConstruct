@@ -151,4 +151,6 @@
 
     <page type="tictoolbuttons" name="tools" size="medium"></page>
 
+    <page type="ticmaterialsbuttons" name="materials" size="small"></page>
+
 </book>

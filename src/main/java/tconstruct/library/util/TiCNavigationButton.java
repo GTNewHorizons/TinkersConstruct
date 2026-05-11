@@ -20,7 +20,7 @@ public class TiCNavigationButton extends TiCGuiButton {
 
     public enum ButtonSize {
 
-        small(0.5f, 7),
+        small(0.8f, 7),
         large(2f, 3),
         medium(1f, 5);
 
@@ -51,11 +51,28 @@ public class TiCNavigationButton extends TiCGuiButton {
 
     RenderItem itemRender = new RenderItem();
     ButtonSize bs;
-    ItemStack renderStack;
+    ItemStack[] renderStack;
     public String target;
     public String ButtonStr;
+    public int color;
+
+    private long lastUpdate;
+    private int counter;
 
     public TiCNavigationButton(int id, ButtonSize bs, ItemStack s, String ButtonStr, String target,
+            TiCBookPage parentPage) {
+        this(
+                id,
+                bs,
+                new ItemStack[] { s },
+                ButtonStr,
+                target,
+                ButtonStr.length() != 0 ? Arrays.asList(ButtonStr) : new ArrayList<>(),
+                parentPage,
+                0x000000);
+    }
+
+    public TiCNavigationButton(int id, ButtonSize bs, ItemStack[] s, String ButtonStr, String target,
             TiCBookPage parentPage) {
         this(
                 id,
@@ -64,17 +81,35 @@ public class TiCNavigationButton extends TiCGuiButton {
                 ButtonStr,
                 target,
                 ButtonStr.length() != 0 ? Arrays.asList(ButtonStr) : new ArrayList<>(),
-                parentPage);
+                parentPage,
+                0x000000);
     }
 
-    public TiCNavigationButton(int id, ButtonSize bs, ItemStack s, String ButtonStr, String target,
-            List<String> tooltips, TiCBookPage parentPage) {
+    public TiCNavigationButton(int id, ButtonSize bs, ItemStack[] s, String ButtonStr, String target,
+            TiCBookPage parentPage, int color) {
+        this(
+                id,
+                bs,
+                s,
+                ButtonStr,
+                target,
+                ButtonStr.length() != 0 ? Arrays.asList(ButtonStr) : new ArrayList<>(),
+                parentPage,
+                color);
+    }
+
+    public TiCNavigationButton(int id, ButtonSize bs, ItemStack[] s, String ButtonStr, String target,
+            List<String> tooltips, TiCBookPage parentPage, int color) {
         super(id, 0, 0, defaultHeight, defaultWidth, "", parentPage);
         this.bs = bs;
         this.renderStack = s;
         this.ButtonStr = ButtonStr;
         this.target = target;
         this.toolTips = tooltips;
+        this.color = color;
+
+        this.lastUpdate = System.currentTimeMillis();
+        this.counter = 0;
     }
 
     public void drawButtonWithScale(Minecraft mc, int mouseX, int mouseY, float scale, SmallFontRenderer fonts) {
@@ -101,7 +136,8 @@ public class TiCNavigationButton extends TiCGuiButton {
                             (this.xPosition + this.width / 2) / scale / this.bs.multi * 2
                                     - fonts.getStringWidth(this.ButtonStr) / 2),
                     Math.round((this.yPosition + this.height) / scale / this.bs.multi * 2 - fonts.FONT_HEIGHT),
-                    0x000000);
+                    this.color);
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             // resize back
             GL11.glScalef(2.0f, 2.0f, 1.0f);
             this.drawItem(mc, scale);
@@ -110,6 +146,14 @@ public class TiCNavigationButton extends TiCGuiButton {
     }
 
     private void drawItem(final Minecraft mc, float scale) {
+        int length = renderStack.length;
+
+        if (length > 1 && System.currentTimeMillis() - lastUpdate > 1000) {
+            lastUpdate = System.currentTimeMillis();
+            counter++;
+            if (counter >= length) counter = 0;
+        }
+
         GL11.glPushMatrix();
         RenderHelper.enableGUIStandardItemLighting();
         this.zLevel = 100.0F;
@@ -119,13 +163,13 @@ public class TiCNavigationButton extends TiCGuiButton {
         this.itemRender.renderItemAndEffectIntoGUI(
                 mc.fontRenderer,
                 mc.renderEngine,
-                this.renderStack,
+                this.renderStack[this.counter % length],
                 Math.round(this.xPosition / scale / this.bs.multi) + 2,
                 Math.round(this.yPosition / scale / this.bs.multi) + (this.ButtonStr.length() == 0 ? 2 : 0));
         this.itemRender.renderItemOverlayIntoGUI(
                 mc.fontRenderer,
                 mc.renderEngine,
-                this.renderStack,
+                this.renderStack[this.counter % length],
                 Math.round(this.xPosition / scale / this.bs.multi) + 2,
                 Math.round(this.yPosition / scale / this.bs.multi) + (this.ButtonStr.length() == 0 ? 2 : 0));
         GL11.glDisable(GL11.GL_LIGHTING);

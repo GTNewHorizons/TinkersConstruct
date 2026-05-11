@@ -25,6 +25,10 @@ public abstract class TiCBookPage extends BookPage {
 
     public void updateButtonPositionAndRender(int startX, int startY, float scale, int mouseX, int mouseY,
             List<GuiButton> parentButtonList) {
+
+        // just for debug, draw a rect on page range to see where is the border
+        // Gui.drawRect(startX, startY, startX + PAGECONTENTWIDTH, startY + PAGECONTENTHEIGHT, 0xAAAAAAAA);
+
         updateButtonPosition(startX, startY, scale, mouseX, mouseY, parentButtonList);
         render(startX, startY, scale, mouseX, mouseY, parentButtonList);
     }
