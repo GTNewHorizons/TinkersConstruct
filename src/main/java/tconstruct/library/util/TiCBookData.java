@@ -279,7 +279,7 @@ public class TiCBookData extends BookData {
 
         Map<String, List<ItemStack>> nameToStack = new HashMap<>();
         for (ItemKey i : PatternBuilder.instance.materials) {
-            if (!(i.item instanceof ToolShard)) {
+            if (!(i.item instanceof ToolShard || i.item.delegate.name().endsWith("ToolPartChunk"))) {
                 nameToStack.computeIfAbsent(i.key, k -> new ArrayList<>()).add(new ItemStack(i.item, 1, i.damage));
             }
         }
