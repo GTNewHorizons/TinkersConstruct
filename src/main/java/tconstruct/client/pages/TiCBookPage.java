@@ -16,7 +16,9 @@ import tconstruct.util.ItemStackWithPosition;
 public abstract class TiCBookPage extends BookPage {
 
     public static final int PAGECONTENTHEIGHT = 165;
-    public static final int PAGECONTENTWIDTH = 190;
+
+    // outer gap is 16 inner gap is 5, 185 + 16 + 5 = 206
+    public static final int PAGECONTENTWIDTH = 185;
 
     List<TiCGuiButton> pageButtonList;
     public List<ItemStackWithPosition> pageItemStackList = new ArrayList<>();

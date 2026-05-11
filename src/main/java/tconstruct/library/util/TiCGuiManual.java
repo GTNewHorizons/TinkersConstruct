@@ -39,8 +39,8 @@ public class TiCGuiManual extends GuiManual {
     ItemStack itemstackBook;
     Document manual;
     public RenderItemCopy renderitem = new RenderItemCopy();
-    int bookImageWidth = 206;
-    int bookImageHeight = 200;
+    final static int BOOKIMAGEWIDTH = 206;
+    final static int BOOKIMAGEHEIGHT = 200;
     int bookTotalPages = 1;
     int jumpFromPage = -1;
     int currentPage;
@@ -187,10 +187,8 @@ public class TiCGuiManual extends GuiManual {
                     TConstruct.logger.error(e);
                 }
             } else {
-                pageLeft = null;
+                pageRight = null;
             }
-        } else {
-            pageRight = null;
         }
     }
 
@@ -237,7 +235,7 @@ public class TiCGuiManual extends GuiManual {
             this.jumpFromPage = -1;
         }
 
-        this.currentPage = Math.min(Math.max(pageNum % 2 == 1 ? pageNum - 1 : pageNum, 0), maxPages - 2);
+        this.currentPage = Math.min(Math.max(pageNum, 0), maxPages);
         updateButtonVisibility();
         ticUpdateText();
     }
@@ -248,8 +246,8 @@ public class TiCGuiManual extends GuiManual {
         this.scale = Math.max(
                 0.95f,
                 Math.min(
-                        this.width * GUIMAXPERCENTAGE / (this.bookImageWidth * 2),
-                        this.height * GUIMAXPERCENTAGE / this.bookImageHeight));
+                        this.width * GUIMAXPERCENTAGE / (BOOKIMAGEWIDTH * 2),
+                        this.height * GUIMAXPERCENTAGE / BOOKIMAGEHEIGHT));
 
         float progress = (System.currentTimeMillis() - this.guiOpenTime) * 1.0f / ANIMATIONDURATIONINMILLIS;
 
@@ -274,19 +272,19 @@ public class TiCGuiManual extends GuiManual {
 
         GL11.glColor4f(r, g, b, 1.0F);
         this.mc.getTextureManager().bindTexture(bookRightBackGround);
-        this.drawTexturedModalRect(drawX, drawY, 0, 0, this.bookImageWidth, this.bookImageHeight);
+        this.drawTexturedModalRect(drawX, drawY, 0, 0, BOOKIMAGEWIDTH, BOOKIMAGEHEIGHT);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(bookRightPage);
-        this.drawTexturedModalRect(drawX, drawY, 0, 0, this.bookImageWidth, this.bookImageHeight);
+        this.drawTexturedModalRect(drawX, drawY, 0, 0, BOOKIMAGEWIDTH, BOOKIMAGEHEIGHT);
 
-        drawX = drawX - this.bookImageWidth;
-        int textureX = 256 - this.bookImageWidth;
+        drawX = drawX - BOOKIMAGEWIDTH;
+        int textureX = 256 - BOOKIMAGEWIDTH;
         GL11.glColor4f(r, g, b, 1.0F);
         this.mc.getTextureManager().bindTexture(bookLeftBackGround);
-        this.drawTexturedModalRect(drawX, drawY, textureX, 0, this.bookImageWidth, this.bookImageHeight);
+        this.drawTexturedModalRect(drawX, drawY, textureX, 0, BOOKIMAGEWIDTH, BOOKIMAGEHEIGHT);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(bookLeftPage);
-        this.drawTexturedModalRect(drawX, drawY, textureX, 0, this.bookImageWidth, this.bookImageHeight);
+        this.drawTexturedModalRect(drawX, drawY, textureX, 0, BOOKIMAGEWIDTH, BOOKIMAGEHEIGHT);
 
         this.drawButtons(par1, par2, scale);
 
@@ -304,7 +302,13 @@ public class TiCGuiManual extends GuiManual {
 
         if (pageRight != null) {
             if (pageRight instanceof TiCBookPage tbbp) {
-                tbbp.updateButtonPositionAndRender(drawX + 220, drawY + 12, scale, par1, par2, this.buttonList);
+                tbbp.updateButtonPositionAndRender(
+                        drawX + BOOKIMAGEWIDTH + 5,
+                        drawY + 12,
+                        scale,
+                        par1,
+                        par2,
+                        this.buttonList);
             } else {
                 pageRight.renderBackgroundLayer(drawX + 220, drawY + 12);
                 pageRight.renderContentLayer(drawX + 220, drawY + 12, bData.isTranslatable);
@@ -347,12 +351,12 @@ public class TiCGuiManual extends GuiManual {
      */
     public void drawButtons(int mouseX, int mouseY, float scale) {
 
-        // base on `xPos + bookImageWidth - 50`, (206 - 50) / 206 ≈ 0.757 and (206 - 24)
+        // base on `xPos + BOOKIMAGEWIDTH - 50`, (206 - 50) / 206 ≈ 0.757 and (206 - 24)
         // / 206 ≈ 0.883
-        this.buttonNextPage.xPosition = this.baseDrawingX + (int) (this.bookImageWidth * scale * 0.8f);
-        this.buttonPreviousPage.xPosition = this.baseDrawingX - (int) (this.bookImageWidth * scale * 0.883f);
+        this.buttonNextPage.xPosition = this.baseDrawingX + (int) (BOOKIMAGEWIDTH * scale * 0.8f);
+        this.buttonPreviousPage.xPosition = this.baseDrawingX - (int) (BOOKIMAGEWIDTH * scale * 0.883f);
         this.buttonHomePage.xPosition = this.baseDrawingX
-                - (int) ((this.bookImageWidth + TiCTurnPageButton.ButtonType.homePage.textureWidth * 1.15f) * scale);
+                - (int) ((BOOKIMAGEWIDTH + TiCTurnPageButton.ButtonType.homePage.textureWidth * 1.15f) * scale);
         this.buttonBackToJumpFrom.xPosition = this.baseDrawingX
                 - (int) (TiCTurnPageButton.ButtonType.backToJumpFrom.textureWidth * 0.5f * scale);
 
@@ -361,7 +365,7 @@ public class TiCGuiManual extends GuiManual {
         // button height is 13
         // 28 / 13 ≈ 2.15, so keep the same ratio
         int yPosition = this.baseDrawingY
-                + (int) ((this.bookImageHeight - TiCTurnPageButton.ButtonType.nextPage.textureHeight * 2.747f) * scale);
+                + (int) ((BOOKIMAGEHEIGHT - TiCTurnPageButton.ButtonType.nextPage.textureHeight * 2.747f) * scale);
         this.buttonNextPage.yPosition = yPosition;
         this.buttonPreviousPage.yPosition = yPosition;
         this.buttonHomePage.yPosition = this.baseDrawingY
@@ -392,8 +396,8 @@ public class TiCGuiManual extends GuiManual {
         int endX = (this.width / 2);
         int startX = endX;
 
-        int endY = (int) ((this.height - this.bookImageHeight * scale) / 2);
-        int startY = (int) (this.height + this.bookImageHeight * scale);
+        int endY = (int) ((this.height - BOOKIMAGEHEIGHT * scale) / 2);
+        int startY = (int) (this.height + BOOKIMAGEHEIGHT * scale);
 
         // Clamp progress to [0,1]
         float t = Math.min(Math.max(progress, 0.0f), 1.0f);

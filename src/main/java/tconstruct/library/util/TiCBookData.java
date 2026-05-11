@@ -14,12 +14,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import mantle.books.BookData;
+import tconstruct.items.tools.Cutlass;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.crafting.ToolRecipe;
+import tconstruct.library.tools.DualMaterialToolPart;
+import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.TiCRecipeHolder.RecipeType;
 import tconstruct.weaponry.ammo.ArrowAmmo;
+import tconstruct.weaponry.ammo.BoltAmmo;
 
 public class TiCBookData extends BookData {
 
@@ -64,11 +68,11 @@ public class TiCBookData extends BookData {
         this.doc = doc;
         this.processGenerate();
 
-        this.setupIndex();
+        this.setupIndexAndMakeSureIsOdd();
         return this;
     }
 
-    private void setupIndex() {
+    private void setupIndexAndMakeSureIsOdd() {
         if (this.doc != null) {
             NodeList pages = this.doc.getElementsByTagName("page");
             int pagesSize = pages.getLength();
@@ -78,6 +82,9 @@ public class TiCBookData extends BookData {
                 if ((pageName = e.getAttribute("name")).length() != 0) {
                     this.indexMap.put(pageName, idx);
                 }
+            }
+            if (pagesSize % 2 == 1) {
+                this.doc.getDocumentElement().appendChild(this.doc.createElement("page"));
             }
         }
     }
@@ -127,6 +134,11 @@ public class TiCBookData extends BookData {
         newPages.add(parent);
 
         for (ToolRecipe r : ToolBuilder.instance.combos) {
+            // hide cutless as default
+            if (r.getType() instanceof Cutlass) {
+                continue;
+            }
+
             ItemStack head = r.getHeadList().size() != 0
                     ? new ItemStack(r.getHeadList().getFirst(), 1, TinkerTools.MaterialID.Cobalt)
                     : null;
@@ -143,43 +155,64 @@ public class TiCBookData extends BookData {
                     ? new ItemStack(r.getExtraList().getFirst(), 1, TinkerTools.MaterialID.Ardite)
                     : null;
 
+            if (r.getType() instanceof BoltAmmo) {
+                head = new ItemStack(r.getHeadList().getFirst(), 1, TinkerTools.MaterialID.Iron);
+                accessory = new ItemStack(r.getAccessoryList().getFirst(), 1, 0);
+            }
+
             ItemStack output = ToolBuilder.instance
                     .buildTool(head, handle, accessory, extra, r.getType().getLocalizedToolName());
 
-            if (r.getType() instanceof ArrowAmmo) {
-                handle = new ItemStack(TinkerTools.toolRod, 1, TinkerTools.MaterialID.Wood);
+            if (output != null) {
+                output.getTagCompound().getCompoundTag("InfiTool").setBoolean("Built", true);
+                if (r.getType() instanceof ArrowAmmo) {
+                    // special display for arrow ammo
+                    handle = new ItemStack(TinkerTools.toolRod, 1, TinkerTools.MaterialID.Wood);
+                } else if (r.getType() instanceof BoltAmmo) {
+                    // special display for bolt ammo
+                    head = DualMaterialToolPart.createDualMaterial(
+                            r.getHeadList().getFirst(),
+                            TinkerTools.MaterialID.Wood,
+                            TinkerTools.MaterialID.Iron);
+                    handle = null;
+                }
+
+                if (r.getType() instanceof AmmoItem ai) {
+                    ai.setAmmo(ai.getMaxAmmo(output), output);
+                }
+
+                String toolUnlocalizedName = r.getType().getUnlocalizedToolName();
+
+                TConstructClientRegistry.registerTiCToolRecipeIcon(
+                        toolUnlocalizedName,
+                        new ItemStack[][] { new ItemStack[] { head }, new ItemStack[] { accessory },
+                                new ItemStack[] { handle }, new ItemStack[] { extra } },
+                        output,
+                        extra != null ? RecipeType.ToolForge : RecipeType.ToolStation);
+
+                Element newB = this.doc.createElement("button");
+                newB.setAttribute("to", toolUnlocalizedName);
+
+                Element itemStack = this.doc.createElement("icon");
+                itemStack.setTextContent(toolUnlocalizedName);
+
+                Element desc = this.doc.createElement("text");
+                desc.setTextContent(output.getDisplayName());
+
+                newB.appendChild(itemStack);
+                newB.appendChild(desc);
+                parent.appendChild(newB);
+
+                Element newP = this.doc.createElement("page");
+                newP.setAttribute("type", "ticcrafting");
+                newP.setAttribute("name", toolUnlocalizedName);
+
+                itemStack = this.doc.createElement("icon");
+                itemStack.setTextContent(toolUnlocalizedName);
+                newP.appendChild(itemStack);
+                newPages.add(newP);
             }
 
-            String toolUnlocalizedName = r.getType().getUnlocalizedToolName();
-
-            TConstructClientRegistry.registerTiCToolRecipeIcon(
-                    toolUnlocalizedName,
-                    new ItemStack[][] { new ItemStack[] { head }, new ItemStack[] { handle },
-                            new ItemStack[] { accessory }, new ItemStack[] { extra } },
-                    output,
-                    extra != null ? RecipeType.ToolForge : RecipeType.ToolStation);
-
-            Element newB = this.doc.createElement("button");
-            newB.setAttribute("to", toolUnlocalizedName);
-
-            Element itemStack = this.doc.createElement("icon");
-            itemStack.setTextContent(toolUnlocalizedName);
-
-            Element desc = this.doc.createElement("text");
-            desc.setTextContent(output.getDisplayName());
-
-            newB.appendChild(itemStack);
-            newB.appendChild(desc);
-            parent.appendChild(newB);
-
-            Element newP = this.doc.createElement("page");
-            newP.setAttribute("type", "ticcrafting");
-            newP.setAttribute("name", toolUnlocalizedName);
-
-            itemStack = this.doc.createElement("icon");
-            itemStack.setTextContent(toolUnlocalizedName);
-            newP.appendChild(itemStack);
-            newPages.add(newP);
         }
         parent.setAttribute("type", "navigation");
 

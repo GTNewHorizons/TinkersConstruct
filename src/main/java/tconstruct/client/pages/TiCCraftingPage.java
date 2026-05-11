@@ -3,6 +3,7 @@ package tconstruct.client.pages;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -122,6 +123,7 @@ public class TiCCraftingPage extends TiCBookPage {
                     1.0f,
                     0x000000);
             this.drawStrCenterAt(craftingType, startX + PAGECONTENTWIDTH / 2, startY + 15, 1.0f, 0x000000);
+            Gui.drawRect(startX, startY, startX + PAGECONTENTWIDTH, startY + PAGECONTENTHEIGHT, 0xAAAAAAAA);
 
             if (selectedRecipe.recipeType == RecipeType.Furnace) {
                 renderFurnaceRecipe(startX, startY, selectedRecipe, scale);
@@ -180,9 +182,7 @@ public class TiCCraftingPage extends TiCBookPage {
 
         beforeRenderItem();
 
-        renderItemStackIntoPage(outputStack, (startX + 126) / 2, (startY + 68) / 2);
-        this.pageItemStackList
-                .add(new ItemStackWithPosition(outputStack, (startX + 126) / 2, (startY + 68) / 2, 2 * scale));
+        renderItemStackIntoPage(outputStack, (startX + 126) / 2, (startY + 68) / 2, 2 * scale);
 
         for (int i = 0; i < inputStacks.length; i++) {
             if (inputStacks[i] != null && inputStacks[i][0] != null) {
@@ -190,13 +190,8 @@ public class TiCCraftingPage extends TiCBookPage {
                 renderItemStackIntoPage(
                         renderStack,
                         (startX + 14 + 36 * (i % 2)) / 2,
-                        (startY + 36 * (i / 2) + 52) / 2);
-                this.pageItemStackList.add(
-                        new ItemStackWithPosition(
-                                renderStack,
-                                (startX + 14 + 36 * (i % 2)) / 2,
-                                (startY + 36 * (i / 2) + 52) / 2,
-                                2 * scale));
+                        (startY + 36 * (i / 2) + 52) / 2,
+                        2 * scale);
             }
         }
 
@@ -207,27 +202,23 @@ public class TiCCraftingPage extends TiCBookPage {
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
 
+        int biasY = startY + 28;
+        
         manual.getMC().getTextureManager().bindTexture(craftingTableBackground);
-        manual.drawTexturedModalRect(startX + (side != 1 ? 6 : 0) - 8, startY + 28, 0, 0, 183, 114);
+        manual.drawTexturedModalRect(startX, biasY, 0, 0, 183, 114);
 
         beforeRenderItem();
 
-        int biasX = startX + (side != 1 ? 6 : 0);
-
-        renderItemStackIntoPage(outputStack, (biasX + 138) / 2, (startY + 70) / 2);
-        this.pageItemStackList
-                .add(new ItemStackWithPosition(outputStack, (biasX + 138) / 2, (startY + 70) / 2, 2 * scale));
+        renderItemStackIntoPage(outputStack, (startX + 146) / 2, (biasY + 41) / 2, 2 * scale);
 
         for (int i = 0; i < inputStacks.length; i++) {
             if (inputStacks[i] != null && inputStacks[i][0] != null) {
                 ItemStack renderStack = inputStacks[i][this.counter % inputStacks[i].length];
-                renderItemStackIntoPage(renderStack, (biasX - 2 + 36 * (i % 3)) / 2, (startY + 36 * (i / 3) + 34) / 2);
-                this.pageItemStackList.add(
-                        new ItemStackWithPosition(
-                                renderStack,
-                                (biasX - 2 + 36 * (i % 3)) / 2,
-                                (startY + 36 * (i / 3) + 34) / 2,
-                                2 * scale));
+                renderItemStackIntoPage(
+                        renderStack,
+                        (startX + 6 + 36 * (i % 3)) / 2,
+                        (biasY + 7 + 36 * (i / 3)) / 2,
+                        2 * scale);
             }
         }
 
@@ -243,15 +234,9 @@ public class TiCCraftingPage extends TiCBookPage {
 
         beforeRenderItem();
 
-        renderItemStackIntoPage(fuel, (startX + 38) / 2, (startY + 110) / 2);
-        renderItemStackIntoPage(outputStack, (startX + 106) / 2, (startY + 74) / 2);
-        renderItemStackIntoPage(inputStacks[0][0], (startX + 38) / 2, (startY + 38) / 2);
-
-        this.pageItemStackList.add(new ItemStackWithPosition(fuel, (startX + 38) / 2, (startY + 110) / 2, 2 * scale));
-        this.pageItemStackList
-                .add(new ItemStackWithPosition(outputStack, (startX + 106) / 2, (startY + 74) / 2, 2 * scale));
-        this.pageItemStackList
-                .add(new ItemStackWithPosition(inputStacks[0][0], (startX + 38) / 2, (startY + 38) / 2, 2 * scale));
+        renderItemStackIntoPage(fuel, (startX + 38) / 2, (startY + 110) / 2, scale);
+        renderItemStackIntoPage(outputStack, (startX + 106) / 2, (startY + 74) / 2, 2 * scale);
+        renderItemStackIntoPage(inputStacks[0][0], (startX + 38) / 2, (startY + 38) / 2, 2 * scale);
 
         afterRenderItem();
     }
@@ -265,7 +250,7 @@ public class TiCCraftingPage extends TiCBookPage {
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
 
-        int recipeStartX = startX + PAGECONTENTWIDTH - 72 - 15;
+        int recipeStartX = startX + PAGECONTENTWIDTH - 72 - 5;
         int recipeStartY = startY + PAGECONTENTHEIGHT - 69 - 5;
 
         manual.getMC().getTextureManager().bindTexture(toolStationForgeBackground);
@@ -288,13 +273,8 @@ public class TiCCraftingPage extends TiCBookPage {
         renderItemStackIntoPage(
                 outputStack,
                 recipeStartX + toolStationOrForgePosition[idx][0],
-                recipeStartY + toolStationOrForgePosition[idx][1]);
-        this.pageItemStackList.add(
-                new ItemStackWithPosition(
-                        outputStack,
-                        recipeStartX + toolStationOrForgePosition[idx][0],
-                        recipeStartY + toolStationOrForgePosition[idx][1],
-                        scale));
+                recipeStartY + toolStationOrForgePosition[idx][1],
+                scale);
         idx += 1;
 
         for (ItemStack[] l : inputStacks) {
@@ -302,18 +282,20 @@ public class TiCCraftingPage extends TiCBookPage {
                 renderItemStackIntoPage(
                         l[0],
                         recipeStartX + toolStationOrForgePosition[idx][0],
-                        recipeStartY + toolStationOrForgePosition[idx][1]);
-                this.pageItemStackList.add(
-                        new ItemStackWithPosition(
-                                l[0],
-                                recipeStartX + toolStationOrForgePosition[idx][0],
-                                recipeStartY + toolStationOrForgePosition[idx][1],
-                                scale));
+                        recipeStartY + toolStationOrForgePosition[idx][1],
+                        scale);
                 idx += 1;
             }
         }
 
         afterRenderItem(1.0F);
+    }
+
+    void renderItemStackIntoPage(ItemStack stack, int x, int y, float scale) {
+        super.renderItemStackIntoPage(stack, x, y);
+
+        this.pageItemStackList.add(new ItemStackWithPosition(stack, x, y, scale));
+
     }
 
     @Override
