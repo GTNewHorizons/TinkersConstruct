@@ -26,6 +26,7 @@ public class NavigationPage extends TiCBookPage {
     private ButtonSize BS;
 
     private String title;
+    int eachRow;
 
     @Override
     public void readPageFromXML(Element element) {
@@ -33,6 +34,9 @@ public class NavigationPage extends TiCBookPage {
 
         String size = element.getAttribute("size");
         this.BS = ButtonSize.getSize(size);
+
+        String eachRowString = element.getAttribute("capacity");
+        this.eachRow = eachRowString.length() != 0 ? Integer.parseInt(eachRowString) : 5;
 
         String name = element.getAttribute("name");
         if (StatCollector.canTranslate(namePrefix + name)) {
@@ -70,6 +74,15 @@ public class NavigationPage extends TiCBookPage {
         }
     }
 
+    public static int ceilDiv(int x, int y) {
+        final int q = x / y;
+        // if the signs are the same and modulo not zero, round up
+        if ((x ^ y) >= 0 && (q * y != x)) {
+            return q + 1;
+        }
+        return q;
+    }
+
     public void updateButtonPositionAndRender(int startX, int startY, float scale, int mouseX, int mouseY,
             List<GuiButton> parentButtonList) {
         if (title != null) this.drawStrCenterAt(
@@ -87,18 +100,18 @@ public class NavigationPage extends TiCBookPage {
         // int buttonGap = buttonWidth / 8;
         int buttonGap = 5;
 
-        int buttonRows = this.pageButtonList.size() / this.BS.buttonEachRow;
+        int buttonRows = ceilDiv(this.pageButtonList.size(), this.eachRow);
 
         int buttonsGroupHeight = buttonRows * buttonHeight + (buttonRows - 1) * buttonGap;
-        int buttonsGroupWidth = this.BS.buttonEachRow * buttonWidth + (this.BS.buttonEachRow - 1) * buttonGap;
+        int buttonsGroupWidth = this.eachRow * buttonWidth + (this.eachRow - 1) * buttonGap;
 
         int buttonsGroupStartX = middleX - buttonsGroupWidth / 2;
         int buttonsGroupStartY = middleY - buttonsGroupHeight / 2;
 
         for (int idx = 0; idx < this.pageButtonList.size(); idx++) {
             TiCNavigationButton b = (TiCNavigationButton) this.pageButtonList.get(idx);
-            int row = idx / this.BS.buttonEachRow;
-            int column = idx % this.BS.buttonEachRow;
+            int row = idx / this.eachRow;
+            int column = idx % this.eachRow;
 
             int buttonX = buttonsGroupStartX + column * (buttonWidth + buttonGap);
             int buttonY = buttonsGroupStartY + row * (buttonHeight + buttonGap);

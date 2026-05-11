@@ -5,7 +5,7 @@
         <text>tconstruct.manual.materialsandyou.homepage</text>
     </page>
 
-    <page type="navigation" size="large">
+    <page type="navigation" size="large" capacity="3">
         <button to="intro">
             <icon>TConstruct:CraftingStation</icon>
             <text>tconstruct.manual.materialsandyou.jumptointro</text>
@@ -149,8 +149,8 @@
         <icon>TConstruct:manualBook:4</icon>
     </page>
 
-    <page type="tictoolbuttons" name="tools" size="medium"></page>
+    <page type="tictoolbuttons" name="tools" size="medium" capacity="5"></page>
 
-    <page type="ticmaterialsbuttons" name="materials" size="small"></page>
+    <page type="ticmaterialsbuttons" name="materials" size="small" capacity="7"></page>
 
 </book>

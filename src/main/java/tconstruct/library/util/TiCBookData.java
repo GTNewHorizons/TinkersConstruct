@@ -27,6 +27,7 @@ import tconstruct.library.tools.DualMaterialToolPart;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.tools.TinkerTools;
+import tconstruct.tools.items.ToolShard;
 import tconstruct.util.TiCRecipeHolder.RecipeType;
 import tconstruct.weaponry.ammo.ArrowAmmo;
 import tconstruct.weaponry.ammo.BoltAmmo;
@@ -96,7 +97,7 @@ public class TiCBookData extends BookData {
             String pageName;
             for (int idx = 0; idx < pagesSize; idx++) {
                 Element e = (Element) pages.item(idx);
-                if ((pageName = e.getAttribute("name")).length() != 0) {
+                if ((pageName = e.getAttribute("name")).length() != 0 && !this.indexMap.containsKey(pageName)) {
                     this.indexMap.put(pageName, idx);
                 }
             }
@@ -142,15 +143,24 @@ public class TiCBookData extends BookData {
                     replaceMap.put(e, generateMaterials(e));
                 }
             }
+            replaceMap.entrySet().forEach((e) -> replaceElementWithMultiple(e.getKey(), e.getValue()));
         }
-
-        replaceMap.entrySet().forEach((e) -> replaceElementWithMultiple(e.getKey(), e.getValue()));
-
     }
 
     private List<Element> generateTools(Element parent) {
+        List<Element> navigationPages = new ArrayList<>();
         List<Element> newPages = new ArrayList<>();
-        newPages.add(parent);
+        parent.setAttribute("type", "navigation");
+
+        String sizeStr = parent.getAttribute("capacity");
+        int size = 5 * 5;
+        int counter = 0;
+        if (sizeStr.length() != 0) {
+            size = Integer.parseInt(sizeStr);
+            size *= size;
+        }
+
+        Element target = (Element) parent.cloneNode(false);
 
         for (ToolRecipe r : ToolBuilder.instance.combos) {
             // hide cutless as default
@@ -222,7 +232,14 @@ public class TiCBookData extends BookData {
 
                 newB.appendChild(itemStack);
                 newB.appendChild(desc);
-                parent.appendChild(newB);
+                target.appendChild(newB);
+
+                counter++;
+                if (counter >= size) {
+                    navigationPages.add(target);
+                    target = (Element) parent.cloneNode(false);
+                    counter = 0;
+                }
 
                 Element newP = this.doc.createElement("page");
                 newP.setAttribute("type", "ticcrafting");
@@ -235,18 +252,36 @@ public class TiCBookData extends BookData {
             }
 
         }
-        parent.setAttribute("type", "navigation");
+        if (counter != 0) {
+            navigationPages.add(target);
+        }
 
-        return newPages;
+        navigationPages.addAll(newPages);
+
+        return navigationPages;
     }
 
     private List<Element> generateMaterials(Element parent) {
+
+        List<Element> navigationPages = new ArrayList<>();
         List<Element> newPages = new ArrayList<>();
-        newPages.add(parent);
+        parent.setAttribute("type", "navigation");
+
+        String sizeStr = parent.getAttribute("capacity");
+        int size = 5 * 5;
+        int counter = 0;
+        if (sizeStr.length() != 0) {
+            size = Integer.parseInt(sizeStr);
+            size *= size;
+        }
+
+        Element target = (Element) parent.cloneNode(false);
 
         Map<String, List<ItemStack>> nameToStack = new HashMap<>();
         for (ItemKey i : PatternBuilder.instance.materials) {
-            nameToStack.computeIfAbsent(i.key, k -> new ArrayList<>()).add(new ItemStack(i.item, 1, i.damage));
+            if (!(i.item instanceof ToolShard)) {
+                nameToStack.computeIfAbsent(i.key, k -> new ArrayList<>()).add(new ItemStack(i.item, 1, i.damage));
+            }
         }
 
         String formatedName;
@@ -275,11 +310,22 @@ public class TiCBookData extends BookData {
 
             newB.appendChild(icons);
             newB.appendChild(desc);
-            parent.appendChild(newB);
+            target.appendChild(newB);
+
+            counter++;
+            if (counter >= size) {
+                navigationPages.add(target);
+                target = (Element) parent.cloneNode(false);
+                counter = 0;
+            }
         }
 
-        parent.setAttribute("type", "navigation");
+        if (counter != 0) {
+            navigationPages.add(target);
+        }
 
-        return newPages;
+        navigationPages.addAll(newPages);
+
+        return navigationPages;
     }
 }

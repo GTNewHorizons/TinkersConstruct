@@ -20,16 +20,14 @@ public class TiCNavigationButton extends TiCGuiButton {
 
     public enum ButtonSize {
 
-        small(0.8f, 7),
-        large(2f, 3),
-        medium(1f, 5);
+        small(0.8f),
+        large(2f),
+        medium(1f);
 
         public float multi;
-        public int buttonEachRow;
 
-        ButtonSize(float multi, int eachRow) {
+        ButtonSize(float multi) {
             this.multi = multi;
-            this.buttonEachRow = eachRow;
         }
 
         public static ButtonSize getSize(String s) {
