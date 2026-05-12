@@ -49,13 +49,13 @@ public class TiCNavigationButton extends TiCGuiButton {
 
     RenderItem itemRender = new RenderItem();
     ButtonSize bs;
-    ItemStack[] renderStack;
+    public ItemStack[] renderStack;
     public String target;
     public String ButtonStr;
     public int color;
 
-    private long lastUpdate;
-    private int counter;
+    public long lastUpdate;
+    public int counter;
 
     public TiCNavigationButton(int id, ButtonSize bs, ItemStack s, String ButtonStr, String target,
             TiCBookPage parentPage) {
@@ -145,6 +145,9 @@ public class TiCNavigationButton extends TiCGuiButton {
 
     private void drawItem(final Minecraft mc, float scale) {
         int length = renderStack.length;
+        if (length == 0) {
+            return;
+        }
 
         if (length > 1 && System.currentTimeMillis() - lastUpdate > 1000) {
             lastUpdate = System.currentTimeMillis();

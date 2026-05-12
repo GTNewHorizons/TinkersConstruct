@@ -2,8 +2,11 @@ package tconstruct.library.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -18,6 +21,7 @@ import tconstruct.TConstruct;
 import tconstruct.items.tools.Cutlass;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.client.TConstructClientRegistry;
+import tconstruct.library.crafting.CastingRecipe;
 import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.crafting.PatternBuilder.ItemKey;
 import tconstruct.library.crafting.PatternBuilder.MaterialSet;
@@ -29,6 +33,7 @@ import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.items.ToolShard;
 import tconstruct.util.TiCRecipeHolder.RecipeType;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.weaponry.ammo.ArrowAmmo;
 import tconstruct.weaponry.ammo.BoltAmmo;
 import tconstruct.weaponry.weapons.Crossbow;
@@ -82,6 +87,7 @@ public class TiCBookData extends BookData {
 
     @Override
     public Document getDoc() {
+        this.isInit = false;
         if (!this.isInit) {
             this.isInit = true;
             this.processGenerate();
@@ -263,9 +269,12 @@ public class TiCBookData extends BookData {
 
     private List<Element> generateMaterials(Element parent) {
 
+        Set<String> materialNames = new HashSet<String>();
+
         List<Element> navigationPages = new ArrayList<>();
         List<Element> newPages = new ArrayList<>();
         parent.setAttribute("type", "navigation");
+        Element target = (Element) parent.cloneNode(false);
 
         String sizeStr = parent.getAttribute("capacity");
         int size = 5 * 5;
@@ -275,27 +284,60 @@ public class TiCBookData extends BookData {
             size *= size;
         }
 
-        Element target = (Element) parent.cloneNode(false);
-
-        Map<String, List<ItemStack>> nameToStack = new HashMap<>();
-        for (ItemKey i : PatternBuilder.instance.materials) {
-            if (!(i.item instanceof ToolShard || i.item.delegate.name().endsWith("ToolPartChunk"))) {
-                nameToStack.computeIfAbsent(i.key, k -> new ArrayList<>()).add(new ItemStack(i.item, 1, i.damage));
-            }
-        }
-
         String formatedName;
-        for (String n : nameToStack.keySet()) {
-            ToolMaterial material = TConstructRegistry.getMaterial(n);
+        ToolMaterial material;
+        for (int matID : TConstructRegistry.toolMaterials.keySet()) {
+            List<ItemStack> toolParts = new ArrayList<>();
+
+            material = TConstructRegistry.toolMaterials.get(matID);
+
             if (material == null) {
-                TConstruct.logger.error(n + " is null");
+                TConstruct.logger.error(matID + " is null");
                 continue;
             }
-            MaterialSet materialSet = PatternBuilder.instance.materialSets.get(n);
-            // materialSet.
 
-            formatedName = "material_" + n;
-            ItemStack[] iconStack = nameToStack.get(n).toArray(new ItemStack[0]);
+            if (materialNames.contains(material.materialName)) {
+                continue;
+            } else {
+                materialNames.add(material.materialName);
+            }
+
+            for (ItemKey key : PatternBuilder.instance.materials) {
+                MaterialSet set = PatternBuilder.instance.materialSets.get(key.key);
+                if (set.materialID == matID) {
+                    ItemStack stack = new ItemStack(key.item, 1, key.damage);
+                    toolParts.add(stack);
+                }
+            }
+
+            for (List<?> list : TConstructRegistry.patternPartMapping.keySet()) {
+                if ((Integer) list.get(2) == matID) {
+                    toolParts.add(TConstructRegistry.patternPartMapping.get(list));
+                }
+            }
+
+            if (!PHConstruct.craftMetalTools) {
+                for (CastingRecipe recipe : TConstructRegistry.getTableCasting().getCastingRecipes()) {
+                    ItemStack castResult = recipe.getResult();
+                    if (castResult.getItem() instanceof IToolPart) {
+                        if (((IToolPart) castResult.getItem()).getMaterialID(castResult) == matID) {
+                            toolParts.add(castResult);
+                        }
+                    }
+                }
+            }
+
+            List<ItemStack> newToolParts = toolParts.stream().filter(
+                    i -> (!(i.getItem() instanceof ToolShard || i.getItem().delegate.name().endsWith("ToolPartChunk"))))
+                    .collect(Collectors.toList());
+            if (newToolParts.size() == 0 && toolParts.size() != 0) {
+                newToolParts.add(toolParts.get(0));
+            }
+
+            toolParts = newToolParts;
+
+            formatedName = "material_" + material.materialName;
+            ItemStack[] iconStack = toolParts.toArray(new ItemStack[0]);
             TConstructClientRegistry.registerManualIcon(formatedName, iconStack);
 
             Element newB = this.doc.createElement("button");
@@ -318,6 +360,7 @@ public class TiCBookData extends BookData {
                 target = (Element) parent.cloneNode(false);
                 counter = 0;
             }
+
         }
 
         if (counter != 0) {

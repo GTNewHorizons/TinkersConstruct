@@ -133,7 +133,9 @@ public class TConstructClientRegistry {
     }
 
     public static void registerManualIcon(String name, ItemStack[] stacks) {
-        manualIcons.put(name, stacks);
+        if (!manualIcons.containsKey(name)) {
+            manualIcons.put(name, stacks);
+        }
     }
 
     public static Object getManualIcon(String name) {
