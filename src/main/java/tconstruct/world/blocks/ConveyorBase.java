@@ -29,7 +29,8 @@ public class ConveyorBase extends MantleBlock {
         texturename = name;
     }
 
-    public boolean isBlockReplaceable(World world, int x, int y, int z) {
+    @Override
+    public boolean isReplaceable(IBlockAccess world, int x, int y, int z) {
         return false;
     }
 
