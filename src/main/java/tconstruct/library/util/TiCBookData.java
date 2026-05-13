@@ -305,8 +305,7 @@ public class TiCBookData extends BookData {
             for (ItemKey key : PatternBuilder.instance.materials) {
                 MaterialSet set = PatternBuilder.instance.materialSets.get(key.key);
                 if (set.materialID == matID) {
-                    ItemStack stack = new ItemStack(key.item, 1, key.damage);
-                    toolParts.add(stack);
+                    toolParts.add(new ItemStack(key.item, 1, key.damage));
                 }
             }
 
@@ -327,9 +326,20 @@ public class TiCBookData extends BookData {
                 }
             }
 
+            Map<Object, ItemStack> seen = new HashMap<>();
+            // TODO how to change to ItemStack.areItemStacksEqual?
             List<ItemStack> newToolParts = toolParts.stream().filter(
                     i -> (!(i.getItem() instanceof ToolShard || i.getItem().delegate.name().endsWith("ToolPartChunk"))))
-                    .collect(Collectors.toList());
+                    .filter(p -> {
+                        String k = p.getItem() + "@" + p.getItemDamage();
+                        if (seen.containsKey(k)) {
+                            return false;
+                        } else {
+                            seen.put(k, p);
+                            return true;
+                        }
+                    }).collect(Collectors.toList());
+
             if (newToolParts.size() == 0 && toolParts.size() != 0) {
                 newToolParts.add(toolParts.get(0));
             }
@@ -353,6 +363,20 @@ public class TiCBookData extends BookData {
             newB.appendChild(icons);
             newB.appendChild(desc);
             target.appendChild(newB);
+
+            Element newP = this.doc.createElement("page");
+            newP.setAttribute("type", "ticmaterial");
+            newP.setAttribute("name", formatedName);
+
+            Element materialName = this.doc.createElement("text");
+            materialName.setTextContent(material.materialName);
+            newP.appendChild(materialName);
+
+            materialName = this.doc.createElement("text");
+            materialName.setTextContent(String.valueOf(matID));
+            newP.appendChild(materialName);
+
+            newPages.add(newP);
 
             counter++;
             if (counter >= size) {

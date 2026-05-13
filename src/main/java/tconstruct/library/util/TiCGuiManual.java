@@ -1,8 +1,5 @@
 package tconstruct.library.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
@@ -196,9 +193,9 @@ public class TiCGuiManual extends GuiManual {
     public void handleMouseInput() {
         int scrollAmount = Mouse.getEventDWheel();
 
-        if (scrollAmount > 0) {
+        if (scrollAmount > 0 && currentPage > 0) {
             this.turnToPreviousPage();
-        } else if (scrollAmount < 0) {
+        } else if (scrollAmount < 0 && currentPage + 2 < maxPages) {
             this.turnToNextPage();
         } else {
             super.handleMouseInput();
@@ -321,26 +318,32 @@ public class TiCGuiManual extends GuiManual {
     }
 
     void renderButtonAndStackTooltips(int mouseX, int mouseY) {
-        List<String> tooltip = new ArrayList<String>();
         this.buttonList.forEach(b -> {
-            if (b instanceof TiCGuiButton tgb && tgb.isHover(mouseX, mouseY) && tgb.needRenderTips && tgb.visible) {
-                tooltip.addAll(tgb.getTooltips());
+            if (b instanceof WidgetsHasTooltips tgb && tgb.isHover(mouseX, mouseY) && tgb.needRenderTips()) {
+                this.drawHoveringText(tgb.getTooltips(), mouseX, mouseY, fontRendererObj);
             }
         });
-        this.drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
 
         if (pageLeft != null && pageLeft instanceof TiCBookPage tbbp) {
-            tbbp.pageItemStackList.forEach(t -> {
-                if (t.isHovered(mouseX, mouseY)) {
-                    this.renderToolTip(t.getItemStack(), mouseX, mouseY);
+            tbbp.widgetsList.forEach(t -> {
+                if (t.isHover(mouseX, mouseY)) {
+                    if (t instanceof ItemStackWithPosition iswp) {
+                        this.renderToolTip(iswp.getItemStack(), mouseX, mouseY);
+                    } else if (t.needRenderTips()) {
+                        this.drawHoveringText(t.getTooltips(), mouseX, mouseY, fontRendererObj);
+                    }
                 }
             });
         }
 
         if (pageRight != null && pageRight instanceof TiCBookPage tbbp) {
-            tbbp.pageItemStackList.forEach(t -> {
-                if (t.isHovered(mouseX, mouseY)) {
-                    this.renderToolTip(t.getItemStack(), mouseX, mouseY);
+            tbbp.widgetsList.forEach(t -> {
+                if (t.isHover(mouseX, mouseY)) {
+                    if (t instanceof ItemStackWithPosition iswp) {
+                        this.renderToolTip(iswp.getItemStack(), mouseX, mouseY);
+                    } else if (t.needRenderTips()) {
+                        this.drawHoveringText(t.getTooltips(), mouseX, mouseY, fontRendererObj);
+                    }
                 }
             });
         }

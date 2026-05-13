@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
@@ -132,6 +133,9 @@ public class NavigationPage extends TiCBookPage {
         TiCNavigationButton b = (TiCNavigationButton) button;
         if (d instanceof TiCBookData tcbd) {
             int pageIndex = tcbd.getIndexFromName(b.target);
+            Item item = b.renderStack[b.counter % b.renderStack.length].getItem();
+
+            TConstruct.logger.info(item + " is clicked");
             if (pageIndex != -1) {
                 ((TiCGuiManual) manual).setCurrentPage(pageIndex);
             } else {

@@ -1,8 +1,10 @@
-package tconstruct.util;
+package tconstruct.library.util;
+
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
-public class ItemStackWithPosition {
+public class ItemStackWithPosition implements WidgetsHasTooltips {
 
     final private ItemStack i;
 
@@ -30,13 +32,24 @@ public class ItemStackWithPosition {
         this.height = (int) (defaultHeight * scale);
     }
 
-    public boolean isHovered(int mouseX, int mouseY) {
+    @Override
+    public boolean isHover(int mouseX, int mouseY) {
         return (this.startPositionX <= mouseX && mouseX <= this.startPositionX + this.width)
                 && (this.startPositionY <= mouseY && mouseY <= this.startPositionY + this.height);
     }
 
     public ItemStack getItemStack() {
         return this.i;
+    }
+
+    @Override
+    public List<String> getTooltips() {
+        return null;
+    }
+
+    @Override
+    public boolean needRenderTips() {
+        return true;
     }
 
 }

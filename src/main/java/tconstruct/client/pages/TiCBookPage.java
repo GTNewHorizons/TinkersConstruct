@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import mantle.books.BookData;
 import mantle.client.pages.BookPage;
+import tconstruct.library.util.ItemStackWithPosition;
 import tconstruct.library.util.TiCGuiButton;
-import tconstruct.util.ItemStackWithPosition;
+import tconstruct.library.util.WidgetsHasTooltips;
 
 public abstract class TiCBookPage extends BookPage {
 
@@ -21,7 +24,7 @@ public abstract class TiCBookPage extends BookPage {
     public static final int PAGECONTENTWIDTH = 185;
 
     List<TiCGuiButton> pageButtonList;
-    public List<ItemStackWithPosition> pageItemStackList = new ArrayList<>();
+    public List<WidgetsHasTooltips> widgetsList = new ArrayList<>();
 
     public void updateButtonPositionAndRender(int startX, int startY, float scale, int mouseX, int mouseY,
             List<GuiButton> parentButtonList) {
@@ -44,6 +47,15 @@ public abstract class TiCBookPage extends BookPage {
     }
 
     public void actionPerformed(GuiButton button, BookData b) {}
+
+    void drawStrAt(String str, int X, int Y, float scale) {
+        drawStrAt(str, X, Y, scale, 0x000000);
+    }
+
+    void drawStrAt(String str, int X, int Y, float scale, int color) {
+        manual.fonts.drawString(str, (int) (X / scale), (int) (Y / scale), color);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    }
 
     void drawStrCenterAt(String str, int X, int Y, float scale, int color) {
         manual.fonts.drawString(
@@ -68,4 +80,39 @@ public abstract class TiCBookPage extends BookPage {
         GL11.glPopMatrix();
         GL11.glPopAttrib();
     }
+
+    void beforeRenderItem() {
+        beforeRenderItem(2.0F);
+    }
+
+    void beforeRenderItem(float scale) {
+        beforeRenderItem(scale, 100);
+    }
+
+    void beforeRenderItem(float scale, int z) {
+        GL11.glPushMatrix();
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glScalef(scale, scale, 2.0F);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        RenderHelper.enableGUIStandardItemLighting();
+        manual.renderitem.zLevel = z;
+    }
+
+    void afterRenderItem() {
+        afterRenderItem(2.0F);
+    }
+
+    void afterRenderItem(float scale) {
+        manual.renderitem.zLevel = 0;
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopAttrib();
+        GL11.glPopMatrix();
+    }
+
+    void renderItemStackIntoPage(ItemStack stack, int x, int y, float scale) {
+        renderItemStackIntoPage(stack, x, y);
+        this.widgetsList.add(new ItemStackWithPosition(stack, x, y, scale));
+    }
+
 }

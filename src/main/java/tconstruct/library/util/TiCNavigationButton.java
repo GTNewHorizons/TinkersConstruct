@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL12;
 
 import mantle.client.SmallFontRenderer;
 import tconstruct.client.pages.TiCBookPage;
+import tconstruct.util.McTextFormatter;
 
 public class TiCNavigationButton extends TiCGuiButton {
 
@@ -101,7 +102,7 @@ public class TiCNavigationButton extends TiCGuiButton {
         super(id, 0, 0, defaultHeight, defaultWidth, "", parentPage);
         this.bs = bs;
         this.renderStack = s;
-        this.ButtonStr = ButtonStr;
+        this.ButtonStr = McTextFormatter.addBold(ButtonStr);
         this.target = target;
         this.toolTips = tooltips;
         this.color = color;
@@ -128,13 +129,22 @@ public class TiCNavigationButton extends TiCGuiButton {
 
             // let string a half size of multi
             GL11.glScalef(this.bs.multi / 2, this.bs.multi / 2, 1.0f);
-            fonts.drawString(
-                    this.ButtonStr,
-                    Math.round(
-                            (this.xPosition + this.width / 2) / scale / this.bs.multi * 2
-                                    - fonts.getStringWidth(this.ButtonStr) / 2),
-                    Math.round((this.yPosition + this.height) / scale / this.bs.multi * 2 - fonts.FONT_HEIGHT),
-                    this.color);
+            if (fonts.getStringWidth(this.ButtonStr) <= this.width / scale / this.bs.multi * 2) {
+                fonts.drawString(
+                        this.ButtonStr,
+                        (int) ((this.xPosition + this.width / 2) / scale / this.bs.multi * 2
+                                - fonts.getStringWidth(this.ButtonStr) / 2),
+                        (int) ((this.yPosition + this.height) / scale / this.bs.multi * 2 - fonts.FONT_HEIGHT),
+                        this.color);
+            } else {
+                // does we need auto split?
+                fonts.drawSplitString(
+                        ButtonStr,
+                        (int) (this.xPosition / scale / this.bs.multi * 2),
+                        (int) ((this.yPosition + this.height) / scale / this.bs.multi * 2 - fonts.FONT_HEIGHT),
+                        this.width,
+                        this.color);
+            }
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             // resize back
             GL11.glScalef(2.0f, 2.0f, 1.0f);
@@ -165,20 +175,25 @@ public class TiCNavigationButton extends TiCGuiButton {
                 mc.fontRenderer,
                 mc.renderEngine,
                 this.renderStack[this.counter % length],
-                Math.round(this.xPosition / scale / this.bs.multi) + 2,
-                Math.round(this.yPosition / scale / this.bs.multi) + (this.ButtonStr.length() == 0 ? 2 : 0));
+                (int) (this.xPosition / scale / this.bs.multi + 2),
+                (int) (this.yPosition / scale / this.bs.multi + (this.ButtonStr.length() == 0 ? 2 : 0)));
         this.itemRender.renderItemOverlayIntoGUI(
                 mc.fontRenderer,
                 mc.renderEngine,
                 this.renderStack[this.counter % length],
-                Math.round(this.xPosition / scale / this.bs.multi) + 2,
-                Math.round(this.yPosition / scale / this.bs.multi) + (this.ButtonStr.length() == 0 ? 2 : 0));
+                (int) (this.xPosition / scale / this.bs.multi + 2),
+                (int) (this.yPosition / scale / this.bs.multi + (this.ButtonStr.length() == 0 ? 2 : 0)));
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         this.itemRender.zLevel = 0.0F;
         this.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
+    }
+
+    @Override
+    public boolean needRenderTips() {
+        return this.needRenderTips;
     }
 
 }

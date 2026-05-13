@@ -380,7 +380,13 @@ public class TConstructRegistry {
      * @return Tool Material
      */
     public static ToolMaterial getMaterial(String key) {
-        return (toolMaterialStrings.get(key));
+        if (toolMaterialStrings.containsKey(key)) {
+            return (toolMaterialStrings.get(key));
+        }
+
+        // This is probably an old tool whose material has been removed from the game.
+        // Fall back to wood.
+        return toolMaterials.get(TinkerTools.MaterialID.Wood);
     }
 
     // Bow materials

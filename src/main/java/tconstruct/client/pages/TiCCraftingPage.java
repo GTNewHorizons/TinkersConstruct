@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -18,7 +16,6 @@ import mantle.books.BookData;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.util.TiCTurnPageButton;
 import tconstruct.library.util.TiCTurnPageButton.ButtonType;
-import tconstruct.util.ItemStackWithPosition;
 import tconstruct.util.McTextFormatter;
 import tconstruct.util.TiCRecipeHolder;
 import tconstruct.util.TiCRecipeHolder.RecipeType;
@@ -96,7 +93,7 @@ public class TiCCraftingPage extends TiCBookPage {
     @Override
     public void render(int startX, int startY, float scale, int mouseX, int mouseY, List<GuiButton> parentButtonList) {
         this.maxRecipesSize = 1;
-        this.pageItemStackList.clear();
+        this.widgetsList.clear();
 
         this.previousRecipeButton.drawButtonWithScale(manual.mc, mouseX, mouseY, scale);
         this.nextRecipeButton.drawButtonWithScale(manual.mc, mouseX, mouseY, scale);
@@ -140,35 +137,6 @@ public class TiCCraftingPage extends TiCBookPage {
         if (parentButtonList != null) {
             parentButtonList.addAll(pageButtonList);
         }
-    }
-
-    private void beforeRenderItem() {
-        beforeRenderItem(2.0F);
-    }
-
-    private void beforeRenderItem(float scale) {
-        beforeRenderItem(scale, 100);
-    }
-
-    private void beforeRenderItem(float scale, int z) {
-        GL11.glPushMatrix();
-        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
-        GL11.glScalef(scale, scale, 2.0F);
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.enableGUIStandardItemLighting();
-        manual.renderitem.zLevel = z;
-    }
-
-    private void afterRenderItem() {
-        afterRenderItem(2.0F);
-    }
-
-    private void afterRenderItem(float scale) {
-        manual.renderitem.zLevel = 0;
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glPopAttrib();
-        GL11.glPopMatrix();
     }
 
     private void render22CraftingRecipe(int startX, int startY, TiCRecipeHolder selectedRecipe, float scale) {
@@ -287,13 +255,6 @@ public class TiCCraftingPage extends TiCBookPage {
         }
 
         afterRenderItem(1.0F);
-    }
-
-    void renderItemStackIntoPage(ItemStack stack, int x, int y, float scale) {
-        super.renderItemStackIntoPage(stack, x, y);
-
-        this.pageItemStackList.add(new ItemStackWithPosition(stack, x, y, scale));
-
     }
 
     @Override

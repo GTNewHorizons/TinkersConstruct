@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiButton;
 
 import tconstruct.client.pages.TiCBookPage;
 
-public abstract class TiCGuiButton extends GuiButton {
+public abstract class TiCGuiButton extends GuiButton implements WidgetsHasTooltips {
 
     public TiCBookPage parentPage;
     public List<String> toolTips;
@@ -18,14 +18,21 @@ public abstract class TiCGuiButton extends GuiButton {
         this.parentPage = parentPage;
     }
 
+    @Override
     public boolean isHover(int mouseX, int mouseY) {
         return mouseX >= this.xPosition && mouseY >= this.yPosition
                 && mouseX < this.xPosition + this.width
                 && mouseY < this.yPosition + this.height;
     }
 
+    @Override
     public List<String> getTooltips() {
         return this.toolTips;
+    }
+
+    @Override
+    public boolean needRenderTips() {
+        return this.needRenderTips;
     }
 
 }
