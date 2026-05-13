@@ -137,6 +137,9 @@ public class TiCMaterialPage extends TiCBookPage {
                     : McTextFormatter.addDarkGreen(abilityStr);
             drawStrAt(abilityStr, stringStartX, stringStartY, scale);
             stringStartY += (lineHeight * 1.2);
+        } else if (tm.ability().length() != 0) {
+            drawStrAt(McTextFormatter.addBold(tm.style() + tm.ability()), stringStartX, stringStartY, scale);
+            stringStartY += (lineHeight * 1.2);
         }
 
         beforeRenderItem(1.0F);

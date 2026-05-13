@@ -142,7 +142,7 @@ public class TiCNavigationButton extends TiCGuiButton {
                         ButtonStr,
                         (int) (this.xPosition / scale / this.bs.multi * 2),
                         (int) ((this.yPosition + this.height) / scale / this.bs.multi * 2 - fonts.FONT_HEIGHT),
-                        this.width,
+                        (int) (this.width / scale / this.bs.multi * 2),
                         this.color);
             }
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
