@@ -31,6 +31,7 @@ import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.modifier.ItemModifier;
 import tconstruct.library.util.TextureHelper;
+import tconstruct.modifiers.tools.ModReinforced;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.entity.FancyEntityItem;
 import tconstruct.util.config.PHConstruct;
@@ -391,25 +392,9 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         reinforced += unbreaking - reinforced;
 
         if (reinforced > 0) {
-            return style + getReinforcedString(reinforced);
+            return style + ModReinforced.getReinforcedString(reinforced);
         }
         return "";
-    }
-
-    String getReinforcedString(int reinforced) {
-        if (reinforced > 9) return StatCollector.translateToLocal("tool.unbreakable");
-        return StatCollector.translateToLocal("tool.reinforced") + " " + switch (reinforced) {
-            case 1 -> "I";
-            case 2 -> "II";
-            case 3 -> "III";
-            case 4 -> "IV";
-            case 5 -> "V";
-            case 6 -> "VI";
-            case 7 -> "VII";
-            case 8 -> "VIII";
-            case 9 -> "IX";
-            default -> "X";
-        };
     }
 
     // Used for sounds and the like
