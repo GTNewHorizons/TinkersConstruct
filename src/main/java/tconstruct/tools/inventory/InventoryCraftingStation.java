@@ -77,6 +77,7 @@ public class InventoryCraftingStation extends InventoryCrafting {
                 logic.setInventorySlotContents(slotID + 1, null);
             } else {
                 itemstack = stack.splitStack(par2);
+                logic.markDirty();
             }
             this.eventHandler.onCraftMatrixChanged(this);
             return itemstack;
