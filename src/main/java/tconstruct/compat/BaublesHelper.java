@@ -1,5 +1,7 @@
 package tconstruct.compat;
 
+import java.util.function.Predicate;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -10,20 +12,15 @@ public final class BaublesHelper {
 
     private BaublesHelper() {}
 
-    public interface BaubleMatcher {
-
-        boolean matches(ItemStack stack);
-    }
-
     @Optional.Method(modid = "Baubles")
-    public static ItemStack findFirstMatchingBauble(EntityPlayer player, BaubleMatcher matcher) {
+    public static ItemStack findFirstMatchingBauble(EntityPlayer player, Predicate<ItemStack> matcher) {
         IInventory baubleInventory = getBaubleInventory(player);
         if (baubleInventory == null) {
             return null;
         }
         for (int i = 0; i < baubleInventory.getSizeInventory(); i++) {
             ItemStack stack = baubleInventory.getStackInSlot(i);
-            if (matcher.matches(stack)) {
+            if (matcher.test(stack)) {
                 return stack;
             }
         }
@@ -41,6 +38,36 @@ public final class BaublesHelper {
             stacks[i] = baubleInventory.getStackInSlot(i);
         }
         return stacks;
+    }
+
+    @Optional.Method(modid = "Baubles")
+    public static ItemStack tryMoveToBaubles(EntityPlayer player, ItemStack stack) {
+        if (stack == null || stack.stackSize <= 0) {
+            return null;
+        }
+        if (!(stack.getItem() instanceof baubles.api.IBauble)) {
+            return stack;
+        }
+
+        IInventory baubleInventory = getBaubleInventory(player);
+        if (baubleInventory == null) {
+            return stack;
+        }
+
+        ItemStack remaining = stack.copy();
+        for (int i = 0; i < baubleInventory.getSizeInventory() && remaining.stackSize > 0; i++) {
+            if (!baubleInventory.isItemValidForSlot(i, remaining)) {
+                continue;
+            }
+            ItemStack inSlot = baubleInventory.getStackInSlot(i);
+            if (inSlot == null) {
+                ItemStack placed = remaining.copy();
+                placed.stackSize = 1;
+                baubleInventory.setInventorySlotContents(i, placed);
+                remaining.stackSize -= 1;
+            }
+        }
+        return remaining.stackSize > 0 ? remaining : null;
     }
 
     @Optional.Method(modid = "Baubles")

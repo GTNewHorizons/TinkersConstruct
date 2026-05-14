@@ -26,6 +26,7 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -33,6 +34,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import cpw.mods.fml.relauncher.Side;
 import mantle.player.PlayerUtils;
 import tconstruct.TConstruct;
+import tconstruct.compat.BaublesHelper;
 import tconstruct.compat.LoadedMods;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.tools.TinkerTools;
@@ -198,34 +200,9 @@ public class TPlayerHandler {
         stats.armor.recalculateHealth(player, stats);
     }
 
+    @Optional.Method(modid = "Baubles")
     private ItemStack tryMoveToBaubles(EntityPlayer player, ItemStack stack) {
-        if (stack == null || stack.stackSize <= 0) {
-            return null;
-        }
-        if (!(stack.getItem() instanceof baubles.api.IBauble)) {
-            return stack;
-        }
-
-        baubles.common.container.InventoryBaubles baubleInventory = baubles.common.lib.PlayerHandler
-                .getPlayerBaubles(player);
-        if (baubleInventory == null || baubleInventory.stackList == null) {
-            return stack;
-        }
-
-        ItemStack remaining = stack.copy();
-        for (int i = 0; i < baubleInventory.getSizeInventory() && remaining.stackSize > 0; i++) {
-            if (!baubleInventory.isItemValidForSlot(i, remaining)) {
-                continue;
-            }
-            ItemStack inSlot = baubleInventory.getStackInSlot(i);
-            if (inSlot == null) {
-                ItemStack placed = remaining.copy();
-                placed.stackSize = 1;
-                baubleInventory.setInventorySlotContents(i, placed);
-                remaining.stackSize -= 1;
-            }
-        }
-        return remaining.stackSize > 0 ? remaining : null;
+        return BaublesHelper.tryMoveToBaubles(player, stack);
     }
 
     void spawnPigmanModifier(EntityPlayer entityplayer) {

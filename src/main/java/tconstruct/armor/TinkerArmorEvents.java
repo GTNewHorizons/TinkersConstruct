@@ -111,13 +111,8 @@ public class TinkerArmorEvents {
 
     @Optional.Method(modid = "Baubles")
     private ItemStack getBaublesTravelGlove(EntityPlayer player) {
-        return BaublesHelper.findFirstMatchingBauble(player, new BaublesHelper.BaubleMatcher() {
-
-            @Override
-            public boolean matches(ItemStack stack) {
-                return stack != null && stack.getItem() == TinkerArmor.travelGlove;
-            }
-        });
+        return BaublesHelper
+                .findFirstMatchingBauble(player, stack -> stack != null && stack.getItem() == TinkerArmor.travelGlove);
     }
 
     public void jumpHeight(LivingJumpEvent event) {

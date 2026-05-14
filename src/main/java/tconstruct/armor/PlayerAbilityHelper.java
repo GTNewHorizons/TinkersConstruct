@@ -75,13 +75,8 @@ public class PlayerAbilityHelper {
 
     @Optional.Method(modid = "Baubles")
     private static ItemStack getBaublesBelt(EntityPlayer player) {
-        return BaublesHelper.findFirstMatchingBauble(player, new BaublesHelper.BaubleMatcher() {
-
-            @Override
-            public boolean matches(ItemStack stack) {
-                return stack != null && stack.getItem() == TinkerArmor.travelBelt;
-            }
-        });
+        return BaublesHelper
+                .findFirstMatchingBauble(player, stack -> stack != null && stack.getItem() == TinkerArmor.travelBelt);
     }
 
     public static void setEntitySize(Entity entity, float width, float height) {

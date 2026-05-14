@@ -26,7 +26,6 @@ import tconstruct.armor.PlayerAbilityHelper;
 import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.items.TravelGear;
 import tconstruct.compat.BaublesHelper;
-import tconstruct.compat.LoadedMods;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.AccessoryInventoryPacket;
 import tconstruct.util.network.BeltPacket;
@@ -185,16 +184,9 @@ public class ArmorControls {
 
     @Optional.Method(modid = "Baubles")
     private static boolean hasBaublesTravelBelt() {
-        if (!LoadedMods.baubles) {
-            return false;
-        }
-        return BaublesHelper.findFirstMatchingBauble(mc.thePlayer, new BaublesHelper.BaubleMatcher() {
-
-            @Override
-            public boolean matches(ItemStack stack) {
-                return stack != null && stack.getItem() == TinkerArmor.travelBelt;
-            }
-        }) != null;
+        return BaublesHelper.findFirstMatchingBauble(
+                mc.thePlayer,
+                stack -> stack != null && stack.getItem() == TinkerArmor.travelBelt) != null;
     }
 
     public void landOnGround() {
