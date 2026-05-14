@@ -9,8 +9,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
+import cpw.mods.fml.common.Optional;
 import tconstruct.armor.player.ArmorExtended;
 import tconstruct.armor.player.TPlayerStats;
+import tconstruct.compat.BaublesHelper;
 import tconstruct.compat.LoadedMods;
 import tconstruct.util.config.PHConstruct;
 
@@ -71,16 +73,15 @@ public class PlayerAbilityHelper {
         belt.getTagCompound().setTag("Inventory", slots);
     }
 
+    @Optional.Method(modid = "Baubles")
     private static ItemStack getBaublesBelt(EntityPlayer player) {
-        baubles.common.container.InventoryBaubles baubleInventory = baubles.common.lib.PlayerHandler
-                .getPlayerBaubles(player);
-        if (baubleInventory == null || baubleInventory.stackList == null) return null;
-        for (ItemStack bauble : baubleInventory.stackList) {
-            if (bauble != null && bauble.getItem() == TinkerArmor.travelBelt) {
-                return bauble;
+        return BaublesHelper.findFirstMatchingBauble(player, new BaublesHelper.BaubleMatcher() {
+
+            @Override
+            public boolean matches(ItemStack stack) {
+                return stack != null && stack.getItem() == TinkerArmor.travelBelt;
             }
-        }
-        return null;
+        });
     }
 
     public static void setEntitySize(Entity entity, float width, float height) {

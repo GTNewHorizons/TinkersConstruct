@@ -131,8 +131,7 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory, IBa
     @Override
     @Optional.Method(modid = "Baubles")
     public BaubleType getBaubleType(ItemStack itemStack) {
-        int meta = itemStack.getItemDamage();
-        return (meta == 2 || meta == 4 || meta == 6) ? BaubleType.UNIVERSAL : BaubleType.RING;
+        return BaubleType.UNIVERSAL;
     }
 
     @Override
