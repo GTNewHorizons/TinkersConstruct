@@ -137,17 +137,21 @@ public class TiCNavigationButton extends TiCGuiButton {
                         (int) ((this.yPosition + this.height) / scale / this.bs.multi * 2 - fonts.FONT_HEIGHT),
                         this.color);
             } else {
-                // does we need auto split?
-                fonts.drawSplitString(
-                        ButtonStr,
-                        (int) (this.xPosition / scale / this.bs.multi * 2),
-                        (int) ((this.yPosition + this.height) / scale / this.bs.multi * 2 - fonts.FONT_HEIGHT),
-                        (int) (this.width / scale / this.bs.multi * 2),
+                // much smaller
+                GL11.glScalef(0.8f, 0.8f, 1.0f);
+                fonts.drawString(
+                        this.ButtonStr,
+                        (int) ((this.xPosition + this.width / 2) / scale / this.bs.multi * 2.5
+                                - fonts.getStringWidth(this.ButtonStr) / 2),
+                        (int) ((this.yPosition + this.height) / scale / this.bs.multi * 2.5 - fonts.FONT_HEIGHT),
                         this.color);
+                // resize back
+                GL11.glScalef(1.25f, 1.25f, 1.0f);
             }
-            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            // resize back
+            // resize back and reset color
             GL11.glScalef(2.0f, 2.0f, 1.0f);
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
             this.drawItem(mc, scale);
             GL11.glScalef(1.0f / this.bs.multi, 1.0f / this.bs.multi, 1.0f);
         }

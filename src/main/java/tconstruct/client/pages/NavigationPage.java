@@ -18,6 +18,7 @@ import tconstruct.library.util.TiCBookData;
 import tconstruct.library.util.TiCGuiManual;
 import tconstruct.library.util.TiCNavigationButton;
 import tconstruct.library.util.TiCNavigationButton.ButtonSize;
+import tconstruct.util.FontColorHelper;
 import tconstruct.util.McTextFormatter;
 
 public class NavigationPage extends TiCBookPage {
@@ -59,15 +60,18 @@ public class NavigationPage extends TiCBookPage {
             String iconStr = b.getElementsByTagName("icon").item(0).getTextContent();
             if (iconStr.startsWith("material_")) {
                 ItemStack[] iconStacks = (ItemStack[]) TConstructClientRegistry.getManualIcon(iconStr);
-                this.pageButtonList.add(
-                        new TiCNavigationButton(
-                                0,
-                                this.BS,
-                                iconStacks,
-                                tempText,
-                                naviTo,
-                                this,
-                                color.length() != 0 ? Integer.parseInt(color) : 0x000000));
+                this.pageButtonList
+                        .add(
+                                new TiCNavigationButton(
+                                        0,
+                                        this.BS,
+                                        iconStacks,
+                                        tempText,
+                                        naviTo,
+                                        this,
+                                        color.length() != 0 ? FontColorHelper
+                                                .adjustForegroundKeepHue(BACKGROUNDCOLOR, Integer.parseInt(color))
+                                                : 0x000000));
             } else {
                 ItemStack iconStack = TConstructClientRegistry.getOrRegisterManualIcon(iconStr);
                 this.pageButtonList.add(new TiCNavigationButton(0, this.BS, iconStack, tempText, naviTo, this));

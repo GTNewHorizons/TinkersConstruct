@@ -31,7 +31,7 @@ public class TiCGuiManual extends GuiManual {
     private static final float FLYIN_DURATION = 0.55f; // portion for fly-in
     private static final float OVERSHOOT_DURATION = 0.1f; // portion for overshoot
     private static final float EXTENT = 0.02f; // overshoot amount as fraction of total displacement
-    private static final float GUIMAXPERCENTAGE = 0.75f; // The maximum percentage that the manual GUI can occupy
+    private static final float GUIMAXPERCENTAGE = 0.8f; // The maximum percentage that the manual GUI can occupy
 
     ItemStack itemstackBook;
     Document manual;
@@ -81,15 +81,6 @@ public class TiCGuiManual extends GuiManual {
         if (data.font != null) this.fonts = data.font;
         this.bData = data;
         this.guiOpenTime = System.currentTimeMillis();
-
-        // TConstructRegistry.toolMaterialStrings.forEach((str, tm) -> {
-        // System.out.println(str + " - " + tm.name());
-        // });
-        // PatternBuilder.instance.materials.forEach(k -> System.out.println(k.key + " -
-        // " +
-        // k.item.getUnlocalizedName()));
-        // PatternBuilder.instance.materialSets.forEach((str, mset) ->
-        // System.out.println(str + " - " + mset));
 
         // renderitem.renderInFrame = true;
     }
@@ -241,7 +232,7 @@ public class TiCGuiManual extends GuiManual {
         this.buttonList.subList(4, this.buttonList.size()).clear();
 
         this.scale = Math.max(
-                0.95f,
+                0.97f,
                 Math.min(
                         this.width * GUIMAXPERCENTAGE / (BOOKIMAGEWIDTH * 2),
                         this.height * GUIMAXPERCENTAGE / BOOKIMAGEHEIGHT));

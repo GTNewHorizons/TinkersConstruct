@@ -23,6 +23,8 @@ public abstract class TiCBookPage extends BookPage {
     // outer gap is 16 inner gap is 5, 185 + 16 + 5 = 206
     public static final int PAGECONTENTWIDTH = 185;
 
+    public static final int BACKGROUNDCOLOR = 0xFFFAEE;
+
     List<TiCGuiButton> pageButtonList;
     public List<WidgetsHasTooltips> widgetsList = new ArrayList<>();
 

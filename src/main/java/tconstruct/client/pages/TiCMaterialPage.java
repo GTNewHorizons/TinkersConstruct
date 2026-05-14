@@ -16,6 +16,7 @@ import tconstruct.library.tools.BowMaterial;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.modifiers.tools.ModReinforced;
+import tconstruct.util.FontColorHelper;
 import tconstruct.util.McTextFormatter;
 
 public class TiCMaterialPage extends TiCBookPage {
@@ -63,7 +64,7 @@ public class TiCMaterialPage extends TiCBookPage {
                 startX + PAGECONTENTWIDTH / 2,
                 startY + 4,
                 1.0f,
-                tm.primaryColor());
+                FontColorHelper.adjustForegroundKeepHue(BACKGROUNDCOLOR, tm.primaryColor()));
 
         int stringStartX = (int) ((startX + (this.side == 0 ? 30 : 10)) * scale);
         int stringStartY = (int) ((startY + 20) * scale);
