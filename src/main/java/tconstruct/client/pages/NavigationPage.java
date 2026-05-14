@@ -1,7 +1,9 @@
 package tconstruct.client.pages;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.Item;
@@ -14,6 +16,7 @@ import org.w3c.dom.NodeList;
 import mantle.books.BookData;
 import tconstruct.TConstruct;
 import tconstruct.library.client.TConstructClientRegistry;
+import tconstruct.library.util.IToolPart;
 import tconstruct.library.util.TiCBookData;
 import tconstruct.library.util.TiCGuiManual;
 import tconstruct.library.util.TiCNavigationButton;
@@ -60,14 +63,16 @@ public class NavigationPage extends TiCBookPage {
             String iconStr = b.getElementsByTagName("icon").item(0).getTextContent();
             if (iconStr.startsWith("material_")) {
                 ItemStack[] iconStacks = (ItemStack[]) TConstructClientRegistry.getManualIcon(iconStr);
+                iconStacks = Arrays.asList(iconStacks).stream().filter(i -> !(i.getItem() instanceof IToolPart))
+                        .collect(Collectors.toList()).toArray(new ItemStack[0]);
                 this.pageButtonList
                         .add(
                                 new TiCNavigationButton(
                                         0,
                                         this.BS,
                                         iconStacks,
-                                        tempText,
                                         naviTo,
+                                        tempText,
                                         this,
                                         color.length() != 0 ? FontColorHelper
                                                 .adjustForegroundKeepHue(BACKGROUNDCOLOR, Integer.parseInt(color))

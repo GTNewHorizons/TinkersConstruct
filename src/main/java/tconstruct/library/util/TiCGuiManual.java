@@ -31,7 +31,7 @@ public class TiCGuiManual extends GuiManual {
     private static final float FLYIN_DURATION = 0.55f; // portion for fly-in
     private static final float OVERSHOOT_DURATION = 0.1f; // portion for overshoot
     private static final float EXTENT = 0.02f; // overshoot amount as fraction of total displacement
-    private static final float GUIMAXPERCENTAGE = 0.8f; // The maximum percentage that the manual GUI can occupy
+    private static final float GUIMAXPERCENTAGE = 0.85f; // The maximum percentage that the manual GUI can occupy
 
     ItemStack itemstackBook;
     Document manual;
@@ -232,7 +232,7 @@ public class TiCGuiManual extends GuiManual {
         this.buttonList.subList(4, this.buttonList.size()).clear();
 
         this.scale = Math.max(
-                0.97f,
+                0.99f,
                 Math.min(
                         this.width * GUIMAXPERCENTAGE / (BOOKIMAGEWIDTH * 2),
                         this.height * GUIMAXPERCENTAGE / BOOKIMAGEHEIGHT));
@@ -350,7 +350,7 @@ public class TiCGuiManual extends GuiManual {
         this.buttonNextPage.xPosition = this.baseDrawingX + (int) (BOOKIMAGEWIDTH * scale * 0.8f);
         this.buttonPreviousPage.xPosition = this.baseDrawingX - (int) (BOOKIMAGEWIDTH * scale * 0.883f);
         this.buttonHomePage.xPosition = this.baseDrawingX
-                - (int) ((BOOKIMAGEWIDTH + TiCTurnPageButton.ButtonType.homePage.textureWidth * 1.15f) * scale);
+                - (int) ((BOOKIMAGEWIDTH + TiCTurnPageButton.ButtonType.homePage.textureWidth * 0.75f) * scale);
         this.buttonBackToJumpFrom.xPosition = this.baseDrawingX
                 - (int) (TiCTurnPageButton.ButtonType.backToJumpFrom.textureWidth * 0.5f * scale);
 

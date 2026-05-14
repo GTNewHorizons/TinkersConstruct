@@ -930,6 +930,13 @@ gui.toolstation21=Ammo:
 gui.toolstation22=Break Chance: 
 gui.toolstation23=Max. Attack: 
 
+gui.partcrafter.durability.desc=The base-value for durability calculations.\nUsually an integral part to the overall durability of a tool.
+gui.partcrafter.mininglevel.desc=What range of blocks a tool with a tool head of this material can mine.
+gui.partcrafter.miningspeed.desc=How fast a tool with a tool head of this material can mine blocks.\nMay be influenced by other toolparts.
+gui.partcrafter.attack.desc=Base value for attack calculations.\nThe end result depends on the tool itself and the other components used.
+gui.partcrafter.handlemodifier.desc=How suitable the tool material is as a handle.\nThe total durability of the tool will be multiplied by this.
+gui.partcrafter.drawspeed.desc=How fast you can draw the bow.
+
 gui.partcrafter.durability=Durability: %s
 gui.partcrafter.mininglevel=Mining Level: %s
 gui.partcrafter.miningspeed=Mining Speed: %s

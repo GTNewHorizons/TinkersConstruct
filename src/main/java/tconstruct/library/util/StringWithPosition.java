@@ -1,5 +1,6 @@
 package tconstruct.library.util;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class StringWithPosition implements WidgetsHasTooltips {
@@ -11,13 +12,17 @@ public class StringWithPosition implements WidgetsHasTooltips {
     final private int width;
     final private int height;
 
+    public StringWithPosition(String tooltips, int startPositionX, int startPositionY, int width, int height) {
+        this(Arrays.asList(tooltips.split("\\\\n")), startPositionX, startPositionY, width, height, 1);
+    }
+
     public StringWithPosition(List<String> tooltips, int startPositionX, int startPositionY, int width, int height,
             float scale) {
         this.tooltips = tooltips;
-        this.startPositionX = (int) (startPositionX * scale);
-        this.startPositionY = (int) (startPositionY * scale);
-        this.width = (int) (width * scale);
-        this.height = (int) (height * scale);
+        this.startPositionX = startPositionX;
+        this.startPositionY = startPositionY;
+        this.width = width;
+        this.height = height;
     }
 
     public boolean isHover(int mouseX, int mouseY) {

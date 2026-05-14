@@ -358,7 +358,7 @@ public class TiCBookData extends BookData {
             icons.setTextContent(formatedName);
 
             Element desc = this.doc.createElement("text");
-            desc.setTextContent(material.prefixName());
+            desc.setTextContent(material.style() + material.prefixName());
 
             newB.appendChild(icons);
             newB.appendChild(desc);

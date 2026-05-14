@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
+import org.lwjgl.opengl.GL11;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -15,6 +16,7 @@ import tconstruct.library.tools.ArrowMaterial;
 import tconstruct.library.tools.BowMaterial;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.HarvestLevels;
+import tconstruct.library.util.StringWithPosition;
 import tconstruct.modifiers.tools.ModReinforced;
 import tconstruct.util.FontColorHelper;
 import tconstruct.util.McTextFormatter;
@@ -66,82 +68,100 @@ public class TiCMaterialPage extends TiCBookPage {
                 1.0f,
                 FontColorHelper.adjustForegroundKeepHue(BACKGROUNDCOLOR, tm.primaryColor()));
 
-        int stringStartX = (int) ((startX + (this.side == 0 ? 30 : 10)) * scale);
-        int stringStartY = (int) ((startY + 20) * scale);
-        int lineHeight = (int) (manual.fonts.FONT_HEIGHT * scale);
+        GL11.glPushMatrix();
+        GL11.glScaled(1.05f, 1.05f, 1.0f);
 
-        drawStrAt(
-                StatCollector.translateToLocal("gui.partcrafter4") + tm.durability,
+        float realScale = scale * 1.05f;
+        int stringStartX = (int) ((startX + (this.side == 0 ? 30 : 10)) * realScale);
+        int stringStartY = (int) ((startY + 20) * realScale);
+
+        int lineHeight = (int) (manual.fonts.FONT_HEIGHT * realScale);
+
+        String str = StatCollector.translateToLocalFormatted(
+                "gui.partcrafter.durability",
+                McTextFormatter.addDarkGreen(String.valueOf(tm.durability)));
+        drawStrAt(str, stringStartX, stringStartY, realScale);
+        if (StatCollector.canTranslate("gui.partcrafter.durability.desc")) addNewTooltipsString(
+                StatCollector.translateToLocal("gui.partcrafter.durability.desc"),
                 stringStartX,
                 stringStartY,
-                scale);
+                manual.fonts.getStringWidth(str) * realScale,
+                lineHeight);
         stringStartY += lineHeight;
 
-        drawStrAt(
-                StatCollector.translateToLocal("gui.partcrafter5") + tm.handleModifier + "x",
+        str = StatCollector.translateToLocalFormatted(
+                "gui.partcrafter.handlemodifier",
+                McTextFormatter.addGold(String.valueOf(tm.handleModifier)));
+        drawStrAt(str, stringStartX, stringStartY, realScale);
+        if (StatCollector.canTranslate("gui.partcrafter.handlemodifier.desc")) addNewTooltipsString(
+                StatCollector.translateToLocal("gui.partcrafter.handlemodifier.desc"),
                 stringStartX,
                 stringStartY,
-                scale);
+                manual.fonts.getStringWidth(str) * realScale,
+                lineHeight);
         stringStartY += lineHeight;
 
-        drawStrAt(
-                StatCollector.translateToLocal("gui.partcrafter11") + Math.round(tm.durability * tm.handleModifier),
+        str = StatCollector.translateToLocalFormatted(
+                "gui.partcrafter.miningspeed",
+                McTextFormatter.addBlue(String.valueOf(tm.miningspeed / 100F)));
+        drawStrAt(str, stringStartX, stringStartY, realScale);
+        if (StatCollector.canTranslate("gui.partcrafter.miningspeed.desc")) addNewTooltipsString(
+                StatCollector.translateToLocal("gui.partcrafter.miningspeed.desc"),
                 stringStartX,
                 stringStartY,
-                scale);
+                manual.fonts.getStringWidth(str) * realScale,
+                lineHeight);
         stringStartY += lineHeight;
 
-        drawStrAt(
-                StatCollector.translateToLocal("gui.partcrafter6") + tm.miningspeed / 100F,
+        str = StatCollector.translateToLocalFormatted(
+                "gui.partcrafter.mininglevel",
+                HarvestLevels.getHarvestLevelName(tm.harvestLevel));
+        drawStrAt(str, stringStartX, stringStartY, realScale);
+        if (StatCollector.canTranslate("gui.partcrafter.mininglevel.desc")) addNewTooltipsString(
+                StatCollector.translateToLocal("gui.partcrafter.mininglevel.desc"),
                 stringStartX,
                 stringStartY,
-                scale);
+                manual.fonts.getStringWidth(str) * realScale,
+                lineHeight);
         stringStartY += lineHeight;
 
-        drawStrAt(
-                StatCollector.translateToLocal("gui.partcrafter7") + HarvestLevels.getHarvestLevelName(tm.harvestLevel),
+        str = StatCollector.translateToLocalFormatted(
+                "gui.partcrafter.attack",
+                McTextFormatter.addDarkRed(String.valueOf(tm.attack)));
+        drawStrAt(str, stringStartX, stringStartY, realScale);
+        if (StatCollector.canTranslate("gui.partcrafter.attack.desc")) addNewTooltipsString(
+                StatCollector.translateToLocal("gui.partcrafter.attack.desc"),
                 stringStartX,
                 stringStartY,
-                scale);
-        stringStartY += lineHeight;
-
-        String heart = tm.attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
-                : StatCollector.translateToLocal("gui.partcrafter9");
-        if (tm.attack() % 2 == 0) {
-            drawStrAt(
-                    StatCollector.translateToLocal("gui.partcrafter10") + tm.attack / 2 + heart,
-                    stringStartX,
-                    stringStartY,
-                    scale);
-        } else {
-            drawStrAt(
-                    StatCollector.translateToLocal("gui.partcrafter10") + tm.attack / 2F + heart,
-                    stringStartX,
-                    stringStartY,
-                    scale);
-        }
+                manual.fonts.getStringWidth(str) * realScale,
+                lineHeight);
         stringStartY += (lineHeight * 1.2);
 
         if (tm.reinforced > 0) {
             drawStrAt(
-                    McTextFormatter.addDarkPurple(ModReinforced.getReinforcedString(tm.reinforced)),
+                    McTextFormatter.addDarkPurple(
+                            McTextFormatter.addUnderLine(ModReinforced.getReinforcedString(tm.reinforced))),
                     stringStartX,
                     stringStartY,
-                    scale);
+                    realScale);
             stringStartY += lineHeight;
         }
 
         if (tm.shoddy() != 0) {
-            String abilityStr = StatCollector.translateToLocal(
-                    tm.shoddy() > 0 ? "manual.page.material8" : "manual.page.material9") + ": " + Math.abs(tm.shoddy());
+            String abilityStr = McTextFormatter.addUnderLine(
+                    StatCollector.translateToLocal(tm.shoddy() > 0 ? "manual.page.material8" : "manual.page.material9")
+                            + ": "
+                            + Math.abs(tm.shoddy()));
             abilityStr = tm.shoddy() > 0 ? McTextFormatter.addDarkRed(abilityStr)
                     : McTextFormatter.addDarkGreen(abilityStr);
-            drawStrAt(abilityStr, stringStartX, stringStartY, scale);
-            stringStartY += (lineHeight * 1.2);
+            drawStrAt(abilityStr, stringStartX, stringStartY, realScale);
+            stringStartY += lineHeight;
         } else if (tm.ability().length() != 0) {
-            drawStrAt(McTextFormatter.addBold(tm.style() + tm.ability()), stringStartX, stringStartY, scale);
-            stringStartY += (lineHeight * 1.2);
+            drawStrAt(tm.style() + McTextFormatter.addUnderLine(tm.ability()), stringStartX, stringStartY, realScale);
+            stringStartY += lineHeight;
         }
+
+        GL11.glPopMatrix();
 
         beforeRenderItem(1.0F);
 
@@ -166,4 +186,11 @@ public class TiCMaterialPage extends TiCBookPage {
         }
     }
 
+    private void addNewTooltipsString(String str, int stringStartX, int stringStartY, float width, int height) {
+        addNewTooltipsString(str, stringStartX, stringStartY, (int) width, height);
+    }
+
+    private void addNewTooltipsString(String str, int stringStartX, int stringStartY, int width, int height) {
+        widgetsList.add(new StringWithPosition(str, (int) (stringStartX), (int) (stringStartY), (int) (width), height));
+    }
 }

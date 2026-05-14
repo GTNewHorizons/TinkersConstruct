@@ -71,30 +71,9 @@ public class TiCNavigationButton extends TiCGuiButton {
                 0x000000);
     }
 
-    public TiCNavigationButton(int id, ButtonSize bs, ItemStack[] s, String ButtonStr, String target,
-            TiCBookPage parentPage) {
-        this(
-                id,
-                bs,
-                s,
-                ButtonStr,
-                target,
-                ButtonStr.length() != 0 ? Arrays.asList(ButtonStr) : new ArrayList<>(),
-                parentPage,
-                0x000000);
-    }
-
-    public TiCNavigationButton(int id, ButtonSize bs, ItemStack[] s, String ButtonStr, String target,
+    public TiCNavigationButton(int id, ButtonSize bs, ItemStack[] s, String target, String tooltips,
             TiCBookPage parentPage, int color) {
-        this(
-                id,
-                bs,
-                s,
-                ButtonStr,
-                target,
-                ButtonStr.length() != 0 ? Arrays.asList(ButtonStr) : new ArrayList<>(),
-                parentPage,
-                color);
+        this(id, bs, s, "", target, Arrays.asList(tooltips), parentPage, color);
     }
 
     public TiCNavigationButton(int id, ButtonSize bs, ItemStack[] s, String ButtonStr, String target,
@@ -102,7 +81,7 @@ public class TiCNavigationButton extends TiCGuiButton {
         super(id, 0, 0, defaultHeight, defaultWidth, "", parentPage);
         this.bs = bs;
         this.renderStack = s;
-        this.ButtonStr = McTextFormatter.addBold(ButtonStr);
+        this.ButtonStr = ButtonStr;
         this.target = target;
         this.toolTips = tooltips;
         this.color = color;
@@ -127,22 +106,24 @@ public class TiCNavigationButton extends TiCGuiButton {
                         0xAAAAAAAA);
             }
 
+            String boldButtonStr = McTextFormatter.addBold(this.ButtonStr);
+
             // let string a half size of multi
             GL11.glScalef(this.bs.multi / 2, this.bs.multi / 2, 1.0f);
-            if (fonts.getStringWidth(this.ButtonStr) <= this.width / scale / this.bs.multi * 2) {
+            if (fonts.getStringWidth(boldButtonStr) <= this.width / scale / this.bs.multi * 2) {
                 fonts.drawString(
-                        this.ButtonStr,
+                        boldButtonStr,
                         (int) ((this.xPosition + this.width / 2) / scale / this.bs.multi * 2
-                                - fonts.getStringWidth(this.ButtonStr) / 2),
+                                - fonts.getStringWidth(boldButtonStr) / 2),
                         (int) ((this.yPosition + this.height) / scale / this.bs.multi * 2 - fonts.FONT_HEIGHT),
                         this.color);
             } else {
                 // much smaller
                 GL11.glScalef(0.8f, 0.8f, 1.0f);
                 fonts.drawString(
-                        this.ButtonStr,
+                        boldButtonStr,
                         (int) ((this.xPosition + this.width / 2) / scale / this.bs.multi * 2.5
-                                - fonts.getStringWidth(this.ButtonStr) / 2),
+                                - fonts.getStringWidth(boldButtonStr) / 2),
                         (int) ((this.yPosition + this.height) / scale / this.bs.multi * 2.5 - fonts.FONT_HEIGHT),
                         this.color);
                 // resize back
