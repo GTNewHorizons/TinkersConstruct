@@ -11,6 +11,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 
 import cpw.mods.fml.common.IWorldGenerator;
+import tconstruct.util.config.DimensionBlacklist;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.world.TinkerWorld;
 
@@ -39,7 +40,8 @@ public class TBaseWorldGenerator implements IWorldGenerator {
             generateNether(random, chunkX * 16, chunkZ * 16, world);
         } else if (world.provider.terrainType != WorldType.FLAT || PHConstruct.genOresFlat) {
             generateSurface(random, chunkX * 16, chunkZ * 16, world);
-            if (world.provider.isSurfaceWorld()) generateOreBushes(random, chunkX * 16, chunkZ * 16, world);
+            if (world.provider.isSurfaceWorld() && DimensionBlacklist.isOreBushAllowedInDim(world.provider.dimensionId))
+                generateOreBushes(random, chunkX * 16, chunkZ * 16, world);
         }
 
         if (PHConstruct.superfunWorld && world.provider.isSurfaceWorld()) {
