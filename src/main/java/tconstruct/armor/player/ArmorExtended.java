@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagList;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
+import tconstruct.compat.BaublesHelper;
 import tconstruct.compat.LoadedMods;
 import tconstruct.library.accessory.IHealthAccessory;
 import tconstruct.util.config.PHConstruct;
@@ -145,12 +146,11 @@ public class ArmorExtended implements IInventory {
     @Optional.Method(modid = "Baubles")
     private int getBaublesHealthBoost(EntityPlayer player) {
         int bonusHP = 0;
-        baubles.common.container.InventoryBaubles baubleInventory = baubles.common.lib.PlayerHandler
-                .getPlayerBaubles(player);
-        if (baubleInventory == null || baubleInventory.stackList == null) {
+        ItemStack[] baubleStacks = BaublesHelper.getBaubleStacks(player);
+        if (baubleStacks == null) {
             return 0;
         }
-        for (ItemStack stack : baubleInventory.stackList) {
+        for (ItemStack stack : baubleStacks) {
             if (stack != null && stack.getItem() instanceof IHealthAccessory) {
                 bonusHP += ((IHealthAccessory) stack.getItem()).getHealthBoost(stack);
             }
