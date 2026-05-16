@@ -139,4 +139,10 @@ public class ToolMaterial {
             return StatCollector.translateToLocal(String.format("%s.ability", localizationString));
         return "";
     }
+
+    public String abilityDesc() {
+        if (StatCollector.canTranslate(String.format("%s.ability.desc", localizationString)))
+            return StatCollector.translateToLocal(String.format("%s.ability.desc", localizationString));
+        return "";
+    }
 }

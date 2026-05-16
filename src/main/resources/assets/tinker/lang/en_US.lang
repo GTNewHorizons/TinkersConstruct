@@ -986,13 +986,16 @@ gui.toolstation.javelin.desc=Ranged Melee weapon hybrid. Potent as a melee weapo
 material.alumite=Alumite
 material.ardite=Ardite
 material.ardite.ability=Stonebound
+material.ardite.ability.desc=The tool mines faster as it wears out, but does less damage
 material.blueslime=Blue Slime
 material.blueslime.ability=Slimy
+material.blueslime.ability.desc=Randomly spawn Blue Slime around you when you are useing tool made by this material
 material.blueslime.display=Slime
 material.bone=Bone
 material.bronze=Bronze
 material.cactus=Cactus
 material.cactus.ability=Jagged
+material.cactus.ability.desc=The tool attacks with does more damage as it wears out, but mines slower
 material.cobalt=Cobalt
 material.copper=Copper
 material.flint=Flint
@@ -1000,20 +1003,31 @@ material.iron=Iron
 material.manyullyn=Manyullyn
 material.netherrack=Netherrack
 material.netherrack.ability=Stonebound
+material.netherrack.ability.desc=The tool mines faster as it wears out, but does less damage
 material.obsidian=Obsidian
 material.paper=Paper
 material.paper.ability=Writable
+material.paper.ability.desc=One extra modifier per piece
 material.pigiron=Pig Iron
 material.pigiron.ability=Tasty
+material.pigiron.ability.desc=Sometimes drops food items
 material.slime=Slime
 material.slime.ability=Slimy
+material.slime.ability.desc=Randomly spawn Slime around you when you are useing tool made by this material
 material.steel=Steel
 material.stone=Stone
 material.stone.ability=Stonebound
+material.stone.ability.desc=The tool mines faster as it wears out, but does less damage
 material.thaumium=Thaumium
 material.thaumium.ability=Thaumic
+material.thaumium.ability.desc=Half extra modifier per piece
 material.wood=Wood
 material.wood.display=Wooden
+
+tool.reinforced=Reinforced
+tool.reinforced.desc=10% chance per level of not using durability
+tool.unbreakable=Unbreakable
+tool.nodesc=There has no desc for %s
 
 creativeModLock.tooltip=Target Lock: 
 
@@ -1113,9 +1127,6 @@ gadgets.slimesling.tooltip3=Must be on the ground to use.
 gadgets.slime_boots.tooltip1=Boooounce!
 gadgets.slime_boots.tooltip2=Hold
 gadgets.slime_boots.tooltip3= to stop bouncing.
-
-tool.reinforced=Reinforced
-tool.unbreakable=Unbreakable
 
 modifier.tool.diamond=Durability +500
 modifier.tool.emerald=Durability +50%
@@ -1222,6 +1233,7 @@ tconstruct.manual.materialsandyou.jumptomodifies=Modifies
 tconstruct.manual.materialsandyou.jumptosmeltery=Smeltery
 tconstruct.manual.materialsandyou.jumptobowmaterials=Bow Materials
 
+
 tconstruct.manual.materialsandyou.welcome1=Welcome to the §mfirst§r second edition of Materials and You: Surviving the first day and beyond. Within these pages you will find the first steps to making the tools and materials you need to survive.\n\nThis book is a magic copy; it updates whenever the original has been modified. Check back occasionally for information on new things.
 tconstruct.manual.materialsandyou.welcome2=The first step in making tools is crafting a blank pattern. It is a blank slate to stamp a shape into, providing a reference for future creations. The patterns are shaped on the Stencil Table or are used as tabletops.\n\nYou can then shape a material in a part builder with the pattern, then combine parts in the tool station. Patterns can be stored and accessed in the pattern chest.\n\nTogether these make the Tool Workshop. It is recommended you keep all of these nearby when using any of them.
 tconstruct.manual.materialsandyou.oreberrydesc=Oreberry Bushes\n\nSometime in your travels you will happen upon the bush known as the Oreberry. They grow underground in dark areas, and require close to complete darkness to produce anything.\n\nThe berries can be melted down into nuggets and ingots, making them an invaluable source of metals.
@@ -1269,3 +1281,5 @@ tconstruct.manual.materialsandyou.recipetype.ToolForgeRecipe=Tool Forge
 
 
 tconstruct.manual.materialsandyou.navigation.tools=Tools
+
+

@@ -144,21 +144,65 @@ public class TiCMaterialPage extends TiCBookPage {
                     stringStartX,
                     stringStartY,
                     realScale);
-            stringStartY += lineHeight;
+
+            String reinforcedDesc = StatCollector.translateToLocal("tool.reinforced.desc");
+            addNewTooltipsString(
+                    reinforcedDesc,
+                    stringStartX,
+                    stringStartY,
+                    manual.fonts.getStringWidth(ModReinforced.getReinforcedString(tm.reinforced)) * realScale,
+                    lineHeight);
+
+            stringStartY += (lineHeight * 1.2);
         }
 
         if (tm.shoddy() != 0) {
-            String abilityStr = McTextFormatter.addUnderLine(
-                    StatCollector.translateToLocal(tm.shoddy() > 0 ? "manual.page.material8" : "manual.page.material9")
-                            + ": "
-                            + Math.abs(tm.shoddy()));
-            abilityStr = tm.shoddy() > 0 ? McTextFormatter.addDarkRed(abilityStr)
-                    : McTextFormatter.addDarkGreen(abilityStr);
+            String abilityStr = McTextFormatter.addUnderLine(tm.ability() + ": " + Math.abs(tm.shoddy()));
+            if (tm.shoddy() > 0) {
+                abilityStr = McTextFormatter.addDarkRed(abilityStr);
+            } else {
+                abilityStr = McTextFormatter.addDarkGreen(abilityStr);
+            }
             drawStrAt(abilityStr, stringStartX, stringStartY, realScale);
-            stringStartY += lineHeight;
+
+            String abilityDesc = tm.abilityDesc();
+            if (abilityDesc.length() != 0) {
+                addNewTooltipsString(
+                        abilityDesc,
+                        stringStartX,
+                        stringStartY,
+                        manual.fonts.getStringWidth(abilityStr) * realScale,
+                        lineHeight);
+            } else {
+                addNewTooltipsString(
+                        StatCollector.translateToLocalFormatted("tool.nodesc", tm.ability()),
+                        stringStartX,
+                        stringStartY,
+                        manual.fonts.getStringWidth(abilityStr) * realScale,
+                        lineHeight);
+            }
+            stringStartY += (lineHeight * 1.2);
         } else if (tm.ability().length() != 0) {
-            drawStrAt(tm.style() + McTextFormatter.addUnderLine(tm.ability()), stringStartX, stringStartY, realScale);
-            stringStartY += lineHeight;
+            String abilityStr = tm.style() + McTextFormatter.addUnderLine(tm.ability());
+            drawStrAt(abilityStr, stringStartX, stringStartY, realScale);
+
+            String abilityDesc = tm.abilityDesc();
+            if (abilityDesc.length() != 0) {
+                addNewTooltipsString(
+                        abilityDesc,
+                        stringStartX,
+                        stringStartY,
+                        manual.fonts.getStringWidth(abilityStr) * realScale,
+                        lineHeight);
+            } else {
+                addNewTooltipsString(
+                        StatCollector.translateToLocalFormatted("tool.nodesc", tm.ability()),
+                        stringStartX,
+                        stringStartY,
+                        manual.fonts.getStringWidth(abilityStr) * realScale,
+                        lineHeight);
+            }
+            stringStartY += (lineHeight * 1.2);
         }
 
         GL11.glPopMatrix();
