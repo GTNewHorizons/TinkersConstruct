@@ -31,6 +31,7 @@ import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.modifier.ItemModifier;
 import tconstruct.library.util.TextureHelper;
+import tconstruct.modifiers.tools.ModReinforced;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.entity.FancyEntityItem;
 import tconstruct.util.config.PHConstruct;
@@ -362,28 +363,23 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         tconstruct.library.tools.ToolMaterial extraMat = TConstructRegistry.getMaterial(extra);
 
         int reinforced = 0;
-        String style = "";
         int current = headMat.reinforced();
         if (current > 0) {
-            style = headMat.style();
             reinforced = current;
         }
         current = handleMat.reinforced();
         if (current > 0 && current > reinforced) {
-            style = handleMat.style();
             reinforced = current;
         }
         if (getPartAmount() >= 3) {
             current = accessoryMat.reinforced();
             if (current > 0 && current > reinforced) {
-                style = accessoryMat.style();
                 reinforced = current;
             }
         }
         if (getPartAmount() >= 4) {
             current = extraMat.reinforced();
             if (current > 0 && current > reinforced) {
-                style = extraMat.style();
                 reinforced = current;
             }
         }
@@ -391,25 +387,9 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         reinforced += unbreaking - reinforced;
 
         if (reinforced > 0) {
-            return style + getReinforcedString(reinforced);
+            return "\u00a75" + ModReinforced.getReinforcedString(reinforced);
         }
         return "";
-    }
-
-    String getReinforcedString(int reinforced) {
-        if (reinforced > 9) return StatCollector.translateToLocal("tool.unbreakable");
-        return StatCollector.translateToLocal("tool.reinforced") + " " + switch (reinforced) {
-            case 1 -> "I";
-            case 2 -> "II";
-            case 3 -> "III";
-            case 4 -> "IV";
-            case 5 -> "V";
-            case 6 -> "VI";
-            case 7 -> "VII";
-            case 8 -> "VIII";
-            case 9 -> "IX";
-            default -> "X";
-        };
     }
 
     // Used for sounds and the like

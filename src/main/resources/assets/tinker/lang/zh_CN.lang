@@ -1121,6 +1121,7 @@ modifier.tooltip.ThaumicSenses=神秘感知
 modifier.tooltip.Triple-Jump=三重跳
 modifier.tooltip.ThaumicVision=神秘视觉
 modifier.tooltip.Water-Walking=水上行走
+modifier.tooltip.Auto-Repair=自动修复
 
 option.tcon.searedtank=焦黑储罐
 option.tcon.castingchannel=浇注道

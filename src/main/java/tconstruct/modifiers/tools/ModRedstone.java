@@ -12,7 +12,6 @@ import tconstruct.library.tools.ToolCore;
 
 public class ModRedstone extends ItemModTypeFilter {
 
-    public String tooltipName;
     public int max = 50;
 
     public ModRedstone(int effect, ItemStack[] items, int[] values) {

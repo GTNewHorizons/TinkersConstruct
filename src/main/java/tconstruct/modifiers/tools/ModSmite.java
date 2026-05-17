@@ -5,7 +5,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ModSmite extends ItemModTypeFilter {
 
-    String tooltipName;
     int max = 36;
     String tagName;
 

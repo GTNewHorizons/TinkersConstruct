@@ -2,6 +2,7 @@ package tconstruct.modifiers.tools;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 public class ModReinforced extends ModInteger {
 
@@ -54,5 +55,21 @@ public class ModReinforced extends ModInteger {
                 }
             }
         }
+    }
+
+    public static String getReinforcedString(int reinforced) {
+        if (reinforced > 9) return StatCollector.translateToLocal("tool.unbreakable");
+        return StatCollector.translateToLocal("tool.reinforced") + " " + switch (reinforced) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            default -> "X";
+        };
     }
 }

@@ -36,6 +36,12 @@ import tconstruct.client.FlexibleToolRenderer;
 import tconstruct.client.entity.projectile.LaunchedItemRender;
 import tconstruct.client.pages.MaterialPage;
 import tconstruct.client.pages.ModifierPage;
+import tconstruct.client.pages.NavigationPage;
+import tconstruct.client.pages.TiCCoverPage;
+import tconstruct.client.pages.TiCCraftingPage;
+import tconstruct.client.pages.TiCMaterialPage;
+import tconstruct.client.pages.TiCPicturePage;
+import tconstruct.client.pages.TiCTextPage;
 import tconstruct.client.pages.ToolPage;
 import tconstruct.common.TProxyCommon;
 import tconstruct.library.TConstructRegistry;
@@ -97,11 +103,14 @@ public class ToolProxyClient extends ToolProxyCommon {
         RenderingRegistry
                 .registerEntityRenderingHandler(LaunchedPotion.class, new LaunchedItemRender(Items.potionitem, 16384));
         RenderingRegistry.registerEntityRenderingHandler(DaggerEntity.class, new DaggerEntityRenderer());
-        // RenderingRegistry.registerEntityRenderingHandler(DaggerEntity.class, new DaggerRenderCustom());
-        // RenderingRegistry.registerEntityRenderingHandler(ArrowEntity.class, new ArrowRenderCustom());
+        // RenderingRegistry.registerEntityRenderingHandler(DaggerEntity.class, new
+        // DaggerRenderCustom());
+        // RenderingRegistry.registerEntityRenderingHandler(ArrowEntity.class, new
+        // ArrowRenderCustom());
         RenderingRegistry.registerEntityRenderingHandler(FancyEntityItem.class, new FancyItemRender());
 
-        // MinecraftForgeClient.registerItemRenderer(TinkerTools.shortbow, new CustomBowRenderer());
+        // MinecraftForgeClient.registerItemRenderer(TinkerTools.shortbow, new
+        // CustomBowRenderer());
         FlexibleToolRenderer renderer = new FlexibleToolRenderer();
         MinecraftForgeClient.registerItemRenderer(TinkerTools.pickaxe, renderer);
         MinecraftForgeClient.registerItemRenderer(TinkerTools.shovel, renderer);
@@ -122,7 +131,8 @@ public class ToolProxyClient extends ToolProxyCommon {
         MinecraftForgeClient.registerItemRenderer(TinkerTools.scythe, renderer);
         MinecraftForgeClient.registerItemRenderer(TinkerTools.dagger, renderer);
         // ToolCoreRenderer daggerRenderer = new ToolCoreRenderer(true);
-        // MinecraftForgeClient.registerItemRenderer(TinkerTools.dagger, daggerRenderer); // todo proper renderer
+        // MinecraftForgeClient.registerItemRenderer(TinkerTools.dagger,
+        // daggerRenderer); // todo proper renderer
 
         TileEntityRendererDispatcher.instance.mapSpecialRenderers.put(BattlesignLogic.class, new BattlesignTesr());
     }
@@ -207,11 +217,15 @@ public class ToolProxyClient extends ToolProxyCommon {
                         new ItemStack(TinkerTools.toolRod, 1, 11),
                         null,
                         ""));
-        // MantleClientRegistry.registerManualIcon("shortbowIcon", ToolBuilder.instance.buildTool(new
-        // ItemStack(TinkerTools.toolRod, 1, 10), new ItemStack(TinkerWeaponry.bowstring, 1, 0), new
+        // MantleClientRegistry.registerManualIcon("shortbowIcon",
+        // ToolBuilder.instance.buildTool(new
+        // ItemStack(TinkerTools.toolRod, 1, 10), new
+        // ItemStack(TinkerWeaponry.bowstring, 1, 0), new
         // ItemStack(TinkerTools.toolRod, 1, 12), ""));
-        // MantleClientRegistry.registerManualIcon("arrowIcon", ToolBuilder.instance.buildTool(new
-        // ItemStack(TinkerWeaponry.arrowhead, 1, 10), new ItemStack(TinkerTools.toolRod, 1, 11), new
+        // MantleClientRegistry.registerManualIcon("arrowIcon",
+        // ToolBuilder.instance.buildTool(new
+        // ItemStack(TinkerWeaponry.arrowhead, 1, 10), new
+        // ItemStack(TinkerTools.toolRod, 1, 11), new
         // ItemStack(TinkerWeaponry.fletching, 1, 0), ""));
 
         MantleClientRegistry.registerManualIcon(
@@ -321,6 +335,13 @@ public class ToolProxyClient extends ToolProxyCommon {
         MProxyClient.registerManualPage("materialstats", MaterialPage.class);
         MProxyClient.registerManualPage("toolpage", ToolPage.class);
         MProxyClient.registerManualPage("modifier", ModifierPage.class);
+
+        MProxyClient.registerManualPage("cover", TiCCoverPage.class);
+        MProxyClient.registerManualPage("tictext", TiCTextPage.class);
+        MProxyClient.registerManualPage("ticcrafting", TiCCraftingPage.class);
+        MProxyClient.registerManualPage("navigation", NavigationPage.class);
+        MProxyClient.registerManualPage("ticpicture", TiCPicturePage.class);
+        MProxyClient.registerManualPage("ticmaterial", TiCMaterialPage.class);
     }
 
     void registerManualRecipes() {
@@ -426,7 +447,12 @@ public class ToolProxyClient extends ToolProxyCommon {
                 ironblock,
                 ironblock,
                 null,
-                ironblock); // TODO: Alternate recipe for Smeltery disabled
+                ironblock); // TODO:
+                            // Alternate
+                            // recipe
+                            // for
+                            // Smeltery
+                            // disabled
 
         MantleClientRegistry.registerManualLargeRecipe(
                 "slimymud",

@@ -2,15 +2,25 @@ package tconstruct.library.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
+
+import com.google.common.collect.Maps;
 
 import mantle.lib.client.MantleClientRegistry;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.tools.ToolCore;
+import tconstruct.util.TiCRecipeHolder;
+import tconstruct.util.TiCRecipeHolder.RecipeType;
 
 public class TConstructClientRegistry {
 
@@ -18,7 +28,8 @@ public class TConstructClientRegistry {
     public static ArrayList<StencilGuiElement> stencilButtons2 = new ArrayList<>();
     public static ArrayList<ToolGuiElement> toolButtons = new ArrayList<>(20);
     public static ArrayList<ToolGuiElement> tierTwoButtons = new ArrayList<>();
-    public static Map<String, ItemStack> manualIcons = new HashMap<>();
+    public static Map<String, Object> manualIcons = new HashMap<>();
+    public static Map<String, TiCRecipeHolder[]> recipeIcons = Maps.newHashMap();
     public static ItemStack defaultStack = new ItemStack(Items.iron_ingot);
 
     public static void addMaterialRenderMapping(int materialID, String domain, String renderName,
@@ -111,6 +122,71 @@ public class TConstructClientRegistry {
         recipe[1] = liquid;
         recipe[2] = cast;
         MantleClientRegistry.recipeIcons.put(name, recipe);
+    }
+
+    public static boolean checkHadManualIconRegistered(String name) {
+        return manualIcons.containsKey(name);
+    }
+
+    public static void registerManualIcon(String name, ItemStack stack) {
+        manualIcons.put(name, stack);
+    }
+
+    public static void registerManualIcon(String name, ItemStack[] stacks) {
+        if (!manualIcons.containsKey(name)) {
+            manualIcons.put(name, stacks);
+        }
+    }
+
+    public static Object getManualIcon(String name) {
+        return manualIcons.get(name);
+    }
+
+    public static ItemStack getOrRegisterManualIcon(String name) {
+        if (!checkHadManualIconRegistered(name)) {
+            String[] icon = name.split(":");
+            String iconStackName = name;
+            int iconDamage = 0;
+            if (icon.length == 3) {
+                iconStackName = icon[0] + ":" + icon[1];
+                iconDamage = Integer.parseInt(icon[2]);
+            }
+            ItemStack tempStack = new ItemStack((Item) Item.itemRegistry.getObject(iconStackName), 1, iconDamage);
+            registerManualIcon(name, tempStack);
+        }
+        return (ItemStack) getManualIcon(name);
+    }
+
+    public static ItemStack getOrRegisterManualIcon(String name, ItemStack stack) {
+        if (!checkHadManualIconRegistered(name)) {
+            registerManualIcon(name, stack);
+        }
+        return (ItemStack) getManualIcon(name);
+    }
+
+    public static TiCRecipeHolder[] getOrRegisterRecipeIcon(String name) {
+        if (!recipeIcons.containsKey(name)) {
+            ItemStack outPutStack = getOrRegisterManualIcon(name);
+            List<TiCRecipeHolder> recipes = new ArrayList<>();
+            for (IRecipe i : CraftingManager.getInstance().getRecipeList()) {
+                ItemStack output = i.getRecipeOutput();
+                if (output != null && output.isItemEqual(outPutStack)) recipes.add(new TiCRecipeHolder(i));
+            }
+
+            for (Entry<ItemStack, ItemStack> t : FurnaceRecipes.smelting().getSmeltingList().entrySet()) {
+                if (t.getValue().isItemEqual(outPutStack)) recipes.add(new TiCRecipeHolder(t.getKey(), t.getValue()));
+            }
+
+            recipeIcons.put(name, recipes.toArray(new TiCRecipeHolder[] {}));
+        }
+        return recipeIcons.get(name);
+    }
+
+    public static void registerTiCToolRecipeIcon(String name, ItemStack[][] inputs, ItemStack output, RecipeType type) {
+        if (!recipeIcons.containsKey(name)) {
+            getOrRegisterManualIcon(name, output);
+            recipeIcons.put(name, new TiCRecipeHolder[] { new TiCRecipeHolder(inputs, output, type) });
+        }
     }
 
     // Gui

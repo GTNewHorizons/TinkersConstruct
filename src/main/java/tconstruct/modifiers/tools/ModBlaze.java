@@ -10,7 +10,6 @@ import tconstruct.library.tools.ToolCore;
 
 public class ModBlaze extends ItemModTypeFilter {
 
-    String tooltipName;
     int max;
 
     public ModBlaze(int effect, ItemStack[] items, int[] values) {

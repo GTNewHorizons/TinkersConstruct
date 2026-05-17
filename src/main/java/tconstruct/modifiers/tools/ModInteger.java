@@ -10,7 +10,6 @@ import tconstruct.library.modifier.ItemModifier;
 public class ModInteger extends ItemModifier {
 
     String color;
-    String tooltipName;
     int initialIncrease;
     int secondaryIncrease;
 

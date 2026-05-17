@@ -13,7 +13,6 @@ import tconstruct.library.armor.ArmorPart;
 public class AModInteger extends ArmorMod {
 
     String color;
-    String tooltipName;
     int initialIncrease;
     int secondaryIncrease;
 

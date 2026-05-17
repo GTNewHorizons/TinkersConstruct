@@ -516,6 +516,7 @@ item.tconstruct.manual.toolstation.name=Materials and You: Volume 2
 item.tconstruct.manual.smeltery.name=Mighty Smelting
 item.tconstruct.manual.diary.name=Diary of a Tinker
 item.tconstruct.manual.weaponry.name=Tinkers' Weaponry
+item.tconstruct.manual.materialsandyou.name=Materials and You
 
 item.tconstruct.bucket.name=Bucket
 item.tconstruct.bucket.Iron.name=Molten Iron Bucket
@@ -816,6 +817,7 @@ manual2.tooltip=By: Skyla
 manual3.tooltip=By: Thruul M'gon
 manual4.tooltip=By: Sheriff Bownana
 manual5.tooltip=By: Nameless Tinker
+manual5.tooltip=By: MCTBL
 searedtank1.tooltip=Contains
 searedtank2.tooltip=Keeps any fluids it has when harvested
 searedtank3.tooltip=Heart of the Smeltery
@@ -928,6 +930,13 @@ gui.toolstation21=Ammo:
 gui.toolstation22=Break Chance: 
 gui.toolstation23=Max. Attack: 
 
+gui.partcrafter.durability.desc=The base-value for durability calculations.\nUsually an integral part to the overall durability of a tool.
+gui.partcrafter.mininglevel.desc=What range of blocks a tool with a tool head of this material can mine.
+gui.partcrafter.miningspeed.desc=How fast a tool with a tool head of this material can mine blocks.\nMay be influenced by other toolparts.
+gui.partcrafter.attack.desc=Base value for attack calculations.\nThe end result depends on the tool itself and the other components used.
+gui.partcrafter.handlemodifier.desc=How suitable the tool material is as a handle.\nThe total durability of the tool will be multiplied by this.
+gui.partcrafter.drawspeed.desc=How fast you can draw the bow.
+
 gui.partcrafter.durability=Durability: %s
 gui.partcrafter.mininglevel=Mining Level: %s
 gui.partcrafter.miningspeed=Mining Speed: %s
@@ -977,13 +986,16 @@ gui.toolstation.javelin.desc=Ranged Melee weapon hybrid. Potent as a melee weapo
 material.alumite=Alumite
 material.ardite=Ardite
 material.ardite.ability=Stonebound
+material.ardite.ability.desc=The tool mines faster as it wears out, but does less damage
 material.blueslime=Blue Slime
 material.blueslime.ability=Slimy
+material.blueslime.ability.desc=Randomly spawn Blue Slime around you when you are useing tool made by this material
 material.blueslime.display=Slime
 material.bone=Bone
 material.bronze=Bronze
 material.cactus=Cactus
 material.cactus.ability=Jagged
+material.cactus.ability.desc=The tool attacks with does more damage as it wears out, but mines slower
 material.cobalt=Cobalt
 material.copper=Copper
 material.flint=Flint
@@ -991,20 +1003,31 @@ material.iron=Iron
 material.manyullyn=Manyullyn
 material.netherrack=Netherrack
 material.netherrack.ability=Stonebound
+material.netherrack.ability.desc=The tool mines faster as it wears out, but does less damage
 material.obsidian=Obsidian
 material.paper=Paper
 material.paper.ability=Writable
+material.paper.ability.desc=One extra modifier per piece
 material.pigiron=Pig Iron
 material.pigiron.ability=Tasty
+material.pigiron.ability.desc=Sometimes drops food items
 material.slime=Slime
 material.slime.ability=Slimy
+material.slime.ability.desc=Randomly spawn Slime around you when you are useing tool made by this material
 material.steel=Steel
 material.stone=Stone
 material.stone.ability=Stonebound
+material.stone.ability.desc=The tool mines faster as it wears out, but does less damage
 material.thaumium=Thaumium
 material.thaumium.ability=Thaumic
+material.thaumium.ability.desc=Half extra modifier per piece
 material.wood=Wood
 material.wood.display=Wooden
+
+tool.reinforced=Reinforced
+tool.reinforced.desc=10% chance per level of not using durability
+tool.unbreakable=Unbreakable
+tool.nodesc=There has no desc for %s
 
 creativeModLock.tooltip=Target Lock: 
 
@@ -1105,9 +1128,6 @@ gadgets.slime_boots.tooltip1=Boooounce!
 gadgets.slime_boots.tooltip2=Hold
 gadgets.slime_boots.tooltip3= to stop bouncing.
 
-tool.reinforced=Reinforced
-tool.unbreakable=Unbreakable
-
 modifier.tool.diamond=Durability +500
 modifier.tool.emerald=Durability +50%
 modifier.tool.haste=Haste
@@ -1178,6 +1198,15 @@ modifier.tooltip.ThaumicSenses=Thaumic Senses
 modifier.tooltip.Triple-Jump=Triple-Jump
 modifier.tooltip.ThaumicVision=Thaumic Vision
 modifier.tooltip.Water-Walking=Water-Walking
+modifier.tooltip.Auto-Repair=Auto-Repair
+modifier.tooltip.Diamond=Durability +500
+modifier.tooltip.Emerald=Durability +50%
+modifier.tooltip.haste=Haste
+modifier.tooltip.lava=Auto-Smelt
+modifier.tooltip.moss=Auto-Repair
+modifier.tooltip.necro=Life Steal
+modifier.tooltip.blaze=Fiery
+modifier.tooltip.Reinforced=Reinforced
 
 tile.LavaTank.name=Seared Tank
 option.tcon.searedtank=Seared Tank
@@ -1195,3 +1224,71 @@ tconstruct.mobsinfocompat.tinkers_construct_beheading_1=If you are using a Cleav
 
 #Baubles compat (Baubles Expanded already has the relevant localizations)
 baubletype.any=Equippable in a §aRing§7 slot
+
+
+#manual button
+tconstruct.manual.button.tooltip.nextPage=Next Page
+tconstruct.manual.button.tooltip.previousPage=Previous Page
+tconstruct.manual.button.tooltip.backToJumpFrom=Back Ward
+tconstruct.manual.button.tooltip.homePage=Home Page
+
+
+#manual text
+tconstruct.manual.materialsandyou.homepage=Materials and You\nThis is all of what you need in TiC\nBy MCTBL
+tconstruct.manual.materialsandyou.jumptointro=Introduce
+tconstruct.manual.materialsandyou.jumptotools=Tools
+tconstruct.manual.materialsandyou.jumptomaterials=Materials
+tconstruct.manual.materialsandyou.jumptomodifies=Modifies
+tconstruct.manual.materialsandyou.jumptosmeltery=Smeltery
+tconstruct.manual.materialsandyou.jumptobowmaterials=Bow Materials
+
+
+tconstruct.manual.materialsandyou.welcome1=Welcome to the §mfirst§r second edition of Materials and You: Surviving the first day and beyond. Within these pages you will find the first steps to making the tools and materials you need to survive.\n\nThis book is a magic copy; it updates whenever the original has been modified. Check back occasionally for information on new things.
+tconstruct.manual.materialsandyou.welcome2=The first step in making tools is crafting a blank pattern. It is a blank slate to stamp a shape into, providing a reference for future creations. The patterns are shaped on the Stencil Table or are used as tabletops.\n\nYou can then shape a material in a part builder with the pattern, then combine parts in the tool station. Patterns can be stored and accessed in the pattern chest.\n\nTogether these make the Tool Workshop. It is recommended you keep all of these nearby when using any of them.
+tconstruct.manual.materialsandyou.oreberrydesc=Oreberry Bushes\n\nSometime in your travels you will happen upon the bush known as the Oreberry. They grow underground in dark areas, and require close to complete darkness to produce anything.\n\nThe berries can be melted down into nuggets and ingots, making them an invaluable source of metals.
+tconstruct.manual.materialsandyou.oreberrypic=Oreberries in their natural environment
+tconstruct.manual.materialsandyou.slimechannels=Slime Channels\n\nSlime channels are useful for moving items or entities around. They are used as a sort of easily placeable water and can be paired with bounce pads for best effect.
+tconstruct.manual.materialsandyou.trap=A few traps or blockades may help with your early survival experience
+tconstruct.manual.materialsandyou.smelterydesc=Once you're well established, you can begin to process metals in a more efficient manner. The scope of the smeltery is beyond this volume, but a few recipes will help you get started.\n\nNote: The Smeltery is required to process all metals, including iron.
+tconstruct.manual.materialsandyou.makenewbook=If you ever find yourself without this book, a new one is simple to make. Other books can be made from this one as well.
+
+
+tconstruct.manual.materialsandyou.tool.pickaxe=The Pickaxe is a precise mining tool. It is effective on stone and ores.
+tconstruct.manual.materialsandyou.tool.shovel=The Shovel is a precise digging tool. It is effective on dirt, sand, and snow.
+tconstruct.manual.materialsandyou.tool.hatchet=The Hatchet is a basic chopping tool. It is effective on wood and leaves.
+tconstruct.manual.materialsandyou.tool.mattock=The Cutter Mattock is a versatile farming tool. It is effective on wood, dirt, and plants.\n\nSpecial Ability: Hoe
+tconstruct.manual.materialsandyou.tool.broadsword=The Broadsword is a defensive weapon. Blocking cuts damage in half.\n\nSpecial Ability: Block\nDamage: Moderate\nDurability: High
+tconstruct.manual.materialsandyou.tool.longsword=The Longsword is an offensive weapon. It is often used for charging into battle at full speed.\n\nNatural Ability:\n- Charge Boost\nSpecial Ability: Lunge\n\nDamage: Moderate\nDurability: Moderate
+tconstruct.manual.materialsandyou.tool.rapier=The Rapier is a special weapon that relies on quick strikes to defeat foes.\n\nNatural Abilities:\n- Armor Pierce\n- Quick Strike\n- Charge Boost\nSpecial Ability:\n- Backpedal\n\nDamage: Low\nDurability: Low
+tconstruct.manual.materialsandyou.tool.dagger=The Dagger is a short blade that can be thrown.\n\nSpecial Ability:\n- Throw Item\n\nDamage: Low\nDurability: Moderate
+tconstruct.manual.materialsandyou.tool.fryingpan=The Frying Pan is a heavy weapon that uses sheer weight to stun foes.\n\nSpecial Ability: Block\nNatural Ability: Heavy\nShift+rClick: Place Frying Pan\nDamage: Low\nDurability: High
+tconstruct.manual.materialsandyou.tool.battlesign=The Battlesign is an advance in weapon technology worthy of Zombie Pigmen everywhere.\n\nSpecial Ability:\nDamage Reflector\n\nNatural Ability: Writable\n\nDamage: Low\nDurability: Average
+tconstruct.manual.materialsandyou.tool.chisel=The Chisel is a utility tool that carves shapes into blocks.\n\nCrafting Grid:\n- Shape Items\nSpecial Ability: Chisel\nDurability: Average
+tconstruct.manual.materialsandyou.tool.hammer=The Hammer is a broad mining tool. It harvests blocks in a wide range and is effective against undead.\n\nNatural Abilities:\nArea of Effect\n- (3x3)\n- Smite\n\nDurability: High
+tconstruct.manual.materialsandyou.tool.lumberaxe=The Lumber Axe is a broad chopping tool. It can fell entire trees or gather wood in a wide range.\n\nNatural Abilities:\nArea of Effect\n- Fell Trees\n- (3x3x3)\n\nDurability: Average
+tconstruct.manual.materialsandyou.tool.excavator=The Excavator is a broad digging tool. It harvests soil and snow in a wide range.\n\nNatural Ability:\n- Area of Effect\n- (3x3)\n\nDurability: Average
+tconstruct.manual.materialsandyou.tool.scythe=The Scythe is a broad reaping tool. It is effective on plants and attacks enemies in a wide range.\n\nNatural Ability:\nArea of Effect\n- (3x3x3)\n\nDurability: Average\nDamage: Low, AoE
+tconstruct.manual.materialsandyou.tool.cleaver=The Cleaver is a heavy defensive weapon. It has powerful strikes, but is difficult to wield.\n\nSpecial Ability: Block\nNatural Ability:\n- Beheading\n\nDamage: High\nDurability: Average
+tconstruct.manual.materialsandyou.tool.battleaxe=The Battleaxe is a heavy offensive weapon. It is capable of bringing down small trees and can send foes flying.\n\nSpecial Ability: Block\nNatural Abilities:\n- Knockback\n- Area of Effect\n- (1x9)\n\nDamage: Average\nDurability: Average
+tconstruct.manual.materialsandyou.tool.shortbow=The Shortbow is a ranged weapon. It fires arrows quickly and precisely at its foes.\n\nDraw Speed: quick
+tconstruct.manual.materialsandyou.tool.longbow=The Longbow is a ranged weapon. It has greater range than a shortbow and is able to shoot heavier arrows, but performs worse with light arrows.
+tconstruct.manual.materialsandyou.tool.arrowammo=Arrows are projectiles usually fired from bows.
+tconstruct.manual.materialsandyou.tool.crossbow=The crossbow is a precise ranged weapon. It loads bolts, that are fired on trigger.\n\nSpecial Ability:\n- Reduced reload time with harder materials
+tconstruct.manual.materialsandyou.tool.boltammo=Bolts are projectiles fired from Crossbows.\nBolt cores are obtained by pouring metal over a tool rod in a Casting Table.
+tconstruct.manual.materialsandyou.tool.throwingknife=Mid ranged throwing weapon. Hold to take aim, release to throw.\n\nDamage: Medium\nCapacity: Medium
+tconstruct.manual.materialsandyou.tool.shuriken=Short ranged throwing weapon. Thrown instantly.\n\nDamage: Low\nCapacity: High
+tconstruct.manual.materialsandyou.tool.javelin=Ranged Melee weapon hybrid. Potent as a melee weapon, devastating at range.\n\nDamage: High\nCapacity: Low
+
+
+tconstruct.manual.materialsandyou.recipetype.ShapedOreRecipe=Shaped Ore Recipe
+tconstruct.manual.materialsandyou.recipetype.ShapelessOreRecipe=Shapeless Ore Recipe
+tconstruct.manual.materialsandyou.recipetype.ShapedRecipes=Shaped Recipe
+tconstruct.manual.materialsandyou.recipetype.ShapelessRecipes=Shapeless Recipe
+tconstruct.manual.materialsandyou.recipetype.FurnaceRecipes=Furnace Recipe
+tconstruct.manual.materialsandyou.recipetype.ToolStationRecipe=Tool Station
+tconstruct.manual.materialsandyou.recipetype.ToolForgeRecipe=Tool Forge
+
+
+tconstruct.manual.materialsandyou.navigation.tools=Tools
+
+

@@ -24,6 +24,7 @@ import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.library.util.IToolPart;
 import tconstruct.library.util.LocalizedColors;
+import tconstruct.modifiers.tools.ModReinforced;
 import tconstruct.tools.items.ToolPart;
 import tconstruct.util.config.PHConstruct;
 
@@ -160,7 +161,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
             int abilityY = 85;
             if (crecipe.material.reinforced > 0) {
                 GuiDraw.drawString(
-                        getReinforcedString(crecipe.material.reinforced),
+                        ModReinforced.getReinforcedString(crecipe.material.reinforced),
                         35,
                         85,
                         LocalizedColors.MATERIAL_REINFORCED,
@@ -285,43 +286,5 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
         } else {
             super.loadUsageRecipes(ingred);
         }
-    }
-
-    public static String getReinforcedString(int reinforced) {
-        if (reinforced > 9) return "Unbreakable";
-        String ret = "Reinforced ";
-        switch (reinforced) {
-            case 1:
-                ret += "I";
-                break;
-            case 2:
-                ret += "II";
-                break;
-            case 3:
-                ret += "III";
-                break;
-            case 4:
-                ret += "IV";
-                break;
-            case 5:
-                ret += "V";
-                break;
-            case 6:
-                ret += "VI";
-                break;
-            case 7:
-                ret += "VII";
-                break;
-            case 8:
-                ret += "VIII";
-                break;
-            case 9:
-                ret += "IX";
-                break;
-            default:
-                ret += "X";
-                break;
-        }
-        return ret;
     }
 }

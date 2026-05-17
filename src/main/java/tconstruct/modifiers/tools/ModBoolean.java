@@ -10,7 +10,6 @@ import tconstruct.library.modifier.ItemModifier;
 public class ModBoolean extends ItemModifier {
 
     String color;
-    String tooltipName;
 
     public ModBoolean(ItemStack[] items, int effect, String tag, String c, String tip) {
         super(items, effect, tag);

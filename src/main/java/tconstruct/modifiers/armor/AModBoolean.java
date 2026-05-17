@@ -15,7 +15,6 @@ import tconstruct.library.armor.ArmorPart;
 public class AModBoolean extends ArmorMod {
 
     String color;
-    String tooltipName;
 
     public AModBoolean(int effect, String tag, EnumSet<ArmorPart> armorTypes, ItemStack[] items, String c, String tip) {
         super(effect, tag, armorTypes, items);

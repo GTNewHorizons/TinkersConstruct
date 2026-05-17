@@ -10,7 +10,6 @@ import tconstruct.util.config.PHConstruct;
 
 public class ModDurability extends ItemModifier {
 
-    String tooltipName;
     String color;
     int durability;
     float modifier;
@@ -21,7 +20,16 @@ public class ModDurability extends ItemModifier {
         durability = dur;
         modifier = mod;
         miningLevel = level;
-        tooltipName = tip;
+        tooltipName = c + k;
+        color = c;
+    }
+
+    public ModDurability(ItemStack[] items, int effect, int dur, float mod, int level, String k, String c) {
+        super(items, effect, k);
+        durability = dur;
+        modifier = mod;
+        miningLevel = level;
+        tooltipName = c + k;
         color = c;
     }
 

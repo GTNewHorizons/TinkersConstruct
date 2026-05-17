@@ -17,14 +17,15 @@ import mantle.items.abstracts.CraftingItem;
 import tconstruct.TConstruct;
 import tconstruct.achievements.TAchievements;
 import tconstruct.library.TConstructRegistry;
-import tconstruct.tools.gui.TiCGuiManual;
+import tconstruct.library.util.TiCGuiManual;
 import tconstruct.util.McTextFormatter;
 
 public class Manual extends CraftingItem {
 
-    static String[] name = new String[] { "beginner", "toolstation", "smeltery", "diary", "weaponry" };
+    static String[] name = new String[] { "beginner", "toolstation", "smeltery", "diary", "weaponry",
+            "materialsandyou" };
     static String[] textureName = new String[] { "tinkerbook_diary", "tinkerbook_toolstation", "tinkerbook_smeltery",
-            "tinkerbook_blue", "tinkerbook_green" };
+            "tinkerbook_blue", "tinkerbook_green", "tinkerbook_materialsandyou" };
 
     public Manual() {
         super(name, textureName, "", "tinker", TConstructRegistry.materialTab);
@@ -55,8 +56,10 @@ public class Manual extends CraftingItem {
             case 0 -> "tconstruct.manual.beginner";
             case 1 -> "tconstruct.manual.toolstation";
             case 2 -> "tconstruct.manual.smeltery";
+            case 3 -> "tconstruct.manual.diary";
             case 4 -> "tconstruct.manual.weaponry";
-            default -> "tconstruct.manual.diary";
+            case 5 -> "tconstruct.manual.materialsandyou";
+            default -> "tconstruct.manual.materialsandyou";
         };
     }
 
@@ -76,8 +79,14 @@ public class Manual extends CraftingItem {
             case 4:
                 list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual4.tooltip")));
                 break;
-            default:
+            case 5:
                 list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual5.tooltip")));
+                break;
+            case 6:
+                list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual6.tooltip")));
+                break;
+            default:
+                list.add(McTextFormatter.addItalic(StatCollector.translateToLocal("manual6.tooltip")));
                 break;
         }
     }
