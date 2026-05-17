@@ -193,6 +193,9 @@ public class ArmorProxyClient extends ArmorProxyCommon {
             return new GuiInventory(player);
         }
         if (ID == ArmorProxyCommon.armorGuiID) {
+            if (!PHConstruct.enableTinkerInventoryTab) {
+                return null;
+            }
             ArmorProxyClient.armorExtended.init(Minecraft.getMinecraft().thePlayer);
             return new ArmorExtendedGui(player.inventory, ArmorProxyClient.armorExtended);
         }
@@ -216,7 +219,9 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         controlInstance.registerKeys();
 
         TabRegistry.registerTab(new InventoryTabVanilla());
-        TabRegistry.registerTab(new InventoryTabArmorExtended());
+        if (PHConstruct.enableTinkerInventoryTab) {
+            TabRegistry.registerTab(new InventoryTabArmorExtended());
+        }
         TabRegistry.registerTab(new InventoryTabKnapsack());
     }
 

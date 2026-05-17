@@ -10,6 +10,7 @@ import tconstruct.armor.inventory.ArmorExtendedContainer;
 import tconstruct.armor.inventory.KnapsackContainer;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.common.TProxyCommon;
+import tconstruct.util.config.PHConstruct;
 
 public class ArmorProxyCommon implements IGuiHandler {
 
@@ -36,6 +37,9 @@ public class ArmorProxyCommon implements IGuiHandler {
             return player.inventoryContainer;
         }
         if (ID == ArmorProxyCommon.armorGuiID) {
+            if (!PHConstruct.enableTinkerInventoryTab) {
+                return null;
+            }
             TPlayerStats stats = TPlayerStats.get(player);
             return new ArmorExtendedContainer(player.inventory, stats.armor);
         }

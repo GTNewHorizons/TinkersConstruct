@@ -110,6 +110,10 @@ import tconstruct.world.village.VillageToolStationHandler;
                 + "before:UndergroundBiomes")
 public class TConstruct {
 
+    public static final String HEART_CANISTER_RED_TYPE = "heartcanister_red";
+    public static final String HEART_CANISTER_YELLOW_TYPE = "heartcanister_yellow";
+    public static final String HEART_CANISTER_GREEN_TYPE = "heartcanister_green";
+
     public static final String modVersion = Tags.VERSION;
     /** The value of one ingot in millibuckets */
     public static final int ingotLiquidValue = 144;
@@ -226,6 +230,12 @@ public class TConstruct {
         if (LoadedMods.baublesExpanded) {
             BaubleExpandedSlots.tryRegisterType(BaubleExpandedSlots.quiverType);
             BaubleExpandedSlots.tryAssignSlotOfType(BaubleExpandedSlots.quiverType);
+            BaubleExpandedSlots.tryRegisterType(HEART_CANISTER_RED_TYPE);
+            BaubleExpandedSlots.tryAssignSlotOfType(HEART_CANISTER_RED_TYPE);
+            BaubleExpandedSlots.tryRegisterType(HEART_CANISTER_YELLOW_TYPE);
+            BaubleExpandedSlots.tryAssignSlotOfType(HEART_CANISTER_YELLOW_TYPE);
+            BaubleExpandedSlots.tryRegisterType(HEART_CANISTER_GREEN_TYPE);
+            BaubleExpandedSlots.tryAssignSlotOfType(HEART_CANISTER_GREEN_TYPE);
         }
     }
 

@@ -23,7 +23,10 @@ import tconstruct.TConstruct;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.ArmorProxyCommon;
 import tconstruct.armor.PlayerAbilityHelper;
+import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.items.TravelGear;
+import tconstruct.compat.BaublesHelper;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.AccessoryInventoryPacket;
 import tconstruct.util.network.BeltPacket;
 import tconstruct.util.network.DoubleJumpPacket;
@@ -171,12 +174,19 @@ public class ArmorControls {
     }
 
     public static boolean doBeltSwapIfPossible() {
-        if (ArmorProxyClient.armorExtended.inventory[3] != null) {
+        if (ArmorProxyClient.armorExtended.inventory[3] != null || hasBaublesTravelBelt()) {
             PlayerAbilityHelper.swapBelt(mc.thePlayer, ArmorProxyClient.armorExtended);
             toggleBelt();
             return true;
         }
         return false;
+    }
+
+    @Optional.Method(modid = "Baubles")
+    private static boolean hasBaublesTravelBelt() {
+        return BaublesHelper.findFirstMatchingBauble(
+                mc.thePlayer,
+                stack -> stack != null && stack.getItem() == TinkerArmor.travelBelt) != null;
     }
 
     public void landOnGround() {
@@ -197,6 +207,9 @@ public class ArmorControls {
     }
 
     public static void openArmorGui() {
+        if (!PHConstruct.enableTinkerInventoryTab) {
+            return;
+        }
         AbstractPacket packet = new AccessoryInventoryPacket(ArmorProxyCommon.armorGuiID);
         updateServer(packet);
     }
