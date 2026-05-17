@@ -5,7 +5,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ModAntiSpider extends ItemModTypeFilter {
 
-    String tooltipName;
     int max = 4;
     String guiType;
 

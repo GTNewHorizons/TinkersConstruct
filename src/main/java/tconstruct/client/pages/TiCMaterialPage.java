@@ -156,37 +156,23 @@ public class TiCMaterialPage extends TiCBookPage {
             stringStartY += (lineHeight * 1.2);
         }
 
+        String abilityStr = null;
+        String abilityDesc = null;
         if (tm.shoddy() != 0) {
-            String abilityStr = McTextFormatter.addUnderLine(tm.ability() + ": " + Math.abs(tm.shoddy()));
+            abilityStr = McTextFormatter.addUnderLine(tm.ability() + ": " + Math.abs(tm.shoddy()));
             if (tm.shoddy() > 0) {
                 abilityStr = McTextFormatter.addDarkRed(abilityStr);
             } else {
                 abilityStr = McTextFormatter.addDarkGreen(abilityStr);
             }
-            drawStrAt(abilityStr, stringStartX, stringStartY, realScale);
-
-            String abilityDesc = tm.abilityDesc();
-            if (abilityDesc.length() != 0) {
-                addNewTooltipsString(
-                        abilityDesc,
-                        stringStartX,
-                        stringStartY,
-                        manual.fonts.getStringWidth(abilityStr) * realScale,
-                        lineHeight);
-            } else {
-                addNewTooltipsString(
-                        StatCollector.translateToLocalFormatted("tool.nodesc", tm.ability()),
-                        stringStartX,
-                        stringStartY,
-                        manual.fonts.getStringWidth(abilityStr) * realScale,
-                        lineHeight);
-            }
-            stringStartY += (lineHeight * 1.2);
+            abilityDesc = tm.abilityDesc();
         } else if (tm.ability().length() != 0) {
-            String abilityStr = tm.style() + McTextFormatter.addUnderLine(tm.ability());
-            drawStrAt(abilityStr, stringStartX, stringStartY, realScale);
+            abilityStr = tm.style() + McTextFormatter.addUnderLine(tm.ability());
+            abilityDesc = tm.abilityDesc();
+        }
 
-            String abilityDesc = tm.abilityDesc();
+        if (abilityStr != null) {
+            drawStrAt(abilityStr, stringStartX, stringStartY, realScale);
             if (abilityDesc.length() != 0) {
                 addNewTooltipsString(
                         abilityDesc,
@@ -203,6 +189,7 @@ public class TiCMaterialPage extends TiCBookPage {
                         lineHeight);
             }
             stringStartY += (lineHeight * 1.2);
+
         }
 
         GL11.glPopMatrix();

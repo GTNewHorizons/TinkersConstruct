@@ -10,17 +10,18 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumChatFormatting;
 
 import tconstruct.library.tools.ToolCore;
 
 public class ModLapis extends ItemModTypeFilter {
 
-    String tooltipName;
     int max = 450;
 
     public ModLapis(int effect, ItemStack[] items, int[] values) {
         super(effect, "Lapis", items, values);
-        tooltipName = "\u00a79Luck";
+        this.color = EnumChatFormatting.BLUE.toString();
+        this.tooltipName = color + "Luck";
     }
 
     @Override
@@ -49,8 +50,8 @@ public class ModLapis extends ItemModTypeFilter {
         if (!tags.hasKey(key)) {
             tags.setBoolean(key, true);
 
-            String modName = "\u00a79Lapis (0/450)";
-            int tooltipIndex = addToolTip(tool, "\u00a79Luck", modName);
+            String modName = this.color + "Lapis (0/450)";
+            int tooltipIndex = addToolTip(tool, this.color + "Luck", modName);
             int[] keyPair = new int[] { 0, tooltipIndex };
             tags.setIntArray(key, keyPair);
 
@@ -164,7 +165,7 @@ public class ModLapis extends ItemModTypeFilter {
     void updateModTag(ItemStack tool, int[] keys) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         String tip = "ModifierTip" + keys[1];
-        String modName = "\u00a79Lapis (" + keys[0] + "/" + max + ")";
+        String modName = this.color + "Lapis (" + keys[0] + "/" + max + ")";
         tags.setString(tip, modName);
     }
 

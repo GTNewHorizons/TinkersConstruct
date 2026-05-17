@@ -153,4 +153,6 @@
 
     <page type="ticmaterialsbuttons" name="materials" size="small" capacity="7"></page>
 
+    <page type="ticmodifiesbuttons" name="modifies" size="small" capacity="7"></page>
+
 </book>

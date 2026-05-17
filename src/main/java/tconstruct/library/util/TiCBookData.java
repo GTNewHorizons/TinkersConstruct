@@ -1,6 +1,7 @@
 package tconstruct.library.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +10,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,11 +25,13 @@ import tconstruct.items.tools.Cutlass;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.CastingRecipe;
+import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.crafting.PatternBuilder.ItemKey;
 import tconstruct.library.crafting.PatternBuilder.MaterialSet;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.crafting.ToolRecipe;
+import tconstruct.library.modifier.ItemModifier;
 import tconstruct.library.tools.DualMaterialToolPart;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.weaponry.AmmoItem;
@@ -42,6 +47,7 @@ public class TiCBookData extends BookData {
 
     private static final String ToolPagesButtonTag = "tictoolbuttons";
     private static final String MaterialsPagesButtonTag = "ticmaterialsbuttons";
+    private static final String ModifiesPagesButtonTag = "ticmodifiesbuttons";
 
     public boolean isInit = false;
 
@@ -147,6 +153,8 @@ public class TiCBookData extends BookData {
                     replaceMap.put(e, generateTools(e));
                 } else if (e.getAttribute("type").equals(MaterialsPagesButtonTag)) {
                     replaceMap.put(e, generateMaterials(e));
+                } else if (e.getAttribute("type").equals(ModifiesPagesButtonTag)) {
+                    replaceMap.put(e, generateModifes(e));
                 }
             }
             replaceMap.entrySet().forEach((e) -> replaceElementWithMultiple(e.getKey(), e.getValue()));
@@ -395,4 +403,76 @@ public class TiCBookData extends BookData {
 
         return navigationPages;
     }
+
+    private List<Element> generateModifes(Element parent) {
+        List<Element> navigationPages = new ArrayList<>();
+        List<Element> newPages = new ArrayList<>();
+        parent.setAttribute("type", "navigation");
+
+        String sizeStr = parent.getAttribute("capacity");
+        int size = 5 * 5;
+        int counter = 0;
+        if (sizeStr.length() != 0) {
+            size = Integer.parseInt(sizeStr);
+            size *= size;
+        }
+
+        Element target = (Element) parent.cloneNode(false);
+
+        for (ItemModifier im : ModifyBuilder.instance.itemModifiers) {
+
+            if (im.tooltipName != null) {
+                String locString = "modifier.tooltip."
+                        + EnumChatFormatting.getTextWithoutFormattingCodes(im.tooltipName).replace(" ", "");
+                TConstruct.logger.info(
+                        im.effectIndex + ": "
+                                + im.key
+                                + "================================================="
+                                + StatCollector.translateToLocal(locString));
+            } else {
+                TConstruct.logger
+                        .info(im.effectIndex + ": " + im.key + "=================================================");
+            }
+            List<String> collect = im.stacks.stream().map(ItemStack::getDisplayName).collect(Collectors.toList());
+            TConstruct.logger.info(Arrays.toString(collect.toArray(new String[0])));
+
+            // Element newB = this.doc.createElement("button");
+            // newB.setAttribute("to", toolUnlocalizedName);
+            //
+            // Element itemStack = this.doc.createElement("icon");
+            // itemStack.setTextContent(toolUnlocalizedName);
+            //
+            // Element desc = this.doc.createElement("text");
+            // desc.setTextContent(output.getDisplayName());
+            //
+            // newB.appendChild(itemStack);
+            // newB.appendChild(desc);
+            // target.appendChild(newB);
+            //
+            // counter++;
+            // if (counter >= size) {
+            // navigationPages.add(target);
+            // target = (Element) parent.cloneNode(false);
+            // counter = 0;
+            // }
+            //
+            // Element newP = this.doc.createElement("page");
+            // newP.setAttribute("type", "ticcrafting");
+            // newP.setAttribute("name", toolUnlocalizedName);
+            //
+            // itemStack = this.doc.createElement("icon");
+            // itemStack.setTextContent(toolUnlocalizedName);
+            // newP.appendChild(itemStack);
+            // newPages.add(newP);
+
+        }
+        // if (counter != 0) {
+        // navigationPages.add(target);
+        // }
+
+        navigationPages.addAll(newPages);
+
+        return navigationPages;
+    }
+
 }

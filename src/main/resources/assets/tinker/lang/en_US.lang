@@ -1198,6 +1198,15 @@ modifier.tooltip.ThaumicSenses=Thaumic Senses
 modifier.tooltip.Triple-Jump=Triple-Jump
 modifier.tooltip.ThaumicVision=Thaumic Vision
 modifier.tooltip.Water-Walking=Water-Walking
+modifier.tooltip.Auto-Repair=Auto-Repair
+modifier.tooltip.Diamond=Durability +500
+modifier.tooltip.Emerald=Durability +50%
+modifier.tooltip.haste=Haste
+modifier.tooltip.lava=Auto-Smelt
+modifier.tooltip.moss=Auto-Repair
+modifier.tooltip.necro=Life Steal
+modifier.tooltip.blaze=Fiery
+modifier.tooltip.Reinforced=Reinforced
 
 tile.LavaTank.name=Seared Tank
 option.tcon.searedtank=Seared Tank

@@ -363,28 +363,23 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         tconstruct.library.tools.ToolMaterial extraMat = TConstructRegistry.getMaterial(extra);
 
         int reinforced = 0;
-        String style = "";
         int current = headMat.reinforced();
         if (current > 0) {
-            style = headMat.style();
             reinforced = current;
         }
         current = handleMat.reinforced();
         if (current > 0 && current > reinforced) {
-            style = handleMat.style();
             reinforced = current;
         }
         if (getPartAmount() >= 3) {
             current = accessoryMat.reinforced();
             if (current > 0 && current > reinforced) {
-                style = accessoryMat.style();
                 reinforced = current;
             }
         }
         if (getPartAmount() >= 4) {
             current = extraMat.reinforced();
             if (current > 0 && current > reinforced) {
-                style = extraMat.style();
                 reinforced = current;
             }
         }
@@ -392,7 +387,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         reinforced += unbreaking - reinforced;
 
         if (reinforced > 0) {
-            return style + ModReinforced.getReinforcedString(reinforced);
+            return "\u00a75" + ModReinforced.getReinforcedString(reinforced);
         }
         return "";
     }

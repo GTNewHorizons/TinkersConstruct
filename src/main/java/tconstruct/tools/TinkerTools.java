@@ -22,7 +22,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -673,16 +672,8 @@ public class TinkerTools {
 
         ItemStack diamond = new ItemStack(Items.diamond);
         ModifyBuilder.registerModifier(new ModToolRepair());
-        ModifyBuilder.registerModifier(
-                new ModDurability(
-                        new ItemStack[] { diamond },
-                        0,
-                        500,
-                        0f,
-                        3,
-                        "Diamond",
-                        "\u00a7b" + StatCollector.translateToLocal("modifier.tool.diamond"),
-                        "\u00a7b"));
+        ModifyBuilder
+                .registerModifier(new ModDurability(new ItemStack[] { diamond }, 0, 500, 0f, 3, "Diamond", "\u00a7b"));
         ModifyBuilder.registerModifier(
                 new ModDurability(
                         new ItemStack[] { new ItemStack(Items.emerald) },
@@ -691,7 +682,6 @@ public class TinkerTools {
                         0.5f,
                         2,
                         "Emerald",
-                        "\u00a72" + StatCollector.translateToLocal("modifier.tool.emerald"),
                         "\u00a72"));
 
         ItemStack redstoneItem = new ItemStack(Items.redstone);
@@ -706,7 +696,7 @@ public class TinkerTools {
                         "Moss",
                         3,
                         "\u00a72",
-                        StatCollector.translateToLocal("modifier.tool.moss")));
+                        "moss"));
         ItemStack blazePowder = new ItemStack(Items.blaze_powder);
         ModifyBuilder.registerModifier(new ModBlaze(7, new ItemStack[] { blazePowder }, new int[] { 1 }));
         ModifyBuilder.registerModifier(
@@ -715,7 +705,7 @@ public class TinkerTools {
                         6,
                         "Lava",
                         "\u00a74",
-                        StatCollector.translateToLocal("modifier.tool.lava")));
+                        "lava"));
         ModifyBuilder.registerModifier(
                 new ModInteger(
                         new ItemStack[] { new ItemStack(TinkerTools.materials, 1, 8) },
@@ -723,7 +713,7 @@ public class TinkerTools {
                         "Necrotic",
                         1,
                         "\u00a78",
-                        StatCollector.translateToLocal("modifier.tool.necro")));
+                        "necro"));
 
         ModifyBuilder.registerModifier(
                 new ModExtraModifier(new ItemStack[] { diamond, new ItemStack(Blocks.gold_block) }, "Tier1Free"));

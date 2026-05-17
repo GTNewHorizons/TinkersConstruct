@@ -10,7 +10,6 @@ import tconstruct.library.tools.ToolCore;
 
 public class ModPiston extends ItemModTypeFilter {
 
-    String tooltipName;
     int max = 10;
 
     public ModPiston(int effect, ItemStack[] items, int[] values) {

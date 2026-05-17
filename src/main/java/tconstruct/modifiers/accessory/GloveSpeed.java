@@ -12,7 +12,6 @@ import tconstruct.modifiers.tools.ItemModTypeFilter;
 
 public class GloveSpeed extends ItemModTypeFilter {
 
-    String tooltipName;
     int max = 100;
 
     public GloveSpeed(int effect, ItemStack[] items, int[] values) {

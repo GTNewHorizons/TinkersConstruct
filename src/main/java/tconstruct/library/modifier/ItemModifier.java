@@ -15,6 +15,8 @@ public abstract class ItemModifier {
     public final List<ItemStack> stacks;
     public final int effectIndex;
     public static Random random = new Random();
+    public String tooltipName;
+    public String color;
 
     /**
      * Default constructor
