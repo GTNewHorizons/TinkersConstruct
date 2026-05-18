@@ -4,8 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
-import tconstruct.util.config.PHConstruct;
-
 public class InventoryTabVanilla extends AbstractTab {
 
     public InventoryTabVanilla() {
@@ -19,16 +17,7 @@ public class InventoryTabVanilla extends AbstractTab {
 
     @Override
     public boolean shouldAddToList() {
-        if (PHConstruct.enableTinkerInventoryTab) {
-            return true;
-        }
-        for (AbstractTab tab : TabRegistry.getTabList()) {
-            if (!(tab instanceof InventoryTabVanilla) && tab.shouldAddToList()) {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
 
     @Override
