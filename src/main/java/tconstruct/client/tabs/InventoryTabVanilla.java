@@ -26,7 +26,7 @@ public class InventoryTabVanilla extends AbstractTab {
             if (tab == this) {
                 continue;
             }
-            if (tab.shouldAddToList() && !(tab instanceof InventoryTabVanilla)) {
+            if (!(tab instanceof InventoryTabVanilla) && tab.shouldAddToList()) {
                 return true;
             }
         }
