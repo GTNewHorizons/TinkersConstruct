@@ -26,6 +26,7 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -33,6 +34,8 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import cpw.mods.fml.relauncher.Side;
 import mantle.player.PlayerUtils;
 import tconstruct.TConstruct;
+import tconstruct.compat.BaublesHelper;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
@@ -67,6 +70,7 @@ public class TPlayerHandler {
     public void onPlayerLogin(EntityPlayer player) {
         // Lookup player
         TPlayerStats stats = TPlayerStats.get(player);
+        migrateDisabledAccessoryInventory(player, stats);
 
         stats.level = player.experienceLevel;
         stats.hunger = player.getFoodStats().getFoodLevel();
@@ -170,6 +174,35 @@ public class TPlayerHandler {
                         .sendChatMessage(player, "Solution 2: Disable Auto-Smelt/Fortune interaction from TConstruct.");
             }
         }
+    }
+
+    private void migrateDisabledAccessoryInventory(EntityPlayer player, TPlayerStats stats) {
+        if (PHConstruct.enableTinkerInventoryTab || stats == null || stats.armor == null) {
+            return;
+        }
+
+        for (int slot = 0; slot < stats.armor.inventory.length; slot++) {
+            ItemStack stack = stats.armor.inventory[slot];
+            if (stack == null) continue;
+
+            ItemStack remaining = stack.copy();
+            if (LoadedMods.baubles) {
+                remaining = tryMoveToBaubles(player, remaining);
+            }
+
+            if (remaining != null && remaining.stackSize > 0) {
+                if (!player.inventory.addItemStackToInventory(remaining)) {
+                    AbilityHelper.spawnItemAtPlayer(player, remaining);
+                }
+            }
+            stats.armor.inventory[slot] = null;
+        }
+        stats.armor.recalculateHealth(player, stats);
+    }
+
+    @Optional.Method(modid = "Baubles")
+    private ItemStack tryMoveToBaubles(EntityPlayer player, ItemStack stack) {
+        return BaublesHelper.tryMoveToBaubles(player, stack);
     }
 
     void spawnPigmanModifier(EntityPlayer entityplayer) {
