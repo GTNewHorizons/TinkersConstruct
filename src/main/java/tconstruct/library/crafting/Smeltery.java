@@ -239,13 +239,12 @@ public class Smeltery {
         removeFromSmeltingGroup(in);
         groupName = groupName.intern();
         instance.smeltingGroupNameMap.put(in, groupName);
-        List<ItemMetaWrapper> list = instance.smeltingGroupListMap.computeIfAbsent(groupName, s -> new ArrayList<>());
-        list.add(in);
+        instance.smeltingGroupListMap.computeIfAbsent(groupName, s -> new ArrayList<>()).add(in);
     }
 
     public static void removeFromSmeltingGroup(ItemMetaWrapper in) {
-        if (instance.smeltingGroupNameMap.containsKey(in)) {
-            String oldGroup = instance.smeltingGroupNameMap.remove(in);
+        String oldGroup = instance.smeltingGroupNameMap.remove(in);
+        if (oldGroup != null) {
             List<ItemMetaWrapper> list = instance.smeltingGroupListMap.get(oldGroup);
             if (list != null) {
                 list.remove(in);
