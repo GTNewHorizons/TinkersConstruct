@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -13,10 +15,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mantle.utils.ItemMetaWrapper;
 
 /** Melting and hacking, churn and burn */
@@ -30,10 +30,8 @@ public class Smeltery {
     private final List<AlloyMix> alloys = new ArrayList<>();
     private final Map<Fluid, Integer[]> smelteryFuels = new HashMap<>(); // fluid -> [power, duration]
 
-    private int nextSmeltingGroupIndex = 0;
-    private final Object2IntMap<String> smeltingGroupIndexList = new Object2IntOpenHashMap<>();
-    private final Object2IntMap<ItemMetaWrapper> smeltingGroupIdList = new Object2IntOpenHashMap<>();
-    private final Int2ObjectMap<List<ItemMetaWrapper>> smeltingGroupList = new Int2ObjectOpenHashMap<>();
+    private final Object2ObjectMap<ItemMetaWrapper, String> smeltingGroupNameMap = new Object2ObjectOpenHashMap<>();
+    private final Object2ObjectMap<String, List<ItemMetaWrapper>> smeltingGroupListMap = new Object2ObjectOpenHashMap<>();
 
     /**
      * Add a new fluid as a valid Smeltery fuel.
@@ -239,31 +237,29 @@ public class Smeltery {
         ItemMetaWrapper in = new ItemMetaWrapper(input);
         // Remove from old group
         removeFromSmeltingGroup(in);
-
-        int groupIndex = instance.smeltingGroupIndexList
-                .computeIfAbsent(groupName, s -> instance.nextSmeltingGroupIndex++);
-        instance.smeltingGroupIdList.put(in, groupIndex);
-        List<ItemMetaWrapper> list = instance.smeltingGroupList.computeIfAbsent(groupIndex, s -> new ArrayList<>());
+        groupName = groupName.intern();
+        instance.smeltingGroupNameMap.put(in, groupName);
+        List<ItemMetaWrapper> list = instance.smeltingGroupListMap.computeIfAbsent(groupName, s -> new ArrayList<>());
         list.add(in);
     }
 
     public static void removeFromSmeltingGroup(ItemMetaWrapper in) {
-        if (instance.smeltingGroupIdList.containsKey(in)) {
-            int oldKey = instance.smeltingGroupIdList.removeInt(in);
-            List<ItemMetaWrapper> list = instance.smeltingGroupList.get(oldKey);
+        if (instance.smeltingGroupNameMap.containsKey(in)) {
+            String oldGroup = instance.smeltingGroupNameMap.remove(in);
+            List<ItemMetaWrapper> list = instance.smeltingGroupListMap.get(oldGroup);
             if (list != null) {
                 list.remove(in);
             }
         }
     }
 
-    public static int getSmeltingGroup(ItemMetaWrapper wrapper) {
-        return instance.smeltingGroupIdList.getOrDefault(wrapper, -1);
+    public static @Nullable String getSmeltingGroup(ItemMetaWrapper wrapper) {
+        return instance.smeltingGroupNameMap.get(wrapper);
     }
 
-    public static List<ItemStack> getSmeltingGroupItems(int groupIndex) {
+    public static List<ItemStack> getSmeltingGroupItems(String groupName) {
         List<ItemStack> list = new ArrayList<>();
-        for (ItemMetaWrapper wrapper : instance.smeltingGroupList.get(groupIndex)) {
+        for (ItemMetaWrapper wrapper : instance.smeltingGroupListMap.get(groupName)) {
             list.add(new ItemStack(wrapper.item, 1, wrapper.meta));
         }
         return list;

@@ -14,8 +14,8 @@ import org.lwjgl.opengl.GL11;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import mantle.utils.ItemMetaWrapper;
 import tconstruct.library.crafting.Smeltery;
 
@@ -97,7 +97,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
     @Override
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals(getRecipeID())) {
-            IntSet processedGroups = new IntOpenHashSet();
+            ObjectSet<String> processedGroups = new ObjectOpenHashSet<>();
             for (ItemMetaWrapper key : Smeltery.getSmeltingList().keySet()) {
                 loadFromWrapper(key, processedGroups);
             }
@@ -108,7 +108,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
 
     @Override
     public void loadCraftingRecipes(FluidStack result) {
-        IntSet processedGroups = new IntOpenHashSet();
+        ObjectSet<String> processedGroups = new ObjectOpenHashSet<>();
         for (Entry<ItemMetaWrapper, FluidStack> pair : Smeltery.getSmeltingList().entrySet()) {
             if (areFluidsEqual(pair.getValue(), result)) {
                 loadFromWrapper(pair.getKey(), processedGroups);
@@ -118,7 +118,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
 
     @Override
     public void loadUsageRecipes(ItemStack ingred) {
-        IntSet processedGroups = new IntOpenHashSet();
+        ObjectSet<String> processedGroups = new ObjectOpenHashSet<>();
         for (ItemMetaWrapper key : Smeltery.getSmeltingList().keySet()) {
             if (NEIServerUtils.areStacksSameTypeCrafting(new ItemStack(key.item, 1, key.meta), ingred)) {
                 loadFromWrapper(key, processedGroups);
@@ -126,9 +126,9 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
         }
     }
 
-    private void loadFromWrapper(ItemMetaWrapper wrapper, IntSet processedGroups) {
-        int smeltingGroup = Smeltery.getSmeltingGroup(wrapper);
-        if (smeltingGroup != -1) {
+    private void loadFromWrapper(ItemMetaWrapper wrapper, ObjectSet<String> processedGroups) {
+        String smeltingGroup = Smeltery.getSmeltingGroup(wrapper);
+        if (smeltingGroup != null) {
             if (processedGroups.add(smeltingGroup)) {
                 this.arecipes.add(new CachedMeltingRecipe(Smeltery.getSmeltingGroupItems(smeltingGroup)));
             }
