@@ -81,10 +81,11 @@ public class PatternShaperContainer extends Container {
                         return null;
                     }
                     if (stack.getItem() instanceof IPattern && slotId == 1) {
+                        Slot blankPatternSlot = this.inventorySlots.get(0);
                         // special for shift click the output pattern
-                        this.inventorySlots.get(0).decrStackSize(1);
+                        blankPatternSlot.decrStackSize(1);
                         // if there still have blank pattern
-                        if (this.inventorySlots.get(0).getStack().stackSize != 0) {
+                        if (blankPatternSlot.getHasStack() && blankPatternSlot.getStack().stackSize != 0) {
                             ItemStack stackCopy = stack.copy();
                             stackCopy.stackSize = 1;
                             this.inventorySlots.get(1).putStack(stack.copy());

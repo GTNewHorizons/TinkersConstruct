@@ -10,6 +10,7 @@ import tconstruct.TConstruct;
 import tconstruct.armor.ArmorProxyCommon;
 import tconstruct.armor.TinkerArmor;
 import tconstruct.armor.player.TPlayerStats;
+import tconstruct.util.config.PHConstruct;
 
 public class AccessoryInventoryPacket extends AbstractPacket {
 
@@ -47,6 +48,9 @@ public class AccessoryInventoryPacket extends AbstractPacket {
                         (int) player.posZ);
                 break;
             case ArmorProxyCommon.armorGuiID:
+                if (!PHConstruct.enableTinkerInventoryTab) {
+                    break;
+                }
                 player.openGui(
                         TConstruct.instance,
                         ArmorProxyCommon.armorGuiID,
