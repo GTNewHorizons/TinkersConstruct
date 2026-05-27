@@ -49,7 +49,11 @@ public class GlassPaneConnectedMeta extends GlassPaneConnected {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        return icons[meta][0];
+        if (meta < icons.length) {
+            return icons[meta][0];
+        } else {
+            return icons[0][0];
+        }
     }
 
     @Override
@@ -70,12 +74,20 @@ public class GlassPaneConnectedMeta extends GlassPaneConnected {
 
     @Override
     public IIcon getTopIcon(int meta) {
-        return topIcons[meta];
+        if (meta < topIcons.length) {
+            return topIcons[meta];
+        } else {
+            return topIcons[0];
+        }
     }
 
     @Override
     public IIcon getBottomIcon(int meta) {
-        return bottomIcons[meta];
+        if (meta < bottomIcons.length) {
+            return bottomIcons[meta];
+        } else {
+            return bottomIcons[0];
+        }
     }
 
     @Override
