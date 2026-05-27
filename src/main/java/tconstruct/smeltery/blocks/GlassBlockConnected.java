@@ -21,7 +21,6 @@ import tconstruct.util.config.PHConstruct;
 public class GlassBlockConnected extends MantleBlock {
 
     protected IIcon[] icons = new IIcon[16];
-    private static final boolean shouldRenderSelectionBox = true;
     protected String folder;
     private final int renderPass;
 
@@ -329,11 +328,7 @@ public class GlassBlockConnected extends MantleBlock {
 
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-        if (shouldRenderSelectionBox) {
-            return super.getSelectedBoundingBoxFromPool(world, x, y, z);
-        } else {
-            return AxisAlignedBB.getBoundingBox(0D, 0D, 0D, 0D, 0D, 0D);
-        }
+        return super.getSelectedBoundingBoxFromPool(world, x, y, z);
     }
 
     protected void registerBlockIcons(IIconRegister iconRegister, IIcon[] icons, String folder) {
