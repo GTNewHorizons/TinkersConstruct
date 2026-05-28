@@ -31,18 +31,21 @@ public class ModInteger extends ItemModifier {
     }
 
     @Override
+    protected boolean canModify(ItemStack input, ItemStack[] recipe) {
+        NBTTagCompound tags = input.getTagCompound().getCompoundTag("InfiTool");
+
+        return tags.getInteger("Modifiers") >= getItemStackSum(recipe);
+    }
+
+    @Override
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-        if (tags.hasKey(key)) {
-            int increase = tags.getInteger(key);
-            increase += secondaryIncrease;
-            tags.setInteger(key, increase);
-        } else {
-            tags.setInteger(key, initialIncrease);
-        }
+        int inputSum = getItemStackSum(input);
+
+        tags.setInteger(key, initialIncrease + secondaryIncrease * inputSum);
 
         int modifiers = tags.getInteger("Modifiers");
-        modifiers -= 1;
+        modifiers -= inputSum;
         tags.setInteger("Modifiers", modifiers);
 
         addToolTip(tool, color + tooltipName, color + key);

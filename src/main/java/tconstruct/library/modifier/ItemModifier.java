@@ -149,6 +149,8 @@ public abstract class ItemModifier {
         }
     }
 
+    // FIXME: currently, when for example adding 2 moss at the same time, the modifier tooltip is "Mossy", and not
+    // "Mossy II"
     protected String getProperName(String tooltip, String tag) {
         if (tag.isEmpty()) return tooltip + " I";
 
@@ -171,6 +173,24 @@ public abstract class ItemModifier {
         if (tag.equals(tooltip + " IX")) return tooltip + " X";
 
         return tooltip + " X+";
+    }
+
+    /**
+     * Utility method for getting the total amount of items in an `ItemStack[]`
+     *
+     * @param input array of items
+     * @return the total amount of items
+     */
+    protected static int getItemStackSum(ItemStack[] input) {
+        int inputSum = 0;
+
+        for (ItemStack stack : input) {
+            if (stack == null) continue;
+
+            inputSum += stack.stackSize;
+        }
+
+        return inputSum;
     }
 
     public boolean validType(IModifyable input) {
