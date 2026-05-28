@@ -51,19 +51,32 @@ public abstract class ItemModTypeFilter extends ItemModifier {
         return minimumMatch;
     }
 
+    /**
+     * Gets the modifier stat increase for it's associated material.
+     *
+     * @param inputStack The modifier item
+     * @return The increase associated with that item
+     */
+    public int getModifierIncreaseAmountFor(ItemStack inputStack) {
+        for (int i = 0; i < stacks.size(); i++) {
+            ItemStack stack = (ItemStack) stacks.get(i);
+            if (stack.getItemDamage() == Short.MAX_VALUE) {
+                if (this.areItemsEquivalent(inputStack, stack)) return increase.get(i);
+            } else {
+                if (this.areItemStacksEquivalent(inputStack, stack))
+                    return increase.get(i);
+            }
+        }
+
+        return 0;
+    }
+
     public int matchingAmount(ItemStack[] input) {
         int amount = 0;
         for (ItemStack inputStack : input) {
-            if (inputStack != null) {
-                for (int iter = 0; iter < stacks.size(); iter++) {
-                    ItemStack stack = (ItemStack) stacks.get(iter);
-                    if (stack.getItemDamage() == Short.MAX_VALUE) {
-                        if (this.areItemsEquivalent(inputStack, stack)) amount += increase.get(iter);
-                    } else {
-                        if (this.areItemStacksEquivalent(inputStack, stack)) amount += increase.get(iter);
-                    }
-                }
-            }
+            if (inputStack == null) continue;
+
+            amount += getModifierIncreaseAmountFor(inputStack) * inputStack.stackSize;
         }
         return amount;
     }
