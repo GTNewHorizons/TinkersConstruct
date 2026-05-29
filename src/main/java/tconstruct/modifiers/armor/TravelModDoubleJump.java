@@ -24,6 +24,12 @@ public class TravelModDoubleJump extends ArmorMod {
     }
 
     @Override
+    protected boolean canModify(ItemStack armor, ItemStack[] input) {
+        // shouldn't this class inherit from `AModInteger`?
+        return super.canModify(armor, input) && getItemStackSum(input) == 1;
+    }
+
+    @Override
     public void modify(ItemStack[] recipe, ItemStack input) {
         NBTTagCompound tags = input.getTagCompound().getCompoundTag(getTagName(input));
         int amount = 1;
