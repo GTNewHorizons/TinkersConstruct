@@ -181,7 +181,7 @@ public abstract class ItemModifier {
      * @param input array of items
      * @return the total amount of items
      */
-    protected static int getItemStackSum(ItemStack[] input) {
+    public static int getItemStackSum(ItemStack[] input) {
         int inputSum = 0;
 
         for (ItemStack stack : input) {
