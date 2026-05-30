@@ -27,7 +27,16 @@ public class SlotToolForge extends SlotTool {
                     .getCompoundTag(((IModifyable) stack.getItem()).getBaseTagName());
             boolean full = (inventory.getStackInSlot(2) != null || inventory.getStackInSlot(3) != null
                     || inventory.getStackInSlot(4) != null);
-            for (int i = 2; i <= 4; i++) inventory.decrStackSize(i, 1);
+
+            // if modifier materials go over the max for the modifier the craft fails, so if successfully crafting
+            // w/ modifiers, it means we are using all the materials
+            for (int i = 2; i <= 4; i++) {
+                ItemStack item = inventory.getStackInSlot(i);
+                if (item == null) continue;
+
+                inventory.decrStackSize(i, item.stackSize);
+            }
+
             ItemStack compare = inventory.getStackInSlot(1);
             int amount = compare.getItem() instanceof IModifyable ? compare.stackSize : 1;
             inventory.decrStackSize(1, amount);

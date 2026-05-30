@@ -43,8 +43,10 @@ public class ToolForgeLogic extends ToolStationLogic implements ISidedInventory 
             {
                 if (inventory[2] == null && inventory[3] == null && inventory[4] == null) output = inventory[1].copy();
                 else {
-                    output = ModifyBuilder.instance
-                            .modifyItem(inventory[1], new ItemStack[] { inventory[2], inventory[3], inventory[4] });
+                    output = ModifyBuilder.instance.modifyItem(
+                            inventory[1],
+                            ModifyBuilder.makeDummyModifierArray(
+                                    new ItemStack[] { inventory[2], inventory[3], inventory[4] }));
                 }
             } else
             // Build new item
