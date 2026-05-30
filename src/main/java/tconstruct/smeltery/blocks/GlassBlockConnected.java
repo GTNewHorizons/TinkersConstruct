@@ -3,7 +3,6 @@ package tconstruct.smeltery.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -21,7 +20,6 @@ import tconstruct.util.config.PHConstruct;
 public class GlassBlockConnected extends MantleBlock {
 
     protected IIcon[] icons = new IIcon[16];
-    private static final boolean shouldRenderSelectionBox = true;
     protected String folder;
     private final int renderPass;
 
@@ -325,15 +323,6 @@ public class GlassBlockConnected extends MantleBlock {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         return icons[0];
-    }
-
-    @Override
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-        if (shouldRenderSelectionBox) {
-            return super.getSelectedBoundingBoxFromPool(world, x, y, z);
-        } else {
-            return AxisAlignedBB.getBoundingBox(0D, 0D, 0D, 0D, 0D, 0D);
-        }
     }
 
     protected void registerBlockIcons(IIconRegister iconRegister, IIcon[] icons, String folder) {

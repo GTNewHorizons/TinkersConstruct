@@ -138,7 +138,7 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
             }
         } else {
             for (int i = xzuv.length - 4; i >= 0; i -= 4) {
-                tessellator.addVertexWithUV(xzuv[i], y - 0, xzuv[i + 1], xzuv[i + 2], xzuv[i + 3]);
+                tessellator.addVertexWithUV(xzuv[i], y, xzuv[i + 1], xzuv[i + 2], xzuv[i + 3]);
             }
         }
     }
