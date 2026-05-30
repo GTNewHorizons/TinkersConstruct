@@ -3,7 +3,6 @@ package tconstruct.smeltery.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -324,11 +323,6 @@ public class GlassBlockConnected extends MantleBlock {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         return icons[0];
-    }
-
-    @Override
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-        return super.getSelectedBoundingBoxFromPool(world, x, y, z);
     }
 
     protected void registerBlockIcons(IIconRegister iconRegister, IIcon[] icons, String folder) {
