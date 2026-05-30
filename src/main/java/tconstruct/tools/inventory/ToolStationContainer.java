@@ -125,7 +125,14 @@ public class ToolStationContainer extends ActiveContainer {
             NBTTagCompound tags = stack.getTagCompound()
                     .getCompoundTag(((IModifyable) stack.getItem()).getBaseTagName());
             boolean full = (logic.getStackInSlot(2) != null || logic.getStackInSlot(3) != null);
-            for (int i = 2; i <= 3; i++) logic.decrStackSize(i, 1);
+            // if modifier materials go over the max for the modifier the craft fails, so if successfully crafting
+            // w/ modifiers, it means we are using all the materials
+            for (int i = 2; i <= 3; i++) {
+                ItemStack item = logic.getStackInSlot(i);
+                if (item == null) continue;
+
+                logic.decrStackSize(i, item.stackSize);
+            }
             ItemStack compare = logic.getStackInSlot(1);
             int amount = compare.getItem() instanceof IModifyable ? compare.stackSize : 1;
             logic.decrStackSize(1, amount);

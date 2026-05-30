@@ -85,8 +85,9 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
             {
                 if (inventory[2] == null && inventory[3] == null) output = inventory[1].copy();
                 else {
-                    output = ModifyBuilder.instance
-                            .modifyItem(inventory[1], new ItemStack[] { inventory[2], inventory[3] });
+                    output = ModifyBuilder.instance.modifyItem(
+                            inventory[1],
+                            ModifyBuilder.makeDummyModifierArray(new ItemStack[] { inventory[2], inventory[3] }));
                 }
             } else
             // Build new item
