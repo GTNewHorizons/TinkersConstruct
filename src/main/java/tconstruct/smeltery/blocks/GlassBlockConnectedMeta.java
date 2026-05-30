@@ -49,7 +49,11 @@ public class GlassBlockConnectedMeta extends GlassBlockConnected {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        return icons[meta][0];
+        if (meta < icons.length) {
+            return icons[meta][0];
+        } else {
+            return icons[0][0];
+        }
     }
 
     @Override
