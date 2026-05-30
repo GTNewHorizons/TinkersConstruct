@@ -35,11 +35,6 @@ public class AModInteger extends ArmorMod {
     }
 
     @Override
-    protected boolean canModify(ItemStack armor, ItemStack[] input) {
-        return super.canModify(armor, input) && getItemStackSum(input) == 1;
-    }
-
-    @Override
     public void modify(ItemStack[] recipe, ItemStack input) {
         NBTTagCompound tags = getModifierTag(input);
         if (tags.hasKey(key)) {

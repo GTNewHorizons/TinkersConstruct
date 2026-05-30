@@ -56,16 +56,7 @@ public class SlotTool extends Slot {
             NBTTagCompound tags = stack.getTagCompound()
                     .getCompoundTag(((IModifyable) stack.getItem()).getBaseTagName());
             boolean full = (inventory.getStackInSlot(2) != null || inventory.getStackInSlot(3) != null);
-
-            // if modifier materials go over the max for the modifier the craft fails, so if successfully crafting
-            // w/ modifiers, it means we are using all the materials
-            for (int i = 2; i <= 3; i++) {
-                ItemStack item = inventory.getStackInSlot(i);
-                if (item == null) continue;
-
-                inventory.decrStackSize(i, item.stackSize);
-            }
-
+            for (int i = 2; i <= 3; i++) inventory.decrStackSize(i, 1);
             ItemStack compare = inventory.getStackInSlot(1);
             int amount = compare.getItem() instanceof IModifyable ? compare.stackSize : 1;
             inventory.decrStackSize(1, amount);

@@ -31,15 +31,6 @@ public class ModInteger extends ItemModifier {
     }
 
     @Override
-    protected boolean canModify(ItemStack input, ItemStack[] recipe) {
-        NBTTagCompound tags = input.getTagCompound().getCompoundTag("InfiTool");
-        // `ModInteger` is limited to one modifier application per craft because the tooltip
-        // would still increment by just one, and i could not come up with a good idea as to how
-        // to change `addToolTip` to support multiple applications at the same time
-        return tags.getInteger("Modifiers") > 0 && getItemStackSum(recipe) == 1;
-    }
-
-    @Override
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         if (tags.hasKey(key)) {

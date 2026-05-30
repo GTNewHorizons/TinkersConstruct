@@ -30,7 +30,7 @@ public class AModBoolean extends ArmorMod {
         ArmorCore item = (ArmorCore) armor.getItem();
         if (!armorTypes.contains(item.armorPart)) return false;
         NBTTagCompound tags = getModifierTag(armor);
-        return tags.getInteger("Modifiers") > 0 && !tags.getBoolean(key) && getItemStackSum(recipe) == 1; // Will fail if the modifier is false or the
+        return tags.getInteger("Modifiers") > 0 && !tags.getBoolean(key); // Will fail if the modifier is false or the
                                                                           // tag doesn't exist
     }
 
