@@ -49,7 +49,7 @@ public class ModifyBuilder {
 
             boolean built = false;
             for (ItemModifier mod : itemModifiers) {
-                if (mod.matches(modifiers, copy) && mod.validType(item)) {
+                if (mod.matches(modifiers, input) && mod.validType(item)) {
                     ModifyEvent event = new ModifyEvent(mod, item, copy);
                     MinecraftForge.EVENT_BUS.post(event);
                     if (event.isCanceled()) continue;
