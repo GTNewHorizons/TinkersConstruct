@@ -278,39 +278,27 @@ public class GlassBlockConnected extends MantleBlock {
                 break;
         }
 
-        if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
-            return icons[15];
-        } else if (isOpenUp && isOpenDown && isOpenLeft) {
-            return icons[14];
-        } else if (isOpenUp && isOpenDown && isOpenRight) {
-            return icons[13];
-        } else if (isOpenDown && isOpenLeft && isOpenRight) {
-            return icons[12];
-        } else if (isOpenUp && isOpenLeft && isOpenRight) {
-            return icons[11];
-        } else if (isOpenDown && isOpenLeft) {
-            return icons[10];
-        } else if (isOpenDown && isOpenRight) {
-            return icons[9];
-        } else if (isOpenUp && isOpenLeft) {
-            return icons[8];
-        } else if (isOpenUp && isOpenRight) {
-            return icons[7];
-        } else if (isOpenDown && isOpenUp) {
-            return icons[6];
-        } else if (isOpenLeft && isOpenRight) {
-            return icons[5];
-        } else if (isOpenRight) {
-            return icons[4];
-        } else if (isOpenLeft) {
-            return icons[3];
-        } else if (isOpenUp) {
-            return icons[2];
-        } else if (isOpenDown) {
-            return icons[1];
-        } else {
-            return icons[0];
-        }
+        return getConnectedTexture(icons, isOpenUp, isOpenDown, isOpenLeft, isOpenRight);
+    }
+
+    protected IIcon getConnectedTexture(IIcon[] icons, boolean isOpenUp, boolean isOpenDown, boolean isOpenLeft,
+            boolean isOpenRight) {
+        if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) return icons[15];
+        if (isOpenUp && isOpenDown && isOpenLeft) return icons[14];
+        if (isOpenUp && isOpenDown && isOpenRight) return icons[13];
+        if (isOpenDown && isOpenLeft && isOpenRight) return icons[12];
+        if (isOpenUp && isOpenLeft && isOpenRight) return icons[11];
+        if (isOpenDown && isOpenLeft) return icons[10];
+        if (isOpenDown && isOpenRight) return icons[9];
+        if (isOpenUp && isOpenLeft) return icons[8];
+        if (isOpenUp && isOpenRight) return icons[7];
+        if (isOpenDown && isOpenUp) return icons[6];
+        if (isOpenLeft && isOpenRight) return icons[5];
+        if (isOpenRight) return icons[4];
+        if (isOpenLeft) return icons[3];
+        if (isOpenUp) return icons[2];
+        if (isOpenDown) return icons[1];
+        return icons[0];
     }
 
     @Override
