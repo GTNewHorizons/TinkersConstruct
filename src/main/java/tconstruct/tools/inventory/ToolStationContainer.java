@@ -124,8 +124,23 @@ public class ToolStationContainer extends ActiveContainer {
         if (stack.getItem() instanceof IModifyable) {
             NBTTagCompound tags = stack.getTagCompound()
                     .getCompoundTag(((IModifyable) stack.getItem()).getBaseTagName());
+            int[] toRemoveArray = tags.hasKey("ToRemove") ? tags.getIntArray("ToRemove") : null;
+            int toRemoveIndex = 0;
+
             boolean full = (logic.getStackInSlot(2) != null || logic.getStackInSlot(3) != null);
-            for (int i = 2; i <= 3; i++) logic.decrStackSize(i, 1);
+            for (int i = 2; i <= 3; i++) {
+                ItemStack item = logic.getStackInSlot(i);
+                if (item == null) {
+                    continue;
+                }
+                if (toRemoveArray == null) {
+                    logic.decrStackSize(i, 1);
+                } else {
+                    logic.decrStackSize(i, toRemoveArray[toRemoveIndex]);
+                    toRemoveIndex++;
+                }
+            }
+            tags.removeTag("ToRemove");
             ItemStack compare = logic.getStackInSlot(1);
             int amount = compare.getItem() instanceof IModifyable ? compare.stackSize : 1;
             logic.decrStackSize(1, amount);
