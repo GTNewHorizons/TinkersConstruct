@@ -54,7 +54,8 @@ public class SlotCraftingStation extends SlotCrafting {
                     "tinker:little_saw",
                     1.0F,
                     (AbilityHelper.random.nextFloat() - AbilityHelper.random.nextFloat()) * 0.2F + 1.0F);
+        } else {
+            super.onPickupFromSlot(player, stack);
         }
-        super.onPickupFromSlot(player, stack);
     }
 }
