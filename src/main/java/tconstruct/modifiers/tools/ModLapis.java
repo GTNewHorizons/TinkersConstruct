@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import tconstruct.library.modifier.ModificationInfo;
 import tconstruct.library.tools.ToolCore;
 
 public class ModLapis extends ItemModTypeFilter {
@@ -29,16 +30,17 @@ public class ModLapis extends ItemModTypeFilter {
             ToolCore toolItem = (ToolCore) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input, tool) > max) return false;
+            if (matchingAmount(input, tool).total() > max) return false;
 
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
 
             if (tags.getBoolean("Silk Touch")) return false;
 
-            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool) <= max;
+            if (!tags.hasKey(key))
+                return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
 
             int[] keyPair = tags.getIntArray(key);
-            return keyPair[0] + matchingAmount(input, tool) <= max;
+            return keyPair[0] + matchingAmount(input, tool).total() <= max;
         }
         return false;
     }
@@ -59,8 +61,10 @@ public class ModLapis extends ItemModTypeFilter {
             tags.setInteger("Modifiers", modifiers);
         }
 
-        int increase = matchingAmount(input, tool);
-        tags.setInteger("ToRemove", increase);
+        ModificationInfo modificationInfo = matchingAmount(input, tool, 450);
+        int increase = modificationInfo.total();
+        tags.setIntArray("ToRemove", modificationInfo.toRemove());
+
         int[] keyPair = tags.getIntArray(key);
         keyPair[0] += increase;
         tags.setIntArray(key, keyPair);

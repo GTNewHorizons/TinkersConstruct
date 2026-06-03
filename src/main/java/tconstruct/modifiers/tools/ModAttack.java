@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.modifier.ModificationInfo;
 import tconstruct.library.tools.ToolCore;
 
 public class ModAttack extends ItemModTypeFilter {
@@ -60,13 +61,14 @@ public class ModAttack extends ItemModTypeFilter {
             IModifyable toolItem = (IModifyable) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input, tool) > max) return false;
+            if (matchingAmount(input, tool).total() > max) return false;
 
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag(toolItem.getBaseTagName());
-            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool) <= max;
+            if (!tags.hasKey(key))
+                return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
 
             int[] keyPair = tags.getIntArray(key);
-            if (keyPair[0] + matchingAmount(input, tool) <= keyPair[1]) return true;
+            if (keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         }
         return false;
@@ -82,9 +84,13 @@ public class ModAttack extends ItemModTypeFilter {
     public void modify(ItemStack[] input, ItemStack tool) {
         IModifyable toolItem = (IModifyable) tool.getItem();
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag(toolItem.getBaseTagName());
+
+        ModificationInfo modificationInfo = matchingAmount(input, tool);
+        int increase = modificationInfo.total();
+        tags.setIntArray("ToRemove", modificationInfo.toRemove());
+
         if (tags.hasKey(key)) {
             int[] keyPair = tags.getIntArray(key);
-            int increase = matchingAmount(input, tool);
             int overThreshold = increase / threshold;
 
             int leftToBoost = threshold - (keyPair[0] % threshold);
@@ -112,8 +118,6 @@ public class ModAttack extends ItemModTypeFilter {
             int modifiers = tags.getInteger("Modifiers");
             modifiers -= 1;
             tags.setInteger("Modifiers", modifiers);
-            int increase = matchingAmount(input, tool);
-            tags.setInteger("ToRemove", increase);
             int overThreshold = increase / threshold;
             String modName = "\u00a7f" + guiType + " (" + increase + "/" + max + ")";
             int tooltipIndex = addToolTip(tool, tooltipName, modName);

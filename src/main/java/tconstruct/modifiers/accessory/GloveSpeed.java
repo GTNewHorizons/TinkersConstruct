@@ -8,6 +8,7 @@ import net.minecraft.util.StatCollector;
 
 import tconstruct.library.accessory.AccessoryCore;
 import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.modifier.ModificationInfo;
 import tconstruct.modifiers.tools.ItemModTypeFilter;
 
 public class GloveSpeed extends ItemModTypeFilter {
@@ -27,12 +28,13 @@ public class GloveSpeed extends ItemModTypeFilter {
             if (!Arrays.asList(((AccessoryCore) input.getItem()).getTraits()).contains("glove")) return false;
 
             NBTTagCompound tags = getModifierTag(input);
-            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(modifiers, input) <= max; // This
+            if (!tags.hasKey(key))
+                return tags.getInteger("Modifiers") > 0 && matchingAmount(modifiers, input).total() <= max; // This
             // line
             // fails?
 
             int[] keyPair = tags.getIntArray(key);
-            if (keyPair[0] + matchingAmount(modifiers, input) <= keyPair[1]) return true;
+            if (keyPair[0] + matchingAmount(modifiers, input).total() <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         }
 
@@ -43,8 +45,10 @@ public class GloveSpeed extends ItemModTypeFilter {
     public void modify(ItemStack[] modifiers, ItemStack input) {
         NBTTagCompound tags = getModifierTag(input);
         int[] keyPair;
-        int increase = matchingAmount(modifiers, input);
-        tags.setInteger("ToRemove", increase);
+        ModificationInfo modificationInfo = matchingAmount(modifiers, input);
+        int increase = modificationInfo.total();
+        tags.setIntArray("ToRemove", modificationInfo.toRemove());
+
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);
             if (keyPair[0] % max == 0) {

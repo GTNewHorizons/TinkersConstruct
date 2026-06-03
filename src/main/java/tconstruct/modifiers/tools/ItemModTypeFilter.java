@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import tconstruct.library.modifier.ItemModifier;
+import tconstruct.library.modifier.ModificationInfo;
 
 public abstract class ItemModTypeFilter extends ItemModifier {
 
@@ -53,31 +54,67 @@ public abstract class ItemModTypeFilter extends ItemModifier {
         return minimumMatch;
     }
 
-    public int matchingAmount(ItemStack[] input, ItemStack tool) {
+    // Needed because Lapis modifier does not put its max in the keyPair
+    public ModificationInfo matchingAmount(ItemStack[] input, ItemStack tool) {
+        return matchingAmount(input, tool, max);
+    }
+
+    public ModificationInfo matchingAmount(ItemStack[] input, ItemStack tool, int modifierMax) {
+
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int availableAmount;
         if (tags.hasKey(key)) {
             int[] keyPair = tags.getIntArray(key);
-            availableAmount = keyPair[1] + max - keyPair[0];
+            if (keyPair[0] % modifierMax == 0) {
+                availableAmount = modifierMax;
+            } else {
+                // Blame Lapis modifier
+                int upperLimit = keyPair.length == 2 ? modifierMax : keyPair[1];
+                availableAmount = upperLimit - keyPair[0];
+            }
         } else {
-            availableAmount = max;
+            availableAmount = modifierMax;
         }
         int amount = 0;
+
+        ArrayList<Integer> toRemove = new ArrayList<>();
+
         for (ItemStack inputStack : input) {
             if (inputStack == null) {
                 continue;
             }
             for (int iter = 0; iter < stacks.size(); iter++) {
-                ItemStack stack = (ItemStack) stacks.get(iter);
+                ItemStack stack = stacks.get(iter);
+                int perItemIncrease = increase.get(iter);
+                int maxItems = availableAmount / perItemIncrease;
+                int itemsUsed;
+                int usedAmount = 0;
+
                 if (stack.getItemDamage() == Short.MAX_VALUE) {
-                    if (this.areItemsEquivalent(inputStack, stack)) amount += increase.get(iter) * inputStack.stackSize;
+
+                    if (this.areItemsEquivalent(inputStack, stack)) {
+                        itemsUsed = Math.min(maxItems, inputStack.stackSize);
+                        usedAmount = perItemIncrease * itemsUsed;
+                        amount += usedAmount;
+                        availableAmount -= usedAmount;
+                        toRemove.add(itemsUsed);
+                    }
                 } else {
-                    if (this.areItemStacksEquivalent(inputStack, stack))
-                        amount += increase.get(iter) * inputStack.stackSize;
+                    if (this.areItemStacksEquivalent(inputStack, stack)) {
+                        itemsUsed = Math.min(maxItems, inputStack.stackSize);
+                        usedAmount = perItemIncrease * itemsUsed;
+                        amount += usedAmount;
+                        availableAmount -= usedAmount;
+                        toRemove.add(itemsUsed);
+                    }
                 }
             }
         }
-        return Math.min(amount, availableAmount);
+        int[] toRemoveArray = new int[toRemove.size()];
+        for (int i = 0; i < toRemove.size(); i++) {
+            toRemoveArray[i] = toRemove.get(i);
+        }
+        return new ModificationInfo(amount, toRemoveArray);
     }
 
     /**

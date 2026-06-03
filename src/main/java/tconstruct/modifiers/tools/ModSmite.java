@@ -3,6 +3,8 @@ package tconstruct.modifiers.tools;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import tconstruct.library.modifier.ModificationInfo;
+
 public class ModSmite extends ItemModTypeFilter {
 
     String tooltipName;
@@ -17,13 +19,13 @@ public class ModSmite extends ItemModTypeFilter {
 
     @Override
     protected boolean canModify(ItemStack tool, ItemStack[] input) {
-        if (matchingAmount(input, tool) > max) return false;
+        if (matchingAmount(input, tool).total() > max) return false;
 
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-        if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool) <= max;
+        if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
 
         int[] keyPair = tags.getIntArray(key);
-        if (keyPair[0] + matchingAmount(input, tool) <= keyPair[1]) return true;
+        if (keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1]) return true;
         else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         else return false;
     }
@@ -31,8 +33,10 @@ public class ModSmite extends ItemModTypeFilter {
     @Override
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-        int increase = matchingAmount(input, tool);
-        tags.setInteger("ToRemove", increase);
+        ModificationInfo modificationInfo = matchingAmount(input, tool);
+        int increase = modificationInfo.total();
+        tags.setIntArray("ToRemove", modificationInfo.toRemove());
+
         if (tags.hasKey(key)) {
             int[] keyPair = tags.getIntArray(key);
 

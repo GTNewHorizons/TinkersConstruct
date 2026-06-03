@@ -55,7 +55,8 @@ public class SlotTool extends Slot {
         if (stack.getItem() instanceof IModifyable) {
             NBTTagCompound tags = stack.getTagCompound()
                     .getCompoundTag(((IModifyable) stack.getItem()).getBaseTagName());
-            int toRemove = tags.hasKey("ToRemove") ? tags.getInteger("ToRemove") : 1;
+            int[] toRemoveArray = tags.hasKey("ToRemove") ? tags.getIntArray("ToRemove") : null;
+            int toRemoveIndex = 0;
 
             boolean full = (inventory.getStackInSlot(2) != null || inventory.getStackInSlot(3) != null);
             for (int i = 2; i <= 3; i++) {
@@ -63,9 +64,12 @@ public class SlotTool extends Slot {
                 if (item == null) {
                     continue;
                 }
-                int removed = Math.min(toRemove, item.stackSize);
-                inventory.decrStackSize(i, removed);
-                toRemove -= removed;
+                if (toRemoveArray == null) {
+                    inventory.decrStackSize(i, 1);
+                } else {
+                    inventory.decrStackSize(i, toRemoveArray[toRemoveIndex]);
+                    toRemoveIndex++;
+                }
             }
             tags.removeTag("ToRemove");
             ItemStack compare = inventory.getStackInSlot(1);
