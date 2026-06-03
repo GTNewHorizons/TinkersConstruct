@@ -1,6 +1,10 @@
 package tconstruct.library.util;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.FallbackResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 import cpw.mods.fml.relauncher.Side;
@@ -13,9 +17,22 @@ public final class TextureHelper {
 
     @SideOnly(Side.CLIENT)
     public static boolean textureExists(ResourceLocation texture) {
+        final IResourceManager resMan = Minecraft.getMinecraft().getResourceManager();
+        if (resMan instanceof SimpleReloadableResourceManager simple) {
+            FallbackResourceManager fallback = simple.domainResourceManagers.get(texture.getResourceDomain());
+            if (fallback != null) {
+                for (IResourcePack rp : fallback.resourcePacks) {
+                    if (rp != null && rp.resourceExists(texture)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
 
+        // Fallback
         try {
-            Minecraft.getMinecraft().getResourceManager().getAllResources(texture);
+            resMan.getAllResources(texture);
             return true;
         } catch (Throwable t) { // pokemon!
             return false;
