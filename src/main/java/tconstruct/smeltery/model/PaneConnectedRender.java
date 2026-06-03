@@ -52,18 +52,22 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
         // Fetch pane
         GlassPaneConnected pane = (GlassPaneConnected) block;
 
-        boolean bottom = pane.shouldSideBeRendered(world, x, y - 1, z, 0);
-        boolean top = pane.shouldSideBeRendered(world, x, y + 1, z, 1);
-        boolean north = pane.canPaneConnectTo(world, x, y, z - 1, NORTH);
-        boolean south = pane.canPaneConnectTo(world, x, y, z + 1, SOUTH);
-        boolean west = pane.canPaneConnectTo(world, x - 1, y, z, WEST);
-        boolean east = pane.canPaneConnectTo(world, x + 1, y, z, EAST);
+        boolean rawNorth = pane.canPaneConnectTo(world, x, y, z - 1, NORTH);
+        boolean rawSouth = pane.canPaneConnectTo(world, x, y, z + 1, SOUTH);
+        boolean rawWest = pane.canPaneConnectTo(world, x - 1, y, z, WEST);
+        boolean rawEast = pane.canPaneConnectTo(world, x + 1, y, z, EAST);
+        boolean cross = !rawNorth && !rawSouth && !rawWest && !rawEast;
+        boolean north = cross || rawNorth;
+        boolean south = cross || rawSouth;
+        boolean west = cross || rawWest;
+        boolean east = cross || rawEast;
 
-        boolean cross = false;
-        if (!north && !south && !west && !east) {
-            cross = true;
-            north = south = west = east = true;
-        }
+        // Per-segment visibility for the top and bottom faces. Whole-face culling is too coarse:
+        // stacked panes with mismatched arm configs (e.g. an E-W line below an N-S line) leave
+        // arm tops with nothing covering them, so they have to render even though the centers
+        // do not.
+        int bottomSegments = pane.getVisibleVerticalSegments(world, x, y, z, -1, north, south, west, east);
+        int topSegments = pane.getVisibleVerticalSegments(world, x, y, z, 1, north, south, west, east);
 
         IIcon bottomIcon = pane.getIcon(world, x, y, z, 0);
         IIcon topIcon = pane.getIcon(world, x, y, z, 1);
@@ -72,13 +76,8 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
         IIcon westIcon = pane.getIcon(world, x, y, z, 4);
         IIcon eastIcon = pane.getIcon(world, x, y, z, 5);
 
-        if (bottom) {
-            renderTopOrBottom(tessellator, x, y, z, north, south, west, east, false, bottomIcon);
-        }
-
-        if (top) {
-            renderTopOrBottom(tessellator, x, y, z, north, south, west, east, true, topIcon);
-        }
+        renderTopOrBottom(tessellator, x, y, z, bottomSegments, false, bottomIcon);
+        renderTopOrBottom(tessellator, x, y, z, topSegments, true, topIcon);
 
         renderSide(tessellator, x, y, z, NORTH, east, west, north, cross, northIcon);
         renderSide(tessellator, x, y, z, SOUTH, west, east, south, cross, southIcon);
@@ -88,8 +87,12 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
         return true;
     }
 
-    private void renderTopOrBottom(Tessellator tessellator, int x, int y, int z, boolean north, boolean south,
-            boolean west, boolean east, boolean top, IIcon icon) {
+    private void renderTopOrBottom(Tessellator tessellator, int x, int y, int z, int segments, boolean top,
+            IIcon icon) {
+        if (segments == 0) {
+            return;
+        }
+
         float minU = icon.getMinU();
         float maxU = icon.getMaxU();
         float minV = icon.getMinV();
@@ -115,18 +118,19 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
         double[] westXZUV = new double[] { startX, startZ, startU, startV, x, startZ, minU, startV, x, endZ, minU, endV,
                 startX, endZ, startU, endV };
 
-        renderXZUV(tessellator, centerSquareXZUV, y, top);
-
-        if (north) {
+        if ((segments & GlassPaneConnected.SEGMENT_CENTER) != 0) {
+            renderXZUV(tessellator, centerSquareXZUV, y, top);
+        }
+        if ((segments & GlassPaneConnected.SEGMENT_NORTH) != 0) {
             renderXZUV(tessellator, northXZUV, y, top);
         }
-        if (south) {
+        if ((segments & GlassPaneConnected.SEGMENT_SOUTH) != 0) {
             renderXZUV(tessellator, southXZUV, y, top);
         }
-        if (east) {
+        if ((segments & GlassPaneConnected.SEGMENT_EAST) != 0) {
             renderXZUV(tessellator, eastXZUV, y, top);
         }
-        if (west) {
+        if ((segments & GlassPaneConnected.SEGMENT_WEST) != 0) {
             renderXZUV(tessellator, westXZUV, y, top);
         }
     }

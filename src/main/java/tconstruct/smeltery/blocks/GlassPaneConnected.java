@@ -36,11 +36,7 @@ public class GlassPaneConnected extends GlassBlockConnected {
     @Override
     public IIcon getConnectedBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side, IIcon[] icons) {
         if (side == 0 || side == 1) {
-            if ((blockAccess.getBlock(x, y - 1, z) == this && side == 0)
-                    || (blockAccess.getBlock(x, y + 1, z) == this && side == 1)) {
-                return icons[15];
-            }
-
+            // Per-segment culling in the renderer handles whether the center / arm strips actually draw
             int meta = blockAccess.getBlockMetadata(x, y, z);
             return side == 0 ? getBottomIcon(meta) : getTopIcon(meta);
         }
