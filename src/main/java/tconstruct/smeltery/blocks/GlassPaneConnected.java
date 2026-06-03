@@ -78,6 +78,30 @@ public class GlassPaneConnected extends GlassBlockConnected {
         return neighbor.isOpaqueCube() ? 0 : segments(true, north, south, west, east);
     }
 
+    public IIcon getPaneConnectedTexture(IBlockAccess blockAccess, int x, int y, int z, boolean openUp,
+            boolean openDown, boolean openLeft, boolean openRight) {
+        if (PHConstruct.connectedTexturesMode == 0) {
+            return icons[0];
+        }
+        return getConnectedTexture(icons, openUp, openDown, openLeft, openRight);
+    }
+
+    // Side-face strip icon driven by a single segment's top/bottom culling: if the segment's
+    // top (bottom) is hidden in topSegments /bottomSegments the strip on that piece uses the
+    // open-edge connected variant, matching what the top/bottom face culling does.
+    public IIcon getPaneSegmentTexture(IBlockAccess blockAccess, int x, int y, int z, int segment,
+            int topSegments, int bottomSegments, boolean openLeft, boolean openRight) {
+        return getPaneConnectedTexture(
+                blockAccess,
+                x,
+                y,
+                z,
+                (topSegments & segment) == 0,
+                (bottomSegments & segment) == 0,
+                openLeft,
+                openRight);
+    }
+
     @Override
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB,
             List<AxisAlignedBB> par6List, Entity entity) {

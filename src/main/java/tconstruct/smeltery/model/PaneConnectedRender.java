@@ -71,18 +71,85 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 
         IIcon bottomIcon = pane.getIcon(world, x, y, z, 0);
         IIcon topIcon = pane.getIcon(world, x, y, z, 1);
-        IIcon northIcon = pane.getIcon(world, x, y, z, 2);
-        IIcon southIcon = pane.getIcon(world, x, y, z, 3);
-        IIcon westIcon = pane.getIcon(world, x, y, z, 4);
-        IIcon eastIcon = pane.getIcon(world, x, y, z, 5);
+
+        boolean connEast = pane.shouldConnectToBlock(
+                world,
+                x,
+                y,
+                z,
+                world.getBlock(x + 1, y, z),
+                world.getBlockMetadata(x + 1, y, z));
+        boolean connWest = pane.shouldConnectToBlock(
+                world,
+                x,
+                y,
+                z,
+                world.getBlock(x - 1, y, z),
+                world.getBlockMetadata(x - 1, y, z));
+        boolean connNorth = pane.shouldConnectToBlock(
+                world,
+                x,
+                y,
+                z,
+                world.getBlock(x, y, z - 1),
+                world.getBlockMetadata(x, y, z - 1));
+        boolean connSouth = pane.shouldConnectToBlock(
+                world,
+                x,
+                y,
+                z,
+                world.getBlock(x, y, z + 1),
+                world.getBlockMetadata(x, y, z + 1));
+
+        // Each side face is split into three strips (two arms + center). Per-strip vertical
+        // openness mirrors the corresponding segment's bit in {top,bottom}Segments — i.e. the
+        // exact same culling that decides whether the top/bottom face is rendered. In the cross
+        // case the "center" strip is actually the front-facing arm's edge, so it uses that
+        // arm's segment instead of SEGMENT_CENTER.
+        int northCenterSeg = cross ? GlassPaneConnected.SEGMENT_NORTH : GlassPaneConnected.SEGMENT_CENTER;
+        int southCenterSeg = cross ? GlassPaneConnected.SEGMENT_SOUTH : GlassPaneConnected.SEGMENT_CENTER;
+        int westCenterSeg = cross ? GlassPaneConnected.SEGMENT_WEST : GlassPaneConnected.SEGMENT_CENTER;
+        int eastCenterSeg = cross ? GlassPaneConnected.SEGMENT_EAST : GlassPaneConnected.SEGMENT_CENTER;
+
+        IIcon northLeftIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, GlassPaneConnected.SEGMENT_EAST, topSegments, bottomSegments, connEast, connWest);
+        IIcon northRightIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, GlassPaneConnected.SEGMENT_WEST, topSegments, bottomSegments, connEast, connWest);
+        IIcon northCenterIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, northCenterSeg, topSegments, bottomSegments, connEast, connWest);
+
+        IIcon southLeftIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, GlassPaneConnected.SEGMENT_WEST, topSegments, bottomSegments, connWest, connEast);
+        IIcon southRightIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, GlassPaneConnected.SEGMENT_EAST, topSegments, bottomSegments, connWest, connEast);
+        IIcon southCenterIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, southCenterSeg, topSegments, bottomSegments, connWest, connEast);
+
+        IIcon westLeftIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, GlassPaneConnected.SEGMENT_NORTH, topSegments, bottomSegments, connNorth, connSouth);
+        IIcon westRightIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, GlassPaneConnected.SEGMENT_SOUTH, topSegments, bottomSegments, connNorth, connSouth);
+        IIcon westCenterIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, westCenterSeg, topSegments, bottomSegments, connNorth, connSouth);
+
+        IIcon eastLeftIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, GlassPaneConnected.SEGMENT_SOUTH, topSegments, bottomSegments, connSouth, connNorth);
+        IIcon eastRightIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, GlassPaneConnected.SEGMENT_NORTH, topSegments, bottomSegments, connSouth, connNorth);
+        IIcon eastCenterIcon = pane.getPaneSegmentTexture(
+                world, x, y, z, eastCenterSeg, topSegments, bottomSegments, connSouth, connNorth);
 
         renderTopOrBottom(tessellator, x, y, z, bottomSegments, false, bottomIcon);
         renderTopOrBottom(tessellator, x, y, z, topSegments, true, topIcon);
 
-        renderSide(tessellator, x, y, z, NORTH, east, west, north, cross, northIcon);
-        renderSide(tessellator, x, y, z, SOUTH, west, east, south, cross, southIcon);
-        renderSide(tessellator, x, y, z, WEST, north, south, west, cross, westIcon);
-        renderSide(tessellator, x, y, z, EAST, south, north, east, cross, eastIcon);
+        renderSide(tessellator, x, y, z, NORTH, east, west, north, cross,
+                northLeftIcon, northRightIcon, northCenterIcon);
+        renderSide(tessellator, x, y, z, SOUTH, west, east, south, cross,
+                southLeftIcon, southRightIcon, southCenterIcon);
+        renderSide(tessellator, x, y, z, WEST, north, south, west, cross,
+                westLeftIcon, westRightIcon, westCenterIcon);
+        renderSide(tessellator, x, y, z, EAST, south, north, east, cross,
+                eastLeftIcon, eastRightIcon, eastCenterIcon);
 
         return true;
     }
@@ -148,13 +215,8 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
     }
 
     private void renderSide(Tessellator tessellator, int x, int y, int z, ForgeDirection side, boolean left,
-            boolean right, boolean front, boolean cross, IIcon icon) {
-        float minU = icon.getMinU();
-        float maxU = icon.getMaxU();
-        float minV = icon.getMinV();
-        float maxV = icon.getMaxV();
-        float startU = icon.getInterpolatedU(7);
-        float endU = icon.getInterpolatedU(9);
+            boolean right, boolean front, boolean cross,
+            IIcon leftIcon, IIcon rightIcon, IIcon centerIcon) {
         double startX = x + (7.0 / 16.0);
         double startZ = z + (7.0 / 16.0);
         double endX = x + (9.0 / 16.0);
@@ -164,6 +226,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
             case NORTH:
                 double northZ = z + (7.0 / 16.0);
                 if (right) {
+                    float minV = rightIcon.getMinV();
+                    float maxV = rightIcon.getMaxV();
+                    float maxU = rightIcon.getMaxU();
+                    float endU = rightIcon.getInterpolatedU(9);
                     tessellator.addVertexWithUV(x, y + 1, northZ, maxU, minV);
                     tessellator.addVertexWithUV(startX, y + 1, northZ, endU, minV);
                     tessellator.addVertexWithUV(startX, y, northZ, endU, maxV);
@@ -171,6 +237,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
                 }
 
                 if (left) {
+                    float minV = leftIcon.getMinV();
+                    float maxV = leftIcon.getMaxV();
+                    float minU = leftIcon.getMinU();
+                    float startU = leftIcon.getInterpolatedU(7);
                     tessellator.addVertexWithUV(endX, y + 1, northZ, startU, minV);
                     tessellator.addVertexWithUV(x + 1, y + 1, northZ, minU, minV);
                     tessellator.addVertexWithUV(x + 1, y, northZ, minU, maxV);
@@ -179,6 +249,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 
                 if (cross) northZ = z;
                 if (cross || !front) {
+                    float minV = centerIcon.getMinV();
+                    float maxV = centerIcon.getMaxV();
+                    float startU = centerIcon.getInterpolatedU(7);
+                    float endU = centerIcon.getInterpolatedU(9);
                     tessellator.addVertexWithUV(startX, y + 1, northZ, endU, minV);
                     tessellator.addVertexWithUV(endX, y + 1, northZ, startU, minV);
                     tessellator.addVertexWithUV(endX, y, northZ, startU, maxV);
@@ -189,6 +263,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
             case SOUTH:
                 double southZ = z + (9.0 / 16.0);
                 if (right) {
+                    float minV = rightIcon.getMinV();
+                    float maxV = rightIcon.getMaxV();
+                    float maxU = rightIcon.getMaxU();
+                    float endU = rightIcon.getInterpolatedU(9);
                     tessellator.addVertexWithUV(x + 1, y + 1, southZ, maxU, minV);
                     tessellator.addVertexWithUV(endX, y + 1, southZ, endU, minV);
                     tessellator.addVertexWithUV(endX, y, southZ, endU, maxV);
@@ -196,6 +274,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
                 }
 
                 if (left) {
+                    float minV = leftIcon.getMinV();
+                    float maxV = leftIcon.getMaxV();
+                    float minU = leftIcon.getMinU();
+                    float startU = leftIcon.getInterpolatedU(7);
                     tessellator.addVertexWithUV(startX, y + 1, southZ, startU, minV);
                     tessellator.addVertexWithUV(x, y + 1, southZ, minU, minV);
                     tessellator.addVertexWithUV(x, y, southZ, minU, maxV);
@@ -204,6 +286,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 
                 if (cross) southZ = z + 1;
                 if (cross || !front) {
+                    float minV = centerIcon.getMinV();
+                    float maxV = centerIcon.getMaxV();
+                    float startU = centerIcon.getInterpolatedU(7);
+                    float endU = centerIcon.getInterpolatedU(9);
                     tessellator.addVertexWithUV(endX, y + 1, southZ, endU, minV);
                     tessellator.addVertexWithUV(startX, y + 1, southZ, startU, minV);
                     tessellator.addVertexWithUV(startX, y, southZ, startU, maxV);
@@ -214,6 +300,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
             case WEST:
                 double westX = x + (7.0 / 16.0);
                 if (right) {
+                    float minV = rightIcon.getMinV();
+                    float maxV = rightIcon.getMaxV();
+                    float maxU = rightIcon.getMaxU();
+                    float endU = rightIcon.getInterpolatedU(9);
                     tessellator.addVertexWithUV(westX, y + 1, z + 1, maxU, minV);
                     tessellator.addVertexWithUV(westX, y + 1, endZ, endU, minV);
                     tessellator.addVertexWithUV(westX, y, endZ, endU, maxV);
@@ -221,6 +311,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
                 }
 
                 if (left) {
+                    float minV = leftIcon.getMinV();
+                    float maxV = leftIcon.getMaxV();
+                    float minU = leftIcon.getMinU();
+                    float startU = leftIcon.getInterpolatedU(7);
                     tessellator.addVertexWithUV(westX, y + 1, startZ, startU, minV);
                     tessellator.addVertexWithUV(westX, y + 1, z, minU, minV);
                     tessellator.addVertexWithUV(westX, y, z, minU, maxV);
@@ -229,6 +323,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 
                 if (cross) westX = x;
                 if (cross || !front) {
+                    float minV = centerIcon.getMinV();
+                    float maxV = centerIcon.getMaxV();
+                    float startU = centerIcon.getInterpolatedU(7);
+                    float endU = centerIcon.getInterpolatedU(9);
                     tessellator.addVertexWithUV(westX, y + 1, endZ, endU, minV);
                     tessellator.addVertexWithUV(westX, y + 1, startZ, startU, minV);
                     tessellator.addVertexWithUV(westX, y, startZ, startU, maxV);
@@ -240,6 +338,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
                 double eastX = x + (9.0 / 16.0);
 
                 if (right) {
+                    float minV = rightIcon.getMinV();
+                    float maxV = rightIcon.getMaxV();
+                    float maxU = rightIcon.getMaxU();
+                    float endU = rightIcon.getInterpolatedU(9);
                     tessellator.addVertexWithUV(eastX, y + 1, z, maxU, minV);
                     tessellator.addVertexWithUV(eastX, y + 1, startZ, endU, minV);
                     tessellator.addVertexWithUV(eastX, y, startZ, endU, maxV);
@@ -247,6 +349,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
                 }
 
                 if (left) {
+                    float minV = leftIcon.getMinV();
+                    float maxV = leftIcon.getMaxV();
+                    float minU = leftIcon.getMinU();
+                    float startU = leftIcon.getInterpolatedU(7);
                     tessellator.addVertexWithUV(eastX, y + 1, endZ, startU, minV);
                     tessellator.addVertexWithUV(eastX, y + 1, z + 1, minU, minV);
                     tessellator.addVertexWithUV(eastX, y, z + 1, minU, maxV);
@@ -255,6 +361,10 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 
                 if (cross) eastX = x + 1;
                 if (cross || !front) {
+                    float minV = centerIcon.getMinV();
+                    float maxV = centerIcon.getMaxV();
+                    float startU = centerIcon.getInterpolatedU(7);
+                    float endU = centerIcon.getInterpolatedU(9);
                     tessellator.addVertexWithUV(eastX, y + 1, startZ, endU, minV);
                     tessellator.addVertexWithUV(eastX, y + 1, endZ, startU, minV);
                     tessellator.addVertexWithUV(eastX, y, endZ, startU, maxV);
