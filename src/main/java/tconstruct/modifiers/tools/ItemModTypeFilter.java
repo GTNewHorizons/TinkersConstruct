@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import tconstruct.library.modifier.ItemModifier;
 
@@ -52,22 +53,31 @@ public abstract class ItemModTypeFilter extends ItemModifier {
         return minimumMatch;
     }
 
-    public int matchingAmount(ItemStack[] input) {
+    public int matchingAmount(ItemStack[] input, ItemStack tool) {
+        NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
+        int availableAmount;
+        if (tags.hasKey(key)) {
+            int[] keyPair = tags.getIntArray(key);
+            availableAmount = keyPair[1] + max - keyPair[0];
+        } else {
+            availableAmount = max;
+        }
         int amount = 0;
         for (ItemStack inputStack : input) {
-            if(inputStack == null){
+            if (inputStack == null) {
                 continue;
             }
             for (int iter = 0; iter < stacks.size(); iter++) {
                 ItemStack stack = (ItemStack) stacks.get(iter);
                 if (stack.getItemDamage() == Short.MAX_VALUE) {
-                    if (this.areItemsEquivalent(inputStack, stack)) amount += increase.get(iter);
+                    if (this.areItemsEquivalent(inputStack, stack)) amount += increase.get(iter) * inputStack.stackSize;
                 } else {
-                    if (this.areItemStacksEquivalent(inputStack, stack)) amount += increase.get(iter);
+                    if (this.areItemStacksEquivalent(inputStack, stack))
+                        amount += increase.get(iter) * inputStack.stackSize;
                 }
             }
         }
-        return amount;
+        return Math.min(amount, availableAmount);
     }
 
     /**

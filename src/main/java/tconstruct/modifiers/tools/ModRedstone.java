@@ -26,14 +26,14 @@ public class ModRedstone extends ItemModTypeFilter {
             ToolCore toolItem = (ToolCore) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input) > max) return false;
+            if (matchingAmount(input, tool) > max) return false;
 
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input) <= max;
+            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool) <= max;
 
             int[] keyPair = tags.getIntArray(key);
 
-            if (keyPair[0] + matchingAmount(input) <= keyPair[1]) return true;
+            if (keyPair[0] + matchingAmount(input, tool) <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         }
 
@@ -44,7 +44,8 @@ public class ModRedstone extends ItemModTypeFilter {
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int[] keyPair;
-        int increase = matchingAmount(input);
+        int increase = matchingAmount(input, tool);
+        tags.setInteger("ToRemove", increase);
         int current;
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);

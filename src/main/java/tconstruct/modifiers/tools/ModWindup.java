@@ -31,7 +31,8 @@ public class ModWindup extends ModRedstone {
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int[] keyPair;
-        int increase = matchingAmount(input);
+        int increase = matchingAmount(input, tool);
+        tags.setInteger("ToRemove", increase);
         int current;
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);

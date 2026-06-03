@@ -60,13 +60,13 @@ public class ModAttack extends ItemModTypeFilter {
             IModifyable toolItem = (IModifyable) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input) > max) return false;
+            if (matchingAmount(input, tool) > max) return false;
 
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag(toolItem.getBaseTagName());
-            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input) <= max;
+            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool) <= max;
 
             int[] keyPair = tags.getIntArray(key);
-            if (keyPair[0] + matchingAmount(input) <= keyPair[1]) return true;
+            if (keyPair[0] + matchingAmount(input, tool) <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         }
         return false;
@@ -84,7 +84,7 @@ public class ModAttack extends ItemModTypeFilter {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag(toolItem.getBaseTagName());
         if (tags.hasKey(key)) {
             int[] keyPair = tags.getIntArray(key);
-            int increase = matchingAmount(input);
+            int increase = matchingAmount(input, tool);
             int overThreshold = increase / threshold;
 
             int leftToBoost = threshold - (keyPair[0] % threshold);
@@ -112,7 +112,8 @@ public class ModAttack extends ItemModTypeFilter {
             int modifiers = tags.getInteger("Modifiers");
             modifiers -= 1;
             tags.setInteger("Modifiers", modifiers);
-            int increase = matchingAmount(input);
+            int increase = matchingAmount(input, tool);
+            tags.setInteger("ToRemove", increase);
             int overThreshold = increase / threshold;
             String modName = "\u00a7f" + guiType + " (" + increase + "/" + max + ")";
             int tooltipIndex = addToolTip(tool, tooltipName, modName);
