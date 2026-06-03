@@ -13,9 +13,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import tconstruct.smeltery.model.PaneConnectedRender;
+import tconstruct.util.config.PHConstruct;
 
 public class GlassPaneConnected extends GlassBlockConnected {
 
+    public static final int SEGMENT_CENTER = 1;
+    public static final int SEGMENT_NORTH = 1 << 1;
+    public static final int SEGMENT_SOUTH = 1 << 2;
+    public static final int SEGMENT_WEST = 1 << 3;
+    public static final int SEGMENT_EAST = 1 << 4;
     private IIcon sideIcon;
 
     public GlassPaneConnected(String location, boolean hasAlpha) {
@@ -40,6 +46,40 @@ public class GlassPaneConnected extends GlassBlockConnected {
         }
 
         return super.getConnectedBlockTexture(blockAccess, x, y, z, side, icons);
+    }
+
+    public static int segments(boolean center, boolean north, boolean south, boolean west, boolean east) {
+        return (center ? SEGMENT_CENTER : 0) | (north ? SEGMENT_NORTH : 0)
+                | (south ? SEGMENT_SOUTH : 0)
+                | (west ? SEGMENT_WEST : 0)
+                | (east ? SEGMENT_EAST : 0);
+    }
+
+    public int getVisibleVerticalSegments(IBlockAccess world, int x, int y, int z, int dy, boolean north, boolean south,
+            boolean west, boolean east) {
+        Block neighbor = world.getBlock(x, y + dy, z);
+        if (PHConstruct.connectedTexturesMode != 0 && neighbor == this) {
+            boolean neighborNorth = canPaneConnectTo(world, x, y + dy, z - 1, ForgeDirection.NORTH);
+            boolean neighborSouth = canPaneConnectTo(world, x, y + dy, z + 1, ForgeDirection.SOUTH);
+            boolean neighborWest = canPaneConnectTo(world, x - 1, y + dy, z, ForgeDirection.WEST);
+            boolean neighborEast = canPaneConnectTo(world, x + 1, y + dy, z, ForgeDirection.EAST);
+            if (!neighborNorth && !neighborSouth && !neighborWest && !neighborEast) {
+                neighborNorth = neighborSouth = neighborWest = neighborEast = true;
+            }
+            boolean connecting = shouldConnectToBlock(world, x, y, z, neighbor, world.getBlockMetadata(x, y + dy, z));
+            if (connecting) {
+                boolean perfectCrossing = (north != neighborNorth) && (south != neighborSouth)
+                        && (west != neighborWest)
+                        && (east != neighborEast);
+                return segments(
+                        perfectCrossing,
+                        north && !neighborNorth,
+                        south && !neighborSouth,
+                        west && !neighborWest,
+                        east && !neighborEast);
+            }
+        }
+        return neighbor.isOpaqueCube() ? 0 : segments(true, north, south, west, east);
     }
 
     @Override
