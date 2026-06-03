@@ -22,6 +22,7 @@ public class GlassPaneConnected extends GlassBlockConnected {
     public static final int SEGMENT_SOUTH = 1 << 2;
     public static final int SEGMENT_WEST = 1 << 3;
     public static final int SEGMENT_EAST = 1 << 4;
+    public static final int SEGMENT_CONNECTED = 1 << 5;
     private IIcon sideIcon;
 
     public GlassPaneConnected(String location, boolean hasAlpha) {
@@ -67,7 +68,7 @@ public class GlassPaneConnected extends GlassBlockConnected {
                 boolean perfectCrossing = (north != neighborNorth) && (south != neighborSouth)
                         && (west != neighborWest)
                         && (east != neighborEast);
-                return segments(
+                return SEGMENT_CONNECTED | segments(
                         perfectCrossing,
                         north && !neighborNorth,
                         south && !neighborSouth,
@@ -96,8 +97,8 @@ public class GlassPaneConnected extends GlassBlockConnected {
                 x,
                 y,
                 z,
-                (topSegments & segment) == 0,
-                (bottomSegments & segment) == 0,
+                (topSegments & SEGMENT_CONNECTED) != 0 && (topSegments & segment) == 0,
+                (bottomSegments & SEGMENT_CONNECTED) != 0 && (bottomSegments & segment) == 0,
                 openLeft,
                 openRight);
     }

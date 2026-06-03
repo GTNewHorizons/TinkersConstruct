@@ -156,7 +156,7 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 
     private void renderTopOrBottom(Tessellator tessellator, int x, int y, int z, int segments, boolean top,
             IIcon icon) {
-        if (segments == 0) {
+        if ((segments & ~GlassPaneConnected.SEGMENT_CONNECTED) == 0) {
             return;
         }
 
