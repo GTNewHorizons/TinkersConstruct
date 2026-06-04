@@ -17,6 +17,7 @@ import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import org.lwjgl.opengl.GL11;
 import tconstruct.TConstruct;
 import tconstruct.smeltery.blocks.GlassPaneConnected;
 
@@ -26,7 +27,57 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
-    public void renderInventoryBlock(Block block, int meta, int modelID, RenderBlocks renderer) {}
+    public void renderInventoryBlock(Block block, int meta, int modelID, RenderBlocks renderer) {
+        Tessellator tessellator = Tessellator.instance;
+        GlassPaneConnected pane = (GlassPaneConnected) block;
+        block.setBlockBoundsForItemRender();
+        renderer.setRenderBoundsFromBlock(block);
+
+        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+        int segments = GlassPaneConnected.SEGMENT_CENTER | GlassPaneConnected.SEGMENT_WEST | GlassPaneConnected.SEGMENT_EAST;
+
+        // Bottom
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(0.0F, -1.0F, 0.0F);
+        renderTopOrBottom(tessellator, 0, 0, 0, segments, false, pane.getTopIcon(meta));
+        tessellator.draw();
+
+        // Top
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(0.0F, 1.0F, 0.0F);
+        renderTopOrBottom(tessellator, 0, 0, 0, segments, true, pane.getTopIcon(meta));
+        tessellator.draw();
+
+        // North
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(0.0F, 0.0F, -1.0F);
+        IIcon northIcon = pane.getIcon(2, meta);
+        renderSide(tessellator, 0, 0, 0, NORTH, true, true, false, false, northIcon, northIcon, northIcon);
+        tessellator.draw();
+
+        // South
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(0.0F, 0.0F, 1.0F);
+        IIcon southIcon = pane.getIcon(3, meta);
+        renderSide(tessellator, 0, 0, 0, SOUTH, true, true, false, false, southIcon, southIcon, southIcon);
+        tessellator.draw();
+
+        // West
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+        IIcon westIcon = pane.getIcon(4, meta);
+        renderSide(tessellator, 0, 0, 0, WEST, false, false, true, true, westIcon, westIcon, westIcon);
+        tessellator.draw();
+
+        // East
+        tessellator.startDrawingQuads();
+        tessellator.setNormal(1.0F, 0.0F, 0.0F);
+        IIcon eastIcon = pane.getIcon(5, meta);
+        renderSide(tessellator, 0, 0, 0, EAST, false, false, true, true, eastIcon, eastIcon, eastIcon);
+        tessellator.draw();
+
+        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+    }
 
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
@@ -516,7 +567,7 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
 
     @Override
     public boolean shouldRender3DInInventory(int modelID) {
-        return false;
+        return true;
     }
 
     @Override
