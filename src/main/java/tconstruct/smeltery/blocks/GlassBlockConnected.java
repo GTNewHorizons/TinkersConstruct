@@ -3,6 +3,7 @@ package tconstruct.smeltery.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -18,6 +19,8 @@ import tconstruct.util.config.PHConstruct;
  *
  */
 public class GlassBlockConnected extends MantleBlock {
+
+    private static final String HODGEPODGE_FIX_BOTTOM_FACE_UV = "hodgepodge.FixesConfig.fixBottomFaceUV";
 
     protected IIcon[] icons = new IIcon[16];
     protected String folder;
@@ -105,6 +108,12 @@ public class GlassBlockConnected extends MantleBlock {
                         blockAccess.getBlock(x, y, z + 1),
                         blockAccess.getBlockMetadata(x, y, z + 1))) {
                     isOpenDown = true;
+                }
+
+                if (side == 0 && isHodgepodgeFixingBottomFaceUV()) {
+                    boolean isOpenLeftCopy = isOpenLeft;
+                    isOpenLeft = isOpenRight;
+                    isOpenRight = isOpenLeftCopy;
                 }
 
                 break;
@@ -279,6 +288,10 @@ public class GlassBlockConnected extends MantleBlock {
         }
 
         return getConnectedTexture(icons, isOpenUp, isOpenDown, isOpenLeft, isOpenRight);
+    }
+
+    private static boolean isHodgepodgeFixingBottomFaceUV() {
+        return Boolean.TRUE.equals(Launch.blackboard.get(HODGEPODGE_FIX_BOTTOM_FACE_UV));
     }
 
     protected IIcon getConnectedTexture(IIcon[] icons, boolean isOpenUp, boolean isOpenDown, boolean isOpenLeft,
