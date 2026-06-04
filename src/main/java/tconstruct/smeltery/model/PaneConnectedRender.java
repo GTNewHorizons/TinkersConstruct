@@ -46,7 +46,7 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
         // Top
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderTopOrBottom(tessellator, 0, 0, 0, segments, true, pane.getTopIcon(meta));
+        renderTopOrBottom(tessellator, 0, 0, 0, segments, true, pane.getBottomIcon(meta));
         tessellator.draw();
 
         // North
