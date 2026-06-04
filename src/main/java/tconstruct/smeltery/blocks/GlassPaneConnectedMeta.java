@@ -47,6 +47,17 @@ public class GlassPaneConnectedMeta extends GlassPaneConnected {
     }
 
     @Override
+    public IIcon getPaneConnectedTexture(IBlockAccess blockAccess, int x, int y, int z, boolean openUp,
+            boolean openDown, boolean openLeft, boolean openRight) {
+        int meta = blockAccess.getBlockMetadata(x, y, z);
+        IIcon[] icons = meta < this.icons.length ? this.icons[meta] : this.icons[0];
+        if (PHConstruct.connectedTexturesMode == 0) {
+            return icons[0];
+        }
+        return getConnectedTexture(icons, openUp, openDown, openLeft, openRight);
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         if (meta < icons.length) {

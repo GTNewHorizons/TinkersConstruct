@@ -13,9 +13,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import tconstruct.smeltery.model.PaneConnectedRender;
+import tconstruct.util.config.PHConstruct;
 
 public class GlassPaneConnected extends GlassBlockConnected {
 
+    public static final int SEGMENT_CENTER = 1;
+    public static final int SEGMENT_NORTH = 1 << 1;
+    public static final int SEGMENT_SOUTH = 1 << 2;
+    public static final int SEGMENT_WEST = 1 << 3;
+    public static final int SEGMENT_EAST = 1 << 4;
+    public static final int SEGMENT_CONNECTED = 1 << 5;
     private IIcon sideIcon;
 
     public GlassPaneConnected(String location, boolean hasAlpha) {
@@ -30,16 +37,71 @@ public class GlassPaneConnected extends GlassBlockConnected {
     @Override
     public IIcon getConnectedBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side, IIcon[] icons) {
         if (side == 0 || side == 1) {
-            if ((blockAccess.getBlock(x, y - 1, z) == this && side == 0)
-                    || (blockAccess.getBlock(x, y + 1, z) == this && side == 1)) {
-                return icons[15];
-            }
-
+            // Per-segment culling in the renderer handles whether the center / arm strips actually draw
             int meta = blockAccess.getBlockMetadata(x, y, z);
             return side == 0 ? getBottomIcon(meta) : getTopIcon(meta);
         }
 
         return super.getConnectedBlockTexture(blockAccess, x, y, z, side, icons);
+    }
+
+    public static int segments(boolean center, boolean north, boolean south, boolean west, boolean east) {
+        return (center ? SEGMENT_CENTER : 0) | (north ? SEGMENT_NORTH : 0)
+                | (south ? SEGMENT_SOUTH : 0)
+                | (west ? SEGMENT_WEST : 0)
+                | (east ? SEGMENT_EAST : 0);
+    }
+
+    public int getVisibleVerticalSegments(IBlockAccess world, int x, int y, int z, int dy, boolean north, boolean south,
+            boolean west, boolean east) {
+        Block neighbor = world.getBlock(x, y + dy, z);
+        if (PHConstruct.connectedTexturesMode != 0 && neighbor == this) {
+            boolean neighborNorth = canPaneConnectTo(world, x, y + dy, z - 1, ForgeDirection.NORTH);
+            boolean neighborSouth = canPaneConnectTo(world, x, y + dy, z + 1, ForgeDirection.SOUTH);
+            boolean neighborWest = canPaneConnectTo(world, x - 1, y + dy, z, ForgeDirection.WEST);
+            boolean neighborEast = canPaneConnectTo(world, x + 1, y + dy, z, ForgeDirection.EAST);
+            if (!neighborNorth && !neighborSouth && !neighborWest && !neighborEast) {
+                neighborNorth = neighborSouth = neighborWest = neighborEast = true;
+            }
+            boolean connecting = shouldConnectToBlock(world, x, y, z, neighbor, world.getBlockMetadata(x, y + dy, z));
+            if (connecting) {
+                boolean hasOverlappingArm = (north && neighborNorth) || (south && neighborSouth)
+                        || (west && neighborWest)
+                        || (east && neighborEast);
+                boolean crossing = !hasOverlappingArm;
+                return SEGMENT_CONNECTED | segments(
+                        crossing,
+                        north && !neighborNorth,
+                        south && !neighborSouth,
+                        west && !neighborWest,
+                        east && !neighborEast);
+            }
+        }
+        return neighbor.isOpaqueCube() ? 0 : segments(true, north, south, west, east);
+    }
+
+    public IIcon getPaneConnectedTexture(IBlockAccess blockAccess, int x, int y, int z, boolean openUp,
+            boolean openDown, boolean openLeft, boolean openRight) {
+        if (PHConstruct.connectedTexturesMode == 0) {
+            return icons[0];
+        }
+        return getConnectedTexture(icons, openUp, openDown, openLeft, openRight);
+    }
+
+    // Side-face strip icon driven by a single segment's top/bottom culling: if the segment's
+    // top (bottom) is hidden in topSegments /bottomSegments the strip on that piece uses the
+    // open-edge connected variant, matching what the top/bottom face culling does.
+    public IIcon getPaneSegmentTexture(IBlockAccess blockAccess, int x, int y, int z, int segment,
+            int topSegments, int bottomSegments, boolean openLeft, boolean openRight) {
+        return getPaneConnectedTexture(
+                blockAccess,
+                x,
+                y,
+                z,
+                (topSegments & SEGMENT_CONNECTED) != 0 && (topSegments & segment) == 0,
+                (bottomSegments & SEGMENT_CONNECTED) != 0 && (bottomSegments & segment) == 0,
+                openLeft,
+                openRight);
     }
 
     @Override
