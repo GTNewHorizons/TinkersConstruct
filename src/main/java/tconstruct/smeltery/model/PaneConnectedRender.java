@@ -17,6 +17,7 @@ import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import tconstruct.TConstruct;
 import tconstruct.smeltery.blocks.GlassPaneConnected;
 
 @ThreadSafeISBRH(perThread = false)
@@ -90,6 +91,65 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
         int southCenterSeg = cross ? GlassPaneConnected.SEGMENT_SOUTH : GlassPaneConnected.SEGMENT_CENTER;
         int westCenterSeg = cross ? GlassPaneConnected.SEGMENT_WEST : GlassPaneConnected.SEGMENT_CENTER;
         int eastCenterSeg = cross ? GlassPaneConnected.SEGMENT_EAST : GlassPaneConnected.SEGMENT_CENTER;
+
+        if (renderer.hasOverrideBlockTexture()) {
+            renderTopOrBottom(tessellator, x, y, z, bottomSegments, false, renderer.overrideBlockTexture);
+            renderTopOrBottom(tessellator, x, y, z, topSegments, true, renderer.overrideBlockTexture);
+
+            renderSide(
+                    tessellator,
+                    x,
+                    y,
+                    z,
+                    NORTH,
+                    east,
+                    west,
+                    north,
+                    cross,
+                    renderer.overrideBlockTexture,
+                    renderer.overrideBlockTexture,
+                    renderer.overrideBlockTexture);
+            renderSide(
+                    tessellator,
+                    x,
+                    y,
+                    z,
+                    SOUTH,
+                    west,
+                    east,
+                    south,
+                    cross,
+                    renderer.overrideBlockTexture,
+                    renderer.overrideBlockTexture,
+                    renderer.overrideBlockTexture);
+            renderSide(
+                    tessellator,
+                    x,
+                    y,
+                    z,
+                    WEST,
+                    north,
+                    south,
+                    west,
+                    cross,
+                    renderer.overrideBlockTexture,
+                    renderer.overrideBlockTexture,
+                    renderer.overrideBlockTexture);
+            renderSide(
+                    tessellator,
+                    x,
+                    y,
+                    z,
+                    EAST,
+                    south,
+                    north,
+                    east,
+                    cross,
+                    renderer.overrideBlockTexture,
+                    renderer.overrideBlockTexture,
+                    renderer.overrideBlockTexture);
+            return true;
+        }
 
         IIcon northLeftIcon = pane.getPaneSegmentTexture(
                 world,
