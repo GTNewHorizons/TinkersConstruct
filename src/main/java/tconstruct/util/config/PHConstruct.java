@@ -276,7 +276,7 @@ public class PHConstruct {
         islandRarity = config.get("Worldgen", "Slime Island Rarity", 1450).getInt(1450);
 
         // Looks
-        Property conTexMode = config.get("Looks", "Connected Textures Enabled", true);
+        Property conTexMode = config.get("Looks", "Connected Textures Enabled", 2);
         conTexMode.comment = "0 = disabled, 1 = enabled, 2 = enabled + ignore stained glass meta";
         connectedTexturesMode = conTexMode.getInt(2);
 

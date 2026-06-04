@@ -14,20 +14,20 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.util.config.PHConstruct;
 
-/**
- * @author fuj1n
- *
- */
-public class GlassBlockConnectedMeta extends GlassBlockConnected {
+public class GlassPaneConnectedMeta extends GlassPaneConnected {
 
-    public String[] textures;
-    public IIcon[][] icons;
+    private final String[] textures;
+    private final IIcon[][] icons;
+    private final IIcon[] topIcons;
+    private final IIcon[] bottomIcons;
     public static final boolean ignoreMetaForConnectedGlass = PHConstruct.connectedTexturesMode == 2;
 
-    public GlassBlockConnectedMeta(String location, boolean hasAlpha, String... textures) {
+    public GlassPaneConnectedMeta(String location, boolean hasAlpha, String... textures) {
         super(location, hasAlpha);
         this.textures = textures;
         this.icons = new IIcon[textures.length][16];
+        this.topIcons = new IIcon[textures.length];
+        this.bottomIcons = new IIcon[textures.length];
     }
 
     @Override
@@ -44,6 +44,17 @@ public class GlassBlockConnectedMeta extends GlassBlockConnected {
     @Override
     public boolean shouldConnectToBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int meta) {
         return block == this && (meta == blockAccess.getBlockMetadata(x, y, z) || ignoreMetaForConnectedGlass);
+    }
+
+    @Override
+    public IIcon getPaneConnectedTexture(IBlockAccess blockAccess, int x, int y, int z, boolean openUp,
+            boolean openDown, boolean openLeft, boolean openRight) {
+        int meta = blockAccess.getBlockMetadata(x, y, z);
+        IIcon[] icons = meta < this.icons.length ? this.icons[meta] : this.icons[0];
+        if (PHConstruct.connectedTexturesMode == 0) {
+            return icons[0];
+        }
+        return getConnectedTexture(icons, openUp, openDown, openLeft, openRight);
     }
 
     @Override
@@ -67,6 +78,26 @@ public class GlassBlockConnectedMeta extends GlassBlockConnected {
     public void registerBlockIcons(IIconRegister iconRegister) {
         for (int i = 0; i < textures.length; i++) {
             registerBlockIcons(iconRegister, icons[i], folder + "/" + textures[i]);
+            topIcons[i] = iconRegister.registerIcon("tinker:glass/" + folder + "/" + textures[i] + "/glass_top");
+            bottomIcons[i] = iconRegister.registerIcon("tinker:glass/" + folder + "/" + textures[i] + "/glass_bottom");
+        }
+    }
+
+    @Override
+    public IIcon getTopIcon(int meta) {
+        if (meta < topIcons.length) {
+            return topIcons[meta];
+        } else {
+            return topIcons[0];
+        }
+    }
+
+    @Override
+    public IIcon getBottomIcon(int meta) {
+        if (meta < bottomIcons.length) {
+            return bottomIcons[meta];
+        } else {
+            return bottomIcons[0];
         }
     }
 
