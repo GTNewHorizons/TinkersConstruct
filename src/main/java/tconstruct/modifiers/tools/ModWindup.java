@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import tconstruct.library.modifier.ModificationInfo;
 import tconstruct.library.tools.ToolCore;
 
 public class ModWindup extends ModRedstone {
@@ -31,7 +32,10 @@ public class ModWindup extends ModRedstone {
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int[] keyPair;
-        int increase = matchingAmount(input);
+        ModificationInfo modificationInfo = matchingAmount(input, tool);
+        int increase = modificationInfo.total();
+        tags.setIntArray("ToRemove", modificationInfo.toRemove());
+
         int current;
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);

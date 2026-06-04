@@ -25,9 +25,25 @@ public class SlotToolForge extends SlotTool {
         if (stack.getItem() instanceof IModifyable) {
             NBTTagCompound tags = stack.getTagCompound()
                     .getCompoundTag(((IModifyable) stack.getItem()).getBaseTagName());
+            int[] toRemoveArray = tags.hasKey("ToRemove") ? tags.getIntArray("ToRemove") : null;
+            int toRemoveIndex = 0;
+
             boolean full = (inventory.getStackInSlot(2) != null || inventory.getStackInSlot(3) != null
                     || inventory.getStackInSlot(4) != null);
-            for (int i = 2; i <= 4; i++) inventory.decrStackSize(i, 1);
+            for (int i = 2; i <= 4; i++) {
+                ItemStack item = inventory.getStackInSlot(i);
+                if (item == null) {
+                    continue;
+                }
+                if (toRemoveArray == null) {
+                    inventory.decrStackSize(i, 1);
+                } else {
+                    inventory.decrStackSize(i, toRemoveArray[toRemoveIndex]);
+                    toRemoveIndex++;
+                }
+            }
+            tags.removeTag("ToRemove");
+
             ItemStack compare = inventory.getStackInSlot(1);
             int amount = compare.getItem() instanceof IModifyable ? compare.stackSize : 1;
             inventory.decrStackSize(1, amount);
