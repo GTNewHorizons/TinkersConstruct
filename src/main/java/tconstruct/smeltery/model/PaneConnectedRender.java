@@ -72,34 +72,14 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
         IIcon bottomIcon = pane.getIcon(world, x, y, z, 0);
         IIcon topIcon = pane.getIcon(world, x, y, z, 1);
 
-        boolean connEast = pane.shouldConnectToBlock(
-                world,
-                x,
-                y,
-                z,
-                world.getBlock(x + 1, y, z),
-                world.getBlockMetadata(x + 1, y, z));
-        boolean connWest = pane.shouldConnectToBlock(
-                world,
-                x,
-                y,
-                z,
-                world.getBlock(x - 1, y, z),
-                world.getBlockMetadata(x - 1, y, z));
-        boolean connNorth = pane.shouldConnectToBlock(
-                world,
-                x,
-                y,
-                z,
-                world.getBlock(x, y, z - 1),
-                world.getBlockMetadata(x, y, z - 1));
-        boolean connSouth = pane.shouldConnectToBlock(
-                world,
-                x,
-                y,
-                z,
-                world.getBlock(x, y, z + 1),
-                world.getBlockMetadata(x, y, z + 1));
+        boolean connEast = pane
+                .shouldConnectToBlock(world, x, y, z, world.getBlock(x + 1, y, z), world.getBlockMetadata(x + 1, y, z));
+        boolean connWest = pane
+                .shouldConnectToBlock(world, x, y, z, world.getBlock(x - 1, y, z), world.getBlockMetadata(x - 1, y, z));
+        boolean connNorth = pane
+                .shouldConnectToBlock(world, x, y, z, world.getBlock(x, y, z - 1), world.getBlockMetadata(x, y, z - 1));
+        boolean connSouth = pane
+                .shouldConnectToBlock(world, x, y, z, world.getBlock(x, y, z + 1), world.getBlockMetadata(x, y, z + 1));
 
         // Each side face is split into three strips (two arms + center). Per-strip vertical
         // openness mirrors the corresponding segment's bit in {top,bottom}Segments — i.e. the
@@ -112,44 +92,144 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
         int eastCenterSeg = cross ? GlassPaneConnected.SEGMENT_EAST : GlassPaneConnected.SEGMENT_CENTER;
 
         IIcon northLeftIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, GlassPaneConnected.SEGMENT_EAST, topSegments, bottomSegments, connEast, connWest);
+                world,
+                x,
+                y,
+                z,
+                GlassPaneConnected.SEGMENT_EAST,
+                topSegments,
+                bottomSegments,
+                connEast,
+                connWest);
         IIcon northRightIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, GlassPaneConnected.SEGMENT_WEST, topSegments, bottomSegments, connEast, connWest);
-        IIcon northCenterIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, northCenterSeg, topSegments, bottomSegments, connEast, connWest);
+                world,
+                x,
+                y,
+                z,
+                GlassPaneConnected.SEGMENT_WEST,
+                topSegments,
+                bottomSegments,
+                connEast,
+                connWest);
+        IIcon northCenterIcon = pane
+                .getPaneSegmentTexture(world, x, y, z, northCenterSeg, topSegments, bottomSegments, connEast, connWest);
 
         IIcon southLeftIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, GlassPaneConnected.SEGMENT_WEST, topSegments, bottomSegments, connWest, connEast);
+                world,
+                x,
+                y,
+                z,
+                GlassPaneConnected.SEGMENT_WEST,
+                topSegments,
+                bottomSegments,
+                connWest,
+                connEast);
         IIcon southRightIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, GlassPaneConnected.SEGMENT_EAST, topSegments, bottomSegments, connWest, connEast);
-        IIcon southCenterIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, southCenterSeg, topSegments, bottomSegments, connWest, connEast);
+                world,
+                x,
+                y,
+                z,
+                GlassPaneConnected.SEGMENT_EAST,
+                topSegments,
+                bottomSegments,
+                connWest,
+                connEast);
+        IIcon southCenterIcon = pane
+                .getPaneSegmentTexture(world, x, y, z, southCenterSeg, topSegments, bottomSegments, connWest, connEast);
 
         IIcon westLeftIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, GlassPaneConnected.SEGMENT_NORTH, topSegments, bottomSegments, connNorth, connSouth);
+                world,
+                x,
+                y,
+                z,
+                GlassPaneConnected.SEGMENT_NORTH,
+                topSegments,
+                bottomSegments,
+                connNorth,
+                connSouth);
         IIcon westRightIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, GlassPaneConnected.SEGMENT_SOUTH, topSegments, bottomSegments, connNorth, connSouth);
+                world,
+                x,
+                y,
+                z,
+                GlassPaneConnected.SEGMENT_SOUTH,
+                topSegments,
+                bottomSegments,
+                connNorth,
+                connSouth);
         IIcon westCenterIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, westCenterSeg, topSegments, bottomSegments, connNorth, connSouth);
+                world,
+                x,
+                y,
+                z,
+                westCenterSeg,
+                topSegments,
+                bottomSegments,
+                connNorth,
+                connSouth);
 
         IIcon eastLeftIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, GlassPaneConnected.SEGMENT_SOUTH, topSegments, bottomSegments, connSouth, connNorth);
+                world,
+                x,
+                y,
+                z,
+                GlassPaneConnected.SEGMENT_SOUTH,
+                topSegments,
+                bottomSegments,
+                connSouth,
+                connNorth);
         IIcon eastRightIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, GlassPaneConnected.SEGMENT_NORTH, topSegments, bottomSegments, connSouth, connNorth);
+                world,
+                x,
+                y,
+                z,
+                GlassPaneConnected.SEGMENT_NORTH,
+                topSegments,
+                bottomSegments,
+                connSouth,
+                connNorth);
         IIcon eastCenterIcon = pane.getPaneSegmentTexture(
-                world, x, y, z, eastCenterSeg, topSegments, bottomSegments, connSouth, connNorth);
+                world,
+                x,
+                y,
+                z,
+                eastCenterSeg,
+                topSegments,
+                bottomSegments,
+                connSouth,
+                connNorth);
 
         renderTopOrBottom(tessellator, x, y, z, bottomSegments, false, bottomIcon);
         renderTopOrBottom(tessellator, x, y, z, topSegments, true, topIcon);
 
-        renderSide(tessellator, x, y, z, NORTH, east, west, north, cross,
-                northLeftIcon, northRightIcon, northCenterIcon);
-        renderSide(tessellator, x, y, z, SOUTH, west, east, south, cross,
-                southLeftIcon, southRightIcon, southCenterIcon);
-        renderSide(tessellator, x, y, z, WEST, north, south, west, cross,
-                westLeftIcon, westRightIcon, westCenterIcon);
-        renderSide(tessellator, x, y, z, EAST, south, north, east, cross,
-                eastLeftIcon, eastRightIcon, eastCenterIcon);
+        renderSide(
+                tessellator,
+                x,
+                y,
+                z,
+                NORTH,
+                east,
+                west,
+                north,
+                cross,
+                northLeftIcon,
+                northRightIcon,
+                northCenterIcon);
+        renderSide(
+                tessellator,
+                x,
+                y,
+                z,
+                SOUTH,
+                west,
+                east,
+                south,
+                cross,
+                southLeftIcon,
+                southRightIcon,
+                southCenterIcon);
+        renderSide(tessellator, x, y, z, WEST, north, south, west, cross, westLeftIcon, westRightIcon, westCenterIcon);
+        renderSide(tessellator, x, y, z, EAST, south, north, east, cross, eastLeftIcon, eastRightIcon, eastCenterIcon);
 
         return true;
     }
@@ -215,8 +295,7 @@ public class PaneConnectedRender implements ISimpleBlockRenderingHandler {
     }
 
     private void renderSide(Tessellator tessellator, int x, int y, int z, ForgeDirection side, boolean left,
-            boolean right, boolean front, boolean cross,
-            IIcon leftIcon, IIcon rightIcon, IIcon centerIcon) {
+            boolean right, boolean front, boolean cross, IIcon leftIcon, IIcon rightIcon, IIcon centerIcon) {
         double startX = x + (7.0 / 16.0);
         double startZ = z + (7.0 / 16.0);
         double endX = x + (9.0 / 16.0);
