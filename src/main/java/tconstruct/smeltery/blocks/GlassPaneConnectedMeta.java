@@ -20,7 +20,6 @@ public class GlassPaneConnectedMeta extends GlassPaneConnected {
     private final IIcon[][] icons;
     private final IIcon[] topIcons;
     private final IIcon[] bottomIcons;
-    public static final boolean ignoreMetaForConnectedGlass = PHConstruct.connectedTexturesMode == 2;
 
     public GlassPaneConnectedMeta(String location, boolean hasAlpha, String... textures) {
         super(location, hasAlpha);
@@ -43,7 +42,8 @@ public class GlassPaneConnectedMeta extends GlassPaneConnected {
 
     @Override
     public boolean shouldConnectToBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int meta) {
-        return block == this && (meta == blockAccess.getBlockMetadata(x, y, z) || ignoreMetaForConnectedGlass);
+        return block == this && (meta == blockAccess.getBlockMetadata(x, y, z)
+                || GlassBlockConnectedMeta.ignoreMetaForConnectedGlass);
     }
 
     @Override
