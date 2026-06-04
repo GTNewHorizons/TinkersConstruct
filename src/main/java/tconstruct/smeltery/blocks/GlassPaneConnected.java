@@ -91,8 +91,8 @@ public class GlassPaneConnected extends GlassBlockConnected {
     // Side-face strip icon driven by a single segment's top/bottom culling: if the segment's
     // top (bottom) is hidden in topSegments /bottomSegments the strip on that piece uses the
     // open-edge connected variant, matching what the top/bottom face culling does.
-    public IIcon getPaneSegmentTexture(IBlockAccess blockAccess, int x, int y, int z, int segment,
-            int topSegments, int bottomSegments, boolean openLeft, boolean openRight) {
+    public IIcon getPaneSegmentTexture(IBlockAccess blockAccess, int x, int y, int z, int segment, int topSegments,
+            int bottomSegments, boolean openLeft, boolean openRight) {
         return getPaneConnectedTexture(
                 blockAccess,
                 x,
