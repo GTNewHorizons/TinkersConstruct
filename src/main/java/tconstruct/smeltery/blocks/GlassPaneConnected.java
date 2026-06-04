@@ -65,11 +65,12 @@ public class GlassPaneConnected extends GlassBlockConnected {
             }
             boolean connecting = shouldConnectToBlock(world, x, y, z, neighbor, world.getBlockMetadata(x, y + dy, z));
             if (connecting) {
-                boolean perfectCrossing = (north != neighborNorth) && (south != neighborSouth)
-                        && (west != neighborWest)
-                        && (east != neighborEast);
+                boolean hasOverlappingArm = (north && neighborNorth) || (south && neighborSouth)
+                        || (west && neighborWest)
+                        || (east && neighborEast);
+                boolean crossing = !hasOverlappingArm;
                 return SEGMENT_CONNECTED | segments(
-                        perfectCrossing,
+                        crossing,
                         north && !neighborNorth,
                         south && !neighborSouth,
                         west && !neighborWest,
