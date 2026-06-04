@@ -8,16 +8,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.modifier.ModificationInfo;
 import tconstruct.library.tools.ToolCore;
 
 public class ModRedstone extends ItemModTypeFilter {
 
     public String tooltipName;
-    public int max = 50;
 
     public ModRedstone(int effect, ItemStack[] items, int[] values) {
         super(effect, "Redstone", items, values);
         tooltipName = "\u00a74Haste";
+        this.max = 50;
     }
 
     @Override
@@ -26,14 +27,15 @@ public class ModRedstone extends ItemModTypeFilter {
             ToolCore toolItem = (ToolCore) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input) > max) return false;
+            if (matchingAmount(input, tool).total() > max) return false;
 
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input) <= max;
+            if (!tags.hasKey(key))
+                return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
 
             int[] keyPair = tags.getIntArray(key);
 
-            if (keyPair[0] + matchingAmount(input) <= keyPair[1]) return true;
+            if (keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         }
 
@@ -44,7 +46,10 @@ public class ModRedstone extends ItemModTypeFilter {
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int[] keyPair;
-        int increase = matchingAmount(input);
+        ModificationInfo modificationInfo = matchingAmount(input, tool);
+        int increase = modificationInfo.total();
+        tags.setIntArray("ToRemove", modificationInfo.toRemove());
+
         int current;
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);
