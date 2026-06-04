@@ -3,6 +3,7 @@ package tconstruct.smeltery.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -18,6 +19,8 @@ import tconstruct.util.config.PHConstruct;
  *
  */
 public class GlassBlockConnected extends MantleBlock {
+
+    private static final String HODGEPODGE_FIX_BOTTOM_FACE_UV = "hodgepodge.FixesConfig.fixBottomFaceUV";
 
     protected IIcon[] icons = new IIcon[16];
     protected String folder;
@@ -105,6 +108,12 @@ public class GlassBlockConnected extends MantleBlock {
                         blockAccess.getBlock(x, y, z + 1),
                         blockAccess.getBlockMetadata(x, y, z + 1))) {
                     isOpenDown = true;
+                }
+
+                if (side == 0 && isHodgepodgeFixingBottomFaceUV()) {
+                    boolean isOpenLeftCopy = isOpenLeft;
+                    isOpenLeft = isOpenRight;
+                    isOpenRight = isOpenLeftCopy;
                 }
 
                 break;
@@ -278,39 +287,31 @@ public class GlassBlockConnected extends MantleBlock {
                 break;
         }
 
-        if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
-            return icons[15];
-        } else if (isOpenUp && isOpenDown && isOpenLeft) {
-            return icons[14];
-        } else if (isOpenUp && isOpenDown && isOpenRight) {
-            return icons[13];
-        } else if (isOpenDown && isOpenLeft && isOpenRight) {
-            return icons[12];
-        } else if (isOpenUp && isOpenLeft && isOpenRight) {
-            return icons[11];
-        } else if (isOpenDown && isOpenLeft) {
-            return icons[10];
-        } else if (isOpenDown && isOpenRight) {
-            return icons[9];
-        } else if (isOpenUp && isOpenLeft) {
-            return icons[8];
-        } else if (isOpenUp && isOpenRight) {
-            return icons[7];
-        } else if (isOpenDown && isOpenUp) {
-            return icons[6];
-        } else if (isOpenLeft && isOpenRight) {
-            return icons[5];
-        } else if (isOpenRight) {
-            return icons[4];
-        } else if (isOpenLeft) {
-            return icons[3];
-        } else if (isOpenUp) {
-            return icons[2];
-        } else if (isOpenDown) {
-            return icons[1];
-        } else {
-            return icons[0];
-        }
+        return getConnectedTexture(icons, isOpenUp, isOpenDown, isOpenLeft, isOpenRight);
+    }
+
+    private static boolean isHodgepodgeFixingBottomFaceUV() {
+        return Boolean.TRUE.equals(Launch.blackboard.get(HODGEPODGE_FIX_BOTTOM_FACE_UV));
+    }
+
+    protected IIcon getConnectedTexture(IIcon[] icons, boolean isOpenUp, boolean isOpenDown, boolean isOpenLeft,
+            boolean isOpenRight) {
+        if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) return icons[15];
+        if (isOpenUp && isOpenDown && isOpenLeft) return icons[14];
+        if (isOpenUp && isOpenDown && isOpenRight) return icons[13];
+        if (isOpenDown && isOpenLeft && isOpenRight) return icons[12];
+        if (isOpenUp && isOpenLeft && isOpenRight) return icons[11];
+        if (isOpenDown && isOpenLeft) return icons[10];
+        if (isOpenDown && isOpenRight) return icons[9];
+        if (isOpenUp && isOpenLeft) return icons[8];
+        if (isOpenUp && isOpenRight) return icons[7];
+        if (isOpenDown && isOpenUp) return icons[6];
+        if (isOpenLeft && isOpenRight) return icons[5];
+        if (isOpenRight) return icons[4];
+        if (isOpenLeft) return icons[3];
+        if (isOpenUp) return icons[2];
+        if (isOpenDown) return icons[1];
+        return icons[0];
     }
 
     @Override
