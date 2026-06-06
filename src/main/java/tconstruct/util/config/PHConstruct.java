@@ -314,9 +314,9 @@ public class PHConstruct {
         slimeIslUseWhiteList = config.get(
                 "DimBlacklist",
                 "SlimeIslandUseWhitelist",
-                false,
+                true,
                 "True: slime islands only generate in dimensions listed in SlimeIslandDimWhitelist; False: use blacklist behavior")
-                .getBoolean(false);
+                .getBoolean(true);
         cfgDimWhiteList = config.get(
                 "DimBlacklist",
                 "SlimeIslandDimWhitelist",
@@ -326,9 +326,9 @@ public class PHConstruct {
         oreBushUseWhiteList = config.get(
                 "DimBlacklist",
                 "OreBushUseWhitelist",
-                false,
+                true,
                 "True: ore berry bushes only generate in dimensions listed in OreBushDimWhitelist; False: use isSurfaceWorld() check")
-                .getBoolean(false);
+                .getBoolean(true);
         cfgOreBushWhiteList = config.get(
                 "DimBlacklist",
                 "OreBushDimWhitelist",
