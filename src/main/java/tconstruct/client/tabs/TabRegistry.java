@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -63,11 +64,18 @@ public class TabRegistry {
         }
     }
 
-    public static void addTabsToList(List buttonList) {
+    public static void addTabsToList(List<GuiButton> buttonList) {
+        ArrayList<AbstractTab> tabsToAdd = new ArrayList<>();
+
         for (AbstractTab tab : tabList) {
             if (tab.shouldAddToList()) {
-                buttonList.add(tab);
+                tabsToAdd.add(tab);
             }
+        }
+
+        // If there's only one tab we don't need tabs at all
+        if (tabsToAdd.size() > 1) {
+            buttonList.addAll(tabsToAdd);
         }
     }
 

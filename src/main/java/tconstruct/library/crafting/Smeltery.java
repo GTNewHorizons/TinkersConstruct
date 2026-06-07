@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -13,6 +15,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mantle.utils.ItemMetaWrapper;
 
 /** Melting and hacking, churn and burn */
@@ -25,6 +29,9 @@ public class Smeltery {
     private final Map<ItemMetaWrapper, ItemStack> renderIndex = new HashMap<>();
     private final List<AlloyMix> alloys = new ArrayList<>();
     private final Map<Fluid, Integer[]> smelteryFuels = new HashMap<>(); // fluid -> [power, duration]
+
+    private final Object2ObjectMap<ItemMetaWrapper, String> smeltingGroupNameMap = new Object2ObjectOpenHashMap<>();
+    private final Object2ObjectMap<String, List<ItemMetaWrapper>> smeltingGroupListMap = new Object2ObjectOpenHashMap<>();
 
     /**
      * Add a new fluid as a valid Smeltery fuel.
@@ -226,6 +233,37 @@ public class Smeltery {
                 new FluidStack(type.fluid, fluidAmount));
     }
 
+    public static void addToSmeltingGroup(ItemStack input, String groupName) {
+        ItemMetaWrapper in = new ItemMetaWrapper(input);
+        // Remove from old group
+        removeFromSmeltingGroup(in);
+        groupName = groupName.intern();
+        instance.smeltingGroupNameMap.put(in, groupName);
+        instance.smeltingGroupListMap.computeIfAbsent(groupName, s -> new ArrayList<>()).add(in);
+    }
+
+    public static void removeFromSmeltingGroup(ItemMetaWrapper in) {
+        String oldGroup = instance.smeltingGroupNameMap.remove(in);
+        if (oldGroup != null) {
+            List<ItemMetaWrapper> list = instance.smeltingGroupListMap.get(oldGroup);
+            if (list != null) {
+                list.remove(in);
+            }
+        }
+    }
+
+    public static @Nullable String getSmeltingGroup(ItemMetaWrapper wrapper) {
+        return instance.smeltingGroupNameMap.get(wrapper);
+    }
+
+    public static List<ItemStack> getSmeltingGroupItems(String groupName) {
+        List<ItemStack> list = new ArrayList<>();
+        for (ItemMetaWrapper wrapper : instance.smeltingGroupListMap.get(groupName)) {
+            list.add(new ItemStack(wrapper.item, 1, wrapper.meta));
+        }
+        return list;
+    }
+
     /**
      * Adds all Items to the Smeltery based on the oreDictionary Name
      *
@@ -238,6 +276,9 @@ public class Smeltery {
      */
     public static void addDictionaryMelting(String oreName, FluidType type, int temperatureDifference,
             int fluidAmount) {
-        for (ItemStack is : OreDictionary.getOres(oreName)) addMelting(type, is, temperatureDifference, fluidAmount);
+        for (ItemStack is : OreDictionary.getOres(oreName)) {
+            addMelting(type, is, temperatureDifference, fluidAmount);
+            addToSmeltingGroup(is, oreName);
+        }
     }
 }

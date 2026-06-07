@@ -30,6 +30,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import tconstruct.TConstruct;
 import tconstruct.armor.items.TravelWings;
 import tconstruct.armor.player.TPlayerStats;
+import tconstruct.compat.BaublesHelper;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.ArmourGuiSyncPacket;
@@ -90,6 +92,9 @@ public class TinkerArmorEvents {
             if (ArmorProxyClient.armorExtended != null) glove = ArmorProxyClient.armorExtended.getStackInSlot(1);
             else glove = null;
         }
+        if (glove == null && LoadedMods.baubles) {
+            glove = getBaublesTravelGlove(event.entityPlayer);
+        }
         // original speed <= 0 means the block shouldn't be broken, don't increase further
         if (glove == null || !glove.hasTagCompound()
                 || (!PHConstruct.bypassGloveSpeedCheck && event.originalSpeed <= 0))
@@ -102,6 +107,12 @@ public class TinkerArmorEvents {
         float modifier = 1f + mineSpeed / 1000f;
         float base = mineSpeed / 250f;
         event.newSpeed = (event.originalSpeed + base) * modifier;
+    }
+
+    @Optional.Method(modid = "Baubles")
+    private ItemStack getBaublesTravelGlove(EntityPlayer player) {
+        return BaublesHelper
+                .findFirstMatchingBauble(player, stack -> stack != null && stack.getItem() == TinkerArmor.travelGlove);
     }
 
     public void jumpHeight(LivingJumpEvent event) {

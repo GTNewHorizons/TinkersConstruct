@@ -276,11 +276,12 @@ public class PHConstruct {
         islandRarity = config.get("Worldgen", "Slime Island Rarity", 1450).getInt(1450);
 
         // Looks
-        Property conTexMode = config.get("Looks", "Connected Textures Enabled", true);
+        Property conTexMode = config.get("Looks", "Connected Textures Enabled", 2);
         conTexMode.comment = "0 = disabled, 1 = enabled, 2 = enabled + ignore stained glass meta";
         connectedTexturesMode = conTexMode.getInt(2);
 
         showTravellerAccessories = config.get("Looks", "Show Traveller Gear Accessories", true).getBoolean(true);
+        enableTinkerInventoryTab = config.get("Looks", "Enable Tinker Inventory Tab", true).getBoolean(true);
 
         // dimension blacklist
         cfgForbiddenDim = config
@@ -310,6 +311,30 @@ public class PHConstruct {
                 .getBoolean(false);
         genOresFlat = config.get("DimBlacklist", "genOresFlat", false, "Generate ores in flat worlds")
                 .getBoolean(false);
+        slimeIslUseWhiteList = config.get(
+                "DimBlacklist",
+                "SlimeIslandUseWhitelist",
+                true,
+                "True: slime islands only generate in dimensions listed in SlimeIslandDimWhitelist; False: use blacklist behavior")
+                .getBoolean(true);
+        cfgDimWhiteList = config.get(
+                "DimBlacklist",
+                "SlimeIslandDimWhitelist",
+                new int[] { 0 },
+                "Dimension IDs where slime islands are allowed to generate (only used when SlimeIslandUseWhitelist=true)")
+                .getIntList();
+        oreBushUseWhiteList = config.get(
+                "DimBlacklist",
+                "OreBushUseWhitelist",
+                true,
+                "True: ore berry bushes only generate in dimensions listed in OreBushDimWhitelist; False: use isSurfaceWorld() check")
+                .getBoolean(true);
+        cfgOreBushWhiteList = config.get(
+                "DimBlacklist",
+                "OreBushDimWhitelist",
+                new int[] { 0 },
+                "Dimension IDs where ore berry bushes are allowed to generate (only used when OreBushUseWhitelist=true)")
+                .getIntList();
 
         // Experimental functionality
         coloredHeartRender = config
@@ -542,6 +567,7 @@ public class PHConstruct {
     // Looks
     public static int connectedTexturesMode;
     public static boolean showTravellerAccessories;
+    public static boolean enableTinkerInventoryTab;
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;
@@ -550,6 +576,10 @@ public class PHConstruct {
     public static boolean slimeIslGenDim0;
     public static boolean genIslandsFlat;
     public static boolean genOresFlat;
+    public static boolean slimeIslUseWhiteList;
+    public static int[] cfgDimWhiteList;
+    public static boolean oreBushUseWhiteList;
+    public static int[] cfgOreBushWhiteList;
 
     // Experimental functionality
     public static boolean coloredHeartRender;
