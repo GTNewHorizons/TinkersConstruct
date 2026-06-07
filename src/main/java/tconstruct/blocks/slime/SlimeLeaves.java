@@ -3,6 +3,7 @@ package tconstruct.blocks.slime;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -45,6 +46,96 @@ public class SlimeLeaves extends BlockLeaves {
     @SideOnly(Side.CLIENT)
     public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
         return 0xffffff;
+    }
+
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    @Override
+    public void updateTick(World worldIn, int x, int y, int z, Random random) {
+        if (!worldIn.isRemote) {
+            int l = worldIn.getBlockMetadata(x, y, z);
+
+            if ((l & 8) != 0 && (l & 4) == 0) {
+                byte b0 = 4;
+                int i1 = b0 + 1;
+                byte b1 = 32;
+                int j1 = b1 * b1;
+                int k1 = b1 / 2;
+
+                if (this.field_150128_a == null) {
+                    this.field_150128_a = new int[b1 * b1 * b1];
+                }
+
+                int l1;
+
+                if (worldIn.checkChunksExist(x - i1, y - i1, z - i1, x + i1, y + i1, z + i1)) {
+                    int i2;
+                    int j2;
+
+                    for (l1 = -b0; l1 <= b0; ++l1) {
+                        for (i2 = -b0; i2 <= b0; ++i2) {
+                            for (j2 = -b0; j2 <= b0; ++j2) {
+                                Block block = worldIn.getBlock(x + l1, y + i2, z + j2);
+
+                                if (!(block instanceof SlimeGel)) {
+                                    if (block.isLeaves(worldIn, x + l1, y + i2, z + j2)) {
+                                        this.field_150128_a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = -2;
+                                    } else {
+                                        this.field_150128_a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = -1;
+                                    }
+                                } else {
+                                    this.field_150128_a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = 0;
+                                }
+                            }
+                        }
+                    }
+
+                    for (l1 = 1; l1 <= 4; ++l1) {
+                        for (i2 = -b0; i2 <= b0; ++i2) {
+                            for (j2 = -b0; j2 <= b0; ++j2) {
+                                for (int k2 = -b0; k2 <= b0; ++k2) {
+                                    if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1] == l1 - 1) {
+                                        if (this.field_150128_a[(i2 + k1 - 1) * j1 + (j2 + k1) * b1 + k2 + k1] == -2) {
+                                            this.field_150128_a[(i2 + k1 - 1) * j1 + (j2 + k1) * b1 + k2 + k1] = l1;
+                                        }
+
+                                        if (this.field_150128_a[(i2 + k1 + 1) * j1 + (j2 + k1) * b1 + k2 + k1] == -2) {
+                                            this.field_150128_a[(i2 + k1 + 1) * j1 + (j2 + k1) * b1 + k2 + k1] = l1;
+                                        }
+
+                                        if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1 - 1) * b1 + k2 + k1] == -2) {
+                                            this.field_150128_a[(i2 + k1) * j1 + (j2 + k1 - 1) * b1 + k2 + k1] = l1;
+                                        }
+
+                                        if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1 + 1) * b1 + k2 + k1] == -2) {
+                                            this.field_150128_a[(i2 + k1) * j1 + (j2 + k1 + 1) * b1 + k2 + k1] = l1;
+                                        }
+
+                                        if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + (k2 + k1 - 1)]
+                                                == -2) {
+                                            this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + (k2 + k1 - 1)] = l1;
+                                        }
+
+                                        if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1 + 1] == -2) {
+                                            this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1 + 1] = l1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                l1 = this.field_150128_a[k1 * j1 + k1 * b1 + k1];
+
+                if (l1 >= 0) {
+                    worldIn.setBlockMetadataWithNotify(x, y, z, l & -9, 4);
+                } else {
+                    this.removeLeaves(worldIn, x, y, z);
+                }
+            }
+        }
     }
 
     @Override
