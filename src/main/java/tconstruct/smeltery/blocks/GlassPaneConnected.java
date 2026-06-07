@@ -12,14 +12,18 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.smeltery.model.PaneConnectedRender;
 import tconstruct.util.config.PHConstruct;
 
 public class GlassPaneConnected extends GlassBlockConnected {
 
-    private IIcon theIcon;
+    public static final int SEGMENT_CENTER = 1;
+    public static final int SEGMENT_NORTH = 1 << 1;
+    public static final int SEGMENT_SOUTH = 1 << 2;
+    public static final int SEGMENT_WEST = 1 << 3;
+    public static final int SEGMENT_EAST = 1 << 4;
+    public static final int SEGMENT_CONNECTED = 1 << 5;
+    private IIcon sideIcon;
 
     public GlassPaneConnected(String location, boolean hasAlpha) {
         super(location, hasAlpha);
@@ -28,510 +32,110 @@ public class GlassPaneConnected extends GlassBlockConnected {
     @Override
     public int getRenderType() {
         return PaneConnectedRender.model;
-        // return 0;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-        if (par5 == 0 || par5 == 1) {
-            return par1IBlockAccess.getBlock(par2, par3 - 1, par4) == this && par5 == 0 ? icons[15]
-                    : par1IBlockAccess.getBlock(par2, par3 + 1, par4) == this && par5 == 1 ? icons[15]
-                            : getSideTextureIndex();
-        } else {
-            return super.getIcon(par1IBlockAccess, par2, par3, par4, par5);
+    public IIcon getConnectedBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side, IIcon[] icons) {
+        if (side == 0 || side == 1) {
+            // Per-segment culling in the renderer handles whether the center / arm strips actually draw
+            int meta = blockAccess.getBlockMetadata(x, y, z);
+            return side == 0 ? getBottomIcon(meta) : getTopIcon(meta);
         }
+
+        return super.getConnectedBlockTexture(blockAccess, x, y, z, side, icons);
     }
 
-    @Override
-    public IIcon getConnectedBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5,
-            IIcon[] icons) {
-        if (par5 == 0 || par5 == 1) {
-            return getSideTextureIndex();
-        }
+    public static int segments(boolean center, boolean north, boolean south, boolean west, boolean east) {
+        return (center ? SEGMENT_CENTER : 0) | (north ? SEGMENT_NORTH : 0)
+                | (south ? SEGMENT_SOUTH : 0)
+                | (west ? SEGMENT_WEST : 0)
+                | (east ? SEGMENT_EAST : 0);
+    }
 
+    public int getVisibleVerticalSegments(IBlockAccess world, int x, int y, int z, int dy, boolean north, boolean south,
+            boolean west, boolean east) {
+        Block neighbor = world.getBlock(x, y + dy, z);
+        if (PHConstruct.connectedTexturesMode != 0 && neighbor == this) {
+            boolean neighborNorth = canPaneConnectTo(world, x, y + dy, z - 1, ForgeDirection.NORTH);
+            boolean neighborSouth = canPaneConnectTo(world, x, y + dy, z + 1, ForgeDirection.SOUTH);
+            boolean neighborWest = canPaneConnectTo(world, x - 1, y + dy, z, ForgeDirection.WEST);
+            boolean neighborEast = canPaneConnectTo(world, x + 1, y + dy, z, ForgeDirection.EAST);
+            if (!neighborNorth && !neighborSouth && !neighborWest && !neighborEast) {
+                neighborNorth = neighborSouth = neighborWest = neighborEast = true;
+            }
+            boolean connecting = shouldConnectToBlock(world, x, y, z, neighbor, world.getBlockMetadata(x, y + dy, z));
+            if (connecting) {
+                boolean hasOverlappingArm = (north && neighborNorth) || (south && neighborSouth)
+                        || (west && neighborWest)
+                        || (east && neighborEast);
+                boolean crossing = !hasOverlappingArm;
+                return SEGMENT_CONNECTED | segments(
+                        crossing,
+                        north && !neighborNorth,
+                        south && !neighborSouth,
+                        west && !neighborWest,
+                        east && !neighborEast);
+            }
+        }
+        return neighbor.isOpaqueCube() ? 0 : segments(true, north, south, west, east);
+    }
+
+    public IIcon getPaneConnectedTexture(IBlockAccess blockAccess, int x, int y, int z, boolean openUp,
+            boolean openDown, boolean openLeft, boolean openRight) {
         if (PHConstruct.connectedTexturesMode == 0) {
             return icons[0];
         }
+        return getConnectedTexture(icons, openUp, openDown, openLeft, openRight);
+    }
 
-        boolean isOpenUp = false, isOpenDown = false, isOpenLeft = false, isOpenRight = false;
-
-        switch (par5) {
-            case 0:
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2 - 1, par3, par4),
-                        par1IBlockAccess.getBlockMetadata(par2 - 1, par3, par4))) {
-                    isOpenDown = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2 + 1, par3, par4),
-                        par1IBlockAccess.getBlockMetadata(par2 + 1, par3, par4))) {
-                    isOpenUp = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3, par4 - 1),
-                        par1IBlockAccess.getBlockMetadata(par2, par3, par4 - 1))) {
-                    isOpenLeft = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3, par4 + 1),
-                        par1IBlockAccess.getBlockMetadata(par2, par3, par4 + 1))) {
-                    isOpenRight = true;
-                }
-
-                if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[15];
-                } else if (isOpenUp && isOpenDown && isOpenLeft) {
-                    return icons[11];
-                } else if (isOpenUp && isOpenDown && isOpenRight) {
-                    return icons[12];
-                } else if (isOpenUp && isOpenLeft && isOpenRight) {
-                    return icons[13];
-                } else if (isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[14];
-                } else if (isOpenDown && isOpenUp) {
-                    return icons[5];
-                } else if (isOpenLeft && isOpenRight) {
-                    return icons[6];
-                } else if (isOpenDown && isOpenLeft) {
-                    return icons[8];
-                } else if (isOpenDown && isOpenRight) {
-                    return icons[10];
-                } else if (isOpenUp && isOpenLeft) {
-                    return icons[7];
-                } else if (isOpenUp && isOpenRight) {
-                    return icons[9];
-                } else if (isOpenDown) {
-                    return icons[3];
-                } else if (isOpenUp) {
-                    return icons[4];
-                } else if (isOpenLeft) {
-                    return icons[2];
-                } else if (isOpenRight) {
-                    return icons[1];
-                }
-                break;
-            case 1:
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2 - 1, par3, par4),
-                        par1IBlockAccess.getBlockMetadata(par2 - 1, par3, par4))) {
-                    isOpenDown = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2 + 1, par3, par4),
-                        par1IBlockAccess.getBlockMetadata(par2 + 1, par3, par4))) {
-                    isOpenUp = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3, par4 - 1),
-                        par1IBlockAccess.getBlockMetadata(par2, par3, par4 - 1))) {
-                    isOpenLeft = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3, par4 + 1),
-                        par1IBlockAccess.getBlockMetadata(par2, par3, par4 + 1))) {
-                    isOpenRight = true;
-                }
-
-                if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[15];
-                } else if (isOpenUp && isOpenDown && isOpenLeft) {
-                    return icons[11];
-                } else if (isOpenUp && isOpenDown && isOpenRight) {
-                    return icons[12];
-                } else if (isOpenUp && isOpenLeft && isOpenRight) {
-                    return icons[13];
-                } else if (isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[14];
-                } else if (isOpenDown && isOpenUp) {
-                    return icons[5];
-                } else if (isOpenLeft && isOpenRight) {
-                    return icons[6];
-                } else if (isOpenDown && isOpenLeft) {
-                    return icons[8];
-                } else if (isOpenDown && isOpenRight) {
-                    return icons[10];
-                } else if (isOpenUp && isOpenLeft) {
-                    return icons[7];
-                } else if (isOpenUp && isOpenRight) {
-                    return icons[9];
-                } else if (isOpenDown) {
-                    return icons[3];
-                } else if (isOpenUp) {
-                    return icons[4];
-                } else if (isOpenLeft) {
-                    return icons[2];
-                } else if (isOpenRight) {
-                    return icons[1];
-                }
-                break;
-            case 2:
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3 - 1, par4),
-                        par1IBlockAccess.getBlockMetadata(par2, par3 - 1, par4))) {
-                    isOpenDown = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3 + 1, par4),
-                        par1IBlockAccess.getBlockMetadata(par2, par3 + 1, par4))) {
-                    isOpenUp = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2 - 1, par3, par4),
-                        par1IBlockAccess.getBlockMetadata(par2 - 1, par3, par4))) {
-                    isOpenLeft = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2 + 1, par3, par4),
-                        par1IBlockAccess.getBlockMetadata(par2 + 1, par3, par4))) {
-                    isOpenRight = true;
-                }
-
-                if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[15];
-                } else if (isOpenUp && isOpenDown && isOpenLeft) {
-                    return icons[13];
-                } else if (isOpenUp && isOpenDown && isOpenRight) {
-                    return icons[14];
-                } else if (isOpenUp && isOpenLeft && isOpenRight) {
-                    return icons[11];
-                } else if (isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[12];
-                } else if (isOpenDown && isOpenUp) {
-                    return icons[6];
-                } else if (isOpenLeft && isOpenRight) {
-                    return icons[5];
-                } else if (isOpenDown && isOpenLeft) {
-                    return icons[9];
-                } else if (isOpenDown && isOpenRight) {
-                    return icons[10];
-                } else if (isOpenUp && isOpenLeft) {
-                    return icons[7];
-                } else if (isOpenUp && isOpenRight) {
-                    return icons[8];
-                } else if (isOpenDown) {
-                    return icons[1];
-                } else if (isOpenUp) {
-                    return icons[2];
-                } else if (isOpenLeft) {
-                    return icons[4];
-                } else if (isOpenRight) {
-                    return icons[3];
-                }
-                break;
-            case 3:
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3 - 1, par4),
-                        par1IBlockAccess.getBlockMetadata(par2, par3 - 1, par4))) {
-                    isOpenDown = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3 + 1, par4),
-                        par1IBlockAccess.getBlockMetadata(par2, par3 + 1, par4))) {
-                    isOpenUp = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2 - 1, par3, par4),
-                        par1IBlockAccess.getBlockMetadata(par2 - 1, par3, par4))) {
-                    isOpenLeft = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2 + 1, par3, par4),
-                        par1IBlockAccess.getBlockMetadata(par2 + 1, par3, par4))) {
-                    isOpenRight = true;
-                }
-
-                if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[15];
-                } else if (isOpenUp && isOpenDown && isOpenLeft) {
-                    return icons[14];
-                } else if (isOpenUp && isOpenDown && isOpenRight) {
-                    return icons[13];
-                } else if (isOpenUp && isOpenLeft && isOpenRight) {
-                    return icons[11];
-                } else if (isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[12];
-                } else if (isOpenDown && isOpenUp) {
-                    return icons[6];
-                } else if (isOpenLeft && isOpenRight) {
-                    return icons[5];
-                } else if (isOpenDown && isOpenLeft) {
-                    return icons[10];
-                } else if (isOpenDown && isOpenRight) {
-                    return icons[9];
-                } else if (isOpenUp && isOpenLeft) {
-                    return icons[8];
-                } else if (isOpenUp && isOpenRight) {
-                    return icons[7];
-                } else if (isOpenDown) {
-                    return icons[1];
-                } else if (isOpenUp) {
-                    return icons[2];
-                } else if (isOpenLeft) {
-                    return icons[3];
-                } else if (isOpenRight) {
-                    return icons[4];
-                }
-                break;
-            case 4:
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3 - 1, par4),
-                        par1IBlockAccess.getBlockMetadata(par2, par3 - 1, par4))) {
-                    isOpenDown = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3 + 1, par4),
-                        par1IBlockAccess.getBlockMetadata(par2, par3 + 1, par4))) {
-                    isOpenUp = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3, par4 - 1),
-                        par1IBlockAccess.getBlockMetadata(par2, par3, par4 - 1))) {
-                    isOpenLeft = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3, par4 + 1),
-                        par1IBlockAccess.getBlockMetadata(par2, par3, par4 + 1))) {
-                    isOpenRight = true;
-                }
-
-                if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[15];
-                } else if (isOpenUp && isOpenDown && isOpenLeft) {
-                    return icons[14];
-                } else if (isOpenUp && isOpenDown && isOpenRight) {
-                    return icons[13];
-                } else if (isOpenUp && isOpenLeft && isOpenRight) {
-                    return icons[11];
-                } else if (isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[12];
-                } else if (isOpenDown && isOpenUp) {
-                    return icons[6];
-                } else if (isOpenLeft && isOpenRight) {
-                    return icons[5];
-                } else if (isOpenDown && isOpenLeft) {
-                    return icons[10];
-                } else if (isOpenDown && isOpenRight) {
-                    return icons[9];
-                } else if (isOpenUp && isOpenLeft) {
-                    return icons[8];
-                } else if (isOpenUp && isOpenRight) {
-                    return icons[7];
-                } else if (isOpenDown) {
-                    return icons[1];
-                } else if (isOpenUp) {
-                    return icons[2];
-                } else if (isOpenLeft) {
-                    return icons[3];
-                } else if (isOpenRight) {
-                    return icons[4];
-                }
-                break;
-            case 5:
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3 - 1, par4),
-                        par1IBlockAccess.getBlockMetadata(par2, par3 - 1, par4))) {
-                    isOpenDown = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3 + 1, par4),
-                        par1IBlockAccess.getBlockMetadata(par2, par3 + 1, par4))) {
-                    isOpenUp = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3, par4 - 1),
-                        par1IBlockAccess.getBlockMetadata(par2, par3, par4 - 1))) {
-                    isOpenLeft = true;
-                }
-
-                if (shouldConnectToBlock(
-                        par1IBlockAccess,
-                        par2,
-                        par3,
-                        par4,
-                        par1IBlockAccess.getBlock(par2, par3, par4 + 1),
-                        par1IBlockAccess.getBlockMetadata(par2, par3, par4 + 1))) {
-                    isOpenRight = true;
-                }
-
-                if (isOpenUp && isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[15];
-                } else if (isOpenUp && isOpenDown && isOpenLeft) {
-                    return icons[13];
-                } else if (isOpenUp && isOpenDown && isOpenRight) {
-                    return icons[14];
-                } else if (isOpenUp && isOpenLeft && isOpenRight) {
-                    return icons[11];
-                } else if (isOpenDown && isOpenLeft && isOpenRight) {
-                    return icons[12];
-                } else if (isOpenDown && isOpenUp) {
-                    return icons[6];
-                } else if (isOpenLeft && isOpenRight) {
-                    return icons[5];
-                } else if (isOpenDown && isOpenLeft) {
-                    return icons[9];
-                } else if (isOpenDown && isOpenRight) {
-                    return icons[10];
-                } else if (isOpenUp && isOpenLeft) {
-                    return icons[7];
-                } else if (isOpenUp && isOpenRight) {
-                    return icons[8];
-                } else if (isOpenDown) {
-                    return icons[1];
-                } else if (isOpenUp) {
-                    return icons[2];
-                } else if (isOpenLeft) {
-                    return icons[4];
-                } else if (isOpenRight) {
-                    return icons[3];
-                }
-                break;
-        }
-
-        return icons[0];
+    // Side-face strip icon driven by a single segment's top/bottom culling: if the segment's
+    // top (bottom) is hidden in topSegments /bottomSegments the strip on that piece uses the
+    // open-edge connected variant, matching what the top/bottom face culling does.
+    public IIcon getPaneSegmentTexture(IBlockAccess blockAccess, int x, int y, int z, int segment, int topSegments,
+            int bottomSegments, boolean openLeft, boolean openRight) {
+        return getPaneConnectedTexture(
+                blockAccess,
+                x,
+                y,
+                z,
+                (topSegments & SEGMENT_CONNECTED) != 0 && (topSegments & segment) == 0,
+                (bottomSegments & SEGMENT_CONNECTED) != 0 && (bottomSegments & segment) == 0,
+                openLeft,
+                openRight);
     }
 
     @Override
-    public void addCollisionBoxesToList(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB,
-            List<AxisAlignedBB> par6List, Entity par7Entity) {
-        boolean flag = this.canPaneConnectTo(par1World, par2, par3, par4, ForgeDirection.NORTH);
-        boolean flag1 = this.canPaneConnectTo(par1World, par2, par3, par4, ForgeDirection.SOUTH);
-        boolean flag2 = this.canPaneConnectTo(par1World, par2, par3, par4, ForgeDirection.WEST);
-        boolean flag3 = this.canPaneConnectTo(par1World, par2, par3, par4, ForgeDirection.EAST);
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB,
+            List<AxisAlignedBB> par6List, Entity entity) {
+        boolean flag = this.canPaneConnectTo(world, x, y, z - 1, ForgeDirection.NORTH);
+        boolean flag1 = this.canPaneConnectTo(world, x, y, z + 1, ForgeDirection.SOUTH);
+        boolean flag2 = this.canPaneConnectTo(world, x - 1, y, z, ForgeDirection.WEST);
+        boolean flag3 = this.canPaneConnectTo(world, x + 1, y, z, ForgeDirection.EAST);
 
         if ((!flag2 || !flag3) && (flag2 || flag3 || flag || flag1)) {
             if (flag2 && !flag3) {
                 this.setBlockBounds(0.0F, 0.0F, 0.4375F, 0.5F, 1.0F, 0.5625F);
-                super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+                super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, par6List, entity);
             } else if (!flag2 && flag3) {
                 this.setBlockBounds(0.5F, 0.0F, 0.4375F, 1.0F, 1.0F, 0.5625F);
-                super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+                super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, par6List, entity);
             }
         } else {
             this.setBlockBounds(0.0F, 0.0F, 0.4375F, 1.0F, 1.0F, 0.5625F);
-            super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+            super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, par6List, entity);
         }
 
         if ((!flag || !flag1) && (flag2 || flag3 || flag || flag1)) {
             if (flag && !flag1) {
                 this.setBlockBounds(0.4375F, 0.0F, 0.0F, 0.5625F, 1.0F, 0.5F);
-                super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+                super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, par6List, entity);
             } else if (!flag && flag1) {
                 this.setBlockBounds(0.4375F, 0.0F, 0.5F, 0.5625F, 1.0F, 1.0F);
-                super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+                super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, par6List, entity);
             }
         } else {
             this.setBlockBounds(0.4375F, 0.0F, 0.0F, 0.5625F, 1.0F, 1.0F);
-            super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+            super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, par6List, entity);
         }
     }
 
@@ -541,15 +145,15 @@ public class GlassPaneConnected extends GlassBlockConnected {
     }
 
     @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
+    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z) {
         float f = 0.4375F;
         float f1 = 0.5625F;
         float f2 = 0.4375F;
         float f3 = 0.5625F;
-        boolean flag = this.canPaneConnectTo(par1IBlockAccess, par2, par3, par4, ForgeDirection.NORTH);
-        boolean flag1 = this.canPaneConnectTo(par1IBlockAccess, par2, par3, par4, ForgeDirection.SOUTH);
-        boolean flag2 = this.canPaneConnectTo(par1IBlockAccess, par2, par3, par4, ForgeDirection.WEST);
-        boolean flag3 = this.canPaneConnectTo(par1IBlockAccess, par2, par3, par4, ForgeDirection.EAST);
+        boolean flag = this.canPaneConnectTo(blockAccess, x, y, z - 1, ForgeDirection.NORTH);
+        boolean flag1 = this.canPaneConnectTo(blockAccess, x, y, z + 1, ForgeDirection.SOUTH);
+        boolean flag2 = this.canPaneConnectTo(blockAccess, x - 1, y, z, ForgeDirection.WEST);
+        boolean flag3 = this.canPaneConnectTo(blockAccess, x + 1, y, z, ForgeDirection.EAST);
 
         if ((!flag2 || !flag3) && (flag2 || flag3 || flag || flag1)) {
             if (flag2 && !flag3) {
@@ -576,27 +180,25 @@ public class GlassPaneConnected extends GlassBlockConnected {
         this.setBlockBounds(f, 0.0F, f2, f1, 1.0F, f3);
     }
 
-    public IIcon getSideTextureIndex() {
-        return this.theIcon;
+    public IIcon getTopIcon(int meta) {
+        return sideIcon;
     }
 
-    public final boolean canThisPaneConnectToThisBlock(Block b) {
+    public IIcon getBottomIcon(int meta) {
+        return sideIcon;
+    }
+
+    public final boolean canPaneConnectToBlock(Block b) {
         return b.isOpaqueCube() || b == this || b == Blocks.glass;
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister par1IconRegister) {
-        super.registerBlockIcons(par1IconRegister);
-        this.theIcon = par1IconRegister.registerIcon("tinker:glass/" + folder + "/glass_side");
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        super.registerBlockIcons(iconRegister);
+        this.sideIcon = iconRegister.registerIcon("tinker:glass/" + folder + "/glass_side");
     }
 
-    public boolean canPaneConnectTo(IBlockAccess access, int x, int y, int z, ForgeDirection dir) {
-        return canThisPaneConnectToThisBlock(access.getBlock(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ))
-                || access.isSideSolid(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite(), false);
-    }
-
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
-        return true;
+    public boolean canPaneConnectTo(IBlockAccess world, int x, int y, int z, ForgeDirection dir) {
+        return canPaneConnectToBlock(world.getBlock(x, y, z)) || world.isSideSolid(x, y, z, dir.getOpposite(), false);
     }
 }

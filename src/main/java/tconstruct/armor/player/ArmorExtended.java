@@ -14,10 +14,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
+import tconstruct.compat.BaublesHelper;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.accessory.IHealthAccessory;
 import tconstruct.util.config.PHConstruct;
 
@@ -114,42 +115,47 @@ public class ArmorExtended implements IInventory {
     }
 
     public void recalculateHealth(EntityPlayer player, TPlayerStats stats) {
-        Side side = FMLCommonHandler.instance().getEffectiveSide();
-
-        if (inventory[4] != null || inventory[5] != null || inventory[6] != null) {
-            int bonusHP = 0;
-            for (int i = 4; i < 7; i++) {
-                ItemStack stack = inventory[i];
-                if (stack != null && stack.getItem() instanceof IHealthAccessory) {
-                    bonusHP += ((IHealthAccessory) stack.getItem()).getHealthBoost(stack);
-                }
+        int bonusHP = 0;
+        for (int i = 4; i < 7; i++) {
+            ItemStack stack = inventory[i];
+            if (stack != null && stack.getItem() instanceof IHealthAccessory) {
+                bonusHP += ((IHealthAccessory) stack.getItem()).getHealthBoost(stack);
             }
-            int prevHealth = stats.bonusHealth;
-            stats.bonusHealth = bonusHP;
+        }
 
-            int healthChange = bonusHP - prevHealth;
-            if (healthChange != 0) {
-                IAttributeInstance attributeinstance = player.getAttributeMap()
-                        .getAttributeInstance(SharedMonsterAttributes.maxHealth);
-                try {
-                    attributeinstance.removeModifier(attributeinstance.getModifier(globalID));
-                } catch (Exception ignored) {}
+        if (LoadedMods.baubles) {
+            bonusHP += getBaublesHealthBoost(player);
+        }
+
+        int prevHealth = stats.bonusHealth;
+        stats.bonusHealth = bonusHP;
+        int healthChange = bonusHP - prevHealth;
+        if (healthChange != 0) {
+            IAttributeInstance attributeinstance = player.getAttributeMap()
+                    .getAttributeInstance(SharedMonsterAttributes.maxHealth);
+            try {
+                attributeinstance.removeModifier(attributeinstance.getModifier(globalID));
+            } catch (Exception ignored) {}
+            if (bonusHP > 0) {
                 attributeinstance
                         .applyModifier(new AttributeModifier(globalID, "tconstruct.heartCanister", bonusHP, 0));
             }
-        } else if (parent != null && parent.get() != null) {
-            int prevHealth = stats.bonusHealth;
-            int bonusHP = 0;
-            stats.bonusHealth = bonusHP;
-            int healthChange = bonusHP - prevHealth;
-            if (healthChange != 0) {
-                IAttributeInstance attributeinstance = player.getAttributeMap()
-                        .getAttributeInstance(SharedMonsterAttributes.maxHealth);
-                try {
-                    attributeinstance.removeModifier(attributeinstance.getModifier(globalID));
-                } catch (Exception ignored) {}
+        }
+    }
+
+    @Optional.Method(modid = "Baubles")
+    private int getBaublesHealthBoost(EntityPlayer player) {
+        int bonusHP = 0;
+        ItemStack[] baubleStacks = BaublesHelper.getBaubleStacks(player);
+        if (baubleStacks == null) {
+            return 0;
+        }
+        for (ItemStack stack : baubleStacks) {
+            if (stack != null && stack.getItem() instanceof IHealthAccessory) {
+                bonusHP += ((IHealthAccessory) stack.getItem()).getHealthBoost(stack);
             }
         }
+        return bonusHP;
     }
 
     @Override

@@ -48,7 +48,7 @@ import tconstruct.smeltery.blocks.CastingChannelBlock;
 import tconstruct.smeltery.blocks.GlassBlockConnected;
 import tconstruct.smeltery.blocks.GlassBlockConnectedMeta;
 import tconstruct.smeltery.blocks.GlassPaneConnected;
-import tconstruct.smeltery.blocks.GlassPaneStained;
+import tconstruct.smeltery.blocks.GlassPaneConnectedMeta;
 import tconstruct.smeltery.blocks.GlueBlock;
 import tconstruct.smeltery.blocks.GlueFluid;
 import tconstruct.smeltery.blocks.LavaTankBlock;
@@ -511,7 +511,6 @@ public class TinkerSmeltery {
 
         // Glass
         TinkerSmeltery.clearGlass = new GlassBlockConnected("clear", false).setBlockName("GlassBlock");
-        TinkerSmeltery.clearGlass.stepSound = Block.soundTypeGlass;
         TinkerSmeltery.glassPane = new GlassPaneConnected("clear", false);
         TinkerSmeltery.stainedGlassClear = new GlassBlockConnectedMeta(
                 "stained",
@@ -532,8 +531,25 @@ public class TinkerSmeltery {
                 "green",
                 "red",
                 "black").setBlockName("GlassBlock.StainedClear");
-        TinkerSmeltery.stainedGlassClear.stepSound = Block.soundTypeGlass;
-        TinkerSmeltery.stainedGlassClearPane = new GlassPaneStained();
+        TinkerSmeltery.stainedGlassClearPane = new GlassPaneConnectedMeta(
+                "stained",
+                true,
+                "white",
+                "orange",
+                "magenta",
+                "light_blue",
+                "yellow",
+                "lime",
+                "pink",
+                "gray",
+                "light_gray",
+                "cyan",
+                "purple",
+                "blue",
+                "brown",
+                "green",
+                "red",
+                "black");
 
         GameRegistry.registerBlock(TinkerSmeltery.searedSlab, SearedSlabItem.class, "SearedSlab");
         GameRegistry.registerBlock(TinkerSmeltery.speedSlab, SpeedSlabItem.class, "SpeedSlab");
@@ -1801,18 +1817,18 @@ public class TinkerSmeltery {
 
         Smeltery.addMelting(TinkerSmeltery.clearGlass, 0, 500, new FluidStack(TinkerSmeltery.moltenGlassFluid, 1000));
         Smeltery.addMelting(TinkerSmeltery.glassPane, 0, 350, new FluidStack(TinkerSmeltery.moltenGlassFluid, 250));
+        Smeltery.addToSmeltingGroup(new ItemStack(Blocks.glass), "glass");
+        Smeltery.addToSmeltingGroup(new ItemStack(Blocks.glass_pane), "glassPane");
+        Smeltery.addToSmeltingGroup(new ItemStack(TinkerSmeltery.clearGlass), "glass");
+        Smeltery.addToSmeltingGroup(new ItemStack(TinkerSmeltery.glassPane), "glassPane");
 
         for (int i = 0; i < 16; i++) {
-            Smeltery.addMelting(
-                    TinkerSmeltery.stainedGlassClear,
-                    i,
-                    500,
-                    new FluidStack(TinkerSmeltery.moltenGlassFluid, 1000));
-            Smeltery.addMelting(
-                    TinkerSmeltery.stainedGlassClearPane,
-                    i,
-                    350,
-                    new FluidStack(TinkerSmeltery.moltenGlassFluid, 250));
+            ItemStack stainedGlassClear = new ItemStack(TinkerSmeltery.stainedGlassClear, 1, i);
+            ItemStack stainedGlassClearPane = new ItemStack(TinkerSmeltery.stainedGlassClearPane, 1, i);
+            Smeltery.addMelting(stainedGlassClear, 500, new FluidStack(TinkerSmeltery.moltenGlassFluid, 1000));
+            Smeltery.addMelting(stainedGlassClearPane, 350, new FluidStack(TinkerSmeltery.moltenGlassFluid, 250));
+            Smeltery.addToSmeltingGroup(stainedGlassClear, "glass");
+            Smeltery.addToSmeltingGroup(stainedGlassClearPane, "glassPane");
         }
 
         // Bricks
@@ -1867,6 +1883,10 @@ public class TinkerSmeltery {
         Smeltery.addMelting(iron, new ItemStack(Blocks.anvil, 1, 0), 200, TConstruct.ingotLiquidValue * 31);
         Smeltery.addMelting(iron, new ItemStack(Blocks.anvil, 1, 1), 200, TConstruct.ingotLiquidValue * 31);
         Smeltery.addMelting(iron, new ItemStack(Blocks.anvil, 1, 2), 200, TConstruct.ingotLiquidValue * 31);
+        Smeltery.addToSmeltingGroup(new ItemStack(Blocks.anvil, 1, 0), "anvil");
+        Smeltery.addToSmeltingGroup(new ItemStack(Blocks.anvil, 1, 1), "anvil");
+        Smeltery.addToSmeltingGroup(new ItemStack(Blocks.anvil, 1, 2), "anvil");
+
         Smeltery.addMelting(iron, new ItemStack(Blocks.hopper), 0, TConstruct.ingotLiquidValue * 5);
 
         // Vanilla Armor

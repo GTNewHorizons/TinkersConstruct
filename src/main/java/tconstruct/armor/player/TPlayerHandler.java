@@ -9,31 +9,42 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Entity.EnumEntitySize;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mantle.player.PlayerUtils;
 import tconstruct.TConstruct;
+import tconstruct.compat.BaublesHelper;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.tools.AbilityHelper;
+import tconstruct.smeltery.blocks.SpeedBlock;
 import tconstruct.tools.TinkerTools;
 import tconstruct.util.config.PHConstruct;
 
@@ -67,6 +78,7 @@ public class TPlayerHandler {
     public void onPlayerLogin(EntityPlayer player) {
         // Lookup player
         TPlayerStats stats = TPlayerStats.get(player);
+        migrateDisabledAccessoryInventory(player, stats);
 
         stats.level = player.experienceLevel;
         stats.hunger = player.getFoodStats().getFoodLevel();
@@ -170,6 +182,35 @@ public class TPlayerHandler {
                         .sendChatMessage(player, "Solution 2: Disable Auto-Smelt/Fortune interaction from TConstruct.");
             }
         }
+    }
+
+    private void migrateDisabledAccessoryInventory(EntityPlayer player, TPlayerStats stats) {
+        if (PHConstruct.enableTinkerInventoryTab || stats == null || stats.armor == null) {
+            return;
+        }
+
+        for (int slot = 0; slot < stats.armor.inventory.length; slot++) {
+            ItemStack stack = stats.armor.inventory[slot];
+            if (stack == null) continue;
+
+            ItemStack remaining = stack.copy();
+            if (LoadedMods.baubles) {
+                remaining = tryMoveToBaubles(player, remaining);
+            }
+
+            if (remaining != null && remaining.stackSize > 0) {
+                if (!player.inventory.addItemStackToInventory(remaining)) {
+                    AbilityHelper.spawnItemAtPlayer(player, remaining);
+                }
+            }
+            stats.armor.inventory[slot] = null;
+        }
+        stats.armor.recalculateHealth(player, stats);
+    }
+
+    @Optional.Method(modid = "Baubles")
+    private ItemStack tryMoveToBaubles(EntityPlayer player, ItemStack stack) {
+        return BaublesHelper.tryMoveToBaubles(player, stack);
     }
 
     void spawnPigmanModifier(EntityPlayer entityplayer) {
@@ -355,6 +396,24 @@ public class TPlayerHandler {
         @SubscribeEvent
         public void playerDropsWrapper(PlayerDropsEvent evt) {
             TPlayerHandler.this.playerDrops(evt);
+        }
+
+        @SideOnly(Side.CLIENT)
+        @SubscribeEvent
+        public void playerUpdates(LivingEvent.LivingUpdateEvent event) {
+            final EntityLivingBase entity = event.entityLiving;
+
+            // the player should handle its own movement, rest is handled by the server
+            if (entity instanceof EntityClientPlayerMP && entity.onGround) {
+                int tX = MathHelper.floor_double(entity.posX),
+                        tY = MathHelper.floor_double(entity.boundingBox.minY - 0.001F),
+                        tZ = MathHelper.floor_double(entity.posZ);
+                World world = entity.worldObj;
+                Block tBlock = world.getBlock(tX, tY, tZ);
+                if (tBlock instanceof SpeedBlock speedBlock) {
+                    speedBlock.onWalkedOn(world, tX, tY, tZ, entity);
+                }
+            }
         }
     }
 }

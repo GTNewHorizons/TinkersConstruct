@@ -193,6 +193,9 @@ public class ArmorProxyClient extends ArmorProxyCommon {
             return new GuiInventory(player);
         }
         if (ID == ArmorProxyCommon.armorGuiID) {
+            if (!PHConstruct.enableTinkerInventoryTab) {
+                return null;
+            }
             ArmorProxyClient.armorExtended.init(Minecraft.getMinecraft().thePlayer);
             return new ArmorExtendedGui(player.inventory, ArmorProxyClient.armorExtended);
         }
@@ -216,7 +219,9 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         controlInstance.registerKeys();
 
         TabRegistry.registerTab(new InventoryTabVanilla());
-        TabRegistry.registerTab(new InventoryTabArmorExtended());
+        if (PHConstruct.enableTinkerInventoryTab) {
+            TabRegistry.registerTab(new InventoryTabArmorExtended());
+        }
         TabRegistry.registerTab(new InventoryTabKnapsack());
     }
 
@@ -336,49 +341,75 @@ public class ArmorProxyClient extends ArmorProxyCommon {
         float limbSwing = player.prevLimbSwingAmount
                 + (player.limbSwingAmount - player.prevLimbSwingAmount) * partialTick;
         float limbSwingMod = player.limbSwing - player.limbSwingAmount * (1.0F - partialTick);
-        // TPlayerStats stats = TPlayerStats.get(player);
-        ArmorExtended armor = ArmorProxyClient.armorExtended; // TODO: Do this for every player, not just the client
-        if (armor != null && armor.inventory[1] != null) {
-            if (getTranslucencyLevel(armor.inventory[1]) != 2
-                    && !(player.isInvisible() && getTranslucencyLevel(armor.inventory[1]) > 0)) {
-                Item item = armor.inventory[1].getItem();
-                ModelBiped model = item.getArmorModel(player, armor.inventory[1], 4);
+        if (PHConstruct.enableTinkerInventoryTab) {
+            ArmorExtended armor = ArmorProxyClient.armorExtended;
+            if (armor != null && armor.inventory[1] != null) {
+                if (getTranslucencyLevel(armor.inventory[1]) != 2
+                        && !(player.isInvisible() && getTranslucencyLevel(armor.inventory[1]) > 0)) {
+                    Item item = armor.inventory[1].getItem();
+                    ModelBiped model = item.getArmorModel(player, armor.inventory[1], 4);
 
-                if (item instanceof IAccessoryModel) {
-                    this.mc.getTextureManager()
-                            .bindTexture(((IAccessoryModel) item).getWearbleTexture(player, armor.inventory[1], 1));
-                    model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
-                    model.render(
-                            player,
-                            limbSwingMod,
-                            limbSwing,
-                            pitch,
-                            yawRotation - yawOffset,
-                            bodyRotation,
-                            zeropointsixtwofive);
+                    if (item instanceof IAccessoryModel) {
+                        this.mc.getTextureManager()
+                                .bindTexture(((IAccessoryModel) item).getWearbleTexture(player, armor.inventory[1], 1));
+                        model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
+                        model.render(
+                                player,
+                                limbSwingMod,
+                                limbSwing,
+                                pitch,
+                                yawRotation - yawOffset,
+                                bodyRotation,
+                                zeropointsixtwofive);
+                    }
                 }
             }
-        }
 
-        if (armor != null && armor.inventory[3] != null) {
-            if (getTranslucencyLevel(armor.inventory[3]) != 2
-                    && !(player.isInvisible() && getTranslucencyLevel(armor.inventory[3]) > 0)) {
-                Item item = armor.inventory[3].getItem();
-                ModelBiped model = item.getArmorModel(player, armor.inventory[3], 5);
+            if (armor != null && armor.inventory[3] != null) {
+                if (getTranslucencyLevel(armor.inventory[3]) != 2
+                        && !(player.isInvisible() && getTranslucencyLevel(armor.inventory[3]) > 0)) {
+                    Item item = armor.inventory[3].getItem();
+                    ModelBiped model = item.getArmorModel(player, armor.inventory[3], 5);
 
-                if (item instanceof IAccessoryModel) {
-                    this.mc.getTextureManager()
-                            .bindTexture(((IAccessoryModel) item).getWearbleTexture(player, armor.inventory[1], 1));
-                    model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
-                    model.render(
-                            player,
-                            limbSwingMod,
-                            limbSwing,
-                            pitch,
-                            yawRotation - yawOffset,
-                            bodyRotation,
-                            zeropointsixtwofive);
+                    if (item instanceof IAccessoryModel) {
+                        this.mc.getTextureManager()
+                                .bindTexture(((IAccessoryModel) item).getWearbleTexture(player, armor.inventory[1], 1));
+                        model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
+                        model.render(
+                                player,
+                                limbSwingMod,
+                                limbSwing,
+                                pitch,
+                                yawRotation - yawOffset,
+                                bodyRotation,
+                                zeropointsixtwofive);
+                    }
                 }
+            }
+        } else {
+            ItemStack[] baubles = tconstruct.compat.BaublesHelper.getBaubleStacks(player);
+            if (baubles == null) return;
+
+            for (int i = 0; i < baubles.length; i++) {
+                ItemStack stack = baubles[i];
+                if (stack == null) continue;
+                Item item = stack.getItem();
+                if (!(item instanceof IAccessoryModel)) continue;
+                if (getTranslucencyLevel(stack) == 2) continue;
+                if (player.isInvisible() && getTranslucencyLevel(stack) > 0) continue;
+
+                ModelBiped model = item.getArmorModel(player, stack, i);
+                if (model == null) continue;
+                this.mc.getTextureManager().bindTexture(((IAccessoryModel) item).getWearbleTexture(player, stack, i));
+                model.setLivingAnimations(player, limbSwingMod, limbSwing, partialTick);
+                model.render(
+                        player,
+                        limbSwingMod,
+                        limbSwing,
+                        pitch,
+                        yawRotation - yawOffset,
+                        bodyRotation,
+                        zeropointsixtwofive);
             }
         }
     }

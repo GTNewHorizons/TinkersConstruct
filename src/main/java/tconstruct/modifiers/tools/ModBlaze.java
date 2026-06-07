@@ -6,17 +6,17 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import tconstruct.library.modifier.ModificationInfo;
 import tconstruct.library.tools.ToolCore;
 
 public class ModBlaze extends ItemModTypeFilter {
 
     String tooltipName;
-    int max;
 
     public ModBlaze(int effect, ItemStack[] items, int[] values) {
         super(effect, "Blaze", items, values);
         tooltipName = "\u00a76Fiery";
-        max = 25;
+        this.max = 25;
     }
 
     @Override
@@ -25,13 +25,14 @@ public class ModBlaze extends ItemModTypeFilter {
             ToolCore toolItem = (ToolCore) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input) > max) return false;
+            if (matchingAmount(input, tool).total() > max) return false;
 
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input) <= max;
+            if (!tags.hasKey(key))
+                return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
 
             int[] keyPair = tags.getIntArray(key);
-            if (keyPair[0] + matchingAmount(input) <= keyPair[1]) return true;
+            if (keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         }
         return false;
@@ -40,7 +41,10 @@ public class ModBlaze extends ItemModTypeFilter {
     @Override
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-        int increase = matchingAmount(input);
+        ModificationInfo modificationInfo = matchingAmount(input, tool);
+        int increase = modificationInfo.total();
+        tags.setIntArray("ToRemove", modificationInfo.toRemove());
+
         if (tags.hasKey(key)) {
             int[] keyPair = tags.getIntArray(key);
             if (keyPair[0] % max == 0) {

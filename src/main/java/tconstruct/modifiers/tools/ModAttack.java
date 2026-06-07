@@ -6,12 +6,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.modifier.ModificationInfo;
 import tconstruct.library.tools.ToolCore;
 
 public class ModAttack extends ItemModTypeFilter {
 
     String tooltipName;
-    int max;
     int threshold;
     String guiType;
     String modifierType;
@@ -22,7 +22,7 @@ public class ModAttack extends ItemModTypeFilter {
         super(effect, "ModAttack", items, value);
         tooltipName = "\u00a7fSharpness";
         guiType = type;
-        max = 72;
+        this.max = 72;
         threshold = 24;
         modifierType = "Tool";
         ammoOnly = false;
@@ -33,7 +33,7 @@ public class ModAttack extends ItemModTypeFilter {
         super(effect, "ModAttack", items, value);
         tooltipName = "\u00a7fSharpness";
         guiType = type;
-        max = 48;
+        this.max = 48;
         threshold = 24;
         modifierType = "Tool";
         this.ammoOnly = ammoOnly;
@@ -61,13 +61,14 @@ public class ModAttack extends ItemModTypeFilter {
             IModifyable toolItem = (IModifyable) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input) > max) return false;
+            if (matchingAmount(input, tool).total() > max) return false;
 
             NBTTagCompound tags = tool.getTagCompound().getCompoundTag(toolItem.getBaseTagName());
-            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input) <= max;
+            if (!tags.hasKey(key))
+                return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
 
             int[] keyPair = tags.getIntArray(key);
-            if (keyPair[0] + matchingAmount(input) <= keyPair[1]) return true;
+            if (keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1]) return true;
             else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
         }
         return false;
@@ -83,9 +84,13 @@ public class ModAttack extends ItemModTypeFilter {
     public void modify(ItemStack[] input, ItemStack tool) {
         IModifyable toolItem = (IModifyable) tool.getItem();
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag(toolItem.getBaseTagName());
+
+        ModificationInfo modificationInfo = matchingAmount(input, tool);
+        int increase = modificationInfo.total();
+        tags.setIntArray("ToRemove", modificationInfo.toRemove());
+
         if (tags.hasKey(key)) {
             int[] keyPair = tags.getIntArray(key);
-            int increase = matchingAmount(input);
             int overThreshold = increase / threshold;
 
             int leftToBoost = threshold - (keyPair[0] % threshold);
@@ -113,7 +118,6 @@ public class ModAttack extends ItemModTypeFilter {
             int modifiers = tags.getInteger("Modifiers");
             modifiers -= 1;
             tags.setInteger("Modifiers", modifiers);
-            int increase = matchingAmount(input);
             int overThreshold = increase / threshold;
             String modName = "\u00a7f" + guiType + " (" + increase + "/" + max + ")";
             int tooltipIndex = addToolTip(tool, tooltipName, modName);

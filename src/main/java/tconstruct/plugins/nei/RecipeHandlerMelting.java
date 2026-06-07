@@ -14,6 +14,8 @@ import org.lwjgl.opengl.GL11;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import mantle.utils.ItemMetaWrapper;
 import tconstruct.library.crafting.Smeltery;
 
@@ -31,6 +33,13 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
             this.input = new PositionedStack(input, 28, 21);
             this.temperature = Smeltery.getLiquifyTemperature(input);
             this.output = new FluidTankElement(MOLTEN_TANK, 1, Smeltery.getSmelteryResult(input));
+            this.output.capacity = this.output.fluid != null ? this.output.fluid.amount : 1000;
+        }
+
+        public CachedMeltingRecipe(List<ItemStack> input) {
+            this.input = new PositionedStack(input, 28, 21);
+            this.temperature = Smeltery.getLiquifyTemperature(input.get(0));
+            this.output = new FluidTankElement(MOLTEN_TANK, 1, Smeltery.getSmelteryResult(input.get(0)));
             this.output.capacity = this.output.fluid != null ? this.output.fluid.amount : 1000;
         }
 
@@ -88,8 +97,9 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
     @Override
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals(getRecipeID())) {
+            ObjectSet<String> processedGroups = new ObjectOpenHashSet<>();
             for (ItemMetaWrapper key : Smeltery.getSmeltingList().keySet()) {
-                this.arecipes.add(new CachedMeltingRecipe(new ItemStack(key.item, 1, key.meta)));
+                loadFromWrapper(key, processedGroups);
             }
         } else {
             super.loadCraftingRecipes(outputId, results);
@@ -98,19 +108,32 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
 
     @Override
     public void loadCraftingRecipes(FluidStack result) {
+        ObjectSet<String> processedGroups = new ObjectOpenHashSet<>();
         for (Entry<ItemMetaWrapper, FluidStack> pair : Smeltery.getSmeltingList().entrySet()) {
             if (areFluidsEqual(pair.getValue(), result)) {
-                this.arecipes.add(new CachedMeltingRecipe(new ItemStack(pair.getKey().item, 1, pair.getKey().meta)));
+                loadFromWrapper(pair.getKey(), processedGroups);
             }
         }
     }
 
     @Override
     public void loadUsageRecipes(ItemStack ingred) {
+        ObjectSet<String> processedGroups = new ObjectOpenHashSet<>();
         for (ItemMetaWrapper key : Smeltery.getSmeltingList().keySet()) {
             if (NEIServerUtils.areStacksSameTypeCrafting(new ItemStack(key.item, 1, key.meta), ingred)) {
-                this.arecipes.add(new CachedMeltingRecipe(new ItemStack(key.item, 1, key.meta)));
+                loadFromWrapper(key, processedGroups);
             }
+        }
+    }
+
+    private void loadFromWrapper(ItemMetaWrapper wrapper, ObjectSet<String> processedGroups) {
+        String smeltingGroup = Smeltery.getSmeltingGroup(wrapper);
+        if (smeltingGroup != null) {
+            if (processedGroups.add(smeltingGroup)) {
+                this.arecipes.add(new CachedMeltingRecipe(Smeltery.getSmeltingGroupItems(smeltingGroup)));
+            }
+        } else {
+            this.arecipes.add(new CachedMeltingRecipe(new ItemStack(wrapper.item, 1, wrapper.meta)));
         }
     }
 }

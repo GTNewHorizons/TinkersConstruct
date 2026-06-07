@@ -276,11 +276,12 @@ public class PHConstruct {
         islandRarity = config.get("Worldgen", "Slime Island Rarity", 1450).getInt(1450);
 
         // Looks
-        Property conTexMode = config.get("Looks", "Connected Textures Enabled", true);
+        Property conTexMode = config.get("Looks", "Connected Textures Enabled", 2);
         conTexMode.comment = "0 = disabled, 1 = enabled, 2 = enabled + ignore stained glass meta";
         connectedTexturesMode = conTexMode.getInt(2);
 
         showTravellerAccessories = config.get("Looks", "Show Traveller Gear Accessories", true).getBoolean(true);
+        enableTinkerInventoryTab = config.get("Looks", "Enable Tinker Inventory Tab", true).getBoolean(true);
 
         // dimension blacklist
         cfgForbiddenDim = config
@@ -313,9 +314,9 @@ public class PHConstruct {
         slimeIslUseWhiteList = config.get(
                 "DimBlacklist",
                 "SlimeIslandUseWhitelist",
-                false,
+                true,
                 "True: slime islands only generate in dimensions listed in SlimeIslandDimWhitelist; False: use blacklist behavior")
-                .getBoolean(false);
+                .getBoolean(true);
         cfgDimWhiteList = config.get(
                 "DimBlacklist",
                 "SlimeIslandDimWhitelist",
@@ -325,9 +326,9 @@ public class PHConstruct {
         oreBushUseWhiteList = config.get(
                 "DimBlacklist",
                 "OreBushUseWhitelist",
-                false,
+                true,
                 "True: ore berry bushes only generate in dimensions listed in OreBushDimWhitelist; False: use isSurfaceWorld() check")
-                .getBoolean(false);
+                .getBoolean(true);
         cfgOreBushWhiteList = config.get(
                 "DimBlacklist",
                 "OreBushDimWhitelist",
@@ -566,6 +567,7 @@ public class PHConstruct {
     // Looks
     public static int connectedTexturesMode;
     public static boolean showTravellerAccessories;
+    public static boolean enableTinkerInventoryTab;
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;
