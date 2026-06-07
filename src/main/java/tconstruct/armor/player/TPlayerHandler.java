@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.enchantment.Enchantment;
@@ -39,6 +38,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mantle.player.PlayerUtils;
 import tconstruct.TConstruct;
 import tconstruct.compat.BaublesHelper;
@@ -406,11 +406,11 @@ public class TPlayerHandler {
             // the player should handle its own movement, rest is handled by the server
             if (entity instanceof EntityClientPlayerMP && entity.onGround) {
                 int tX = MathHelper.floor_double(entity.posX),
-                    tY = MathHelper.floor_double(entity.boundingBox.minY - 0.001F),
-                    tZ = MathHelper.floor_double(entity.posZ);
+                        tY = MathHelper.floor_double(entity.boundingBox.minY - 0.001F),
+                        tZ = MathHelper.floor_double(entity.posZ);
                 World world = entity.worldObj;
                 Block tBlock = world.getBlock(tX, tY, tZ);
-                if (tBlock instanceof SpeedBlock speedBlock){
+                if (tBlock instanceof SpeedBlock speedBlock) {
                     speedBlock.onWalkedOn(world, tX, tY, tZ, entity);
                 }
             }
