@@ -185,6 +185,7 @@ public abstract class CastingBlockLogic extends InventoryLogic
                     worldObj.func_147479_m(xCoord, yCoord, zCoord);
                     this.liquid = copyLiquid;
                     needsUpdate = true;
+                    markDirty();
                 }
                 return copyLiquid.amount;
             } else {
@@ -200,6 +201,7 @@ public abstract class CastingBlockLogic extends InventoryLogic
                     this.liquid.amount = this.capacity;
                     worldObj.func_147479_m(xCoord, yCoord, zCoord);
                     needsUpdate = true;
+                    markDirty();
                 }
                 return roomInTank;
             } else {
@@ -208,6 +210,7 @@ public abstract class CastingBlockLogic extends InventoryLogic
                     this.liquid.amount += resource.amount;
                     worldObj.func_147479_m(xCoord, yCoord, zCoord);
                     needsUpdate = true;
+                    markDirty();
                 }
                 return resource.amount;
             }
@@ -226,6 +229,7 @@ public abstract class CastingBlockLogic extends InventoryLogic
 
         if (doDrain) {
             liquid.amount -= used;
+            markDirty();
         }
 
         FluidStack drained = liquid.copy();
@@ -271,9 +275,12 @@ public abstract class CastingBlockLogic extends InventoryLogic
                     stack,
                     player);
             MinecraftForge.EVENT_BUS.post(event);
-            if (!event.isCanceled()) setInventorySlotContents(0, event.item);
-            else player.inventory.addItemStackToInventory(stack); // should never return false, since the itemstack was
-                                                                  // taken from the inventory
+            if (!event.isCanceled()) {
+                setInventorySlotContents(0, event.item);
+                markDirty();
+            } else {
+                player.inventory.addItemStackToInventory(stack);
+            }
         }
         // take stuff out.
         else {
@@ -300,6 +307,7 @@ public abstract class CastingBlockLogic extends InventoryLogic
 
             // remove inventory contents, since we spilled the full contents of the slot
             inventory[slot] = null;
+            markDirty();
         }
     }
 
@@ -416,6 +424,7 @@ public abstract class CastingBlockLogic extends InventoryLogic
             }
 
             liquid = null;
+            markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
