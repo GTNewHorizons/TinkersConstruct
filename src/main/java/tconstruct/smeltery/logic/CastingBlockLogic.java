@@ -308,7 +308,7 @@ public abstract class CastingBlockLogic extends InventoryLogic
 
             // remove inventory contents, since we spilled the full contents of the slot
             inventory[slot] = null;
-            markDirty(); // persist the extraction so the grabbed item can't be duped on reload
+            markDirty();
         }
     }
 
@@ -425,7 +425,7 @@ public abstract class CastingBlockLogic extends InventoryLogic
             }
 
             liquid = null;
-            markDirty(); // flag the tile entity for saving so the cast result/consumed cast persist
+            markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
