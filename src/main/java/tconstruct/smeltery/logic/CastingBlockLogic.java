@@ -279,7 +279,6 @@ public abstract class CastingBlockLogic extends InventoryLogic
                 setInventorySlotContents(0, event.item);
                 markDirty();
             } else {
-                // should never return false, since the itemstack was taken from the inventory
                 player.inventory.addItemStackToInventory(stack);
             }
         }
