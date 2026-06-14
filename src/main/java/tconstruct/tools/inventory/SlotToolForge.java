@@ -35,7 +35,7 @@ public class SlotToolForge extends SlotTool {
                 if (item == null) {
                     continue;
                 }
-                if (toRemoveArray == null) {
+                if (toRemoveArray == null || toRemoveIndex >= toRemoveArray.length) {
                     inventory.decrStackSize(i, 1);
                 } else {
                     inventory.decrStackSize(i, toRemoveArray[toRemoveIndex]);

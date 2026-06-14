@@ -133,7 +133,7 @@ public class ToolStationContainer extends ActiveContainer {
                 if (item == null) {
                     continue;
                 }
-                if (toRemoveArray == null) {
+                if (toRemoveArray == null || toRemoveIndex >= toRemoveArray.length) {
                     logic.decrStackSize(i, 1);
                 } else {
                     logic.decrStackSize(i, toRemoveArray[toRemoveIndex]);
