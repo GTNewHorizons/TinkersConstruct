@@ -20,6 +20,9 @@ public class ModifyBuilder {
         if (copy.getItem() instanceof IModifyable) {
             IModifyable item = (IModifyable) copy.getItem();
 
+            // Strip stale ToRemove tags that can cause extra amount of items being used or OOB crash
+            copy.getTagCompound().getCompoundTag(item.getBaseTagName()).removeTag("ToRemove");
+
             boolean built = false;
             for (ItemModifier mod : itemModifiers) {
                 if (mod.matches(modifiers, input) && mod.validType(item)) {
