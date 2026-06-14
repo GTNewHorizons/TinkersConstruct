@@ -317,7 +317,11 @@ public class CraftingStationContainer extends Container {
                 copyStack = otherInventorySlot.getStack();
 
                 if (copyStack == null && otherInventorySlot.isItemValid(stack)) {
-                    otherInventorySlot.putStack(stack.copy());
+                    ItemStack placed = stack.copy();
+                    if (placed.hasTagCompound() && placed.getItem() instanceof IModifyable modifyable) {
+                        placed.getTagCompound().getCompoundTag(modifyable.getBaseTagName()).removeTag("ToRemove");
+                    }
+                    otherInventorySlot.putStack(placed);
                     otherInventorySlot.onSlotChanged();
                     stack.stackSize = 0;
                     failedToMerge = true;
