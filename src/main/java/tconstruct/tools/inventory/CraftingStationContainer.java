@@ -171,12 +171,7 @@ public class CraftingStationContainer extends Container {
         if (index == 0) {
             // Crafting Result
             if (ret.getItem() instanceof IModifyable) {
-                nothingDone &= !this.mergeCraftedStack(
-                        itemstack,
-                        logic.getSizeInventory(),
-                        this.inventorySlots.size(),
-                        true,
-                        entityPlayer);
+                nothingDone &= !this.mergeCraftedStack(itemstack, logic.getSizeInventory(), 46, true, entityPlayer);
             } else {
                 // First refill the attached chests
                 nothingDone &= this.refillChest(itemstack);
@@ -322,7 +317,11 @@ public class CraftingStationContainer extends Container {
                 copyStack = otherInventorySlot.getStack();
 
                 if (copyStack == null && otherInventorySlot.isItemValid(stack)) {
-                    otherInventorySlot.putStack(stack.copy());
+                    ItemStack placed = stack.copy();
+                    if (placed.hasTagCompound() && placed.getItem() instanceof IModifyable modifyable) {
+                        placed.getTagCompound().getCompoundTag(modifyable.getBaseTagName()).removeTag("ToRemove");
+                    }
+                    otherInventorySlot.putStack(placed);
                     otherInventorySlot.onSlotChanged();
                     stack.stackSize = 0;
                     failedToMerge = true;

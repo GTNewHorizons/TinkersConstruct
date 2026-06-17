@@ -20,7 +20,7 @@ public class PatternShaperContainer extends Container {
 
     public PatternShaperContainer(InventoryPlayer inventoryplayer, StencilTableLogic shaper) {
         logic = shaper;
-        this.addSlotToContainer(new Slot(shaper, 0, 48, 35));
+        this.addSlotToContainer(new SlotBlankPattern(shaper, 0, 48, 35));
         this.addSlotToContainer(new SlotOnlyTake(shaper, 1, 106, 35));
         /*
          * for (int i = 0; i < 3; i++) { for (int l = 0; l < 3; l++) { this.addSlotToContainer(new Slot(craftMatrix, l +
@@ -77,6 +77,9 @@ public class PatternShaperContainer extends Container {
                     }
                 } else if (slotId < logic.getSizeInventory()) {
                     // pattern slot
+                    if (slotId == 1 && !(stack.getItem() instanceof IPattern)) {
+                        return null;
+                    }
                     if (!this.mergeItemStack(stack, 2, this.inventorySlots.size(), false)) {
                         return null;
                     }

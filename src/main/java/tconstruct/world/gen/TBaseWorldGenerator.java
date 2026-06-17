@@ -96,9 +96,9 @@ public class TBaseWorldGenerator implements IWorldGenerator {
         int xPos, yPos, zPos;
         if (PHConstruct.generateIronBush && random.nextInt(PHConstruct.ironBushRarity + 1) == 0) {
             for (int i = 0; i < PHConstruct.ironBushDensity; i++) {
-                xPos = xChunk + random.nextInt(16);
+                xPos = xChunk + random.nextInt(16) + 8;
                 yPos = PHConstruct.seaLevel - 32;
-                zPos = zChunk + random.nextInt(16);
+                zPos = zChunk + random.nextInt(16) + 8;
                 yPos = findAdequateLocation(world, xPos, yPos, zPos, PHConstruct.seaLevel, 0);
                 if (yPos != -1) {
                     /*
@@ -111,9 +111,9 @@ public class TBaseWorldGenerator implements IWorldGenerator {
         }
         if (PHConstruct.generateGoldBush && random.nextInt(PHConstruct.goldBushRarity + 1) == 0) {
             for (int i = 0; i < PHConstruct.goldBushDensity; i++) {
-                xPos = xChunk + random.nextInt(16);
+                xPos = xChunk + random.nextInt(16) + 8;
                 yPos = 16;
-                zPos = zChunk + random.nextInt(16);
+                zPos = zChunk + random.nextInt(16) + 8;
                 yPos = findAdequateLocation(world, xPos, yPos, zPos, 32, 0);
                 if (yPos != -1) {
                     /*
@@ -130,9 +130,9 @@ public class TBaseWorldGenerator implements IWorldGenerator {
         // 0)
         {
             for (int i = 0; i < PHConstruct.copperBushDensity; i++) {
-                xPos = xChunk + random.nextInt(16);
+                xPos = xChunk + random.nextInt(16) + 8;
                 yPos = (PHConstruct.copperBushMaxY + PHConstruct.copperBushMinY) / 2;
-                zPos = zChunk + random.nextInt(16);
+                zPos = zChunk + random.nextInt(16) + 8;
                 yPos = findAdequateLocation(
                         world,
                         xPos,
@@ -154,9 +154,9 @@ public class TBaseWorldGenerator implements IWorldGenerator {
         // == 0)
         {
             for (int i = 0; i < PHConstruct.tinBushDensity; i++) {
-                xPos = xChunk + random.nextInt(16);
+                xPos = xChunk + random.nextInt(16) + 8;
                 yPos = (PHConstruct.tinBushMaxY + PHConstruct.tinBushMinY) / 2;
-                zPos = zChunk + random.nextInt(16);
+                zPos = zChunk + random.nextInt(16) + 8;
                 yPos = findAdequateLocation(world, xPos, yPos, zPos, PHConstruct.tinBushMaxY, PHConstruct.tinBushMinY);
                 if (yPos != -1) {
                     /*
@@ -173,9 +173,9 @@ public class TBaseWorldGenerator implements IWorldGenerator {
         // 0)
         {
             for (int i = 0; i < PHConstruct.aluminumBushDensity; i++) {
-                xPos = xChunk + random.nextInt(16);
+                xPos = xChunk + random.nextInt(16) + 8;
                 yPos = (PHConstruct.aluminumBushMaxY + PHConstruct.aluminumBushMinY) / 2;
-                zPos = zChunk + random.nextInt(16);
+                zPos = zChunk + random.nextInt(16) + 8;
                 yPos = findAdequateLocation(
                         world,
                         xPos,
@@ -194,9 +194,9 @@ public class TBaseWorldGenerator implements IWorldGenerator {
         }
         if (PHConstruct.generateEssenceBush && random.nextInt(PHConstruct.essenceBushRarity + 1) == 0) {
             for (int i = 0; i < PHConstruct.silverBushDensity; i++) {
-                xPos = xChunk + random.nextInt(16);
+                xPos = xChunk + random.nextInt(16) + 8;
                 yPos = PHConstruct.seaLevel - 16;
-                zPos = zChunk + random.nextInt(16);
+                zPos = zChunk + random.nextInt(16) + 8;
                 yPos = findAdequateLocation(world, xPos, yPos, zPos, 32, 0);
                 if (yPos != -1) {
                     /*

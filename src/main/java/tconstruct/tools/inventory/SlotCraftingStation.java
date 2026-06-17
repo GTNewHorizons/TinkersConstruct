@@ -31,13 +31,13 @@ public class SlotCraftingStation extends SlotCrafting {
             int toRemoveIndex = 0;
             IInventory inventory = this.matrix;
 
-            for (int i = 0; i <= inventory.getSizeInventory(); i++) {
+            for (int i = 0; i < inventory.getSizeInventory(); i++) {
                 if (i == 4) continue;
                 ItemStack item = inventory.getStackInSlot(i);
                 if (item == null) {
                     continue;
                 }
-                if (toRemoveArray == null) {
+                if (toRemoveArray == null || toRemoveIndex >= toRemoveArray.length) {
                     inventory.decrStackSize(i, 1);
                 } else {
                     inventory.decrStackSize(i, toRemoveArray[toRemoveIndex]);

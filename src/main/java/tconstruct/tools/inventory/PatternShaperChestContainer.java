@@ -24,7 +24,7 @@ public class PatternShaperChestContainer extends Container {
             PatternChestLogic pLogic) {
         this.logic = shaper;
         this.patternLogic = pLogic;
-        this.addSlotToContainer(new Slot(shaper, 0, 48, 35));
+        this.addSlotToContainer(new SlotBlankPattern(shaper, 0, 48, 35));
         this.addSlotToContainer(new SlotOnlyTake(shaper, 1, 106, 35));
         /*
          * for (int i = 0; i < 3; i++) { for (int l = 0; l < 3; l++) { this.addSlotToContainer(new Slot(craftMatrix, l +
@@ -92,6 +92,9 @@ public class PatternShaperChestContainer extends Container {
                                 return null;
                             }
                 } else if (slotId < logic.getSizeInventory()) {
+                    if (slotId == 1 && !(stack.getItem() instanceof IPattern)) {
+                        return null;
+                    }
                     if (stack.getItem() instanceof IPattern) {
                         // pattern slot, search from pattern chest first
                         if (!this.mergeItemStack(stack, 4 * 9 + 2, this.inventorySlots.size(), false)) {
