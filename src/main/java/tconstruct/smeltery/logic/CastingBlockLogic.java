@@ -383,7 +383,12 @@ public abstract class CastingBlockLogic extends InventoryLogic
     public void updateEntity() {
         if (castingDelay > 0) {
             castingDelay--;
-            if (castingDelay == 0) castLiquid();
+            if (castingDelay == 0) {
+                castLiquid();
+            } else if (!worldObj.isRemote && castingDelay % 4 == 0) {
+                // periodically sync the cooling progress to the client for the casting animation
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            }
         }
         if (renderOffset > 0) {
             // renderOffset -= Math.max(renderOffset/3, 6);
@@ -489,6 +494,24 @@ public abstract class CastingBlockLogic extends InventoryLogic
         }
 
         return (int) (((maxCastingDelay - castingDelay) / (double) maxCastingDelay) * 100);
+    }
+
+    public int getCastingDelay() {
+        return castingDelay;
+    }
+
+    public int getRenderOffset() {
+        return renderOffset;
+    }
+
+    public int getMaxCastingDelay() {
+        return maxCastingDelay;
+    }
+
+    public ItemStack getRecipeOutput() {
+        if (liquid == null) return null;
+        CastingRecipe recipe = liquidCasting.getCastingRecipe(liquid, inventory[0]);
+        return recipe != null ? recipe.getResult() : null;
     }
 
     @Override
