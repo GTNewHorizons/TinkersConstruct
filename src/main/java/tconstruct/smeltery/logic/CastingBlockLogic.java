@@ -186,6 +186,9 @@ public abstract class CastingBlockLogic extends InventoryLogic
                     this.liquid = copyLiquid;
                     needsUpdate = true;
                     markDirty();
+                    // sync the cooling start immediately so the client animation begins on time;
+                    // the client then counts down on its own (no per-tick sync needed)
+                    if (castingDelay > 0) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 }
                 return copyLiquid.amount;
             } else {
@@ -202,6 +205,9 @@ public abstract class CastingBlockLogic extends InventoryLogic
                     worldObj.func_147479_m(xCoord, yCoord, zCoord);
                     needsUpdate = true;
                     markDirty();
+                    // sync the cooling start immediately so the client animation begins on time;
+                    // the client then counts down on its own (no per-tick sync needed)
+                    if (castingDelay > 0) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 }
                 return roomInTank;
             } else {
@@ -382,12 +388,12 @@ public abstract class CastingBlockLogic extends InventoryLogic
     @Override
     public void updateEntity() {
         if (castingDelay > 0) {
+            // The client decrements this on its own each tick, so the cooling progress (used by
+            // the casting animation) does not need to be synced every tick. Only the start and end
+            // are synced; the end sync corrects any drift. Descriptor packets are batched anyway.
             castingDelay--;
             if (castingDelay == 0) {
                 castLiquid();
-            } else if (!worldObj.isRemote && castingDelay % 4 == 0) {
-                // periodically sync the cooling progress to the client for the casting animation
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             }
         }
         if (renderOffset > 0) {
