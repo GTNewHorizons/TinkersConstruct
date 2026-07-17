@@ -53,6 +53,9 @@ public class CraftingStationContainer extends Container {
     /** Last matched recipe, tried first to avoid rescanning the whole recipe list on every matrix change. */
     private IRecipe lastRecipe;
 
+    /** While true, matrix changes don't recompute the result. Batches ingredient consumption into one lookup. */
+    private boolean suppressCraftingUpdates;
+
     public CraftingStationContainer(InventoryPlayer inventoryplayer, CraftingStationLogic logic, int x, int y, int z) {
         this.worldObj = logic.getWorldObj();
         this.player = inventoryplayer.player;
@@ -79,6 +82,7 @@ public class CraftingStationContainer extends Container {
         // 0 - crafting slot
         this.addSlotToContainer(
                 new SlotCraftingStation(
+                        this,
                         inventoryplayer.player,
                         this.craftMatrix,
                         this.craftResult,
@@ -285,6 +289,8 @@ public class CraftingStationContainer extends Container {
     }
 
     public void onCraftMatrixChanged(IInventory par1IInventory) {
+        if (suppressCraftingUpdates) return;
+
         ItemStack tool = modifyItem();
         if (tool != null) this.craftResult.setInventorySlotContents(0, tool);
         else this.craftResult.setInventorySlotContents(0, findMatchingRecipeCached());
@@ -336,6 +342,20 @@ public class CraftingStationContainer extends Container {
                 && first.stackSize == 1
                 && second.stackSize == 1
                 && first.getItem().isRepairable();
+    }
+
+    /**
+     * Suppresses result updates until {@link #endBatchCraftingUpdate}; each consumed ingredient fires a lookup
+     * otherwise.
+     */
+    void beginBatchCraftingUpdate() {
+        suppressCraftingUpdates = true;
+    }
+
+    /** Re-enables result updates and recomputes once. */
+    void endBatchCraftingUpdate() {
+        suppressCraftingUpdates = false;
+        this.onCraftMatrixChanged(this.craftMatrix);
     }
 
     @Override
@@ -489,16 +509,19 @@ public class CraftingStationContainer extends Container {
     public void dumpCraftingGrid() {
         if (logic.slotCount == 0) return;
 
-        // 46 is the first slot index of the attached inventory
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = craftMatrix.getStackInSlot(i);
-            if (stack != null && stack.stackSize > 0) {
-                if (mergeItemStack(stack, 46, 46 + logic.slotCount, false)) {
-                    craftMatrix.setInventorySlotContents(i, stack.stackSize > 0 ? stack : null);
+        beginBatchCraftingUpdate();
+        try {
+            // 46 is the first slot index of the attached inventory
+            for (int i = 0; i < 9; i++) {
+                ItemStack stack = craftMatrix.getStackInSlot(i);
+                if (stack != null && stack.stackSize > 0) {
+                    if (mergeItemStack(stack, 46, 46 + logic.slotCount, false)) {
+                        craftMatrix.setInventorySlotContents(i, stack.stackSize > 0 ? stack : null);
+                    }
                 }
             }
+        } finally {
+            endBatchCraftingUpdate();
         }
-
-        this.onCraftMatrixChanged(this.craftMatrix);
     }
 }
