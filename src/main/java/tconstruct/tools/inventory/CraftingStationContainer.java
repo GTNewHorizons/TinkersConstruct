@@ -311,7 +311,8 @@ public class CraftingStationContainer extends Container {
 
         @SuppressWarnings("unchecked")
         List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-        for (IRecipe recipe : recipes) {
+        for (int i = 0; i < recipes.size(); i++) {
+            IRecipe recipe = recipes.get(i);
             if (recipe.matches(this.craftMatrix, this.worldObj)) {
                 this.lastRecipe = recipe;
                 return recipe.getCraftingResult(this.craftMatrix);

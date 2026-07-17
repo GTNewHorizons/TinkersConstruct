@@ -32,6 +32,12 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
 
     public int invRows, invColumns, slotCount;
 
+    private static final int[] NO_SLOTS = new int[0];
+
+    /** Cached result of {@link #getInventories()}; rebuilt when the adjacent inventories are rescanned. */
+    @SuppressWarnings("rawtypes")
+    private WeakReference[] inventories = new WeakReference[4];
+
     public CraftingStationLogic() {
         super(10); // 9 for crafting, 1 for output
     }
@@ -115,6 +121,8 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
             }
         }
 
+        this.inventories = new WeakReference[] { this.chest, this.doubleChest, this.patternChest, this.furnace };
+
         return new CraftingStationContainer(inventoryplayer, this, x, y, z);
     }
 
@@ -168,12 +176,12 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
 
     @SuppressWarnings("rawtypes")
     public WeakReference[] getInventories() {
-        return new WeakReference[] { this.chest, this.doubleChest, this.patternChest, this.furnace };
+        return this.inventories;
     }
 
     @Override
     public int[] getAccessibleSlotsFromSide(int var1) {
-        return new int[] {};
+        return NO_SLOTS;
     }
 
     @Override
