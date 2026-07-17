@@ -1,6 +1,7 @@
 package tconstruct.tools.inventory;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -15,6 +16,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
 import tconstruct.items.tools.Arrow;
@@ -47,6 +49,9 @@ public class CraftingStationContainer extends Container {
     public IInventory craftResult;
     public CraftingStationLogic logic;
     EntityPlayer player;
+
+    /** Last matched recipe, tried first to avoid rescanning the whole recipe list on every matrix change. */
+    private IRecipe lastRecipe;
 
     public CraftingStationContainer(InventoryPlayer inventoryplayer, CraftingStationLogic logic, int x, int y, int z) {
         this.worldObj = logic.getWorldObj();
@@ -282,9 +287,55 @@ public class CraftingStationContainer extends Container {
     public void onCraftMatrixChanged(IInventory par1IInventory) {
         ItemStack tool = modifyItem();
         if (tool != null) this.craftResult.setInventorySlotContents(0, tool);
-        else this.craftResult.setInventorySlotContents(
-                0,
-                CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.worldObj));
+        else this.craftResult.setInventorySlotContents(0, findMatchingRecipeCached());
+    }
+
+    /** Like {@link CraftingManager#findMatchingRecipe} but tries the last matched recipe first. */
+    private ItemStack findMatchingRecipeCached() {
+        // Vanilla's two-item tool repair takes precedence over the recipe list
+        if (isVanillaToolRepair()) {
+            return CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.worldObj);
+        }
+
+        IRecipe cached = this.lastRecipe;
+        if (cached != null && cached.matches(this.craftMatrix, this.worldObj)) {
+            return cached.getCraftingResult(this.craftMatrix);
+        }
+        this.lastRecipe = null;
+
+        @SuppressWarnings("unchecked")
+        List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+        for (IRecipe recipe : recipes) {
+            if (recipe.matches(this.craftMatrix, this.worldObj)) {
+                this.lastRecipe = recipe;
+                return recipe.getCraftingResult(this.craftMatrix);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Mirrors the repair check in {@link CraftingManager#findMatchingRecipe}: two size-1 stacks of one repairable item.
+     */
+    private boolean isVanillaToolRepair() {
+        ItemStack first = null;
+        ItemStack second = null;
+        int found = 0;
+
+        for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+            ItemStack stack = this.craftMatrix.getStackInSlot(i);
+            if (stack == null) continue;
+
+            found++;
+            if (found == 1) first = stack;
+            else if (found == 2) second = stack;
+            else return false;
+        }
+
+        return found == 2 && first.getItem() == second.getItem()
+                && first.stackSize == 1
+                && second.stackSize == 1
+                && first.getItem().isRepairable();
     }
 
     @Override
