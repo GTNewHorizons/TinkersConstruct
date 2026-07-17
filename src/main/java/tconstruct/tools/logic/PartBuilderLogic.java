@@ -16,6 +16,8 @@ import tconstruct.tools.inventory.PartCrafterContainer;
 
 public class PartBuilderLogic extends InventoryLogic implements ISidedInventory {
 
+    private static final int[] NO_SLOTS = new int[0];
+
     boolean craftedTop;
     boolean craftedBottom;
 
@@ -138,7 +140,7 @@ public class PartBuilderLogic extends InventoryLogic implements ISidedInventory 
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        return new int[0];
+        return NO_SLOTS;
     }
 
     @Override
