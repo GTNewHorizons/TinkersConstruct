@@ -23,6 +23,7 @@ public class ColorUtils {
         materialBowDrawSpeed        = color.rgb("materialBowDrawSpeed",         "0x404040"),
         materialBowFlightSpeedMax   = color.rgb("materialBowFlightSpeedMax",    "0x404040"),
         materialArrowMass           = color.rgb("materialArrowMass",            "0x404040"),
-        materialArrowBreakChance    = color.rgb("materialArrowBreakChance",     "0x404040");
+        materialArrowBreakChance    = color.rgb("materialArrowBreakChance",     "0x404040"),
+        neiTemperature              = color.rgb("neiTemperature",               "0x808080");
     // spotless:on
 }
