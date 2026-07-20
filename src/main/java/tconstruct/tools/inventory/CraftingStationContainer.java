@@ -1,6 +1,7 @@
 package tconstruct.tools.inventory;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -15,6 +16,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
 import tconstruct.items.tools.Arrow;
@@ -48,6 +50,12 @@ public class CraftingStationContainer extends Container {
     public CraftingStationLogic logic;
     EntityPlayer player;
 
+    /** Last matched recipe, tried first to avoid rescanning the whole recipe list on every matrix change. */
+    private IRecipe lastRecipe;
+
+    /** While true, matrix changes don't recompute the result. Batches ingredient consumption into one lookup. */
+    private boolean suppressCraftingUpdates;
+
     public CraftingStationContainer(InventoryPlayer inventoryplayer, CraftingStationLogic logic, int x, int y, int z) {
         this.worldObj = logic.getWorldObj();
         this.player = inventoryplayer.player;
@@ -74,6 +82,7 @@ public class CraftingStationContainer extends Container {
         // 0 - crafting slot
         this.addSlotToContainer(
                 new SlotCraftingStation(
+                        this,
                         inventoryplayer.player,
                         this.craftMatrix,
                         this.craftResult,
@@ -280,11 +289,74 @@ public class CraftingStationContainer extends Container {
     }
 
     public void onCraftMatrixChanged(IInventory par1IInventory) {
+        if (suppressCraftingUpdates) return;
+
         ItemStack tool = modifyItem();
         if (tool != null) this.craftResult.setInventorySlotContents(0, tool);
-        else this.craftResult.setInventorySlotContents(
-                0,
-                CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.worldObj));
+        else this.craftResult.setInventorySlotContents(0, findMatchingRecipeCached());
+    }
+
+    /** Like {@link CraftingManager#findMatchingRecipe} but tries the last matched recipe first. */
+    private ItemStack findMatchingRecipeCached() {
+        // Vanilla's two-item tool repair takes precedence over the recipe list
+        if (isVanillaToolRepair()) {
+            return CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.worldObj);
+        }
+
+        IRecipe cached = this.lastRecipe;
+        if (cached != null && cached.matches(this.craftMatrix, this.worldObj)) {
+            return cached.getCraftingResult(this.craftMatrix);
+        }
+        this.lastRecipe = null;
+
+        @SuppressWarnings("unchecked")
+        List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+        for (int i = 0; i < recipes.size(); i++) {
+            IRecipe recipe = recipes.get(i);
+            if (recipe.matches(this.craftMatrix, this.worldObj)) {
+                this.lastRecipe = recipe;
+                return recipe.getCraftingResult(this.craftMatrix);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Mirrors the repair check in {@link CraftingManager#findMatchingRecipe}: two size-1 stacks of one repairable item.
+     */
+    private boolean isVanillaToolRepair() {
+        ItemStack first = null;
+        ItemStack second = null;
+        int found = 0;
+
+        for (int i = 0; i < this.craftMatrix.getSizeInventory(); i++) {
+            ItemStack stack = this.craftMatrix.getStackInSlot(i);
+            if (stack == null) continue;
+
+            found++;
+            if (found == 1) first = stack;
+            else if (found == 2) second = stack;
+            else return false;
+        }
+
+        return found == 2 && first.getItem() == second.getItem()
+                && first.stackSize == 1
+                && second.stackSize == 1
+                && first.getItem().isRepairable();
+    }
+
+    /**
+     * Suppresses result updates until {@link #endBatchCraftingUpdate}; each consumed ingredient fires a lookup
+     * otherwise.
+     */
+    void beginBatchCraftingUpdate() {
+        suppressCraftingUpdates = true;
+    }
+
+    /** Re-enables result updates and recomputes once. */
+    void endBatchCraftingUpdate() {
+        suppressCraftingUpdates = false;
+        this.onCraftMatrixChanged(this.craftMatrix);
     }
 
     @Override
@@ -438,16 +510,19 @@ public class CraftingStationContainer extends Container {
     public void dumpCraftingGrid() {
         if (logic.slotCount == 0) return;
 
-        // 46 is the first slot index of the attached inventory
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = craftMatrix.getStackInSlot(i);
-            if (stack != null && stack.stackSize > 0) {
-                if (mergeItemStack(stack, 46, 46 + logic.slotCount, false)) {
-                    craftMatrix.setInventorySlotContents(i, stack.stackSize > 0 ? stack : null);
+        beginBatchCraftingUpdate();
+        try {
+            // 46 is the first slot index of the attached inventory
+            for (int i = 0; i < 9; i++) {
+                ItemStack stack = craftMatrix.getStackInSlot(i);
+                if (stack != null && stack.stackSize > 0) {
+                    if (mergeItemStack(stack, 46, 46 + logic.slotCount, false)) {
+                        craftMatrix.setInventorySlotContents(i, stack.stackSize > 0 ? stack : null);
+                    }
                 }
             }
+        } finally {
+            endBatchCraftingUpdate();
         }
-
-        this.onCraftMatrixChanged(this.craftMatrix);
     }
 }

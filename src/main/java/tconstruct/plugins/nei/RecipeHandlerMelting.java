@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import mantle.utils.ItemMetaWrapper;
 import tconstruct.library.crafting.Smeltery;
+import tconstruct.library.util.ColorUtils;
 
 public class RecipeHandlerMelting extends RecipeHandlerBase {
 
@@ -91,7 +92,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
     @Override
     public void drawExtras(int recipe) {
         int temperature = ((CachedMeltingRecipe) this.arecipes.get(recipe)).temperature;
-        GuiDraw.drawStringC(temperature + " C", 81, 9, 0x808080, false);
+        GuiDraw.drawStringC(temperature + " C", 81, 9, ColorUtils.neiTemperature.getColor(), false);
     }
 
     @Override

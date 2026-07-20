@@ -15,6 +15,8 @@ import tconstruct.tools.inventory.PatternShaperContainer;
 
 public class StencilTableLogic extends InventoryLogic implements ISidedInventory {
 
+    private static final int[] NO_SLOTS = new int[0];
+
     private ItemStack selectedStack;
 
     public StencilTableLogic() {
@@ -119,7 +121,7 @@ public class StencilTableLogic extends InventoryLogic implements ISidedInventory
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        return new int[0];
+        return NO_SLOTS;
     }
 
     @Override
