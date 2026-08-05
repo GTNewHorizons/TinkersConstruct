@@ -15,6 +15,10 @@ public class BarricadeRender implements ISimpleBlockRenderingHandler {
 
     public static int model;
 
+    private static final float[][] BARRICADE_BOUNDS = {
+        { 0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F },
+        { 0.375F, 0.375F, 0.0F, 0.625F, 0.625F, 1.0F } };
+
     public BarricadeRender() {
         model = RenderingRegistry.getNextAvailableRenderId();
     }
@@ -119,10 +123,7 @@ public class BarricadeRender implements ISimpleBlockRenderingHandler {
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
         if (modelID == model) {
-            renderer.setRenderBounds(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
-            ItemHelper.renderStandardInvBlock(renderer, block, metadata);
-            renderer.setRenderBounds(0.375F, 0.375F, 0.0F, 0.625F, 0.625F, 1.0F);
-            ItemHelper.renderStandardInvBlock(renderer, block, metadata);
+            ItemHelper.renderStandardInvBlock(renderer, block, metadata, BARRICADE_BOUNDS);
         }
     }
 
