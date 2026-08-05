@@ -2,43 +2,37 @@ package tconstruct.tools.model;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
-
-import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.tools.TinkerTools;
+import tconstruct.util.ItemHelper;
 
 @ThreadSafeISBRH(perThread = false)
 public class TableRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
+    private static final float[][] TABLE_BOUNDS = {
+        { 0.0F, 0.75F, 0.0F, 1.0F, 1.0F, 1.0F },
+        { 0.0F, 0.0F, 0.0F, 0.25F, 0.75F, 0.25F },
+        { 0.75F, 0.0F, 0.0F, 1.0F, 0.75F, 0.25F },
+        { 0.0F, 0.0F, 0.75F, 0.25F, 0.75F, 1.0F },
+        { 0.75F, 0.0F, 0.75F, 1.0F, 0.75F, 1.0F } };
+
+    private static final float[][] CHEST_BOUNDS = { { 0.0F, 0.0F, 0.0F, 1.0F, 0.875F, 1.0F } };
+
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
         if (modelID == model) {
-            // until we get the new model.. finally...
             if (block == TinkerTools.toolStationWood && metadata >= 5 && metadata <= 9) {
-                // pattern chest
-                renderer.setRenderBounds(0, 0, 0, 1, 0.875, 1);
-                renderStandardInvBlock(renderer, block, metadata);
-                return;
+                ItemHelper.renderStandardInvBlock(renderer, block, metadata, CHEST_BOUNDS);
+            } else {
+                ItemHelper.renderStandardInvBlock(renderer, block, metadata, TABLE_BOUNDS);
             }
-
-            renderer.setRenderBounds(0.0F, 0.75F, 0.0F, 1.0F, 1.0F, 1.0F);
-            renderStandardInvBlock(renderer, block, metadata);
-            renderer.setRenderBounds(0.0F, 0.0F, 0.0F, 0.25F, 0.75F, 0.25F);
-            renderStandardInvBlock(renderer, block, metadata);
-            renderer.setRenderBounds(0.75F, 0.0F, 0.0F, 1.0F, 0.75F, 0.25F);
-            renderStandardInvBlock(renderer, block, metadata);
-            renderer.setRenderBounds(0.0F, 0.0F, 0.75F, 0.25F, 0.75F, 1.0F);
-            renderStandardInvBlock(renderer, block, metadata);
-            renderer.setRenderBounds(0.75F, 0.0F, 0.75F, 1.0F, 0.75F, 1.0F);
-            renderStandardInvBlock(renderer, block, metadata);
         }
     }
 
@@ -80,33 +74,4 @@ public class TableRender implements ISimpleBlockRenderingHandler {
         return model;
     }
 
-    public static void renderStandardInvBlock(RenderBlocks renderblocks, Block block, int meta) {
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, -1F, 0.0F);
-        renderblocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderblocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, -1F);
-        renderblocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        renderblocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(-1F, 0.0F, 0.0F);
-        renderblocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        renderblocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, meta));
-        tessellator.draw();
-        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
     }
-}
