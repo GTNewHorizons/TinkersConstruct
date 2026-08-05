@@ -26,16 +26,12 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
 
     public static int renderID = RenderingRegistry.getNextAvailableRenderId();
 
-    private static final float[][] CHANNEL_BOUNDS = {
-        { 0.3125F, 0.375F, 0.3125F, 0.6875F, 0.5F, 0.6875F },
-        { 0.3125F, 0.375F, 0.0F, 0.6875F, 0.5F, 0.3125F },
-        { 0.3125F, 0.5F, 0.0F, 0.375F, 0.625F, 0.3125F },
-        { 0.625F, 0.5F, 0.0F, 0.6875F, 0.625F, 0.3125F },
-        { 0.3125F, 0.375F, 0.6875F, 0.6875F, 0.5F, 1.0F },
-        { 0.3125F, 0.5F, 0.6875F, 0.375F, 0.625F, 1.0F },
-        { 0.625F, 0.5F, 0.6875F, 0.6875F, 0.625F, 1.0F },
-        { 0.3125F, 0.375F, 0.3125F, 0.375F, 0.625F, 0.6875F },
-        { 0.625F, 0.375F, 0.3125F, 0.6875F, 0.625F, 0.6875F } };
+    private static final float[][] CHANNEL_BOUNDS = { { 0.3125F, 0.375F, 0.3125F, 0.6875F, 0.5F, 0.6875F },
+            { 0.3125F, 0.375F, 0.0F, 0.6875F, 0.5F, 0.3125F }, { 0.3125F, 0.5F, 0.0F, 0.375F, 0.625F, 0.3125F },
+            { 0.625F, 0.5F, 0.0F, 0.6875F, 0.625F, 0.3125F }, { 0.3125F, 0.375F, 0.6875F, 0.6875F, 0.5F, 1.0F },
+            { 0.3125F, 0.5F, 0.6875F, 0.375F, 0.625F, 1.0F }, { 0.625F, 0.5F, 0.6875F, 0.6875F, 0.625F, 1.0F },
+            { 0.3125F, 0.375F, 0.3125F, 0.375F, 0.625F, 0.6875F },
+            { 0.625F, 0.375F, 0.3125F, 0.6875F, 0.625F, 0.6875F } };
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {

@@ -15,8 +15,7 @@ public class PunjiRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
-    private static final float[][] PUNJI_BOUNDS = {
-        { 0.4375F, 0.0F, 0.4375F, 0.5625F, 1.0F, 0.5625F } };
+    private static final float[][] PUNJI_BOUNDS = { { 0.4375F, 0.0F, 0.4375F, 0.5625F, 1.0F, 0.5625F } };
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {

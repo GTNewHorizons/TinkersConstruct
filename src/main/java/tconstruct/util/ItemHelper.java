@@ -83,7 +83,13 @@ public class ItemHelper {
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         tessellator.startDrawingQuads();
         for (int i = 0; i < bounds.length; i++) {
-            renderblocks.setRenderBounds(bounds[i][0], bounds[i][1], bounds[i][2], bounds[i][3], bounds[i][4], bounds[i][5]);
+            renderblocks.setRenderBounds(
+                    bounds[i][0],
+                    bounds[i][1],
+                    bounds[i][2],
+                    bounds[i][3],
+                    bounds[i][4],
+                    bounds[i][5]);
             tessellator.setNormal(0.0F, -1F, 0.0F);
             renderblocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, icons[0]);
             tessellator.setNormal(0.0F, 1.0F, 0.0F);

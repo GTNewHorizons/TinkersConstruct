@@ -15,8 +15,7 @@ public class DryingRackRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
-    private static final float[][] RACK_BOUNDS = {
-        { 0.375F, 0.375F, 0.0F, 0.625F, 0.625F, 1.0F } };
+    private static final float[][] RACK_BOUNDS = { { 0.375F, 0.375F, 0.0F, 0.625F, 0.625F, 1.0F } };
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {

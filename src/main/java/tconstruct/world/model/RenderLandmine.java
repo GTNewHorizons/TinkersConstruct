@@ -22,8 +22,7 @@ public class RenderLandmine implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
-    private static final float[][] LANDMINE_BOUNDS = {
-        { 0.0625F, 0.5F, 0.0625F, 0.9375F, 0.5625F, 0.9375F } };
+    private static final float[][] LANDMINE_BOUNDS = { { 0.0625F, 0.5F, 0.0625F, 0.9375F, 0.5625F, 0.9375F } };
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {

@@ -21,9 +21,8 @@ public class TankRender implements ISimpleBlockRenderingHandler {
 
     public static int tankModelID = RenderingRegistry.getNextAvailableRenderId();
 
-    private static final float[][] TANK_TOP_BOUNDS = {
-        { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F },
-        { 0.1875F, 1.0F, 0.1875F, 0.8125F, 1.125F, 0.8125F } };
+    private static final float[][] TANK_TOP_BOUNDS = { { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F },
+            { 0.1875F, 1.0F, 0.1875F, 0.8125F, 1.125F, 0.8125F } };
 
     private static final float[][] TANK_FULL_BOUNDS = { { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F } };
 
@@ -88,4 +87,4 @@ public class TankRender implements ISimpleBlockRenderingHandler {
         return tankModelID;
     }
 
-    }
+}

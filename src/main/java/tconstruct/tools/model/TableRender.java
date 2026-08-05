@@ -16,12 +16,9 @@ public class TableRender implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
-    private static final float[][] TABLE_BOUNDS = {
-        { 0.0F, 0.75F, 0.0F, 1.0F, 1.0F, 1.0F },
-        { 0.0F, 0.0F, 0.0F, 0.25F, 0.75F, 0.25F },
-        { 0.75F, 0.0F, 0.0F, 1.0F, 0.75F, 0.25F },
-        { 0.0F, 0.0F, 0.75F, 0.25F, 0.75F, 1.0F },
-        { 0.75F, 0.0F, 0.75F, 1.0F, 0.75F, 1.0F } };
+    private static final float[][] TABLE_BOUNDS = { { 0.0F, 0.75F, 0.0F, 1.0F, 1.0F, 1.0F },
+            { 0.0F, 0.0F, 0.0F, 0.25F, 0.75F, 0.25F }, { 0.75F, 0.0F, 0.0F, 1.0F, 0.75F, 0.25F },
+            { 0.0F, 0.0F, 0.75F, 0.25F, 0.75F, 1.0F }, { 0.75F, 0.0F, 0.75F, 1.0F, 0.75F, 1.0F } };
 
     private static final float[][] CHEST_BOUNDS = { { 0.0F, 0.0F, 0.0F, 1.0F, 0.875F, 1.0F } };
 
@@ -74,4 +71,4 @@ public class TableRender implements ISimpleBlockRenderingHandler {
         return model;
     }
 
-    }
+}

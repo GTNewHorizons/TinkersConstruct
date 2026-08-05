@@ -15,9 +15,8 @@ public class BarricadeRender implements ISimpleBlockRenderingHandler {
 
     public static int model;
 
-    private static final float[][] BARRICADE_BOUNDS = {
-        { 0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F },
-        { 0.375F, 0.375F, 0.0F, 0.625F, 0.625F, 1.0F } };
+    private static final float[][] BARRICADE_BOUNDS = { { 0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F },
+            { 0.375F, 0.375F, 0.0F, 0.625F, 0.625F, 1.0F } };
 
     public BarricadeRender() {
         model = RenderingRegistry.getNextAvailableRenderId();
