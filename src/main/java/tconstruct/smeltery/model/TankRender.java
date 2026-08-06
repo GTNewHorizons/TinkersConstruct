@@ -8,6 +8,8 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import org.lwjgl.opengl.GL11;
+
 import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -21,8 +23,7 @@ public class TankRender implements ISimpleBlockRenderingHandler {
 
     public static int tankModelID = RenderingRegistry.getNextAvailableRenderId();
 
-    private static final float[][] TANK_TOP_BOUNDS = { { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F },
-            { 0.1875F, 1.0F, 0.1875F, 0.8125F, 1.125F, 0.8125F } };
+    private static final float[][] TANK_TOP_BOUNDS = { { 0.1875F, 0.0F, 0.1875F, 0.8125F, 0.125F, 0.8125F } };
 
     private static final float[][] TANK_FULL_BOUNDS = { { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F } };
 
@@ -30,7 +31,10 @@ public class TankRender implements ISimpleBlockRenderingHandler {
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
         if (modelID == tankModelID) {
             if (metadata == 0) {
+                ItemHelper.renderStandardInvBlock(renderer, block, metadata, TANK_FULL_BOUNDS);
+                GL11.glTranslatef(0.0F, 1.0F, 0.0F);
                 ItemHelper.renderStandardInvBlock(renderer, block, metadata, TANK_TOP_BOUNDS);
+                GL11.glTranslatef(0.0F, -1.0F, 0.0F);
             } else {
                 ItemHelper.renderStandardInvBlock(renderer, block, metadata, TANK_FULL_BOUNDS);
             }
