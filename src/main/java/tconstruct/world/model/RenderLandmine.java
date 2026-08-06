@@ -5,13 +5,12 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.lwjgl.opengl.GL11;
-
 import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.mechworks.landmine.Helper;
+import tconstruct.util.ItemHelper;
 
 /**
  *
@@ -23,15 +22,11 @@ public class RenderLandmine implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();
 
+    private static final float[][] LANDMINE_BOUNDS = { { 0.0625F, 0.5F, 0.0625F, 0.9375F, 0.5625F, 0.9375F } };
+
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(-0.5F, 0F, -0.5F);
-
-        renderer.setRenderBounds(0.0625F, 0.0F, 0.0625F, 1.0F - 0.0625F, 0.0625F, 1.0F - 0.0625F);
-        Helper.renderInventoryCube(block, metadata, modelID, renderer);
-
-        GL11.glPopMatrix();
+        ItemHelper.renderStandardInvBlock(renderer, block, metadata, LANDMINE_BOUNDS);
     }
 
     @Override
