@@ -35,5 +35,7 @@ public class SearedTableItemBlock extends MultiItemBlock {
         }
 
         if (StatCollector.canTranslate(tooltip)) p_77624_3_.add(StatCollector.translateToLocal(tooltip));
+
+        p_77624_3_.add(StatCollector.translateToLocal("smeltery.purity.tooltip"));
     }
 }

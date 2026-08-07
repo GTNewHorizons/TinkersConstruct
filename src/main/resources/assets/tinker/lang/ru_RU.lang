@@ -742,6 +742,7 @@ oreberries3.tooltip=На вкус, как металл
 oreberries4.tooltip=Оловянный человек
 oreberries5.tooltip=Белый шоколад
 oreberries6.tooltip=На вкус, как крипер
+oreberries.crops.tooltip=Можно посадить на пустые жёрдочки. Условия роста смотрите в NEI.
 item.crafting.tooltip=Участвует в создании
 item.accessory.tooltip=Аксессуар
 canister.tooltip=Постоянная прибавка к здоровью
@@ -776,6 +777,7 @@ smeltery.brick.tooltip2=(Безопасен для декораций)
 smeltery.castingtable.tooltip=Основное оборудование плавильни
 smeltery.castingfaucet.tooltip=Эта плавильня протекает
 smeltery.castingbasin.tooltip=Для амбициозной плавильни
+smeltery.purity.tooltip=§3Часть металлов, переработанных в плавильне, не соответствует требованиям GregTech по чистоте.
 #Dear translators, only translate these lines if the jokes are applicable in your language.
 grout.tooltip=Я есть цемент!
 frypankill.tooltip=Это бедное животное встретило свою кончину во время громкого *удара*

@@ -50,6 +50,8 @@ public class OreBerries extends CraftingItem {
                 list.add(StatCollector.translateToLocal("oreberries6.tooltip"));
                 break;
         }
+
+        list.add(StatCollector.translateToLocal("oreberries.crops.tooltip"));
     }
 
     @Override

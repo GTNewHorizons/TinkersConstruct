@@ -37,6 +37,8 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
             list.add(StatCollector.translateToLocal("searedtank3.tooltip"));
             list.add(StatCollector.translateToLocal("searedtank2.tooltip"));
         }
+
+        list.add(StatCollector.translateToLocal("smeltery.purity.tooltip"));
     }
 
     /**

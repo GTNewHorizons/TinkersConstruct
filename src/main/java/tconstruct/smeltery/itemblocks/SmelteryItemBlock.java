@@ -30,10 +30,12 @@ public class SmelteryItemBlock extends MultiItemBlock {
         switch (stack.getItemDamage()) {
             case 0:
                 list.add(StatCollector.translateToLocal("smeltery.controller.tooltip"));
+                list.add(StatCollector.translateToLocal("smeltery.purity.tooltip"));
                 break;
             case 1:
                 list.add(StatCollector.translateToLocal("smeltery.drain.tooltip1"));
                 list.add(StatCollector.translateToLocal("smeltery.drain.tooltip2"));
+                list.add(StatCollector.translateToLocal("smeltery.purity.tooltip"));
                 break;
             case 3:
                 list.add(StatCollector.translateToLocal("smeltery.furnace.tooltip"));
