@@ -1,5 +1,8 @@
 package tconstruct.smeltery.gui;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatFluid;
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -343,7 +346,7 @@ public class SmelteryGui extends ActiveContainerGui {
     private List<String> getFuelTooltip() {
         ArrayList<String> list = new ArrayList<>();
         list.add("\u00A7f" + StatCollector.translateToLocal("gui.smeltery.fuel"));
-        list.add(logic.fuelAmount + "/" + logic.fuelCapacity + " mB");
+        list.add(formatNumber(logic.fuelAmount) + " / " + formatFluid(logic.fuelCapacity));
         return list;
     }
 
@@ -352,45 +355,48 @@ public class SmelteryGui extends ActiveContainerGui {
         String name = liquid.getFluid().getLocalizedName(liquid);
         list.add("\u00A7f" + name);
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            list.add("mB: " + liquid.amount);
+            list.add(formatFluid(liquid.amount));
         } else if (name.equals(StatCollector.translateToLocal("fluid.emerald.liquid"))) {
-            list.add(StatCollector.translateToLocal("gui.smeltery.emerald") + liquid.amount / 640f);
+            list.add(StatCollector.translateToLocal("gui.smeltery.emerald") + formatNumber(liquid.amount / 640f));
         } else if (name.equals(StatCollector.translateToLocal("fluid.quartz.molten"))) {
-            list.add(StatCollector.translateToLocal("gui.smeltery.quartz") + liquid.amount / 250f);
+            list.add(StatCollector.translateToLocal("gui.smeltery.quartz") + formatNumber(liquid.amount / 250f));
         } else if (name.equals(StatCollector.translateToLocal("fluid.glass.molten"))) {
             int blocks = liquid.amount / 1000;
-            if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
+            if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + formatNumber(blocks));
             int panels = (liquid.amount % 1000) / 250;
-            if (panels > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.pannel") + panels);
+            if (panels > 0)
+                list.add(StatCollector.translateToLocal("gui.smeltery.glass.pannel") + formatNumber(panels));
             int mB = (liquid.amount % 1000) % 250;
-            if (mB > 0) list.add("mB: " + mB);
+            if (mB > 0) list.add(formatFluid(mB));
         } else if (name.equals(StatCollector.translateToLocal("fluid.stone.seared"))) {
             if (Loader.isModLoaded("dreamcraft")) {
                 int blocks = liquid.amount / 360; // in gtnh each seared stone block is 360 mb of fluid
-                if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
+                if (blocks > 0)
+                    list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + formatFluid(blocks));
                 // we also have no casting recipe for seared bricks
                 int mB = liquid.amount % 360;
-                if (mB > 0) list.add("mB: " + mB);
+                if (mB > 0) list.add(formatFluid(mB));
             } else {
                 int blocks = liquid.amount / TConstruct.ingotLiquidValue;
                 if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
                 int ingots = (liquid.amount % TConstruct.ingotLiquidValue) / (TConstruct.ingotLiquidValue / 4);
                 if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + ingots);
                 int mB = (liquid.amount % TConstruct.ingotLiquidValue) % (TConstruct.ingotLiquidValue / 4);
-                if (mB > 0) list.add("mB: " + mB);
+                if (mB > 0) list.add(formatFluid(mB));
             }
         } else if (isMolten(name)) {
             int ingots = liquid.amount / TConstruct.ingotLiquidValue;
-            if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + ingots);
+            if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + formatNumber(ingots));
             int mB = liquid.amount % TConstruct.ingotLiquidValue;
             if (mB > 0) {
                 int nuggets = mB / TConstruct.nuggetLiquidValue;
                 int junk = (mB % TConstruct.nuggetLiquidValue);
-                if (nuggets > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.nugget") + nuggets);
-                if (junk > 0) list.add("mB: " + junk);
+                if (nuggets > 0)
+                    list.add(StatCollector.translateToLocal("gui.smeltery.metal.nugget") + formatNumber(nuggets));
+                if (junk > 0) list.add(formatFluid(junk));
             }
         } else {
-            list.add("mB: " + liquid.amount);
+            list.add(formatFluid(liquid.amount));
         }
         return list;
     }

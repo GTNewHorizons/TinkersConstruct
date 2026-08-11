@@ -1,5 +1,7 @@
 package tconstruct.items.tools;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -178,7 +180,10 @@ public class Arrow extends ToolCore {
                 else color = "\u00a76";
             }
 
-            String energy = color + tags.getInteger("Energy") + "/" + getMaxEnergyStored(stack) + " RF";
+            String energy = color + formatNumber(tags.getInteger("Energy"))
+                    + " / "
+                    + formatNumber(getMaxEnergyStored(stack))
+                    + " RF";
             list.add(energy);
         }
         if (tags.hasKey("InfiTool")) {
@@ -208,11 +213,11 @@ public class Arrow extends ToolCore {
         }
         int attack = (int) (tags.getCompoundTag("InfiTool").getInteger("Attack") * this.getDamageModifier());
         list.add(
-                "\u00A79+" + attack
+                "\u00A79+" + formatNumber(attack)
                         + " "
                         + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
         list.add(
-                "\u00A79+" + tags.getCompoundTag("InfiTool").getInteger("Attack")
+                "\u00A79+" + formatNumber(tags.getCompoundTag("InfiTool").getInteger("Attack"))
                         + " "
                         + StatCollector.translateToLocalFormatted("attribute.name.ammo.attackDamage"));
     }

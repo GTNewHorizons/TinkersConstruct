@@ -1,5 +1,8 @@
 package tconstruct.plugins.waila;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatFluid;
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -40,9 +43,9 @@ public class SearedTankDataProvider implements IWailaDataProvider {
                         StatCollector.translateToLocal("tconstruct.waila.liquidtag")
                                 + WailaRegistrar.fluidNameHelper(fs));
                 currenttip.add(
-                        StatCollector.translateToLocal("tconstruct.waila.amounttag") + fs.amount
-                                + "/"
-                                + te.tank.getCapacity());
+                        StatCollector.translateToLocal("tconstruct.waila.amounttag") + formatNumber(fs.amount)
+                                + " / "
+                                + formatFluid(te.tank.getCapacity()));
             } else {
                 currenttip.add(SpecialChars.ITALIC + StatCollector.translateToLocal("tconstruct.waila.empty"));
             }

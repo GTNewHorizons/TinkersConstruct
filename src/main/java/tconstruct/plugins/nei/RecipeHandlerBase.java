@@ -1,5 +1,7 @@
 package tconstruct.plugins.nei;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatFluid;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -223,7 +225,7 @@ public abstract class RecipeHandlerBase extends TemplateRecipeHandler {
                 return currenttip;
             }
             currenttip.add(this.fluid.getLocalizedName());
-            currenttip.add(EnumChatFormatting.GRAY.toString() + this.fluid.amount + " mB");
+            currenttip.add(EnumChatFormatting.GRAY + formatFluid(this.fluid.amount));
             return currenttip;
         }
 
