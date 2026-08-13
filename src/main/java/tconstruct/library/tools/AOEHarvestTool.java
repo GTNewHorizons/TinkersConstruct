@@ -4,9 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MovingObjectPosition;
 
 import tconstruct.library.util.AoEExclusionList;
+import tconstruct.library.util.BlockSideHitListener;
 
 public abstract class AOEHarvestTool extends HarvestTool {
 
@@ -39,10 +39,7 @@ public abstract class AOEHarvestTool extends HarvestTool {
 
         if (player.isSneaking()) return super.onBlockStartBreak(stack, x, y, z, player);
 
-        MovingObjectPosition mop = AbilityHelper.raytraceFromEntity(player.worldObj, player, false, 4.5d);
-        if (mop == null) return super.onBlockStartBreak(stack, x, y, z, player);
-        int sideHit = mop.sideHit;
-        // int sideHit = Minecraft.getMinecraft().objectMouseOver.sideHit;
+        int sideHit = BlockSideHitListener.getSideHit(player);
 
         // we successfully destroyed a block. time to do AOE!
         int xRange = breakRadius;

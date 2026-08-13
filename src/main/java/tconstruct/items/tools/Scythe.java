@@ -6,7 +6,6 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -28,6 +27,7 @@ import tconstruct.library.ActiveToolMod;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.library.tools.Weapon;
+import tconstruct.library.util.BlockSideHitListener;
 import tconstruct.tools.TinkerTools;
 
 public class Scythe extends Weapon {
@@ -240,16 +240,14 @@ public class Scythe extends Weapon {
                                                                         x,
                                                                         y,
                                                                         z,
-                                                                        Minecraft
-                                                                                .getMinecraft().objectMouseOver.sideHit));
+                                                                        BlockSideHitListener.getSideHit(player)));
                                                         handlerClient.addToSendQueue(
                                                                 new C07PacketPlayerDigging(
                                                                         2,
                                                                         x,
                                                                         y,
                                                                         z,
-                                                                        Minecraft
-                                                                                .getMinecraft().objectMouseOver.sideHit));
+                                                                        BlockSideHitListener.getSideHit(player)));
                                                     }
                                                 }
 
