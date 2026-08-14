@@ -16,7 +16,6 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 public class BlockSideHitListener {
 
     private static final Map<UUID, Integer> HIT_FACE = new HashMap<>();
-    private static int clientSideHit = 1;
     private static boolean initialized = false;
 
     /** Initializes this listener. */
@@ -33,12 +32,7 @@ public class BlockSideHitListener {
     @SubscribeEvent
     public void onLeftClickBlock(PlayerInteractEvent event) {
         if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
-            EntityPlayer player = event.entityPlayer;
-            if (player.worldObj.isRemote) {
-                clientSideHit = event.face;
-            } else {
-                HIT_FACE.put(player.getUniqueID(), event.face);
-            }
+            HIT_FACE.put(event.entityPlayer.getUniqueID(), event.face);
         }
     }
 
@@ -55,7 +49,6 @@ public class BlockSideHitListener {
      * @return side last hit
      */
     public static int getSideHit(EntityPlayer player) {
-        if (player.worldObj.isRemote) return clientSideHit;
         Integer side = HIT_FACE.get(player.getUniqueID());
         return side == null ? 1 : side;
     }

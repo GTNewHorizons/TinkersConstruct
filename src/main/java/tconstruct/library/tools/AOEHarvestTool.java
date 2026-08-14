@@ -26,6 +26,8 @@ public abstract class AOEHarvestTool extends HarvestTool {
 
     @Override
     public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
+        if (player.worldObj.isRemote) return super.onBlockStartBreak(stack, x, y, z, player);
+
         // only effective materials matter. We don't want to aoe when breaking dirt with a hammer.
         String toolName = "tool." + getAOEToolName().toLowerCase();
         Block block = player.worldObj.getBlock(x, y, z);

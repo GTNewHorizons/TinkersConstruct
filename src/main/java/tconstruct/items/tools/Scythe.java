@@ -27,7 +27,6 @@ import tconstruct.library.ActiveToolMod;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.library.tools.Weapon;
-import tconstruct.library.util.BlockSideHitListener;
 import tconstruct.tools.TinkerTools;
 
 public class Scythe extends Weapon {
@@ -234,20 +233,11 @@ public class Scythe extends Weapon {
                                                             .getClientPlayHandler();
                                                     if (handler instanceof NetHandlerPlayClient) {
                                                         NetHandlerPlayClient handlerClient = (NetHandlerPlayClient) handler;
+                                                        // scythe aoe is a cube so the face is irrelevant
                                                         handlerClient.addToSendQueue(
-                                                                new C07PacketPlayerDigging(
-                                                                        0,
-                                                                        x,
-                                                                        y,
-                                                                        z,
-                                                                        BlockSideHitListener.getSideHit(player)));
+                                                                new C07PacketPlayerDigging(0, x, y, z, 1));
                                                         handlerClient.addToSendQueue(
-                                                                new C07PacketPlayerDigging(
-                                                                        2,
-                                                                        x,
-                                                                        y,
-                                                                        z,
-                                                                        BlockSideHitListener.getSideHit(player)));
+                                                                new C07PacketPlayerDigging(2, x, y, z, 1));
                                                     }
                                                 }
 
