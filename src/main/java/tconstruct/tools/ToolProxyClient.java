@@ -73,6 +73,7 @@ import tconstruct.tools.model.BattlesignTesr;
 import tconstruct.tools.model.FancyItemRender;
 import tconstruct.tools.model.FrypanRender;
 import tconstruct.tools.model.TableRender;
+import tconstruct.tools.model.ToolStationTesr;
 import tconstruct.weaponry.TinkerWeaponry;
 
 public class ToolProxyClient extends ToolProxyCommon {
@@ -125,6 +126,8 @@ public class ToolProxyClient extends ToolProxyCommon {
         // MinecraftForgeClient.registerItemRenderer(TinkerTools.dagger, daggerRenderer); // todo proper renderer
 
         TileEntityRendererDispatcher.instance.mapSpecialRenderers.put(BattlesignLogic.class, new BattlesignTesr());
+        // covers ToolForgeLogic too: the renderer dispatcher walks superclasses
+        TileEntityRendererDispatcher.instance.mapSpecialRenderers.put(ToolStationLogic.class, new ToolStationTesr());
     }
 
     public void registerManualIcons() {

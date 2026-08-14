@@ -6,6 +6,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
 
 import mantle.blocks.abstracts.InventoryLogic;
@@ -61,6 +64,7 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
         if (slot != 0) {
             buildTool(toolName);
         }
+        syncContentsToClients();
     }
 
     @Override
@@ -69,7 +73,27 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
         if (slot != 0) {
             buildTool(toolName);
         }
+        syncContentsToClients();
         return itemstack;
+    }
+
+    // the table renders its contents in the world, so clients need the inventory
+    protected void syncContentsToClients() {
+        if (worldObj != null && !worldObj.isRemote) {
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound tag = new NBTTagCompound();
+        writeToNBT(tag);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        readFromNBT(packet.func_148857_g());
     }
 
     @Override
