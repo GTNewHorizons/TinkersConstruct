@@ -37,6 +37,14 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
     }
 
     private void render(ToolStationLogic logic, double posX, double posY, double posZ) {
+        // when a tool slab lies on the table, the material sprites rest on top of it instead of
+        // interpenetrating — its height lifts every later slab's base plane
+        float toolLift = 0F;
+        ItemStack center = logic.getSizeInventory() > 1 ? logic.getStackInSlot(1) : null;
+        if (center != null && center.getItem() instanceof ToolCore) {
+            toolLift = 0.09375F * 0.85F + 0.006F;
+        }
+
         for (int slot = 1; slot <= 6 && slot < logic.getSizeInventory(); slot++) {
             ItemStack stack = logic.getStackInSlot(slot);
             if (stack == null) continue;
@@ -71,11 +79,12 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
             float thickness = bigTool ? 0.09375F : 0.25F;
 
             GL11.glPushMatrix();
-            // the extrusion hangs below the sprite face, so lift by its world depth to rest it on the
-            // table; stagger heights so overlapping flat sprites don't z-fight
+            // the extrusion hangs below the sprite face, so lift by its world depth to rest it on its
+            // base plane (table, or tool slab for materials); stagger heights against z-fighting
+            float basePlane = bigTool ? 0F : toolLift;
             GL11.glTranslatef(
                     (float) posX + 0.5F + offX,
-                    (float) posY + 1.001F + thickness * scale + slot * 0.004F,
+                    (float) posY + 1.001F + basePlane + thickness * scale + slot * 0.004F,
                     (float) posZ + 0.5F + offZ);
             // lay the sprite flat, face up (icon top pointing north), sized by scale
             GL11.glRotatef(-90F, 1F, 0F, 0F);
