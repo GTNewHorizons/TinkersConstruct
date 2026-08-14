@@ -1,5 +1,6 @@
 package tconstruct.tools.gui;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,6 +22,7 @@ public class ToolForgeGui extends ToolStationGui {
     private static final ResourceLocation forgeBackground = new ResourceLocation(
             "tinker",
             "textures/gui/toolstation.png");
+    private static final ResourceLocation forgeIcons = new ResourceLocation("tinker", "textures/gui/icons.png");
     private static final RenderItem ghostRender = new RenderItem();
 
     // Where slots 5 and 6 sit while a tool-building layout only uses four inputs
@@ -78,8 +80,22 @@ public class ToolForgeGui extends ToolStationGui {
 
     @Override
     protected void setIconUVs() {
-        iconX = new int[] { 0, 1, 2, 13, 13, 13 };
+        setRepairIconUVs();
+    }
+
+    // TiC2 repair hints: pickaxe (tool), then ingot/lapis/gem/dust/quartz for top/left/right/bottom-left/bottom-right
+    private void setRepairIconUVs() {
+        iconX = new int[] { 0, 3, 2, 4, 1, 5 };
         iconY = new int[] { 13, 13, 13, 13, 13, 13 };
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+        super.actionPerformed(button);
+        // tool buttons carry four-slot icon sets; the Repair & Modify pentagon uses its own
+        if (((GuiButtonTool) button).element.slotType == 0) {
+            setRepairIconUVs();
+        }
     }
 
     @Override
@@ -138,16 +154,22 @@ public class ToolForgeGui extends ToolStationGui {
 
     @Override
     protected void drawCentralPanelExtras(int cornerX) {
-        if (selectedButton != 0 || !logic.isStackInSlot(1)) return;
-        ItemStack tool = logic.getStackInSlot(1);
+        if (selectedButton != 0) return;
 
-        // oversized ghost preview of the tool being modified, TiC2-style
+        // oversized ghost preview behind the slots, TiC2-style: the tool being modified, or an anvil when empty
         GL11.glPushMatrix();
         GL11.glTranslatef(cornerX + 9, this.guiTop + 15, 0F);
         GL11.glScalef(4F, 4F, 1F);
-        RenderHelper.enableGUIStandardItemLighting();
-        ghostRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), tool, 0, 0);
-        RenderHelper.disableStandardItemLighting();
+        if (logic.isStackInSlot(1)) {
+            ItemStack tool = logic.getStackInSlot(1);
+            RenderHelper.enableGUIStandardItemLighting();
+            ghostRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), tool, 0, 0);
+            RenderHelper.disableStandardItemLighting();
+        } else {
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            this.mc.getTextureManager().bindTexture(forgeIcons);
+            this.drawTexturedModalRect(0, 0, 54, 0, 18, 18);
+        }
         GL11.glPopMatrix();
 
         // translucent cover so the preview stays in the background
