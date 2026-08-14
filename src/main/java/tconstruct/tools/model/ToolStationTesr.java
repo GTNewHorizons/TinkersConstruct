@@ -69,9 +69,13 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
         Minecraft.getMinecraft().getTextureManager().bindTexture(
                 stack.getItemSpriteNumber() == 0 ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture);
 
-        int passes = item.requiresMultipleRenderPasses() ? item.getRenderPasses(stack.getItemDamage()) : 1;
+        // ToolCore opts out of the vanilla multipass API (getRenderPasses() == 0, getIconIndex() == blank) because
+        // its custom item renderer draws it; getIcon(stack, pass) still yields the real part and effect layers
+        boolean tinkerTool = item instanceof ToolCore;
+        int passes = tinkerTool ? 11
+                : item.requiresMultipleRenderPasses() ? item.getRenderPasses(stack.getItemDamage()) : 1;
         for (int pass = 0; pass < passes; pass++) {
-            IIcon icon = passes > 1 ? item.getIcon(stack, pass) : stack.getIconIndex();
+            IIcon icon = tinkerTool || passes > 1 ? item.getIcon(stack, pass) : stack.getIconIndex();
             if (icon == null) continue;
             int color = item.getColorFromItemStack(stack, pass);
             GL11.glColor4f((color >> 16 & 255) / 255F, (color >> 8 & 255) / 255F, (color & 255) / 255F, 1F);
