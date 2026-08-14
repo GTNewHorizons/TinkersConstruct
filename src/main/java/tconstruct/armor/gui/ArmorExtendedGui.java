@@ -50,9 +50,9 @@ public class ArmorExtendedGui extends InventoryEffectRenderer {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         // fontRenderer.drawString(StatCollector.translateToLocal("inventory.armorextended"),
-        // 60, 6, 0x404040);
+        // 60, 6, ColorUtils.inventoryTitle.getColor());
         // fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"),
-        // 17, (ySize - 96) + 2, 0x404040);
+        // 17, (ySize - 96) + 2, ColorUtils.inventoryTitle.getColor());
     }
 
     @Override
