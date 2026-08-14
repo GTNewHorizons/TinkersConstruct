@@ -33,7 +33,7 @@ public class MaterialItem extends CraftingItem {
             "EssenceCrystal", "AluBrassNugget", "SilkyCloth", "SilkyJewel", "ObsidianNugget", "CobaltNugget",
             "ArditeNugget", "ManyullynNugget", "BronzeNugget", "AlumiteNugget", "SteelNugget", "PigIronIngot",
             "PigIronNugget", "GlueBall", "SearedBrick", "ArditeDust", "CobaltDust", "AluminumDust", "ManyullynDust",
-            "AluBrassDust", "Reinforcement" };
+            "AluBrassDust", "Reinforcement", "ExpanderHorizontal", "ExpanderVertical" };
 
     static String[] craftingTextures = new String[] { "paperstack", "slimecrystal", "searedbrick", "cobaltingot",
             "arditeingot", "manyullyningot", "mossball", "lavacrystal", "necroticbone", "copperingot", "tiningot",
@@ -42,7 +42,7 @@ public class MaterialItem extends CraftingItem {
             "nugget_alubrass", "silkycloth", "silkyjewel", "nugget_obsidian", "nugget_cobalt", "nugget_ardite",
             "nugget_manyullyn", "nugget_bronze", "nugget_alumite", "nugget_steel", "pigironingot", "nugget_pigiron",
             "glueball", "searedbrick_nether", "ardite_dust", "cobalt_dust", "aluminum_dust", "manyullyn_dust",
-            "alubrass_dust", "reinforcement" };
+            "alubrass_dust", "reinforcement", "expander_horizontal", "expander_vertical" };
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -72,6 +72,18 @@ public class MaterialItem extends CraftingItem {
                 list.add(
                         StatCollector.translateToLocal("modifier.tooltip.Main") + "\u00a75 "
                                 + StatCollector.translateToLocal("tool.reinforced"));
+                break;
+            case 44:
+                list.add(
+                        StatCollector.translateToLocal("modifier.tooltip.Main") + "\u00a7a "
+                                + StatCollector.translateToLocal("modifier.tool.width"));
+                list.add("\u00a78\u00a7o" + StatCollector.translateToLocal("modifier.tooltip.expander.horizontal"));
+                break;
+            case 45:
+                list.add(
+                        StatCollector.translateToLocal("modifier.tooltip.Main") + "\u00a7a "
+                                + StatCollector.translateToLocal("modifier.tool.height"));
+                list.add("\u00a78\u00a7o" + StatCollector.translateToLocal("modifier.tooltip.expander.vertical"));
                 break;
             default:
                 break;
