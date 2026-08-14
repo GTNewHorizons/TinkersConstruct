@@ -70,7 +70,7 @@ public class CrosshairHandler {
         GL11.glEnable(GL11.GL_BLEND);
         OpenGlHelper.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR, 1, 0);
 
-        if(equipped.getTagCompound() == null) return;
+        if (equipped.getTagCompound() == null) return;
         float spread = ((1.0f - weapon.getWindupProgress(equipped, mc.thePlayer)) * 25f);
 
         // 4 square crosshair
