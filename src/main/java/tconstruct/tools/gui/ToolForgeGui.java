@@ -1,7 +1,13 @@
 package tconstruct.tools.gui;
 
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
+import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -11,6 +17,14 @@ import tconstruct.tools.logic.ToolForgeLogic;
 
 @SideOnly(Side.CLIENT)
 public class ToolForgeGui extends ToolStationGui {
+
+    private static final ResourceLocation forgeBackground = new ResourceLocation(
+            "tinker",
+            "textures/gui/toolstation.png");
+    private static final RenderItem ghostRender = new RenderItem();
+
+    // Where slots 5 and 6 sit while a tool-building layout only uses four inputs
+    private static final int PARK_X1 = 87, PARK_X2 = 107, PARK_Y = 62;
 
     public ToolForgeGui(InventoryPlayer inventoryplayer, ToolForgeLogic stationlogic, World world, int x, int y,
             int z) {
@@ -64,54 +78,85 @@ public class ToolForgeGui extends ToolStationGui {
 
     @Override
     protected void setIconUVs() {
-        iconX = new int[] { 0, 1, 2, 13 };
-        iconY = new int[] { 13, 13, 13, 13 };
+        iconX = new int[] { 0, 1, 2, 13, 13, 13 };
+        iconY = new int[] { 13, 13, 13, 13, 13, 13 };
     }
 
     @Override
     protected void setSlotType(int type) {
         switch (type) {
             case 0:
-                slotX = new int[] { 56, 38, 38, 14 }; // Repair
-                slotY = new int[] { 37, 28, 46, 37 };
+                // TiC2-style Repair & Modify: tool centered, five modifier slots arranged around it
+                slotX = new int[] { 33, 33, 11, 55, 15, 51 };
+                slotY = new int[] { 40, 17, 35, 35, 61, 61 };
                 break;
             case 1:
-                slotX = new int[] { 56, 56, 56, 14 }; // Three parts
-                slotY = new int[] { 19, 55, 37, 37 };
+                slotX = new int[] { 56, 56, 56, 14, PARK_X1, PARK_X2 }; // Three parts
+                slotY = new int[] { 19, 55, 37, 37, PARK_Y, PARK_Y };
                 break;
             case 2:
-                slotX = new int[] { 56, 56, 14, 14 }; // Two parts
-                slotY = new int[] { 28, 46, 28, 46 };
+                slotX = new int[] { 56, 56, 14, 14, PARK_X1, PARK_X2 }; // Two parts
+                slotY = new int[] { 28, 46, 28, 46, PARK_Y, PARK_Y };
                 break;
             case 3:
-                slotX = new int[] { 38, 47, 56, 14 }; // Double head
-                slotY = new int[] { 28, 46, 28, 37 };
+                slotX = new int[] { 38, 47, 56, 14, PARK_X1, PARK_X2 }; // Double head
+                slotY = new int[] { 28, 46, 28, 37, PARK_Y, PARK_Y };
                 break;
             case 4:
-                slotX = new int[] { 47, 38, 56, 47 }; // Four parts
-                slotY = new int[] { 19, 37, 37, 55 };
+                slotX = new int[] { 47, 38, 56, 47, PARK_X1, PARK_X2 }; // Four parts
+                slotY = new int[] { 19, 37, 37, 55, PARK_Y, PARK_Y };
                 break;
             case 5:
-                slotX = new int[] { 38, 47, 56, 47 }; // Four parts, double head
-                slotY = new int[] { 19, 55, 19, 37 };
+                slotX = new int[] { 38, 47, 56, 47, PARK_X1, PARK_X2 }; // Four parts, double head
+                slotY = new int[] { 19, 55, 19, 37, PARK_Y, PARK_Y };
                 break;
             case 6:
-                slotX = new int[] { 38, 38, 20, 56 }; // Double head
-                slotY = new int[] { 28, 46, 28, 28 };
+                slotX = new int[] { 38, 38, 20, 56, PARK_X1, PARK_X2 }; // Double head
+                slotY = new int[] { 28, 46, 28, 28, PARK_Y, PARK_Y };
                 break;
             case 7:
-                slotX = new int[] { 56, 56, 56, 14 }; // Three parts reverse
-                slotY = new int[] { 19, 37, 55, 37 };
+                slotX = new int[] { 56, 56, 56, 14, PARK_X1, PARK_X2 }; // Three parts reverse
+                slotY = new int[] { 19, 37, 55, 37, PARK_Y, PARK_Y };
                 break;
             case 8:
-                slotX = new int[] { 20, 38, 56, 38 }; // Double head middle
-                slotY = new int[] { 28, 46, 28, 28 };
+                slotX = new int[] { 20, 38, 56, 38, PARK_X1, PARK_X2 }; // Double head middle
+                slotY = new int[] { 28, 46, 28, 28, PARK_Y, PARK_Y };
                 break;
             case 9:
-                slotX = new int[] { 38, 56, 47, 47 }; // Four parts, crossbow.
-                slotY = new int[] { 37, 37, 55, 19 };
+                slotX = new int[] { 38, 56, 47, 47, PARK_X1, PARK_X2 }; // Four parts, crossbow.
+                slotY = new int[] { 37, 37, 55, 19, PARK_Y, PARK_Y };
                 break;
         }
         toolSlots.resetSlots(slotX, slotY);
+    }
+
+    @Override
+    protected void drawInventoryLabel() {
+        // the Repair & Modify pentagon reaches into the label's space
+        if (selectedButton != 0) super.drawInventoryLabel();
+    }
+
+    @Override
+    protected void drawCentralPanelExtras(int cornerX) {
+        if (selectedButton != 0 || !logic.isStackInSlot(1)) return;
+        ItemStack tool = logic.getStackInSlot(1);
+
+        // oversized ghost preview of the tool being modified, TiC2-style
+        GL11.glPushMatrix();
+        GL11.glTranslatef(cornerX + 9, this.guiTop + 15, 0F);
+        GL11.glScalef(4F, 4F, 1F);
+        RenderHelper.enableGUIStandardItemLighting();
+        ghostRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), tool, 0, 0);
+        RenderHelper.disableStandardItemLighting();
+        GL11.glPopMatrix();
+
+        // translucent cover so the preview stays in the background
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.82F);
+        this.mc.getTextureManager().bindTexture(forgeBackground);
+        this.drawTexturedModalRect(cornerX + 8, this.guiTop + 16, 8, 16, 80, 64);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 }

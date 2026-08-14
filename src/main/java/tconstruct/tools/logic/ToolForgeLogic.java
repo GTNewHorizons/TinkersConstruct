@@ -21,7 +21,7 @@ public class ToolForgeLogic extends ToolStationLogic implements ISidedInventory 
     String toolName;
 
     public ToolForgeLogic() {
-        super(6);
+        super(7); // 0 output, 1 tool, 2-6 modifier materials (TiC2-style five slots around the tool)
         toolName = "";
     }
 
@@ -41,10 +41,15 @@ public class ToolForgeLogic extends ToolStationLogic implements ISidedInventory 
         if (inventory[1] != null) {
             if (inventory[1].getItem() instanceof IModifyable) // Modify item
             {
-                if (inventory[2] == null && inventory[3] == null && inventory[4] == null) output = inventory[1].copy();
+                if (inventory[2] == null && inventory[3] == null
+                        && inventory[4] == null
+                        && inventory[5] == null
+                        && inventory[6] == null)
+                    output = inventory[1].copy();
                 else {
-                    output = ModifyBuilder.instance
-                            .modifyItem(inventory[1], new ItemStack[] { inventory[2], inventory[3], inventory[4] });
+                    output = ModifyBuilder.instance.modifyItem(
+                            inventory[1],
+                            new ItemStack[] { inventory[2], inventory[3], inventory[4], inventory[5], inventory[6] });
                 }
             } else
             // Build new item

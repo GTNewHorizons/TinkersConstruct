@@ -29,9 +29,9 @@ public class ToolForgeContainer extends ToolStationContainer {
         toolSlot = new SlotToolForge(inventoryplayer.player, logic, 0, 225, 38);
         this.addSlotToContainer(toolSlot);
         slots = new Slot[] { new Slot(logic, 1, 167, 29), new Slot(logic, 2, 169, 29), new Slot(logic, 3, 167, 47),
-                new Slot(logic, 4, 149, 47) };
+                new Slot(logic, 4, 149, 47), new Slot(logic, 5, 149, 29), new Slot(logic, 6, 149, 38) };
 
-        for (int iter = 0; iter < 4; iter++) this.addSlotToContainer(slots[iter]);
+        for (int iter = 0; iter < slots.length; iter++) this.addSlotToContainer(slots[iter]);
 
         /* Player inventory */
         for (int column = 0; column < 3; column++) {
@@ -52,7 +52,7 @@ public class ToolForgeContainer extends ToolStationContainer {
         inventorySlots.clear();
         inventoryItemStacks.clear();
         this.addSlotToContainer(toolSlot);
-        for (int iter = 0; iter < 4; iter++) {
+        for (int iter = 0; iter < slots.length; iter++) {
             slots[iter].xDisplayPosition = posX[iter] + 111;
             slots[iter].yDisplayPosition = posY[iter] + 1;
             addSlotToContainer(slots[iter]);
@@ -77,9 +77,14 @@ public class ToolForgeContainer extends ToolStationContainer {
             int[] toRemoveArray = tags.hasKey("ToRemove") ? tags.getIntArray("ToRemove") : null;
             int toRemoveIndex = 0;
 
-            boolean full = (logic.getStackInSlot(2) != null || logic.getStackInSlot(3) != null
-                    || logic.getStackInSlot(4) != null);
-            for (int i = 2; i <= 4; i++) {
+            boolean full = false;
+            for (int i = 2; i < logic.getSizeInventory(); i++) {
+                if (logic.getStackInSlot(i) != null) {
+                    full = true;
+                    break;
+                }
+            }
+            for (int i = 2; i < logic.getSizeInventory(); i++) {
                 ItemStack item = logic.getStackInSlot(i);
                 if (item == null) {
                     continue;

@@ -153,8 +153,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         this.fontRendererObj.drawString(StatCollector.translateToLocal(logic.getInvName()), 116, 8, 0x000000);
-        this.fontRendererObj
-                .drawString(StatCollector.translateToLocal("container.inventory"), 118, this.ySize - 96 + 2, 0x000000);
+        drawInventoryLabel();
         this.text.drawTextBox();
 
         if (logic.isStackInSlot(0)) {
@@ -167,6 +166,11 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     protected void drawToolInformation() {
         this.drawCenteredString(fontRendererObj, title, 349, 8, 0xffffff);
         fontRendererObj.drawSplitString(body, 294, 24, 115, 0xffffff);
+    }
+
+    protected void drawInventoryLabel() {
+        this.fontRendererObj
+                .drawString(StatCollector.translateToLocal("container.inventory"), 118, this.ySize - 96 + 2, 0x000000);
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/toolstation.png");
@@ -188,13 +192,15 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
             this.drawTexturedModalRect(cornerX + 62, this.guiTop, 0, this.ySize, 112, 22);
         }
 
+        drawCentralPanelExtras(cornerX);
+
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(icons);
         // Draw the slots
 
         for (int i = 0; i < slotX.length; i++) {
             this.drawTexturedModalRect(cornerX + slotX[i], this.guiTop + slotY[i], 144, 216, 18, 18);
-            if (!logic.isStackInSlot(i + 1)) {
+            if (i < iconX.length && i < iconY.length && !logic.isStackInSlot(i + 1)) {
                 this.drawTexturedModalRect(
                         cornerX + slotX[i],
                         this.guiTop + slotY[i],
@@ -210,6 +216,9 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         this.mc.getTextureManager().bindTexture(description);
         this.drawTexturedModalRect(cornerX + 176, this.guiTop, 0, 0, 126, this.ySize + 30);
     }
+
+    /** Drawn after the main panel background, before the slot frames. Textures may be rebound freely. */
+    protected void drawCentralPanelExtras(int cornerX) {}
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) {
