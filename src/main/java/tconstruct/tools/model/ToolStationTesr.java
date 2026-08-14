@@ -1,17 +1,21 @@
 package tconstruct.tools.model;
 
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.library.tools.ToolCore;
-import tconstruct.tools.entity.FancyEntityItem;
 import tconstruct.tools.logic.ToolStationLogic;
 
 /* Renders the station's contents lying on the table, mirroring the Repair & Modify pentagon */
@@ -34,34 +38,56 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
             if (stack == null) continue;
 
             // map the GUI layout onto the table top: GUI x -> world x, GUI y -> world z
-            float offX = (SLOT_X[slot - 1] - 33) / 61F * 0.75F;
-            float offZ = (SLOT_Y[slot - 1] - 40) / 61F * 0.75F;
-
-            // Tools render through FlexibleToolRenderer's ENTITY path (full-unit quad shifted -0.5/-0.25);
-            // everything else through FancyItemRender's frame path (0.5128 quad, -0.05 nudge). Both sit on a
-            // +0.1 bob baseline. That puts the sprite center at +0.35*s (tools) / +0.2026*s (items) along
-            // the local up axis, which our 90-degree lay-flat maps to world z — cancel it so sprites center
-            // on their pentagon spots.
-            boolean isTool = stack.getItem() instanceof ToolCore;
-            float scale = isTool && slot == 1 ? 1.05F : isTool ? 0.7F : 0.55F;
-            float centerCorrection = (isTool ? 0.35F : 0.2026F) * scale;
-
-            FancyEntityItem entityitem = new FancyEntityItem(logic.getWorldObj(), 0.0D, 0.0D, 0.0D, stack);
-            entityitem.getEntityItem().stackSize = 1;
-            entityitem.hoverStart = 0.0F;
+            float offX = (SLOT_X[slot - 1] - 33) / 61F * 0.65F;
+            float offZ = (SLOT_Y[slot - 1] - 40) / 61F * 0.65F;
+            float scale = stack.getItem() instanceof ToolCore && slot == 1 ? 0.85F : 0.5F;
 
             GL11.glPushMatrix();
             // stagger heights so overlapping flat sprites don't z-fight
             GL11.glTranslatef(
                     (float) posX + 0.5F + offX,
                     (float) posY + 1.005F + slot * 0.004F,
-                    (float) posZ + 0.5F + offZ - centerCorrection);
-            GL11.glRotatef(90F, 1F, 0F, 0F);
+                    (float) posZ + 0.5F + offZ);
+            // lay the sprite flat, face up (icon top pointing north), sized by scale
+            GL11.glRotatef(-90F, 1F, 0F, 0F);
             GL11.glScalef(scale, scale, scale);
-            RenderItem.renderInFrame = true;
-            RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
-            RenderItem.renderInFrame = false;
+            renderFlatItem(stack);
             GL11.glPopMatrix();
         }
+    }
+
+    /**
+     * Draws the stack's 2D icon(s) exactly centered on the current origin, lying in the local XY plane. renderItemIn2D
+     * spans (0,0)-(1,1) and extrudes its thickness towards -z, so a half-unit shift centers it — no entity-render
+     * pipeline, none of its accumulated origin offsets.
+     */
+    private void renderFlatItem(ItemStack stack) {
+        Item item = stack.getItem();
+        GL11.glPushMatrix();
+        GL11.glTranslatef(-0.5F, -0.5F, 0F);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(
+                stack.getItemSpriteNumber() == 0 ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture);
+
+        int passes = item.requiresMultipleRenderPasses() ? item.getRenderPasses(stack.getItemDamage()) : 1;
+        for (int pass = 0; pass < passes; pass++) {
+            IIcon icon = passes > 1 ? item.getIcon(stack, pass) : stack.getIconIndex();
+            if (icon == null) continue;
+            int color = item.getColorFromItemStack(stack, pass);
+            GL11.glColor4f((color >> 16 & 255) / 255F, (color >> 8 & 255) / 255F, (color & 255) / 255F, 1F);
+            ItemRenderer.renderItemIn2D(
+                    Tessellator.instance,
+                    icon.getMaxU(),
+                    icon.getMinV(),
+                    icon.getMinU(),
+                    icon.getMaxV(),
+                    icon.getIconWidth(),
+                    icon.getIconHeight(),
+                    0.0625F);
+        }
+
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopMatrix();
     }
 }
