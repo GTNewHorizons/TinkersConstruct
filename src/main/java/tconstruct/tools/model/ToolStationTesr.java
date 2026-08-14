@@ -33,16 +33,21 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
             if (stack == null) continue;
 
             // map the GUI layout onto the table top: GUI x -> world x, GUI y -> world z
-            float offX = (SLOT_X[slot - 1] - 33) / 61F;
-            float offZ = (SLOT_Y[slot - 1] - 40) / 61F;
-            float scale = slot == 1 ? 0.6F : 0.45F;
+            float offX = (SLOT_X[slot - 1] - 33) / 61F * 0.55F;
+            float offZ = (SLOT_Y[slot - 1] - 40) / 61F * 0.55F;
+            float scale = slot == 1 ? 1.6F : 0.6F;
 
             FancyEntityItem entityitem = new FancyEntityItem(logic.getWorldObj(), 0.0D, 0.0D, 0.0D, stack);
             entityitem.getEntityItem().stackSize = 1;
             entityitem.hoverStart = 0.0F;
 
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) posX + 0.5F + offX, (float) posY + 1.02F, (float) posZ + 0.5F + offZ);
+            // the frame-mode sprite is not drawn centered on its origin; nudge like the casting table does,
+            // and stagger heights so overlapping flat sprites don't z-fight
+            GL11.glTranslatef(
+                    (float) posX + 0.5F + offX,
+                    (float) posY + 1.005F + slot * 0.004F,
+                    (float) posZ + 0.5F + offZ + 0.025F * scale);
             GL11.glRotatef(90F, 1F, 0F, 0F);
             GL11.glScalef(scale, scale, scale);
             RenderItem.renderInFrame = true;
