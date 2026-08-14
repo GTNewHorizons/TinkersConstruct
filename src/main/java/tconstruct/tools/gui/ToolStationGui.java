@@ -6,6 +6,9 @@ import java.util.List;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -15,6 +18,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
@@ -40,6 +44,11 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     public int[] slotX, slotY, iconX, iconY;
     public String title, body = "";
 
+    private static final RenderItem ghostRender = new RenderItem();
+
+    // Where extra modifier slots sit while a tool-building layout is selected
+    protected static final int PARK_X1 = 87, PARK_X2 = 107, PARK_X3 = 127, PARK_Y = 62;
+
     public ToolStationGui(InventoryPlayer inventoryplayer, ToolStationLogic stationlogic, World world, int x, int y,
             int z) {
         super(stationlogic.getGuiContainer(inventoryplayer, world, x, y, z));
@@ -60,8 +69,13 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     protected void setIconUVs() {
-        iconX = new int[] { 0, 1, 2 };
-        iconY = new int[] { 13, 13, 13 };
+        setRepairIconUVs();
+    }
+
+    // TiC2 repair hints: pickaxe (tool), then ingot/lapis/gem/dust/quartz for top/left/right/bottom-left/bottom-right
+    protected void setRepairIconUVs() {
+        iconX = new int[] { 0, 3, 2, 4, 1, 5 };
+        iconY = new int[] { 13, 13, 13, 13, 13, 13 };
     }
 
     @Override
@@ -111,6 +125,10 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         setSlotType(element.slotType);
         iconX = element.iconsX;
         iconY = element.iconsY;
+        // tool buttons carry per-part icon sets; the Repair & Modify pentagon uses its own
+        if (element.slotType == 0) {
+            setRepairIconUVs();
+        }
         title = "§n" + StatCollector.translateToLocal(element.title);
         body = StatCollector.translateToLocal(element.body).replace("\\n", "\n");
     }
@@ -118,24 +136,25 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     protected void setSlotType(int type) {
         switch (type) {
             case 0:
-                slotX = new int[] { 56, 38, 38 }; // Repair
-                slotY = new int[] { 37, 28, 46 };
+                // TiC2-style Repair & Modify: tool centered, five modifier slots arranged around it
+                slotX = new int[] { 33, 33, 11, 55, 15, 51 };
+                slotY = new int[] { 40, 17, 35, 35, 61, 61 };
                 break;
             case 1:
-                slotX = new int[] { 56, 56, 56 }; // Three parts
-                slotY = new int[] { 19, 55, 37 };
+                slotX = new int[] { 56, 56, 56, PARK_X1, PARK_X2, PARK_X3 }; // Three parts
+                slotY = new int[] { 19, 55, 37, PARK_Y, PARK_Y, PARK_Y };
                 break;
             case 2:
-                slotX = new int[] { 56, 56, 14 }; // Two parts
-                slotY = new int[] { 28, 46, 37 };
+                slotX = new int[] { 56, 56, 14, PARK_X1, PARK_X2, PARK_X3 }; // Two parts
+                slotY = new int[] { 28, 46, 37, PARK_Y, PARK_Y, PARK_Y };
                 break;
             case 3:
-                slotX = new int[] { 38, 47, 56 }; // Double head
-                slotY = new int[] { 28, 46, 28 };
+                slotX = new int[] { 38, 47, 56, PARK_X1, PARK_X2, PARK_X3 }; // Double head
+                slotY = new int[] { 28, 46, 28, PARK_Y, PARK_Y, PARK_Y };
                 break;
             case 7:
-                slotX = new int[] { 56, 56, 56 }; // Three parts reverse
-                slotY = new int[] { 19, 37, 55 };
+                slotX = new int[] { 56, 56, 56, PARK_X1, PARK_X2, PARK_X3 }; // Three parts reverse
+                slotY = new int[] { 19, 37, 55, PARK_Y, PARK_Y, PARK_Y };
                 break;
         }
         toolSlots.resetSlots(slotX, slotY);
@@ -169,6 +188,8 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     protected void drawInventoryLabel() {
+        // the Repair & Modify pentagon reaches into the label's space
+        if (selectedButton == 0) return;
         this.fontRendererObj
                 .drawString(StatCollector.translateToLocal("container.inventory"), 118, this.ySize - 96 + 2, 0x000000);
     }
@@ -218,7 +239,47 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     /** Drawn after the main panel background, before the slot frames. Textures may be rebound freely. */
-    protected void drawCentralPanelExtras(int cornerX) {}
+    protected void drawCentralPanelExtras(int cornerX) {
+        if (selectedButton != 0) return;
+
+        // oversized ghost preview behind the slots, TiC2-style: the tool being modified, or an anvil when empty
+        GL11.glPushMatrix();
+        GL11.glTranslatef(cornerX + 10, this.guiTop + 20, 0F);
+        GL11.glScalef(3.7F, 3.7F, 1F);
+        if (logic.isStackInSlot(1)) {
+            ItemStack tool = logic.getStackInSlot(1);
+            RenderHelper.enableGUIStandardItemLighting();
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            ghostRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), tool, 0, 0);
+        } else {
+            // darken the pale anvil sprite so it reads as a silhouette through the cover
+            GL11.glColor4f(0.45F, 0.45F, 0.45F, 1.0F);
+            this.mc.getTextureManager().bindTexture(icons);
+            this.drawTexturedModalRect(0, 0, 54, 0, 18, 18);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        }
+        GL11.glPopMatrix();
+
+        // item rendering flips lighting/depth/alpha state; restore what the background pass expects
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        // translucent cover so the preview stays in the background
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.82F);
+        this.mc.getTextureManager().bindTexture(background);
+        this.drawTexturedModalRect(cornerX + 8, this.guiTop + 16, 8, 16, 80, 64);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) {

@@ -58,8 +58,14 @@ public class SlotTool extends Slot {
             int[] toRemoveArray = tags.hasKey("ToRemove") ? tags.getIntArray("ToRemove") : null;
             int toRemoveIndex = 0;
 
-            boolean full = (inventory.getStackInSlot(2) != null || inventory.getStackInSlot(3) != null);
-            for (int i = 2; i <= 3; i++) {
+            boolean full = false;
+            for (int i = 2; i < inventory.getSizeInventory(); i++) {
+                if (inventory.getStackInSlot(i) != null) {
+                    full = true;
+                    break;
+                }
+            }
+            for (int i = 2; i < inventory.getSizeInventory(); i++) {
                 ItemStack item = inventory.getStackInSlot(i);
                 if (item == null) {
                     continue;

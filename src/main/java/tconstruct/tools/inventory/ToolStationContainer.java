@@ -36,9 +36,10 @@ public class ToolStationContainer extends ActiveContainer {
         toolSlot = new SlotTool(inventoryplayer.player, builderlogic, 0, 225, 38);
         this.addSlotToContainer(toolSlot);
         slots = new Slot[] { new Slot(builderlogic, 1, 167, 29), new Slot(builderlogic, 2, 149, 38),
-                new Slot(builderlogic, 3, 167, 47) };
+                new Slot(builderlogic, 3, 167, 47), new Slot(builderlogic, 4, 149, 47),
+                new Slot(builderlogic, 5, 149, 29), new Slot(builderlogic, 6, 167, 38) };
 
-        for (int iter = 0; iter < 3; iter++) this.addSlotToContainer(slots[iter]);
+        for (int iter = 0; iter < slots.length; iter++) this.addSlotToContainer(slots[iter]);
 
         /* Player inventory */
         for (int column = 0; column < 3; column++) {
@@ -59,7 +60,7 @@ public class ToolStationContainer extends ActiveContainer {
         inventorySlots.clear();
         inventoryItemStacks.clear();
         this.addSlotToContainer(toolSlot);
-        for (int iter = 0; iter < 3; iter++) {
+        for (int iter = 0; iter < slots.length; iter++) {
             slots[iter].xDisplayPosition = posX[iter] + 111;
             slots[iter].yDisplayPosition = posY[iter] + 1;
             addSlotToContainer(slots[iter]);
@@ -127,8 +128,14 @@ public class ToolStationContainer extends ActiveContainer {
             int[] toRemoveArray = tags.hasKey("ToRemove") ? tags.getIntArray("ToRemove") : null;
             int toRemoveIndex = 0;
 
-            boolean full = (logic.getStackInSlot(2) != null || logic.getStackInSlot(3) != null);
-            for (int i = 2; i <= 3; i++) {
+            boolean full = false;
+            for (int i = 2; i < logic.getSizeInventory(); i++) {
+                if (logic.getStackInSlot(i) != null) {
+                    full = true;
+                    break;
+                }
+            }
+            for (int i = 2; i < logic.getSizeInventory(); i++) {
                 ItemStack item = logic.getStackInSlot(i);
                 if (item == null) {
                     continue;
