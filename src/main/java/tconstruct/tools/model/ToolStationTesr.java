@@ -37,13 +37,11 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
     }
 
     private void render(ToolStationLogic logic, double posX, double posY, double posZ) {
-        // when a tool slab lies on the table, the material sprites rest on top of it instead of
-        // interpenetrating — its height lifts every later slab's base plane
-        float toolLift = 0F;
+        // with a tool on the table the material slabs go low-profile: shallower than the tool's slab,
+        // they tuck against its edge instead of skewering through it (per-sprite stacking would need
+        // per-pixel collision — TiC2 sidesteps the same problem by keeping its display paper-thin)
         ItemStack center = logic.getSizeInventory() > 1 ? logic.getStackInSlot(1) : null;
-        if (center != null && center.getItem() instanceof ToolCore) {
-            toolLift = 0.09375F * 0.85F + 0.006F;
-        }
+        boolean toolOnTable = center != null && center.getItem() instanceof ToolCore;
 
         for (int slot = 1; slot <= 6 && slot < logic.getSizeInventory(); slot++) {
             ItemStack stack = logic.getStackInSlot(slot);
@@ -75,16 +73,15 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
 
             boolean bigTool = stack.getItem() instanceof ToolCore && slot == 1;
             float scale = bigTool ? 0.85F : 0.4F;
-            // chunky extrusion; small sprites get proportionally more so the edges read at a glance
-            float thickness = bigTool ? 0.09375F : 0.25F;
+            // chunky extrusion when alone; materials go low-profile while a tool shares the table
+            float thickness = bigTool ? 0.09375F : toolOnTable ? 0.125F : 0.25F;
 
             GL11.glPushMatrix();
-            // the extrusion hangs below the sprite face, so lift by its world depth to rest it on its
-            // base plane (table, or tool slab for materials); stagger heights against z-fighting
-            float basePlane = bigTool ? 0F : toolLift;
+            // the extrusion hangs below the sprite face, so lift by its world depth to rest it on the
+            // table; stagger heights against z-fighting
             GL11.glTranslatef(
                     (float) posX + 0.5F + offX,
-                    (float) posY + 1.001F + basePlane + thickness * scale + slot * 0.004F,
+                    (float) posY + 1.001F + thickness * scale + slot * 0.004F,
                     (float) posZ + 0.5F + offZ);
             // lay the sprite flat, face up (icon top pointing north), sized by scale
             GL11.glRotatef(-90F, 1F, 0F, 0F);
