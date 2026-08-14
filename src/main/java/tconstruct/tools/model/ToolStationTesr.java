@@ -56,6 +56,9 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
                         (float) posY + 1.0F + cube / 2F,
                         (float) posZ + 0.5F + offZ);
                 GL11.glScalef(cube, cube, cube);
+                // the face renderers sample whatever texture is bound; give them the blocks atlas
+                Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+                GL11.glColor4f(1F, 1F, 1F, 1F);
                 renderBlocksInstance.renderBlockAsItem(block, stack.getItemDamage(), 1.0F);
                 GL11.glPopMatrix();
                 continue;
