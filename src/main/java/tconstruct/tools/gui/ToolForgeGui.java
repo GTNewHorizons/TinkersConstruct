@@ -1,6 +1,7 @@
 package tconstruct.tools.gui;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -9,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -158,19 +160,30 @@ public class ToolForgeGui extends ToolStationGui {
 
         // oversized ghost preview behind the slots, TiC2-style: the tool being modified, or an anvil when empty
         GL11.glPushMatrix();
-        GL11.glTranslatef(cornerX + 9, this.guiTop + 15, 0F);
-        GL11.glScalef(4F, 4F, 1F);
+        GL11.glTranslatef(cornerX + 10, this.guiTop + 20, 0F);
+        GL11.glScalef(3.7F, 3.7F, 1F);
         if (logic.isStackInSlot(1)) {
             ItemStack tool = logic.getStackInSlot(1);
             RenderHelper.enableGUIStandardItemLighting();
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             ghostRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), tool, 0, 0);
-            RenderHelper.disableStandardItemLighting();
         } else {
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.mc.getTextureManager().bindTexture(forgeIcons);
             this.drawTexturedModalRect(0, 0, 54, 0, 18, 18);
         }
         GL11.glPopMatrix();
+
+        // item rendering flips lighting/depth/alpha state; restore what the background pass expects
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         // translucent cover so the preview stays in the background
         GL11.glEnable(GL11.GL_BLEND);
