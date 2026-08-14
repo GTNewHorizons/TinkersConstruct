@@ -169,9 +169,11 @@ public class ToolForgeGui extends ToolStationGui {
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             ghostRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), tool, 0, 0);
         } else {
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            // darken the pale anvil sprite so it reads as a silhouette through the cover
+            GL11.glColor4f(0.45F, 0.45F, 0.45F, 1.0F);
             this.mc.getTextureManager().bindTexture(forgeIcons);
             this.drawTexturedModalRect(0, 0, 54, 0, 18, 18);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
         GL11.glPopMatrix();
 
