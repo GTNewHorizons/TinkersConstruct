@@ -64,7 +64,10 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
                 continue;
             }
 
-            float scale = stack.getItem() instanceof ToolCore && slot == 1 ? 0.85F : 0.4F;
+            boolean bigTool = stack.getItem() instanceof ToolCore && slot == 1;
+            float scale = bigTool ? 0.85F : 0.4F;
+            // small sprites double their extrusion so the edges still read at a glance
+            float thickness = bigTool ? 0.0625F : 0.125F;
 
             GL11.glPushMatrix();
             // stagger heights so overlapping flat sprites don't z-fight
@@ -75,7 +78,7 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
             // lay the sprite flat, face up (icon top pointing north), sized by scale
             GL11.glRotatef(-90F, 1F, 0F, 0F);
             GL11.glScalef(scale, scale, scale);
-            renderFlatItem(stack);
+            renderFlatItem(stack, thickness);
             GL11.glPopMatrix();
         }
     }
@@ -85,7 +88,7 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
      * spans (0,0)-(1,1) and extrudes its thickness towards -z, so a half-unit shift centers it — no entity-render
      * pipeline, none of its accumulated origin offsets.
      */
-    private void renderFlatItem(ItemStack stack) {
+    private void renderFlatItem(ItemStack stack, float thickness) {
         Item item = stack.getItem();
         GL11.glPushMatrix();
         GL11.glTranslatef(-0.5F, -0.5F, 0F);
@@ -111,7 +114,7 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
                     icon.getMaxV(),
                     icon.getIconWidth(),
                     icon.getIconHeight(),
-                    0.0625F);
+                    thickness);
         }
 
         GL11.glColor4f(1F, 1F, 1F, 1F);
