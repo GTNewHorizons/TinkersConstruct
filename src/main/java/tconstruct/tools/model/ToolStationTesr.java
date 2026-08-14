@@ -48,12 +48,13 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
             Block block = Block.getBlockFromItem(stack.getItem());
             if (stack.getItemSpriteNumber() == 0 && block != null
                     && RenderBlocks.renderItemIn3d(block.getRenderType())) {
-                // block items sit on the table as small cubes rather than oversized flat stickers
+                // block items sit on the table as small cubes rather than oversized flat stickers,
+                // sunk a third into the wood so they don't tower over the flat sprites
                 float cube = 0.2F;
                 GL11.glPushMatrix();
                 GL11.glTranslatef(
                         (float) posX + 0.5F + offX,
-                        (float) posY + 1.0F + cube / 2F,
+                        (float) posY + 1.0F + cube / 2F - cube / 3F,
                         (float) posZ + 0.5F + offZ);
                 GL11.glScalef(cube, cube, cube);
                 // the face renderers sample whatever texture is bound; give them the blocks atlas
@@ -66,14 +67,15 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
 
             boolean bigTool = stack.getItem() instanceof ToolCore && slot == 1;
             float scale = bigTool ? 0.85F : 0.4F;
-            // small sprites double their extrusion so the edges still read at a glance
-            float thickness = bigTool ? 0.0625F : 0.125F;
+            // chunky extrusion; small sprites get proportionally more so the edges read at a glance
+            float thickness = bigTool ? 0.09375F : 0.25F;
 
             GL11.glPushMatrix();
-            // stagger heights so overlapping flat sprites don't z-fight
+            // the extrusion hangs below the sprite face, so lift by its world depth to rest it on the
+            // table; stagger heights so overlapping flat sprites don't z-fight
             GL11.glTranslatef(
                     (float) posX + 0.5F + offX,
-                    (float) posY + 1.005F + slot * 0.004F,
+                    (float) posY + 1.001F + thickness * scale + slot * 0.004F,
                     (float) posZ + 0.5F + offZ);
             // lay the sprite flat, face up (icon top pointing north), sized by scale
             GL11.glRotatef(-90F, 1F, 0F, 0F);
