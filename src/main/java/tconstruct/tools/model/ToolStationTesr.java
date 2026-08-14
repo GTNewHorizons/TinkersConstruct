@@ -1,7 +1,9 @@
 package tconstruct.tools.model;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -27,6 +29,8 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
     private static final int[] SLOT_X = { 33, 33, 11, 55, 15, 51 };
     private static final int[] SLOT_Y = { 40, 17, 35, 35, 61, 61 };
 
+    private final RenderBlocks renderBlocksInstance = new RenderBlocks();
+
     @Override
     public void renderTileEntityAt(TileEntity logic, double posX, double posY, double posZ, float partialTicks) {
         render((ToolStationLogic) logic, posX, posY, posZ);
@@ -40,7 +44,24 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
             // map the GUI layout onto the table top: GUI x -> world x, GUI y -> world z
             float offX = (SLOT_X[slot - 1] - 33) / 61F * 0.65F;
             float offZ = (SLOT_Y[slot - 1] - 40) / 61F * 0.65F;
-            float scale = stack.getItem() instanceof ToolCore && slot == 1 ? 0.85F : 0.5F;
+
+            Block block = Block.getBlockFromItem(stack.getItem());
+            if (stack.getItemSpriteNumber() == 0 && block != null
+                    && RenderBlocks.renderItemIn3d(block.getRenderType())) {
+                // block items sit on the table as small cubes rather than oversized flat stickers
+                float cube = 0.2F;
+                GL11.glPushMatrix();
+                GL11.glTranslatef(
+                        (float) posX + 0.5F + offX,
+                        (float) posY + 1.0F + cube / 2F,
+                        (float) posZ + 0.5F + offZ);
+                GL11.glScalef(cube, cube, cube);
+                renderBlocksInstance.renderBlockAsItem(block, stack.getItemDamage(), 1.0F);
+                GL11.glPopMatrix();
+                continue;
+            }
+
+            float scale = stack.getItem() instanceof ToolCore && slot == 1 ? 0.85F : 0.4F;
 
             GL11.glPushMatrix();
             // stagger heights so overlapping flat sprites don't z-fight
