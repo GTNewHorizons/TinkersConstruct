@@ -28,6 +28,7 @@ import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.tools.ToolMaterial;
+import tconstruct.library.util.ColorUtils;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.tools.logic.CraftingStationLogic;
 import tconstruct.util.network.CraftingStationDumpPacket;
@@ -176,17 +177,23 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
                     return;
                 }
             }
-            this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal(logic.chest.get().getInventoryName()), 8, 6, 0x202020);
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal(logic.chest.get().getInventoryName()),
+                    8,
+                    6,
+                    ColorUtils.inventoryTitle.getColor());
         }
 
         this.fontRendererObj.drawString(
                 StatCollector.translateToLocal(logic.tinkerTable ? "crafters.TinkerTable" : logic.getInvName()),
                 craftingTextLeft + 8,
                 6,
-                0x202020);
-        this.fontRendererObj
-                .drawString(StatCollector.translateToLocal("container.inventory"), craftingTextLeft + 8, 72, 0x202020);
+                ColorUtils.inventoryTitle.getColor());
+        this.fontRendererObj.drawString(
+                StatCollector.translateToLocal("container.inventory"),
+                craftingTextLeft + 8,
+                72,
+                ColorUtils.inventoryTitle.getColor());
 
         if (logic.tinkerTable) {
             if (logic.isStackInSlot(0)) // output slot = modified item
