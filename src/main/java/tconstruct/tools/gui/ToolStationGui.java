@@ -105,7 +105,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
             GuiButtonTool button = new GuiButtonTool(
                     iter,
                     this.guiLeft + 22 * (iter % 5),
-                    this.guiTop + 22 * (iter / 5),
+                    this.guiTop + 9 + 22 * (iter / 5),
                     element.buttonIconX,
                     element.buttonIconY,
                     element.domain,
@@ -178,15 +178,15 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
 
         if (logic.isStackInSlot(0)) {
             // stats in the upper panel, modifiers in the lower one
-            ToolStationGuiHelper.drawToolStatsSplit(logic.getStackInSlot(0), 294, 4, 86, 294, 106, 182);
+            ToolStationGuiHelper.drawToolStatsSplit(logic.getStackInSlot(0), 294, 11, 92, 294, 109, 184);
         } else {
             drawToolInformation();
         }
     }
 
     protected void drawToolInformation() {
-        this.drawCenteredString(fontRendererObj, title, 349, 8, 0xffffff);
-        fontRendererObj.drawSplitString(body, 294, 24, 115, 0xffffff);
+        this.drawCenteredString(fontRendererObj, title, 349, 20, 0xffffff);
+        fontRendererObj.drawSplitString(body, 294, 36, 115, 0xffffff);
     }
 
     protected void drawInventoryLabel() {
@@ -249,17 +249,19 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
             }
         }
 
-        // Draw the two TiC2-style info panels (tool stats on top, modifiers below)
+        // Draw the two TiC2-style info panels (tool stats on top, modifiers below), pushed down
+        // below the beam like TiC2's modules (beam 7 + panel decoration 4)
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(panelTexture);
-        drawInfoPanel(cornerX + 176, this.guiTop, 126, 100);
-        drawInfoPanel(cornerX + 176, this.guiTop + 104, 126, 92);
+        drawInfoPanel(cornerX + 176, this.guiTop + 11, 126, 94);
+        drawInfoPanel(cornerX + 176, this.guiTop + 109, 126, 87);
 
-        // beam trim above the tool-button column and the info panels
+        // beam trim at the GUI's top edge, level with the central panel and overhanging each side
+        // module by one cap (TiC2: x = module.guiLeft - beamL.w, y = cornerY)
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(beamsTexture);
-        drawBeam(this.guiLeft, this.guiTop - 7, 110);
-        drawBeam(cornerX + 176, this.guiTop - 7, 126);
+        drawBeam(this.guiLeft - 2, this.guiTop, 114);
+        drawBeam(cornerX + 174, this.guiTop, 130);
     }
 
     /** Draws one 9-slice panel from panel.png using the theme skin (4px corners, 118x75 scalable body). */

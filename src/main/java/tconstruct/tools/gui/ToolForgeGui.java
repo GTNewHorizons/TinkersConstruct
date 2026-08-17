@@ -33,7 +33,7 @@ public class ToolForgeGui extends ToolStationGui {
         GuiButtonTool repairButton = new GuiButtonTool(
                 0,
                 this.guiLeft,
-                this.guiTop,
+                this.guiTop + 9,
                 repair.buttonIconX,
                 repair.buttonIconY,
                 repair.domain,
@@ -48,7 +48,7 @@ public class ToolForgeGui extends ToolStationGui {
             GuiButtonTool button = new GuiButtonTool(
                     iter + 1,
                     this.guiLeft + 22 * ((iter + 1) % 5),
-                    this.guiTop + 22 * ((iter + 1) / 5),
+                    this.guiTop + 9 + 22 * ((iter + 1) / 5),
                     element.buttonIconX,
                     element.buttonIconY,
                     element.domain,
@@ -62,7 +62,7 @@ public class ToolForgeGui extends ToolStationGui {
             GuiButtonTool button = new GuiButtonTool(
                     iter + offset,
                     this.guiLeft + 22 * ((iter + offset) % 5),
-                    this.guiTop + 22 * ((iter + offset) / 5),
+                    this.guiTop + 9 + 22 * ((iter + offset) / 5),
                     element.buttonIconX,
                     element.buttonIconY,
                     element.domain,
