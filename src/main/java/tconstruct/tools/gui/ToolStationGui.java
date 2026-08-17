@@ -104,7 +104,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
             ToolGuiElement element = TConstructClientRegistry.toolButtons.get(iter);
             GuiButtonTool button = new GuiButtonTool(
                     iter,
-                    this.guiLeft + 22 * (iter % 5),
+                    this.guiLeft - 2 + 22 * (iter % 5),
                     this.guiTop + 9 + 22 * (iter / 5),
                     element.buttonIconX,
                     element.buttonIconY,
@@ -178,15 +178,15 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
 
         if (logic.isStackInSlot(0)) {
             // stats in the upper panel, modifiers in the lower one
-            ToolStationGuiHelper.drawToolStatsSplit(logic.getStackInSlot(0), 294, 11, 92, 294, 109, 184);
+            ToolStationGuiHelper.drawToolStatsSplit(logic.getStackInSlot(0), 296, 11, 92, 296, 109, 184);
         } else {
             drawToolInformation();
         }
     }
 
     protected void drawToolInformation() {
-        this.drawCenteredString(fontRendererObj, title, 349, 20, 0xffffff);
-        fontRendererObj.drawSplitString(body, 294, 36, 115, 0xffffff);
+        this.drawCenteredString(fontRendererObj, title, 351, 20, 0xffffff);
+        fontRendererObj.drawSplitString(body, 296, 36, 115, 0xffffff);
     }
 
     protected void drawInventoryLabel() {
@@ -250,18 +250,19 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         }
 
         // Draw the two TiC2-style info panels (tool stats on top, modifiers below), pushed down
-        // below the beam like TiC2's modules (beam 7 + panel decoration 4)
+        // below the beam like TiC2's modules (beam 7 + panel decoration 4). Horizontally the
+        // side modules keep a 2px air gap off the central GUI (GuiModule.xOffset = +/-2)
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(panelTexture);
-        drawInfoPanel(cornerX + 176, this.guiTop + 11, 126, 94);
-        drawInfoPanel(cornerX + 176, this.guiTop + 109, 126, 87);
+        drawInfoPanel(cornerX + 178, this.guiTop + 11, 126, 94);
+        drawInfoPanel(cornerX + 178, this.guiTop + 109, 126, 87);
 
-        // beam trim at the GUI's top edge, level with the central panel and overhanging each side
-        // module by one cap (TiC2: x = module.guiLeft - beamL.w, y = cornerY)
+        // beam trim at the GUI's top edge: each beam starts one cap before its module and ends
+        // flush with the central GUI's edge (TiC2: x = module.guiLeft - beamL.w, y = cornerY)
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(beamsTexture);
-        drawBeam(this.guiLeft - 2, this.guiTop, 114);
-        drawBeam(cornerX + 174, this.guiTop, 130);
+        drawBeam(this.guiLeft - 4, this.guiTop, 114);
+        drawBeam(cornerX + 176, this.guiTop, 130);
     }
 
     /** Draws one 9-slice panel from panel.png using the theme skin (4px corners, 118x75 scalable body). */
@@ -392,6 +393,6 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
         if (y + h - 4 < guiTop || y + 4 > guiTop + ySize) return false;
-        return x - w - 4 >= guiLeft - 40 && x + 4 <= guiLeft + xSize + 126;
+        return x - w - 4 >= guiLeft - 40 && x + 4 <= guiLeft + xSize + 130;
     }
 }

@@ -32,7 +32,7 @@ public class ToolForgeGui extends ToolStationGui {
         ToolGuiElement repair = TConstructClientRegistry.toolButtons.get(0);
         GuiButtonTool repairButton = new GuiButtonTool(
                 0,
-                this.guiLeft,
+                this.guiLeft - 2,
                 this.guiTop + 9,
                 repair.buttonIconX,
                 repair.buttonIconY,
@@ -47,7 +47,7 @@ public class ToolForgeGui extends ToolStationGui {
             ToolGuiElement element = TConstructClientRegistry.tierTwoButtons.get(iter);
             GuiButtonTool button = new GuiButtonTool(
                     iter + 1,
-                    this.guiLeft + 22 * ((iter + 1) % 5),
+                    this.guiLeft - 2 + 22 * ((iter + 1) % 5),
                     this.guiTop + 9 + 22 * ((iter + 1) / 5),
                     element.buttonIconX,
                     element.buttonIconY,
@@ -61,7 +61,7 @@ public class ToolForgeGui extends ToolStationGui {
             ToolGuiElement element = TConstructClientRegistry.toolButtons.get(iter);
             GuiButtonTool button = new GuiButtonTool(
                     iter + offset,
-                    this.guiLeft + 22 * ((iter + offset) % 5),
+                    this.guiLeft - 2 + 22 * ((iter + offset) % 5),
                     this.guiTop + 9 + 22 * ((iter + offset) / 5),
                     element.buttonIconX,
                     element.buttonIconY,
