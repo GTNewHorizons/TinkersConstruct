@@ -103,9 +103,6 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
     private void renderFlatItem(ItemStack stack, float thickness) {
         Item item = stack.getItem();
         GL11.glPushMatrix();
-        // renderItemIn2D's front face is x-mirrored; flip about the sprite center so the display
-        // matches the item icon the way TiC2's table does
-        GL11.glScalef(-1F, 1F, 1F);
         GL11.glTranslatef(-0.5F, -0.5F, 0F);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         Minecraft.getMinecraft().getTextureManager().bindTexture(
@@ -121,11 +118,13 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
             if (icon == null) continue;
             int color = item.getColorFromItemStack(stack, pass);
             GL11.glColor4f((color >> 16 & 255) / 255F, (color >> 8 & 255) / 255F, (color & 255) / 255F, 1F);
+            // swapped U arguments: renderItemIn2D's front face is x-mirrored, so mirroring the texture
+            // coordinates (not the geometry — that reverses winding and culls the face) rights the sprite
             ItemRenderer.renderItemIn2D(
                     Tessellator.instance,
-                    icon.getMaxU(),
-                    icon.getMinV(),
                     icon.getMinU(),
+                    icon.getMinV(),
+                    icon.getMaxU(),
                     icon.getMaxV(),
                     icon.getIconWidth(),
                     icon.getIconHeight(),
