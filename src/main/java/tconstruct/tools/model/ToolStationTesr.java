@@ -33,12 +33,12 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
     private static final int[] SLOT_X = { 33, 33, 11, 55, 15, 51 };
     private static final int[] SLOT_Y = { 40, 17, 35, 35, 61, 61 };
 
-    private static final float SPREAD = 0.9F;
-    private static final float TOOL_SCALE = 0.55F;
+    private static final float SPREAD = 1.0F;
+    private static final float TOOL_SCALE = 0.45F;
     private static final float TOOL_THICKNESS = 0.09375F;
-    private static final float MATERIAL_SCALE = 0.35F;
+    private static final float MATERIAL_SCALE = 0.25F;
     // chosen so tool and material slabs come out at the same world height
-    private static final float MATERIAL_THICKNESS = 0.15F;
+    private static final float MATERIAL_THICKNESS = 0.17F;
 
     private final RenderBlocks renderBlocksInstance = new RenderBlocks();
 
