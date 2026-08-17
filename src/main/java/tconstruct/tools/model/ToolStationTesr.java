@@ -34,13 +34,13 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
     private static final int[] SLOT_Y = { 40, 17, 35, 35, 61, 61 };
 
     private static final float SPREAD = 1.0F;
-    // TiC2 uses 0.46875 * 1.3 = 0.61, but its demo tool sprites keep canvas margins; GTNH tool sprites
-    // fill the canvas, so 0.47 gives the same on-table footprint as the reference
-    private static final float TOOL_SCALE = 0.47F;
+    // TiC2's display scale chain (TileTable.getTableItem seeds 0.8, TileToolStation multiplies by
+    // 0.46875, tools get a further 1.3x): materials 0.8*0.46875 = 0.375, tool *1.3 = 0.4875
+    private static final float TOOL_SCALE = 0.4875F;
     private static final float TOOL_THICKNESS = 0.09375F;
-    private static final float MATERIAL_SCALE = 0.46875F; // TiC2's setInventoryDisplay scale
+    private static final float MATERIAL_SCALE = 0.375F;
     // chosen so tool and material slabs come out at the same world height
-    private static final float MATERIAL_THICKNESS = 0.1F;
+    private static final float MATERIAL_THICKNESS = 0.12F;
 
     private final RenderBlocks renderBlocksInstance = new RenderBlocks();
 
