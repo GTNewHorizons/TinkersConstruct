@@ -34,11 +34,11 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
     private static final int[] SLOT_Y = { 40, 17, 35, 35, 61, 61 };
 
     private static final float SPREAD = 1.0F;
-    private static final float TOOL_SCALE = 0.45F;
+    private static final float TOOL_SCALE = 0.609375F; // TiC2: 0.46875 * 1.3
     private static final float TOOL_THICKNESS = 0.09375F;
-    private static final float MATERIAL_SCALE = 0.25F;
+    private static final float MATERIAL_SCALE = 0.46875F; // TiC2's setInventoryDisplay scale
     // chosen so tool and material slabs come out at the same world height
-    private static final float MATERIAL_THICKNESS = 0.17F;
+    private static final float MATERIAL_THICKNESS = 0.12F;
 
     private final RenderBlocks renderBlocksInstance = new RenderBlocks();
 
@@ -103,6 +103,9 @@ public class ToolStationTesr extends TileEntitySpecialRenderer {
     private void renderFlatItem(ItemStack stack, float thickness) {
         Item item = stack.getItem();
         GL11.glPushMatrix();
+        // renderItemIn2D's front face is x-mirrored; flip about the sprite center so the display
+        // matches the item icon the way TiC2's table does
+        GL11.glScalef(-1F, 1F, 1F);
         GL11.glTranslatef(-0.5F, -0.5F, 0F);
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         Minecraft.getMinecraft().getTextureManager().bindTexture(
