@@ -18,6 +18,16 @@ public class ToolForgeGui extends ToolStationGui {
     }
 
     @Override
+    protected int panelSkinV() {
+        return 83; // metal
+    }
+
+    @Override
+    protected int beamRowV() {
+        return 7; // metal
+    }
+
+    @Override
     protected void createToolButtons() {
         ToolGuiElement repair = TConstructClientRegistry.toolButtons.get(0);
         GuiButtonTool repairButton = new GuiButtonTool(

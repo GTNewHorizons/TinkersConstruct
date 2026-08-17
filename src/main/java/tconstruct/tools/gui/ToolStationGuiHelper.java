@@ -31,37 +31,73 @@ public final class ToolStationGuiHelper {
 
     private static final FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
     private static int xPos, yPos;
+    private static int clampY = Integer.MAX_VALUE;
 
     private static void newline() {
         yPos += 10;
     }
 
     private static void write(String s) {
-        fontRendererObj.drawString(s, xPos, yPos, 0xffffffff);
+        if (yPos <= clampY) {
+            fontRendererObj.drawString(s, xPos, yPos, 0xffffffff);
+        }
         newline();
     }
 
     public static void drawToolStats(ItemStack stack, int x, int y) {
-        String name = stack.getItem() instanceof ToolCore ? ((ToolCore) stack.getItem()).getLocalizedToolName()
-                : stack.getDisplayName();
         Item item = stack.getItem();
-        NBTTagCompound tags = stack.getTagCompound();
-        Collection<String> categories = new LinkedList<>();
+        NBTTagCompound tags = resolveTags(stack);
 
-        // initialize drawing variables
+        clampY = Integer.MAX_VALUE;
         xPos = x;
         yPos = y + 8;
 
-        // get the correct tags
-        if (item instanceof IModifyable) {
-            IModifyable modifyable = (IModifyable) item;
-            tags = tags.getCompoundTag(modifyable.getBaseTagName());
-            categories = Arrays.asList(modifyable.getTraits());
-        }
+        drawTitle(stack);
+        drawStatsBody(stack, item, tags);
+        newline();
+        drawModifiers(tags);
+    }
 
+    /** Two-panel variant: stats clamped to the first region, modifiers written into the second. */
+    public static void drawToolStatsSplit(ItemStack stack, int x, int y, int limitY, int x2, int y2, int limitY2) {
+        Item item = stack.getItem();
+        NBTTagCompound tags = resolveTags(stack);
+
+        clampY = limitY;
+        xPos = x;
+        yPos = y + 8;
+
+        drawTitle(stack);
+        drawStatsBody(stack, item, tags);
+
+        clampY = limitY2;
+        xPos = x2;
+        yPos = y2 + 8;
+        drawModifiers(tags);
+        clampY = Integer.MAX_VALUE;
+    }
+
+    private static NBTTagCompound resolveTags(ItemStack stack) {
+        NBTTagCompound tags = stack.getTagCompound();
+        if (stack.getItem() instanceof IModifyable modifyable) {
+            tags = tags.getCompoundTag(modifyable.getBaseTagName());
+        }
+        return tags;
+    }
+
+    private static void drawTitle(ItemStack stack) {
+        String name = stack.getItem() instanceof ToolCore ? ((ToolCore) stack.getItem()).getLocalizedToolName()
+                : stack.getDisplayName();
         drawCenteredString(fontRendererObj, "\u00A7n" + name, xPos + 55, yPos, 0xffffffff);
         newline();
         newline();
+    }
+
+    private static void drawStatsBody(ItemStack stack, Item item, NBTTagCompound tags) {
+        Collection<String> categories = new LinkedList<>();
+        if (item instanceof IModifyable modifyable) {
+            categories = Arrays.asList(modifyable.getTraits());
+        }
 
         // does it have ammo instead of durability?
         if (item instanceof IAmmo) drawAmmo((IAmmo) item, stack);
@@ -93,11 +129,6 @@ public final class ToolStationGuiHelper {
         if (item instanceof AccessoryCore accessory) {
             drawAccessoryStats(accessory, tags);
         }
-
-        newline();
-
-        // Modifiers
-        drawModifiers(tags);
     }
 
     private static void drawDurability(NBTTagCompound tags) {

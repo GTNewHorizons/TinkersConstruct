@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -176,7 +177,8 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         this.text.drawTextBox();
 
         if (logic.isStackInSlot(0)) {
-            ToolStationGuiHelper.drawToolStats(logic.getStackInSlot(0), 294, 0);
+            // stats in the upper panel, modifiers in the lower one
+            ToolStationGuiHelper.drawToolStatsSplit(logic.getStackInSlot(0), 294, 4, 86, 294, 106, 182);
         } else {
             drawToolInformation();
         }
@@ -196,7 +198,22 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/toolstation.png");
     private static final ResourceLocation icons = new ResourceLocation("tinker", "textures/gui/icons.png");
-    private static final ResourceLocation description = new ResourceLocation("tinker", "textures/gui/description.png");
+    private static final ResourceLocation panelTexture = new ResourceLocation("tinker", "textures/gui/panel.png");
+    private static final ResourceLocation beamsTexture = new ResourceLocation("tinker", "textures/gui/beams.png");
+
+    // panel.png skins (TiC2 GuiInfoPanel): plain at (0,0), wood at (126,0), metal at (126,83)
+    protected int panelSkinU() {
+        return 126;
+    }
+
+    protected int panelSkinV() {
+        return 0; // wood
+    }
+
+    // beams.png rows: wood at v0, metal at v7
+    protected int beamRowV() {
+        return 0;
+    }
 
     /**
      * Draw the background layer for the GuiContainer (everything behind the items)
@@ -232,10 +249,54 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
             }
         }
 
-        // Draw description
+        // Draw the two TiC2-style info panels (tool stats on top, modifiers below)
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(description);
-        this.drawTexturedModalRect(cornerX + 176, this.guiTop, 0, 0, 126, this.ySize + 30);
+        this.mc.getTextureManager().bindTexture(panelTexture);
+        drawInfoPanel(cornerX + 176, this.guiTop, 126, 100);
+        drawInfoPanel(cornerX + 176, this.guiTop + 104, 126, 92);
+
+        // beam trim above the tool-button column and the info panels
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.getTextureManager().bindTexture(beamsTexture);
+        drawBeam(this.guiLeft, this.guiTop - 7, 110);
+        drawBeam(cornerX + 176, this.guiTop - 7, 126);
+    }
+
+    /** Draws one 9-slice panel from panel.png using the theme skin (4px corners, 118x75 scalable body). */
+    protected void drawInfoPanel(int x, int y, int w, int h) {
+        int u = panelSkinU(), v = panelSkinV();
+        // corners
+        this.drawTexturedModalRect(x, y, u, v, 4, 4);
+        this.drawTexturedModalRect(x + w - 4, y, u + 122, v, 4, 4);
+        this.drawTexturedModalRect(x, y + h - 4, u, v + 79, 4, 4);
+        this.drawTexturedModalRect(x + w - 4, y + h - 4, u + 122, v + 79, 4, 4);
+        // edges and background, stretched
+        drawStretched(x + 4, y, w - 8, 4, u + 4, v, 118, 4, 256, 256);
+        drawStretched(x + 4, y + h - 4, w - 8, 4, u + 4, v + 79, 118, 4, 256, 256);
+        drawStretched(x, y + 4, 4, h - 8, u, v + 4, 4, 75, 256, 256);
+        drawStretched(x + w - 4, y + 4, 4, h - 8, u + 122, v + 4, 4, 75, 256, 256);
+        drawStretched(x + 4, y + 4, w - 8, h - 8, u + 4, v + 4, 118, 75, 256, 256);
+    }
+
+    /** Draws one beam strip from beams.png (2px caps, scalable center) using the theme row. */
+    protected void drawBeam(int x, int y, int w) {
+        int v = beamRowV();
+        this.drawStretched(x, y, 2, 7, 0, v, 2, 7, 133, 14);
+        this.drawStretched(x + 2, y, w - 4, 7, 2, v, 129, 7, 133, 14);
+        this.drawStretched(x + w - 2, y, 2, 7, 131, v, 2, 7, 133, 14);
+    }
+
+    /** drawTexturedModalRect assumes a 256x256 sheet; this maps an arbitrary texture region to any size. */
+    protected void drawStretched(int x, int y, int w, int h, int u, int v, int uw, int vh, int texW, int texH) {
+        float us = 1.0F / texW, vs = 1.0F / texH;
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        Tessellator tess = Tessellator.instance;
+        tess.startDrawingQuads();
+        tess.addVertexWithUV(x, y + h, this.zLevel, u * us, (v + vh) * vs);
+        tess.addVertexWithUV(x + w, y + h, this.zLevel, (u + uw) * us, (v + vh) * vs);
+        tess.addVertexWithUV(x + w, y, this.zLevel, (u + uw) * us, v * vs);
+        tess.addVertexWithUV(x, y, this.zLevel, u * us, v * vs);
+        tess.draw();
     }
 
     /** Drawn after the main panel background, before the slot frames. Textures may be rebound freely. */
