@@ -249,11 +249,11 @@ public class TinkerTools {
         TinkerTools.craftedSoil.stepSound = Block.soundTypeGravel;
 
         GameRegistry.registerBlock(TinkerTools.toolStationWood, ToolStationItemBlock.class, "ToolStationBlock");
-        OreDictionary.registerOre("tconstructToolStation",  new ItemStack(TinkerTools.toolStationWood, 1, 0));
-        OreDictionary.registerOre("tconstructPartBuilder",  new ItemStack(TinkerTools.toolStationWood, 1, 1));
-        OreDictionary.registerOre("tconstructPartBuilder",  new ItemStack(TinkerTools.toolStationWood, 1, 2));
-        OreDictionary.registerOre("tconstructPartBuilder",  new ItemStack(TinkerTools.toolStationWood, 1, 3));
-        OreDictionary.registerOre("tconstructPartBuilder",  new ItemStack(TinkerTools.toolStationWood, 1, 4));
+        OreDictionary.registerOre("tconstructToolStation", new ItemStack(TinkerTools.toolStationWood, 1, 0));
+        OreDictionary.registerOre("tconstructPartBuilder", new ItemStack(TinkerTools.toolStationWood, 1, 1));
+        OreDictionary.registerOre("tconstructPartBuilder", new ItemStack(TinkerTools.toolStationWood, 1, 2));
+        OreDictionary.registerOre("tconstructPartBuilder", new ItemStack(TinkerTools.toolStationWood, 1, 3));
+        OreDictionary.registerOre("tconstructPartBuilder", new ItemStack(TinkerTools.toolStationWood, 1, 4));
         OreDictionary.registerOre("tconstructPatternChest", new ItemStack(TinkerTools.toolStationWood, 1, 5));
         OreDictionary.registerOre("tconstructStencilTable", new ItemStack(TinkerTools.toolStationWood, 1, 10));
         OreDictionary.registerOre("tconstructStencilTable", new ItemStack(TinkerTools.toolStationWood, 1, 11));
