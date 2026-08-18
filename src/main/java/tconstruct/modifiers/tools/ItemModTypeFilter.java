@@ -60,8 +60,21 @@ public abstract class ItemModTypeFilter extends ItemModifier {
     }
 
     public ModificationInfo matchingAmount(ItemStack[] input, ItemStack tool, int modifierMax) {
+        int inTier = remainingInTier(tool, modifierMax);
+        ModificationInfo info = matchWithin(input, inTier);
 
-        int availableAmount = availableAmount(tool, modifierMax);
+        // Items are consumed whole, so an input can be too coarse to make any progress at all — a 9-point
+        // redstone block on a tool sitting 5 points below its ceiling used to be refused outright, leaving the
+        // tool stuck there. That is where TiC 1.12 lets progress run past the ceiling, at the price of one of
+        // the tool's free modifier slots. Anything that does fit stays inside the tier, so topping a modifier
+        // off from a stack still stops at the ceiling instead of spending a slot unasked.
+        if (info.total() <= 0 && canOpenTier(tool)) {
+            info = matchWithin(input, inTier + modifierMax);
+        }
+        return info;
+    }
+
+    private ModificationInfo matchWithin(ItemStack[] input, int availableAmount) {
         int amount = 0;
 
         ArrayList<Integer> toRemove = new ArrayList<>();
@@ -105,39 +118,42 @@ public abstract class ItemModTypeFilter extends ItemModifier {
     }
 
     /**
-     * How many points this craft may still add to the modifier.
-     *
-     * Progress is stored as {current, ceiling, tooltipIndex}; filling the ceiling opens another tier at the cost of one
-     * of the tool's free modifier slots. Points flow past one ceiling within a single craft but never past two, which
-     * is what TiC 1.12 does (ModifierAspect.LevelAspect: "only 1 level per application"). That lets a 9-point redstone
-     * block land on a 45/50 tool instead of being refused, without letting one click silently spend every free modifier
-     * slot.
-     *
-     * Modifiers holding a flat pool instead of tiers ({current, tooltipIndex}, i.e. Lapis) keep their single cap.
+     * Points the modifier can still take without opening a new tier. Progress is stored as {current, ceiling,
+     * tooltipIndex}; modifiers holding a flat pool instead of tiers ({current, tooltipIndex}, i.e. Lapis) keep their
+     * single cap.
      */
-    protected int availableAmount(ItemStack tool, int modifierMax) {
+    protected int remainingInTier(ItemStack tool, int modifierMax) {
         NBTTagCompound tags = getModifierTag(tool);
         if (!tags.hasKey(key)) return modifierMax;
 
         int[] keyPair = tags.getIntArray(key);
         if (keyPair.length == 2) return Math.max(0, modifierMax - keyPair[0]);
-
-        int remaining = Math.max(0, keyPair[1] - keyPair[0]);
-        return tags.getInteger("Modifiers") > 0 ? remaining + modifierMax : remaining;
+        return Math.max(0, keyPair[1] - keyPair[0]);
     }
 
     /**
-     * Whether the inputs make any progress that the tool can actually accept: something matches, and it either fits
-     * inside the current tier or the tool has a free modifier slot to open the next one.
+     * Whether a free modifier slot is available to pay for the next tier. Only one tier is ever opened per craft, as in
+     * TiC 1.12 (ModifierAspect.LevelAspect: "only 1 level per application").
+     */
+    protected boolean canOpenTier(ItemStack tool) {
+        NBTTagCompound tags = getModifierTag(tool);
+        if (!tags.hasKey(key)) return false; // the first application already comes with a whole tier
+        return tags.getIntArray(key).length > 2 && tags.getInteger("Modifiers") > 0;
+    }
+
+    /**
+     * Whether the inputs make progress the tool can actually accept: something matches, and it either fits inside the
+     * current tier or the tool has a free modifier slot to open the next one.
      */
     protected boolean hasCapacityFor(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = getModifierTag(tool);
-        if (matchingAmount(input, tool).total() <= 0) return false;
+        int total = matchingAmount(input, tool).total();
+        if (total <= 0) return false;
         if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0;
 
         int[] keyPair = tags.getIntArray(key);
-        if (keyPair.length == 2) return true; // flat pool, already bounded by availableAmount
-        return keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1] || tags.getInteger("Modifiers") > 0;
+        if (keyPair.length == 2) return true; // flat pool, already bounded by its own cap
+        return keyPair[0] + total <= keyPair[1] || tags.getInteger("Modifiers") > 0;
     }
 
     /**

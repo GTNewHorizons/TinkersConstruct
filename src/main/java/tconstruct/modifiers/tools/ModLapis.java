@@ -36,11 +36,13 @@ public class ModLapis extends ItemModTypeFilter {
 
             if (tags.getBoolean("Silk Touch")) return false;
 
-            if (!tags.hasKey(key))
-                return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
+            int amount = matchingAmount(input, tool).total();
+            if (amount <= 0) return false; // nothing to add: don't offer a craft that consumes nothing
+
+            if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && amount <= max;
 
             int[] keyPair = tags.getIntArray(key);
-            return keyPair[0] + matchingAmount(input, tool).total() <= max;
+            return keyPair[0] + amount <= max;
         }
         return false;
     }
