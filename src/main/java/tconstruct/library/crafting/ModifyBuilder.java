@@ -29,6 +29,22 @@ public class ModifyBuilder {
      * order every crafting slot/container walks the inventory in when consuming ingredients.
      */
     public ItemStack modifyItem(ItemStack input, ItemStack[] modifiers) {
+        ItemStack built = build(input, modifiers);
+        if (built != null) return built;
+
+        // A modifier is allowed to spend one of the tool's free modifier slots to take an input it could not
+        // otherwise use. That can leave a slot-hungry modifier in another slot with nothing to spend, which
+        // fails the whole craft — so when the greedy attempt comes to nothing, try once more with no modifier
+        // allowed to claim a slot for extra room. Whatever worked before this allowance existed still works.
+        try {
+            ItemModifier.setSlotSpendingAllowed(false);
+            return build(input, modifiers);
+        } finally {
+            ItemModifier.setSlotSpendingAllowed(true);
+        }
+    }
+
+    private ItemStack build(ItemStack input, ItemStack[] modifiers) {
         ItemStack copy = input.copy(); // Prevent modifying the original
         if (!(copy.getItem() instanceof IModifyable item)) return null;
 

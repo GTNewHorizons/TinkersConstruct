@@ -17,6 +17,21 @@ public abstract class ItemModifier {
     public static Random random = new Random();
 
     /**
+     * Whether a modifier may spend one of the tool's free modifier slots to widen what it accepts this craft. The
+     * builder turns this off for a second, thriftier attempt when the greedy one leaves an input unusable, so a
+     * modifier claiming a slot can never cost another modifier in the same craft the slot it needed.
+     */
+    private static final ThreadLocal<Boolean> spendModifierSlots = ThreadLocal.withInitial(() -> Boolean.TRUE);
+
+    public static void setSlotSpendingAllowed(boolean allowed) {
+        spendModifierSlots.set(allowed);
+    }
+
+    protected static boolean isSlotSpendingAllowed() {
+        return spendModifierSlots.get();
+    }
+
+    /**
      * Default constructor
      *
      * @param recipe  Items to compare against when checking the modifier
