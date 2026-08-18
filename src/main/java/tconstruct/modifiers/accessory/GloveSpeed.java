@@ -27,15 +27,7 @@ public class GloveSpeed extends ItemModTypeFilter {
             // is glove?
             if (!Arrays.asList(((AccessoryCore) input.getItem()).getTraits()).contains("glove")) return false;
 
-            NBTTagCompound tags = getModifierTag(input);
-            if (!tags.hasKey(key))
-                return tags.getInteger("Modifiers") > 0 && matchingAmount(modifiers, input).total() <= max; // This
-            // line
-            // fails?
-
-            int[] keyPair = tags.getIntArray(key);
-            if (keyPair[0] + matchingAmount(modifiers, input).total() <= keyPair[1]) return true;
-            else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
+            return hasCapacityFor(modifiers, input);
         }
 
         return false;
@@ -51,18 +43,7 @@ public class GloveSpeed extends ItemModTypeFilter {
 
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);
-            if (keyPair[0] % max == 0) {
-                keyPair[0] += increase;
-                keyPair[1] += max;
-                tags.setIntArray(key, keyPair);
-
-                int mods = tags.getInteger("Modifiers");
-                mods -= 1;
-                tags.setInteger("Modifiers", mods);
-            } else {
-                keyPair[0] += increase;
-                tags.setIntArray(key, keyPair);
-            }
+            addProgress(tags, keyPair, increase);
             updateModTag(input, keyPair);
         } else {
             int mods = tags.getInteger("Modifiers");

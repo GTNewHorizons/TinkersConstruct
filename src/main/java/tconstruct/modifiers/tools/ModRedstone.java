@@ -27,16 +27,7 @@ public class ModRedstone extends ItemModTypeFilter {
             ToolCore toolItem = (ToolCore) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input, tool).total() > max) return false;
-
-            NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-            if (!tags.hasKey(key))
-                return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
-
-            int[] keyPair = tags.getIntArray(key);
-
-            if (keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1]) return true;
-            else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
+            return hasCapacityFor(input, tool);
         }
 
         return false;
@@ -50,22 +41,11 @@ public class ModRedstone extends ItemModTypeFilter {
         int increase = modificationInfo.total();
         tags.setIntArray("ToRemove", modificationInfo.toRemove());
 
-        int current;
+        int previous;
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);
-            if (keyPair[0] % max == 0) {
-                keyPair[0] += increase;
-                keyPair[1] += max;
-                tags.setIntArray(key, keyPair);
-
-                int modifiers = tags.getInteger("Modifiers");
-                modifiers -= 1;
-                tags.setInteger("Modifiers", modifiers);
-            } else {
-                keyPair[0] += increase;
-                tags.setIntArray(key, keyPair);
-            }
-            current = keyPair[0];
+            previous = keyPair[0];
+            addProgress(tags, keyPair, increase);
             updateModTag(tool, keyPair);
         } else {
             int modifiers = tags.getInteger("Modifiers");
@@ -74,20 +54,29 @@ public class ModRedstone extends ItemModTypeFilter {
             String modName = "\u00a74Redstone (" + increase + "/" + max + ")";
             int tooltipIndex = addToolTip(tool, tooltipName, modName);
             keyPair = new int[] { increase, max, tooltipIndex };
-            current = keyPair[0];
+            previous = 0;
             tags.setIntArray(key, keyPair);
         }
 
-        int miningSpeed = tags.getInteger("MiningSpeed");
-        int boost = 8 + ((current - 1) / 50 * 2);
+        int perPoint = 8;
         Item temp = tool.getItem();
         if (temp instanceof ToolCore) {
             ToolCore toolcore = (ToolCore) temp;
-            if (toolcore.durabilityTypeHandle() == 2) boost += 2;
-            if (toolcore.durabilityTypeAccessory() == 2) boost += 2;
-            if (toolcore.durabilityTypeExtra() == 2) boost += 2;
+            if (toolcore.durabilityTypeHandle() == 2) perPoint += 2;
+            if (toolcore.durabilityTypeAccessory() == 2) perPoint += 2;
+            if (toolcore.durabilityTypeExtra() == 2) perPoint += 2;
         }
-        miningSpeed += (increase * boost);
+
+        // Each tier is worth 2 more speed per point than the one below it, so a craft whose points cross a tier
+        // boundary has to pay for each point at its own tier's rate. Summing point by point keeps one bulk craft
+        // worth exactly the same as the sequential crafts it replaces.
+        int gained = 0;
+        for (int point = previous + 1; point <= previous + increase; point++) {
+            gained += perPoint + ((point - 1) / 50 * 2);
+        }
+
+        int miningSpeed = tags.getInteger("MiningSpeed");
+        miningSpeed += gained;
         tags.setInteger("MiningSpeed", miningSpeed);
 
         String[] type = { "MiningSpeed2", "MiningSpeedHandle", "MiningSpeedExtra" };
@@ -95,7 +84,7 @@ public class ModRedstone extends ItemModTypeFilter {
         for (int i = 0; i < 3; i++) {
             if (tags.hasKey(type[i])) {
                 int speed = tags.getInteger(type[i]);
-                speed += (increase * boost);
+                speed += gained;
                 tags.setInteger(type[i], speed);
             }
         }

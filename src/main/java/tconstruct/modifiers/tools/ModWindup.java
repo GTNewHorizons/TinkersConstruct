@@ -39,18 +39,7 @@ public class ModWindup extends ModRedstone {
         int current;
         if (tags.hasKey(key)) {
             keyPair = tags.getIntArray(key);
-            if (keyPair[0] % max == 0) {
-                keyPair[0] += increase;
-                keyPair[1] += max;
-                tags.setIntArray(key, keyPair);
-
-                int modifiers = tags.getInteger("Modifiers");
-                modifiers -= 1;
-                tags.setInteger("Modifiers", modifiers);
-            } else {
-                keyPair[0] += increase;
-                tags.setIntArray(key, keyPair);
-            }
+            addProgress(tags, keyPair, increase);
             current = keyPair[0];
             updateModTag(tool, keyPair);
         } else {

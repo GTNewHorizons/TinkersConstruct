@@ -61,15 +61,7 @@ public class ModAttack extends ItemModTypeFilter {
             IModifyable toolItem = (IModifyable) tool.getItem();
             if (!validType(toolItem)) return false;
 
-            if (matchingAmount(input, tool).total() > max) return false;
-
-            NBTTagCompound tags = tool.getTagCompound().getCompoundTag(toolItem.getBaseTagName());
-            if (!tags.hasKey(key))
-                return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
-
-            int[] keyPair = tags.getIntArray(key);
-            if (keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1]) return true;
-            else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
+            return hasCapacityFor(input, tool);
         }
         return false;
     }
@@ -91,26 +83,9 @@ public class ModAttack extends ItemModTypeFilter {
 
         if (tags.hasKey(key)) {
             int[] keyPair = tags.getIntArray(key);
-
-            int leftToBoost = threshold - (keyPair[0] % threshold);
-            if (increase >= leftToBoost) {
-                int attack = tags.getInteger("Attack");
-                attack += 1 + (increase - leftToBoost) / threshold;
-                tags.setInteger("Attack", attack);
-            }
-
-            if (keyPair[0] % max == 0) {
-                keyPair[0] += increase;
-                keyPair[1] += max;
-                tags.setIntArray(key, keyPair);
-
-                int modifiers = tags.getInteger("Modifiers");
-                modifiers -= 1;
-                tags.setInteger("Modifiers", modifiers);
-            } else {
-                keyPair[0] += increase;
-                tags.setIntArray(key, keyPair);
-            }
+            int previous = keyPair[0];
+            addProgress(tags, keyPair, increase);
+            addAttack(tags, previous, increase);
             updateModTag(tool, keyPair);
 
         } else {
@@ -126,6 +101,16 @@ public class ModAttack extends ItemModTypeFilter {
             attack += 1 + increase / threshold;
             tags.setInteger("Attack", attack);
         }
+    }
+
+    /**
+     * Damage steps up once per threshold of progress, so a later increase is worth the thresholds it carries the tool
+     * past; the first application additionally counts one step outright (mDiyo's flat +1, restored upstream in #323),
+     * so a tool holding K points carries 1 + K/threshold bonus attack however the quartz was batched.
+     */
+    private void addAttack(NBTTagCompound tags, int previous, int increase) {
+        int steps = (previous + increase) / threshold - previous / threshold;
+        if (steps > 0) tags.setInteger("Attack", tags.getInteger("Attack") + steps);
     }
 
     void updateModTag(ItemStack tool, int[] keys) {

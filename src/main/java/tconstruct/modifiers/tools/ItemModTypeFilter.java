@@ -61,20 +61,7 @@ public abstract class ItemModTypeFilter extends ItemModifier {
 
     public ModificationInfo matchingAmount(ItemStack[] input, ItemStack tool, int modifierMax) {
 
-        NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-        int availableAmount;
-        if (tags.hasKey(key)) {
-            int[] keyPair = tags.getIntArray(key);
-            if (keyPair[0] % modifierMax == 0) {
-                availableAmount = modifierMax;
-            } else {
-                // Blame Lapis modifier
-                int upperLimit = keyPair.length == 2 ? modifierMax : keyPair[1];
-                availableAmount = upperLimit - keyPair[0];
-            }
-        } else {
-            availableAmount = modifierMax;
-        }
+        int availableAmount = availableAmount(tool, modifierMax);
         int amount = 0;
 
         ArrayList<Integer> toRemove = new ArrayList<>();
@@ -115,6 +102,55 @@ public abstract class ItemModTypeFilter extends ItemModifier {
             toRemoveArray[i] = toRemove.get(i);
         }
         return new ModificationInfo(amount, toRemoveArray);
+    }
+
+    /**
+     * How many points this craft may still add to the modifier.
+     *
+     * Progress is stored as {current, ceiling, tooltipIndex}; filling the ceiling opens another tier at the cost of one
+     * of the tool's free modifier slots. Points flow past one ceiling within a single craft but never past two, which
+     * is what TiC 1.12 does (ModifierAspect.LevelAspect: "only 1 level per application"). That lets a 9-point redstone
+     * block land on a 45/50 tool instead of being refused, without letting one click silently spend every free modifier
+     * slot.
+     *
+     * Modifiers holding a flat pool instead of tiers ({current, tooltipIndex}, i.e. Lapis) keep their single cap.
+     */
+    protected int availableAmount(ItemStack tool, int modifierMax) {
+        NBTTagCompound tags = getModifierTag(tool);
+        if (!tags.hasKey(key)) return modifierMax;
+
+        int[] keyPair = tags.getIntArray(key);
+        if (keyPair.length == 2) return Math.max(0, modifierMax - keyPair[0]);
+
+        int remaining = Math.max(0, keyPair[1] - keyPair[0]);
+        return tags.getInteger("Modifiers") > 0 ? remaining + modifierMax : remaining;
+    }
+
+    /**
+     * Whether the inputs make any progress that the tool can actually accept: something matches, and it either fits
+     * inside the current tier or the tool has a free modifier slot to open the next one.
+     */
+    protected boolean hasCapacityFor(ItemStack[] input, ItemStack tool) {
+        NBTTagCompound tags = getModifierTag(tool);
+        if (matchingAmount(input, tool).total() <= 0) return false;
+        if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0;
+
+        int[] keyPair = tags.getIntArray(key);
+        if (keyPair.length == 2) return true; // flat pool, already bounded by availableAmount
+        return keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1] || tags.getInteger("Modifiers") > 0;
+    }
+
+    /**
+     * Books the increase against the modifier's progress, opening one new tier if the increase crosses the ceiling.
+     * Writes the updated pair back to the tag.
+     */
+    protected void addProgress(NBTTagCompound tags, int[] keyPair, int increase) {
+        keyPair[0] += increase;
+        if (keyPair[0] > keyPair[1]) {
+            keyPair[1] += max;
+            tags.setInteger("Modifiers", tags.getInteger("Modifiers") - 1);
+        }
+        tags.setIntArray(key, keyPair);
     }
 
     /**

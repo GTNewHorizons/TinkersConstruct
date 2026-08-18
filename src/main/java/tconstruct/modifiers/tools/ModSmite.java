@@ -19,15 +19,7 @@ public class ModSmite extends ItemModTypeFilter {
 
     @Override
     protected boolean canModify(ItemStack tool, ItemStack[] input) {
-        if (matchingAmount(input, tool).total() > max) return false;
-
-        NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
-        if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && matchingAmount(input, tool).total() <= max;
-
-        int[] keyPair = tags.getIntArray(key);
-        if (keyPair[0] + matchingAmount(input, tool).total() <= keyPair[1]) return true;
-        else if (keyPair[0] == keyPair[1]) return tags.getInteger("Modifiers") > 0;
-        else return false;
+        return hasCapacityFor(input, tool);
     }
 
     @Override
@@ -39,19 +31,7 @@ public class ModSmite extends ItemModTypeFilter {
 
         if (tags.hasKey(key)) {
             int[] keyPair = tags.getIntArray(key);
-
-            if (keyPair[0] % max == 0) {
-                keyPair[0] += increase;
-                keyPair[1] += max;
-                tags.setIntArray(key, keyPair);
-
-                int modifiers = tags.getInteger("Modifiers");
-                modifiers -= 1;
-                tags.setInteger("Modifiers", modifiers);
-            } else {
-                keyPair[0] += increase;
-                tags.setIntArray(key, keyPair);
-            }
+            addProgress(tags, keyPair, increase);
             updateModTag(tool, keyPair);
 
         } else {
