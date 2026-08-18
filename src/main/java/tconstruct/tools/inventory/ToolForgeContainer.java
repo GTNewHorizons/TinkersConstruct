@@ -96,6 +96,7 @@ public class ToolForgeContainer extends ToolStationContainer {
                     toRemoveIndex++;
                 }
             }
+            tags.removeTag("ToRemove");
             ItemStack compare = logic.getStackInSlot(1);
             int amount = compare.getItem() instanceof IModifyable ? compare.stackSize : 1;
             logic.decrStackSize(1, amount);

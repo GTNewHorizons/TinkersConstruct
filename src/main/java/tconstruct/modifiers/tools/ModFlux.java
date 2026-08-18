@@ -30,11 +30,17 @@ public class ModFlux extends ModBoolean {
         for (String trait : traits) if ("ammo".equals(trait)) return false;
 
         ItemStack foundBattery = null;
-        // try to find the battery in the input
-        for (ItemStack stack : input) for (ItemStack battery : batteries) {
+        // try to find the battery in the input; anything that isn't a battery is not ours to claim
+        for (ItemStack stack : input) {
             if (stack == null) continue;
-            if (stack.getItem() != battery.getItem()) continue;
-            if (!(stack.getItem() instanceof IEnergyContainerItem)) continue;
+            boolean isBattery = false;
+            for (ItemStack battery : batteries) {
+                if (stack.getItem() == battery.getItem() && stack.getItem() instanceof IEnergyContainerItem) {
+                    isBattery = true;
+                    break;
+                }
+            }
+            if (!isBattery) return false;
             // we don't allow multiple batteries to be added
             if (foundBattery != null) return false;
 

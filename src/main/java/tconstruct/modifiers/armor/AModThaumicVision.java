@@ -101,8 +101,13 @@ public class AModThaumicVision extends ArmorMod {
     public boolean matches(ItemStack[] recipe, ItemStack input) {
         if (!canModify(input, recipe)) return false;
 
-        // check how many thaumometers there are
-        int count = countThaumometers(recipe);
+        // check how many thaumometers there are; anything else is not ours to claim
+        int count = 0;
+        for (ItemStack stack : recipe) {
+            if (stack == null) continue;
+            if (stack.getItem() != thaumometer) return false;
+            count++;
+        }
 
         // none? what are you doing!
         // more than 2? HOW MANY EYES DO YOU HAVE?

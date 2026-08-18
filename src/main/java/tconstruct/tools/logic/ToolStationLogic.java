@@ -146,7 +146,14 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
     protected ItemStack tryRenameTool(ItemStack output, String name) {
         ItemStack temp;
         if (output != null) temp = output;
-        else temp = inventory[1].copy();
+        else {
+            // copied verbatim out of the tool slot, so it may carry a stale ToRemove from an
+            // earlier craft; consuming that against the current inputs would eat the wrong
+            // amounts. (a non-null output's ToRemove is fresh from modifyItem — keep it)
+            temp = inventory[1].copy();
+            if (temp.getItem() instanceof IModifyable modifyable && temp.getTagCompound() != null)
+                temp.getTagCompound().getCompoundTag(modifyable.getBaseTagName()).removeTag("ToRemove");
+        }
 
         NBTTagCompound tags = temp.getTagCompound();
         if (tags == null) {
