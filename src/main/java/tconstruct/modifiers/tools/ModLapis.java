@@ -37,8 +37,8 @@ public class ModLapis extends ItemModTypeFilter {
             if (tags.getBoolean("Silk Touch")) return false;
 
             int amount = matchingAmount(input, tool).total();
-            // as above: claim an unusable input only when the builder is retrying thriftily
-            if (amount <= 0) return !isSlotSpendingAllowed() && tags.hasKey(key);
+            // as above: claim an unusable input only when retrying thriftily, and only with room left
+            if (amount <= 0) return !isSlotSpendingAllowed() && tags.hasKey(key) && remainingInTier(tool, max) > 0;
 
             if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0 && amount <= max;
 
