@@ -27,7 +27,7 @@ public abstract class ItemModifier {
         spendModifierSlots.set(allowed);
     }
 
-    protected static boolean isSlotSpendingAllowed() {
+    public static boolean isSlotSpendingAllowed() {
         return spendModifierSlots.get();
     }
 

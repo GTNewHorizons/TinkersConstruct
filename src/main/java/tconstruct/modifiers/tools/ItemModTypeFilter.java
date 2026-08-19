@@ -150,7 +150,9 @@ public abstract class ItemModTypeFilter extends ItemModifier {
     protected boolean hasCapacityFor(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = getModifierTag(tool);
         int total = matchingAmount(input, tool).total();
-        if (total <= 0) return false;
+        // Nothing to add: normally not worth a craft, but on the thrifty pass an input the modifier cannot use
+        // still has to be claimed, or the builder throws out a craft whose other modifiers were fine.
+        if (total <= 0) return !isSlotSpendingAllowed() && tags.hasKey(key);
         if (!tags.hasKey(key)) return tags.getInteger("Modifiers") > 0;
 
         int[] keyPair = tags.getIntArray(key);
