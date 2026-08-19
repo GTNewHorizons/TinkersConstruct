@@ -3,8 +3,6 @@ package tconstruct.tools.logic;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
 
 /*
@@ -12,6 +10,8 @@ import net.minecraft.world.World;
  */
 
 public class BattlesignLogic extends EquipLogic {
+
+    public static final int LINE_COUNT = 5;
 
     protected String[] text;
 
@@ -71,17 +71,5 @@ public class BattlesignLogic extends EquipLogic {
 
     public String[] getText() {
         return text;
-    }
-
-    @Override
-    public S35PacketUpdateTileEntity getDescriptionPacket() {
-        NBTTagCompound compound = new NBTTagCompound();
-        this.writeToNBT(compound);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, compound);
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        this.readFromNBT(pkt.func_148857_g());
     }
 }
