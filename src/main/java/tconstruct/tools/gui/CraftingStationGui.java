@@ -47,6 +47,10 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     private static final int NEI_BOOKMARK_GROUP_WIDTH = 7;
     private static final int MIN_BOOKMARK_COLUMNS = 2;
     private static final int SCROLL_SEPARATOR_HEIGHT = 4;
+    private static final int OUTSIDE_SLOT_ID = -999;
+    private static final int CLICK_MODE_PICKUP = 0;
+    private static final int CLICK_MODE_QUICK_MOVE = 1;
+    private static final int CLICK_MODE_THROW = 4;
     // Treat an empty trailing slot as a small layout cost, not a hard constraint.
     private static final double UNUSED_SLOT_SCORE_PENALTY = 0.01D;
 
@@ -414,12 +418,19 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         return super.isMouseOverSlot(slotIn, mouseX, mouseY) && shouldDrawSlot(slotIn);
     }
 
-    private int getDisplayedRows() {
-        return chestLayout.visibleRows;
+    @Override
+    protected void handleMouseClick(Slot slot, int slotId, int button, int mode) {
+        if (slotId == OUTSIDE_SLOT_ID && slot instanceof ChestSlot && shouldDrawSlot(slot)) {
+            slotId = slot.slotNumber;
+            if (mode == CLICK_MODE_THROW) mode = CLICK_MODE_PICKUP;
+            if (mode == CLICK_MODE_PICKUP && isShiftKeyDown()) mode = CLICK_MODE_QUICK_MOVE;
+        }
+
+        super.handleMouseClick(slot, slotId, button, mode);
     }
 
-    public int getChestWidth() {
-        return chestWidth;
+    private int getDisplayedRows() {
+        return chestLayout.visibleRows;
     }
 
     // updatePosition
