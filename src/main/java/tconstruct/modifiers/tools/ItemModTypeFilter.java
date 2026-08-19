@@ -136,7 +136,9 @@ public abstract class ItemModTypeFilter extends ItemModifier {
      * TiC 1.12 (ModifierAspect.LevelAspect: "only 1 level per application").
      */
     protected boolean canOpenTier(ItemStack tool) {
-        if (!isSlotSpendingAllowed()) return false;
+        // The thrifty pass only takes back the room this class added — a modifier standing exactly on its
+        // ceiling has always been able to open the next one, and crafts depend on it doing so.
+        if (!isSlotSpendingAllowed() && remainingInTier(tool, max) > 0) return false;
 
         NBTTagCompound tags = getModifierTag(tool);
         if (!tags.hasKey(key)) return false; // the first application already comes with a whole tier
