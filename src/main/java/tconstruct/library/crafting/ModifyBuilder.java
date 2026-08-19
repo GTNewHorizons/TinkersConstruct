@@ -48,6 +48,9 @@ public class ModifyBuilder {
     private ItemStack build(ItemStack input, ItemStack[] modifiers) {
         ItemStack copy = input.copy(); // Prevent modifying the original
         if (!(copy.getItem() instanceof IModifyable item)) return null;
+        // Subsets of the inputs are tracked as bits of an int. No station comes close to that many slots,
+        // but refusing the craft beats quietly claiming a slot nobody bid on.
+        if (modifiers.length > 31) return null;
 
         // Strip stale ToRemove tags that can cause extra amount of items being used or OOB crash
         copy.getTagCompound().getCompoundTag(item.getBaseTagName()).removeTag("ToRemove");
@@ -66,13 +69,15 @@ public class ModifyBuilder {
 
         boolean built = false;
         // A slot feeds a given modifier at most once per craft (so a leveled modifier does not
-        // restart on its own leftovers), tracked per modifier across all rounds.
-        int[] tried = new int[itemModifiers.size()];
+        // restart on its own leftovers), tracked per modifier across all rounds. The count is read once:
+        // a modifier registered while this craft is running simply waits for the next one.
+        int registered = itemModifiers.size();
+        int[] tried = new int[registered];
         while (true) {
             ItemModifier bestMod = null;
             int bestMask = 0;
             int bestIndex = -1;
-            for (int m = 0; m < itemModifiers.size(); m++) {
+            for (int m = 0; m < registered; m++) {
                 ItemModifier mod = itemModifiers.get(m);
                 if (!mod.validType(item)) continue;
                 int mask = findLargestMatch(mod, pool, tried[m], copy);
