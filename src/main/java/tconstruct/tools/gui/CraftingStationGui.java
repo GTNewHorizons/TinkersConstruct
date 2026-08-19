@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -36,6 +35,21 @@ import tconstruct.util.network.CraftingStationDumpPacket;
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
+    private static final int CRAFTING_WIDTH = 176;
+    private static final int CRAFTING_HEIGHT = 166;
+    private static final int DESCRIPTION_WIDTH = 126;
+    private static final int DESCRIPTION_HEIGHT = 172;
+    private static final int DEFAULT_COLUMNS = 6;
+    private static final int MIN_COLUMNS = 5;
+    private static final int MAX_OVERHANG_ROWS = 7;
+    private static final int NEI_VERTICAL_MARGIN = 22;
+    private static final int NEI_PANEL_MARGIN = 2;
+    private static final int NEI_BOOKMARK_GROUP_WIDTH = 7;
+    private static final int MIN_BOOKMARK_COLUMNS = 2;
+    private static final int SCROLL_SEPARATOR_HEIGHT = 4;
+    // Treat an empty trailing slot as a small layout cost, not a hard constraint.
+    private static final double UNUSED_SLOT_SCORE_PENALTY = 0.01D;
+
     /*
      * Slider/slots related. Taken & adapted from Tinkers Construct 1.12 under the MIT License
      */
@@ -43,6 +57,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
     public static final GuiElementScalable slotElement = new GuiElementScalable(7, 7, 18, 18, 64, 64);
     public static final GuiElementScalable slotEmptyElement = new GuiElementScalable(7 + 18, 7, 18, 18, 64, 64);
+    private static final GuiElementScalable scrollSeparator = new GuiElementScalable(7, 57, 1, 1, 64, 64);
 
     private static final GuiElementDuex sliderNormal = new GuiElementDuex(7, 25, 10, 15, 64, 64);
     private static final GuiElementDuex sliderLow = new GuiElementDuex(17, 25, 10, 15, 64, 64);
@@ -89,7 +104,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     private int chestLeft = 0;
     private int chestTop = 0;
     private int chestWidth = 0;
-    private int chestHeight = 0;
+    private ChestLayout chestLayout;
 
     public CraftingStationGui(InventoryPlayer inventory, CraftingStationLogic logic, World world, int x, int y, int z) {
         super(logic.getGuiContainer(inventory, world, x, y, z));
@@ -104,8 +119,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     public void initGui() {
         super.initGui();
 
-        this.xSize = 176;
-        this.ySize = 166;
+        this.xSize = CRAFTING_WIDTH;
+        this.ySize = CRAFTING_HEIGHT;
 
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
@@ -113,15 +128,14 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         this.craftingLeft = this.guiLeft;
         this.craftingTop = this.guiTop;
 
-        if (logic.tinkerTable) {
-            this.descLeft = this.guiLeft + 176;
-            this.descTop = this.craftingTop;
-        }
-
         if (logic.chest != null) {
             updateChest();
         } else {
             slider.hide();
+            if (logic.tinkerTable) {
+                this.descLeft = this.guiLeft + CRAFTING_WIDTH;
+                this.descTop = this.craftingTop;
+            }
         }
 
         this.craftingTextLeft = this.craftingLeft - this.guiLeft;
@@ -130,10 +144,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         // Add dump button if chest is connected
         this.buttonList.clear();
         if (logic.chest != null) {
-            int bothOffset = 0;
-            if (logic.slotCount > 54) bothOffset += 12;
-            bothOffset += 122;
-            this.buttonList.add(new GuiButtonDump(0, this.guiLeft + bothOffset + 161, this.guiTop + 5));
+            this.buttonList.add(new GuiButtonDump(0, this.craftingLeft + 161, this.craftingTop + 5));
         }
     }
 
@@ -179,20 +190,20 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
             }
             this.fontRendererObj.drawString(
                     StatCollector.translateToLocal(logic.chest.get().getInventoryName()),
-                    8,
-                    6,
+                    chestLeft - guiLeft + 8,
+                    chestTop - guiTop + 6,
                     ColorUtils.inventoryTitle.getColor());
         }
 
         this.fontRendererObj.drawString(
                 StatCollector.translateToLocal(logic.tinkerTable ? "crafters.TinkerTable" : logic.getInvName()),
                 craftingTextLeft + 8,
-                6,
+                craftingTop - guiTop + 6,
                 ColorUtils.inventoryTitle.getColor());
         this.fontRendererObj.drawString(
                 StatCollector.translateToLocal("container.inventory"),
                 craftingTextLeft + 8,
-                72,
+                craftingTop - guiTop + 72,
                 ColorUtils.inventoryTitle.getColor());
 
         if (logic.tinkerTable) {
@@ -216,7 +227,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     void drawToolStats(ItemStack stack) {
         if (stack == null) return;
 
-        if (stack.getItem() instanceof IModifyable) ToolStationGuiHelper.drawToolStats(stack, descTextLeft + 10, 0);
+        if (stack.getItem() instanceof IModifyable)
+            ToolStationGuiHelper.drawToolStats(stack, descTextLeft + 10, descTop - guiTop);
 
         int matID = PatternBuilder.instance.getPartID(stack);
 
@@ -229,14 +241,15 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
     void drawToolInformation() {
         int offsetX = descTextLeft + 63;
+        int offsetY = descTop - guiTop;
 
-        this.drawCenteredString(fontRendererObj, title, offsetX, 8, 0xffffff);
-        fontRendererObj.drawSplitString(body, offsetX - 56, 24, 115, 0xffffff);
+        this.drawCenteredString(fontRendererObj, title, offsetX, offsetY + 8, 0xffffff);
+        fontRendererObj.drawSplitString(body, offsetX - 56, offsetY + 24, 115, 0xffffff);
     }
 
     protected void drawMaterialStats(ToolMaterial materialEnum) {
         final int baseX = descTextLeft + 8;
-        final int baseY = 8;
+        final int baseY = descTop - guiTop + 8;
 
         String centerTitle = "\u00A7n" + materialEnum.localizedName();
 
@@ -301,21 +314,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
         this.mc.getTextureManager().bindTexture(gui_inventory);
         if (hasChest()) {
-            chestLeft += border.w;
-            chestTop += border.h;
-
-            border.draw();
-
-            int x = chestLeft;
-            int y = chestTop;
-            final int midW = chestWidth - border.w * 2;
-
-            if (shouldDrawName()) {
-                textBackground.drawScaledX(chestLeft, chestTop, midW);
-                y += textBackground.h;
-            }
-
-            drawChestSlots(x, y);
+            drawChest();
 
             // slider
             if (slider.isEnabled()) {
@@ -324,9 +323,6 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
                 updateChestSlots();
             }
-
-            chestLeft -= border.w;
-            chestTop -= border.h;
         }
         // Draw description
         if (logic.tinkerTable) {
@@ -364,21 +360,13 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
-        final int cw = (logic.chest != null ? chestWidth : 0);
-        if (logic.chest != null) {
-            final Rectangle blah = new Rectangle(x, y, w, h);
-            final Rectangle chestRectangle = new Rectangle(
-                    chestLeft,
-                    chestTop,
-                    chestWidth,
-                    chestHeight + (shouldDrawName() ? textBackground.y : 0) + (border.h * 2));
+        Rectangle itemPanelSlot = new Rectangle(x, y, w, h);
+        if (intersectsChest(itemPanelSlot)) return true;
+        if (new Rectangle(craftingLeft, craftingTop, CRAFTING_WIDTH, CRAFTING_HEIGHT).intersects(itemPanelSlot))
+            return true;
 
-            if (chestRectangle.intersects(blah)) return true;
-        }
-
-        if (y + h - 4 < guiTop || y + 4 > guiTop + ySize) return false;
-
-        return x - w - 4 >= guiLeft + cw && x + 4 <= guiLeft + xSize + cw + (logic.tinkerTable ? 126 : 0);
+        return logic.tinkerTable
+                && new Rectangle(descLeft, descTop, DESCRIPTION_WIDTH, DESCRIPTION_HEIGHT).intersects(itemPanelSlot);
     }
 
     public boolean hasChest() {
@@ -386,12 +374,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     public boolean isMouseInChest(int mouseX, int mouseY) {
-        final int xMod = (slider.isEnabled() ? slider.width : 0) + border.w;
-        final int yMod = (shouldDrawName() ? textBackground.y : 0) + (border.h * 2);
-
-        return mouseX >= (this.chestLeft - xMod) && mouseX < (chestLeft + chestWidth + xMod)
-                && mouseY >= (this.chestTop - yMod)
-                && mouseY < (chestTop + chestHeight + yMod);
+        return intersectsChest(new Rectangle(mouseX, mouseY, 1, 1));
     }
 
     public boolean isMouseOverFullSlot(int mouseX, int mouseY) {
@@ -421,6 +404,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         // all visible
         if (!slider.isEnabled()) return true;
 
+        if (chestLayout.lShaped && chestSlot.getVisualIndex() < chestLayout.topCapacity) return true;
+
         return firstSlotId <= chestSlot.getVisualIndex() && lastSlotId > chestSlot.getVisualIndex();
     }
 
@@ -430,17 +415,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     private int getDisplayedRows() {
-        return chestHeight / slotElement.h;
-    }
-
-    private int calcCappedYSize(int max) {
-        int h = slotElement.h * logic.invRows;
-
-        // not higher than the max
-        while (h > max) {
-            h -= slotElement.h;
-        }
-        return h;
+        return chestLayout.visibleRows;
     }
 
     public int getChestWidth() {
@@ -449,99 +424,56 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
     // updatePosition
     public void updateChest() {
-        chestHeight = calcCappedYSize(CraftingStationGui.slotElement.h * 10);
         chestSlotCount = logic.slotCount;
+        chestLayout = selectChestLayout();
 
-        // slider needed?
-        if (getDisplayedRows() < logic.invRows) {
+        if (chestLayout.scrolling) {
             slider.enable();
+            slider.show();
         } else {
             slider.disable();
+            slider.hide();
         }
 
-        chestWidth = logic.invColumns * CraftingStationGui.slotElement.w + 2 * border.w
-                + (slider.isEnabled() ? slider.width : 0);
+        this.xSize = CRAFTING_WIDTH;
+        this.ySize = CRAFTING_HEIGHT;
+        this.guiLeft = (this.width - this.xSize) / 2;
+        this.guiTop = (this.height - this.ySize) / 2;
 
-        chestLeft = guiLeft - chestWidth;
-        chestTop = guiTop;
+        this.craftingLeft = guiLeft;
+        this.craftingTop = guiTop;
+        this.chestLeft = craftingLeft - chestLayout.lowerPanelWidth;
+        this.chestTop = craftingTop - chestLayout.craftingTopOffset + chestLayout.chestTopOffset;
+        this.chestWidth = chestLayout.lowerPanelWidth;
+        this.descLeft = craftingLeft + CRAFTING_WIDTH;
+        this.descTop = craftingTop;
 
-        // Leaving out the xSize increase by chestSize and adjusting where it's used, because otherwise it shifts both
-        // the bookmarks and item panel
-        // way too far out. If anything (mouseClick, for example) relies on xSize, you'll need to hack it like below.
-        // xSize += guiLeft - chestLeft;
-        guiLeft = chestLeft;
-
-        border.setPosition(chestLeft, chestTop);
-        border.setSize(chestWidth, chestHeight + (shouldDrawName() ? textBackground.h : 0) + 2 * border.h);
-
-        slider.show();
-        slider.setPosition(
-                chestLeft + logic.invColumns * slotElement.w + border.w,
-                chestTop + (shouldDrawName() ? textBackground.h : 0) + border.h);
-        slider.setSize(chestHeight);
-        slider.setSliderParameters(0, logic.invRows - getDisplayedRows(), 1);
+        configureChestWidgets();
+        positionMainSlots();
 
         updateChestSlots();
-    }
-
-    @Override
-    protected void mouseClicked(int x, int y, int button) {
-        // Hacks
-        final int height = ySize;
-
-        if (logic.chest != null && x >= guiLeft && x <= guiLeft + chestWidth) {
-            ySize = border.height;
-        }
-
-        xSize += chestWidth;
-        super.mouseClicked(x, y, button);
-        xSize -= chestWidth;
-        ySize = height;
-    }
-
-    @Override
-    protected void mouseMovedOrUp(int x, int y, int button) {
-        // Hacks
-        final int height = ySize;
-
-        if (logic.chest != null && x >= guiLeft && x <= guiLeft + chestWidth) {
-            ySize = border.height;
-        }
-
-        xSize += chestWidth;
-        super.mouseMovedOrUp(x, y, button);
-        xSize -= chestWidth;
-        ySize = height;
     }
 
     // updates slot visibility
     protected void updateChestSlots() {
         if (!hasChest()) return;
 
-        final IInventory secondInventory = logic.getSecondInventory();
+        int xOffset = chestLeft - guiLeft + border.w;
+        int yOffset = chestTop - guiTop + border.h + getHeaderHeight();
 
-        int xOffset = border.w;
-        int yOffset = border.h;
-
-        if (shouldDrawName()) {
-            yOffset += textBackground.h;
-        }
-
-        firstSlotId = slider.getValue() * logic.invColumns;
-        lastSlotId = Math.min(chestSlotCount, firstSlotId + getDisplayedRows() * logic.invColumns);
+        firstSlotId = chestLayout.scrolling
+                ? (chestLayout.lShaped ? chestLayout.topCapacity : 0) + slider.getValue() * chestLayout.columns
+                : 0;
+        lastSlotId = chestLayout.scrolling
+                ? Math.min(chestSlotCount, firstSlotId + getDisplayedRows() * chestLayout.columns)
+                : chestSlotCount;
 
         for (Object o : inventorySlots.inventorySlots) {
             if (!(o instanceof ChestSlot slot)) continue;
 
             if (shouldDrawSlot(slot)) {
                 slot.enable();
-                // calc position of the slot
-                final int offset = slot.getVisualIndex() - firstSlotId;
-                final int x = (offset % logic.invColumns) * CraftingStationGui.slotElement.w;
-                final int y = (offset / logic.invColumns) * CraftingStationGui.slotElement.h;
-
-                slot.xDisplayPosition = x + xOffset + 1 /*- this.chestWidth*/;
-                slot.yDisplayPosition = y + yOffset + 1;
+                positionChestSlot(slot, xOffset, yOffset);
             } else {
                 slot.disable();
                 slot.xDisplayPosition = 0;
@@ -550,26 +482,452 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         }
     }
 
+    private void positionChestSlot(ChestSlot slot, int xOffset, int yOffset) {
+        int visualIndex = slot.getVisualIndex();
+        final int x;
+        final int y;
+
+        if (!chestLayout.lShaped) {
+            int offset = visualIndex - firstSlotId;
+            x = (offset % chestLayout.columns) * slotElement.w;
+            y = (offset / chestLayout.columns) * slotElement.h;
+        } else if (visualIndex < chestLayout.topCapacity) {
+            x = (visualIndex % chestLayout.topColumns) * slotElement.w;
+            y = (visualIndex / chestLayout.topColumns) * slotElement.h;
+        } else {
+            int offset = visualIndex - (chestLayout.scrolling ? firstSlotId : chestLayout.topCapacity);
+            x = (offset % chestLayout.columns) * slotElement.w;
+            y = (chestLayout.overhangRows + offset / chestLayout.columns) * slotElement.h + chestLayout.separatorHeight;
+        }
+
+        slot.xDisplayPosition = x + xOffset + 1;
+        slot.yDisplayPosition = y + yOffset + 1;
+    }
+
     // drawSlots
     protected void drawChestSlots(int xPos, int yPos) {
         if (!hasChest()) return;
 
-        int width = logic.invColumns * slotElement.w;
-        int height = chestHeight - border.h * 2;
+        if (chestLayout.lShaped) {
+            drawSlotRows(xPos, yPos, chestLayout.topColumns, Math.min(chestSlotCount, chestLayout.topCapacity));
+            drawSlotRows(
+                    xPos,
+                    yPos + chestLayout.overhangRows * slotElement.h + chestLayout.separatorHeight,
+                    chestLayout.columns,
+                    chestLayout.scrolling ? lastSlotId - firstSlotId
+                            : Math.max(0, chestSlotCount - chestLayout.topCapacity));
+            if (chestLayout.scrolling) {
+                int separatorY = yPos + chestLayout.overhangRows * slotElement.h;
+                scrollSeparator.drawScaled(
+                        xPos,
+                        separatorY,
+                        chestLayout.topColumns * slotElement.w,
+                        chestLayout.separatorHeight);
+            }
+        } else {
+            drawSlotRows(xPos, yPos, chestLayout.columns, lastSlotId - firstSlotId);
+        }
+    }
 
-        int fullRows = (lastSlotId - firstSlotId) / logic.invColumns;
-        int slotsLeft = (lastSlotId - firstSlotId) % logic.invColumns;
-
-        int y; // We use it after the loop
-        for (y = 0; y < fullRows * slotElement.h && y < height; y += slotElement.h) {
-            slotElement.drawScaledX(xPos, yPos + y, width);
+    private void drawChest() {
+        if (chestLayout.lShaped) {
+            drawLShapedBorder();
+        } else {
+            border.draw();
         }
 
-        // draw partial row and unused slots
+        int x = chestLeft + border.w;
+        int y = chestTop + border.h;
+
+        if (shouldDrawName()) {
+            int titleWidth = chestLayout.lShaped ? chestLayout.topColumns * slotElement.w
+                    : chestLayout.panelWidth - border.w * 2;
+            textBackground.drawScaledX(x, y, titleWidth);
+            y += textBackground.h;
+        }
+
+        drawChestSlots(x, y);
+    }
+
+    private void drawLShapedBorder() {
+        int wideRight = chestLeft + chestLayout.panelWidth;
+        int lowerRight = chestLeft + chestLayout.lowerPanelWidth;
+        int elbowY = chestTop + border.h
+                + getHeaderHeight()
+                + chestLayout.overhangRows * slotElement.h
+                + chestLayout.separatorHeight;
+        int bottom = chestTop + chestLayout.panelHeight;
+
+        border.cornerTopLeft.draw(chestLeft, chestTop);
+        border.borderTop.drawScaledX(chestLeft + border.w, chestTop, chestLayout.panelWidth - border.w * 2);
+        border.cornerTopRight.draw(wideRight - border.w, chestTop);
+
+        border.borderLeft.drawScaledY(chestLeft, chestTop + border.h, chestLayout.panelHeight - border.h * 2);
+        border.borderRight.drawScaledY(wideRight - border.w, chestTop + border.h, elbowY - chestTop - border.h);
+        border.cornerBottomRight.draw(wideRight - border.w, elbowY);
+        border.borderBottom.drawScaledX(lowerRight, elbowY, wideRight - lowerRight - border.w);
+        border.drawConcaveBottomRight(lowerRight - border.w, elbowY);
+        border.borderRight.drawScaledY(lowerRight - border.w, elbowY + border.h, bottom - elbowY - border.h * 2);
+
+        border.cornerBottomLeft.draw(chestLeft, bottom - border.h);
+        border.borderBottom
+                .drawScaledX(chestLeft + border.w, bottom - border.h, chestLayout.lowerPanelWidth - border.w * 2);
+        border.cornerBottomRight.draw(lowerRight - border.w, bottom - border.h);
+    }
+
+    private void drawSlotRows(int x, int y, int columns, int slotCount) {
+        if (slotCount <= 0) return;
+
+        int width = columns * slotElement.w;
+        int fullRows = slotCount / columns;
+        int slotsLeft = slotCount % columns;
+
+        for (int row = 0; row < fullRows; row++) {
+            slotElement.drawScaledX(x, y + row * slotElement.h, width);
+        }
+
         if (slotsLeft > 0) {
-            slotElement.drawScaledX(xPos, yPos + y, slotsLeft * slotElement.w);
-            // empty slots that don't exist
-            slotEmptyElement.drawScaledX(xPos + slotsLeft * slotElement.w, yPos + y, width - slotsLeft * slotElement.w);
+            int rowY = y + fullRows * slotElement.h;
+            slotElement.drawScaledX(x, rowY, slotsLeft * slotElement.w);
+            slotEmptyElement.drawScaledX(x + slotsLeft * slotElement.w, rowY, width - slotsLeft * slotElement.w);
+        }
+    }
+
+    private void configureChestWidgets() {
+        int headerHeight = getHeaderHeight();
+
+        border.setPosition(chestLeft, chestTop);
+        border.setSize(chestLayout.panelWidth, chestLayout.panelHeight);
+
+        if (chestLayout.scrolling) {
+            int sliderTopOffset = chestLayout.lShaped
+                    ? chestLayout.overhangRows * slotElement.h + chestLayout.separatorHeight
+                    : 0;
+            slider.setPosition(
+                    chestLeft + border.w + chestLayout.columns * slotElement.w,
+                    chestTop + border.h + headerHeight + sliderTopOffset);
+            slider.setSize(chestLayout.visibleRows * slotElement.h);
+            slider.setSliderParameters(0, chestLayout.totalRows - chestLayout.visibleRows, 1);
+        }
+    }
+
+    private void positionMainSlots() {
+        int xOffset = craftingLeft - guiLeft;
+        int yOffset = craftingTop - guiTop;
+
+        setSlotPosition(0, xOffset + 124, yOffset + 35);
+
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 3; column++) {
+                setSlotPosition(1 + column + row * 3, xOffset + 30 + column * 18, yOffset + 17 + row * 18);
+            }
+        }
+
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 9; column++) {
+                setSlotPosition(10 + column + row * 9, xOffset + 8 + column * 18, yOffset + 84 + row * 18);
+            }
+        }
+
+        for (int column = 0; column < 9; column++) {
+            setSlotPosition(37 + column, xOffset + 8 + column * 18, yOffset + 142);
+        }
+    }
+
+    private void setSlotPosition(int index, int x, int y) {
+        Slot slot = inventorySlots.getSlot(index);
+        slot.xDisplayPosition = x;
+        slot.yDisplayPosition = y;
+    }
+
+    private boolean intersectsChest(Rectangle rectangle) {
+        if (!hasChest() || chestLayout == null) return false;
+
+        if (!chestLayout.lShaped) {
+            return new Rectangle(chestLeft, chestTop, chestLayout.panelWidth, chestLayout.panelHeight)
+                    .intersects(rectangle);
+        }
+
+        int headerHeight = getHeaderHeight();
+        int topSectionHeight = border.h + headerHeight
+                + chestLayout.overhangRows * slotElement.h
+                + chestLayout.separatorHeight
+                + border.h;
+        Rectangle top = new Rectangle(chestLeft, chestTop, chestLayout.panelWidth, topSectionHeight);
+        Rectangle lower = new Rectangle(
+                chestLeft,
+                chestTop + topSectionHeight - border.h,
+                chestLayout.lowerPanelWidth,
+                chestLayout.panelHeight - topSectionHeight + border.h);
+        return top.intersects(rectangle) || lower.intersects(rectangle);
+    }
+
+    private int getHeaderHeight() {
+        return shouldDrawName() ? textBackground.h : 0;
+    }
+
+    private ChestLayout selectChestLayout() {
+        int craftingLeft = (width - CRAFTING_WIDTH) / 2;
+        int bookmarkWidth = NEI_PANEL_MARGIN + NEI_BOOKMARK_GROUP_WIDTH + MIN_BOOKMARK_COLUMNS * slotElement.w;
+        int availableChestWidth = Math.max(1, craftingLeft - bookmarkWidth);
+        int availableHeight = Math.max(1, height - NEI_VERTICAL_MARGIN * 2);
+        int headerHeight = getHeaderHeight();
+        int descriptionWidth = logic.tinkerTable ? DESCRIPTION_WIDTH : 0;
+        int sideHeight = logic.tinkerTable ? DESCRIPTION_HEIGHT : CRAFTING_HEIGHT;
+        int availableWidth = availableChestWidth + CRAFTING_WIDTH + descriptionWidth;
+        int maxColumns = Math.max(MIN_COLUMNS, (availableChestWidth - border.w * 2) / slotElement.w);
+
+        // Preserve the original six-column layout for standard connected inventories.
+        if (chestSlotCount <= DEFAULT_COLUMNS * 10) {
+            return createRectangularLayout(
+                    DEFAULT_COLUMNS,
+                    ceilDiv(chestSlotCount, DEFAULT_COLUMNS),
+                    false,
+                    headerHeight,
+                    descriptionWidth,
+                    sideHeight,
+                    Integer.MAX_VALUE,
+                    Integer.MAX_VALUE);
+        }
+
+        // Prefer a complete layout that fits, so scrolling remains a fallback.
+        ChestLayout best = null;
+        for (int columns = MIN_COLUMNS; columns <= maxColumns; columns++) {
+            ChestLayout rectangle = createRectangularLayout(
+                    columns,
+                    ceilDiv(chestSlotCount, columns),
+                    false,
+                    headerHeight,
+                    descriptionWidth,
+                    sideHeight,
+                    availableWidth,
+                    availableHeight);
+            best = selectBetterCompleteLayout(best, rectangle);
+
+            for (int overhangRows = 1; overhangRows <= MAX_OVERHANG_ROWS; overhangRows++) {
+                ChestLayout lShape = createLShapedLayout(
+                        columns,
+                        overhangRows,
+                        Integer.MAX_VALUE,
+                        false,
+                        headerHeight,
+                        descriptionWidth,
+                        sideHeight,
+                        availableWidth,
+                        availableHeight);
+                best = selectBetterCompleteLayout(best, lShape);
+            }
+        }
+
+        if (best != null) return best;
+
+        // If no complete layout fits, maximize the visible capacity of a scrolling layout.
+        ChestLayout fallback = null;
+        int maxVisibleRows = Math.max(1, (availableHeight - headerHeight - border.h * 2) / slotElement.h);
+        int centeredCraftingTop = (height - CRAFTING_HEIGHT) / 2;
+        int maxVisibleLowerRows = Math.max(1, (height - NEI_VERTICAL_MARGIN - centeredCraftingTop) / slotElement.h);
+        for (int columns = MIN_COLUMNS; columns <= maxColumns; columns++) {
+            ChestLayout candidate = createRectangularLayout(
+                    columns,
+                    maxVisibleRows,
+                    true,
+                    headerHeight,
+                    descriptionWidth,
+                    sideHeight,
+                    availableWidth,
+                    availableHeight);
+            fallback = selectBetterScrollingLayout(fallback, candidate);
+
+            for (int overhangRows = 1; overhangRows <= MAX_OVERHANG_ROWS; overhangRows++) {
+                ChestLayout lShape = createLShapedLayout(
+                        columns,
+                        overhangRows,
+                        maxVisibleLowerRows,
+                        true,
+                        headerHeight,
+                        descriptionWidth,
+                        sideHeight,
+                        availableWidth,
+                        availableHeight);
+                fallback = selectBetterScrollingLayout(fallback, lShape);
+            }
+        }
+
+        if (fallback != null) return fallback;
+
+        // Last resort for screens that cannot fit even the reserved minimum layout.
+        return createRectangularLayout(
+                MIN_COLUMNS,
+                maxVisibleRows,
+                true,
+                headerHeight,
+                descriptionWidth,
+                sideHeight,
+                Integer.MAX_VALUE,
+                Integer.MAX_VALUE);
+    }
+
+    private ChestLayout createRectangularLayout(int columns, int visibleRows, boolean scrolling, int headerHeight,
+            int descriptionWidth, int sideHeight, int availableWidth, int availableHeight) {
+        int panelWidth = columns * slotElement.w + border.w * 2 + (scrolling ? slider.width : 0);
+        int panelHeight = visibleRows * slotElement.h + headerHeight + border.h * 2;
+        int combinedWidth = panelWidth + CRAFTING_WIDTH + descriptionWidth;
+        int combinedHeight = Math.max(panelHeight, sideHeight);
+        int chestTopOffset = (combinedHeight - panelHeight) / 2;
+        int craftingTopOffset = (combinedHeight - sideHeight) / 2;
+        int totalRows = ceilDiv(chestSlotCount, columns);
+        int visibleCapacity = columns * visibleRows;
+        int unusedSlots = Math.max(0, visibleCapacity - chestSlotCount);
+
+        return new ChestLayout(
+                false,
+                scrolling,
+                columns,
+                columns,
+                0,
+                0,
+                0,
+                visibleRows,
+                totalRows,
+                panelWidth,
+                panelWidth,
+                panelHeight,
+                combinedHeight,
+                chestTopOffset,
+                craftingTopOffset,
+                visibleCapacity,
+                unusedSlots,
+                score(combinedWidth, combinedHeight, availableWidth, availableHeight),
+                combinedWidth <= availableWidth && fitsVertically(combinedHeight, craftingTopOffset));
+    }
+
+    private ChestLayout createLShapedLayout(int columns, int overhangRows, int visibleLowerRows, boolean scrolling,
+            int headerHeight, int descriptionWidth, int sideHeight, int availableWidth, int availableHeight) {
+        int overhangColumns = ceilDiv(CRAFTING_WIDTH, slotElement.w);
+        int topColumns = columns + overhangColumns;
+        int topCapacity = topColumns * overhangRows;
+        int remainingSlots = chestSlotCount - topCapacity;
+        if (remainingSlots <= 0) return null;
+
+        int totalLowerRows = ceilDiv(remainingSlots, columns);
+        if (!scrolling) visibleLowerRows = totalLowerRows;
+        int separatorHeight = scrolling ? SCROLL_SEPARATOR_HEIGHT : 0;
+
+        int panelWidth = topColumns * slotElement.w + border.w * 2;
+        int lowerPanelWidth = columns * slotElement.w + border.w * 2 + (scrolling ? slider.width : 0);
+        int panelHeight = (overhangRows + visibleLowerRows) * slotElement.h + separatorHeight
+                + headerHeight
+                + border.h * 2;
+        int craftingTopOffset = border.h + headerHeight + overhangRows * slotElement.h + separatorHeight + border.h;
+        int combinedWidth = Math.max(panelWidth, lowerPanelWidth + CRAFTING_WIDTH + descriptionWidth);
+        int combinedHeight = Math.max(panelHeight, craftingTopOffset + sideHeight);
+        int visibleCapacity = topCapacity + visibleLowerRows * columns;
+        double screenUsage = score(combinedWidth, combinedHeight, availableWidth, availableHeight);
+
+        return new ChestLayout(
+                true,
+                scrolling,
+                columns,
+                topColumns,
+                topCapacity,
+                overhangRows,
+                separatorHeight,
+                visibleLowerRows,
+                totalLowerRows,
+                panelWidth,
+                lowerPanelWidth,
+                panelHeight,
+                combinedHeight,
+                0,
+                craftingTopOffset,
+                visibleCapacity,
+                scrolling ? 0 : visibleCapacity - chestSlotCount,
+                screenUsage,
+                combinedWidth <= availableWidth && fitsVertically(combinedHeight, craftingTopOffset));
+    }
+
+    private boolean fitsVertically(int combinedHeight, int craftingTopOffset) {
+        int centeredCraftingTop = (height - CRAFTING_HEIGHT) / 2;
+        int combinedTop = centeredCraftingTop - craftingTopOffset;
+        return combinedTop >= NEI_VERTICAL_MARGIN && combinedTop + combinedHeight <= height - NEI_VERTICAL_MARGIN;
+    }
+
+    private ChestLayout selectBetterCompleteLayout(ChestLayout current, ChestLayout candidate) {
+        if (candidate == null || !candidate.fits) return current;
+        if (current == null) return candidate;
+
+        double currentScore = current.score + current.unusedSlots * UNUSED_SLOT_SCORE_PENALTY;
+        double candidateScore = candidate.score + candidate.unusedSlots * UNUSED_SLOT_SCORE_PENALTY;
+        if (candidateScore < currentScore) return candidate;
+        if (candidateScore > currentScore) return current;
+        if (candidate.unusedSlots < current.unusedSlots) return candidate;
+        if (candidate.unusedSlots > current.unusedSlots) return current;
+        if (!candidate.lShaped && current.lShaped) return candidate;
+        return current;
+    }
+
+    private ChestLayout selectBetterScrollingLayout(ChestLayout current, ChestLayout candidate) {
+        if (candidate == null || !candidate.fits) return current;
+        if (current == null || candidate.visibleCapacity > current.visibleCapacity) return candidate;
+        if (candidate.visibleCapacity < current.visibleCapacity) return current;
+        if (candidate.score < current.score) return candidate;
+        return current;
+    }
+
+    private static double score(int width, int height, int availableWidth, int availableHeight) {
+        return Math.max((double) width / availableWidth, (double) height / availableHeight);
+    }
+
+    private static int ceilDiv(int value, int divisor) {
+        return (value + divisor - 1) / divisor;
+    }
+
+    /** Geometry shared by rendering, slot positioning, hit testing, and NEI integration. */
+    private static class ChestLayout {
+
+        private final boolean lShaped;
+        private final boolean scrolling;
+        private final int columns;
+        private final int topColumns;
+        private final int topCapacity;
+        private final int overhangRows;
+        private final int separatorHeight;
+        private final int visibleRows;
+        private final int totalRows;
+        private final int panelWidth;
+        private final int lowerPanelWidth;
+        private final int panelHeight;
+        private final int combinedHeight;
+        private final int chestTopOffset;
+        private final int craftingTopOffset;
+        private final int visibleCapacity;
+        private final int unusedSlots;
+        private final double score;
+        private final boolean fits;
+
+        private ChestLayout(boolean lShaped, boolean scrolling, int columns, int topColumns, int topCapacity,
+                int overhangRows, int separatorHeight, int visibleRows, int totalRows, int panelWidth,
+                int lowerPanelWidth, int panelHeight, int combinedHeight, int chestTopOffset, int craftingTopOffset,
+                int visibleCapacity, int unusedSlots, double score, boolean fits) {
+            this.lShaped = lShaped;
+            this.scrolling = scrolling;
+            this.columns = columns;
+            this.topColumns = topColumns;
+            this.topCapacity = topCapacity;
+            this.overhangRows = overhangRows;
+            this.separatorHeight = separatorHeight;
+            this.visibleRows = visibleRows;
+            this.totalRows = totalRows;
+            this.panelWidth = panelWidth;
+            this.lowerPanelWidth = lowerPanelWidth;
+            this.panelHeight = panelHeight;
+            this.combinedHeight = combinedHeight;
+            this.chestTopOffset = chestTopOffset;
+            this.craftingTopOffset = craftingTopOffset;
+            this.visibleCapacity = visibleCapacity;
+            this.unusedSlots = unusedSlots;
+            this.score = score;
+            this.fits = fits;
         }
     }
 
