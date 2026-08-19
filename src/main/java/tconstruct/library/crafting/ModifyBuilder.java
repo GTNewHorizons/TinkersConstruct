@@ -172,8 +172,10 @@ public class ModifyBuilder {
             claimed[i] = true;
             amount = Math.min(amount, pool[i].stackSize);
             consumed[i] += amount;
-            pool[i].stackSize -= amount;
-            if (pool[i].stackSize <= 0) pool[i] = null;
+            // A slot feeds one modifier per craft: whatever is left over in it is not offered to the others,
+            // so a stack of diamonds beside a gold block buys the extra modifier without a second diamond
+            // quietly going into a durability upgrade nobody asked for.
+            pool[i] = null;
         }
         tags.removeTag("ToRemove");
     }
