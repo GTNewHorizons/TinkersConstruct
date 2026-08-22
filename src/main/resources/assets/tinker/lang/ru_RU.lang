@@ -797,11 +797,11 @@ tconstruct.nei.dryingrack=Доска для вяления
 tconstruct.nei.melting=Плавка в плавильне
 
 gui.smeltery.fuel=Топливо
-gui.smeltery.emerald=Изумрудов: 
-gui.smeltery.glass.block=Блоков: 
-gui.smeltery.glass.pannel=Панелей: 
-gui.smeltery.metal.ingot=Слитков: 
-gui.smeltery.metal.nugget=Самородков: 
+gui.smeltery.emerald=%s Изумрудов
+gui.smeltery.glass.block=%s Блоков
+gui.smeltery.glass.pannel=%s Панелей
+gui.smeltery.metal.ingot=%s Слитков
+gui.smeltery.metal.nugget=%s Самородков
 gui.smeltery.molten.check=Расплавленн
 gui.landmine=Мина
 gui.partcrafter1=Создание частей

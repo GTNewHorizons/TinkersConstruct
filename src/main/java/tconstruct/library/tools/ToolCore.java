@@ -1,5 +1,7 @@
 package tconstruct.library.tools;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -278,7 +280,10 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
                 else color = EnumChatFormatting.GOLD.toString();
             }
 
-            String energy = color + tags.getInteger("Energy") + "/" + getMaxEnergyStored(stack) + " RF";
+            String energy = color + formatNumber(tags.getInteger("Energy"))
+                    + "/"
+                    + formatNumber(getMaxEnergyStored(stack))
+                    + " RF";
             list.add(energy);
         }
         if (tags.hasKey("InfiTool")) {
@@ -339,7 +344,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         int attack = (int) (tags.getCompoundTag("InfiTool").getInteger("Attack") * this.getDamageModifier());
         list.add(
                 EnumChatFormatting.BLUE + "+"
-                        + attack
+                        + formatNumber(attack)
                         + " "
                         + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
     }

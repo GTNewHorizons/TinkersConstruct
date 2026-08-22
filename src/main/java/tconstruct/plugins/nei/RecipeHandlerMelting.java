@@ -1,5 +1,7 @@
 package tconstruct.plugins.nei;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +94,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
     @Override
     public void drawExtras(int recipe) {
         int temperature = ((CachedMeltingRecipe) this.arecipes.get(recipe)).temperature;
-        GuiDraw.drawStringC(temperature + " C", 81, 9, ColorUtils.neiTemperature.getColor(), false);
+        GuiDraw.drawStringC(formatNumber(temperature) + " C", 81, 9, ColorUtils.neiTemperature.getColor(), false);
     }
 
     @Override
