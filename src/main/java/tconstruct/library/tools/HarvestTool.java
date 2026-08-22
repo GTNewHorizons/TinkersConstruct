@@ -303,8 +303,8 @@ public abstract class HarvestTool extends ToolCore {
             }
 
             // send an update to the server, so we get an update back
-            if (PHConstruct.extraBlockUpdates) Minecraft.getMinecraft().getNetHandler().addToSendQueue(
-                    new C07PacketPlayerDigging(2, x, y, z, Minecraft.getMinecraft().objectMouseOver.sideHit));
+            if (PHConstruct.extraBlockUpdates) Minecraft.getMinecraft().getNetHandler()
+                    .addToSendQueue(new C07PacketPlayerDigging(2, x, y, z, sidehit));
         }
     }
 }

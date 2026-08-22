@@ -8,6 +8,7 @@ public class ColorUtils {
 
     public static final ColorResource
     // spotless:off
+        inventoryTitle              = color.rgb("inventoryTitle",               "0x404040"),
         materialName                = color.rgb("materialName",                 "0x404040"),
         materialDurability          = color.rgb("materialDurability",           "0x404040"),
         materialHandleModifier1     = color.rgb("materialHandleModifier1",      "0x404040"),

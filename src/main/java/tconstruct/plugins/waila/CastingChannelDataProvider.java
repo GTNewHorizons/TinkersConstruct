@@ -1,5 +1,8 @@
 package tconstruct.plugins.waila;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatFluid;
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -59,10 +62,14 @@ public class CastingChannelDataProvider implements IWailaDataProvider {
             String s1, s2, s3, s4;
             s1 = s2 = s3 = s4 = StatCollector.translateToLocal("tconstruct.waila.empty");
 
-            if (northTank.fluid != null) s1 = northTank.fluid.amount + " / " + northTank.capacity;
-            if (southTank.fluid != null) s2 = southTank.fluid.amount + " / " + southTank.capacity;
-            if (westTank.fluid != null) s3 = westTank.fluid.amount + " / " + westTank.capacity;
-            if (eastTank.fluid != null) s4 = eastTank.fluid.amount + " / " + eastTank.capacity;
+            if (northTank.fluid != null)
+                s1 = formatNumber(northTank.fluid.amount) + " / " + formatFluid(northTank.capacity);
+            if (southTank.fluid != null)
+                s2 = formatNumber(southTank.fluid.amount) + " / " + formatFluid(southTank.capacity);
+            if (westTank.fluid != null)
+                s3 = formatNumber(westTank.fluid.amount) + " / " + formatFluid(westTank.capacity);
+            if (eastTank.fluid != null)
+                s4 = formatNumber(eastTank.fluid.amount) + " / " + formatFluid(eastTank.capacity);
             currenttip.add(s1 + "; " + s2 + "; " + s3 + "; " + s4);
         }
 

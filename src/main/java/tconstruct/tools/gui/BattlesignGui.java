@@ -1,5 +1,7 @@
 package tconstruct.tools.gui;
 
+import java.util.Arrays;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
@@ -25,11 +27,12 @@ public class BattlesignGui extends GuiScreen {
     private float bgColG = 1F;
     private float bgColB = 1F;
     private static final ResourceLocation background = new ResourceLocation("tinker:textures/gui/battlesignText.png");
-    private final String[] text = { "", "", "", "", "" };
+    private final String[] text = new String[BattlesignLogic.LINE_COUNT];
     int currentLine = 0;
 
     public BattlesignGui(BattlesignLogic logic) {
         this.battlesign = logic;
+        Arrays.fill(text, "");
 
         ItemStack stack = logic.getEquipmentItem();
         if (stack != null) {
@@ -146,13 +149,8 @@ public class BattlesignGui extends GuiScreen {
 
         Keyboard.enableRepeatEvents(false);
 
-        TConstruct.packetPipeline.sendToServer(
-                new SignDataPacket(
-                        battlesign.getWorldObj().provider.dimensionId,
-                        battlesign.xCoord,
-                        battlesign.yCoord,
-                        battlesign.zCoord,
-                        text));
+        TConstruct.packetPipeline
+                .sendToServer(new SignDataPacket(battlesign.xCoord, battlesign.yCoord, battlesign.zCoord, text));
     }
 
     private float calcLuminance(float r, float g, float b) {

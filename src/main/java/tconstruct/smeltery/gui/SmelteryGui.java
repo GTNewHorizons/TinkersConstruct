@@ -25,6 +25,7 @@ import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.common.Loader;
 import tconstruct.TConstruct;
+import tconstruct.library.util.ColorUtils;
 import tconstruct.smeltery.inventory.ActiveContainer;
 import tconstruct.smeltery.inventory.SmelteryContainer;
 import tconstruct.smeltery.logic.SmelteryLogic;
@@ -116,12 +117,16 @@ public class SmelteryGui extends ActiveContainerGui {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int baseX = 86 + (columns - 3) * 22;
-        fontRendererObj.drawString(StatCollector.translateToLocal("crafters.Smeltery"), baseX, 5, 0x404040);
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("crafters.Smeltery"),
+                baseX,
+                5,
+                ColorUtils.inventoryTitle.getColor());
         fontRendererObj.drawString(
                 StatCollector.translateToLocal("container.inventory"),
                 baseX + 4,
                 (ySize - 96) + 2,
-                0x404040);
+                ColorUtils.inventoryTitle.getColor());
 
         int cornerX = (width - xSize) / 2 + 36 + (columns - 3) * 22;
         int cornerY = (height - ySize) / 2;

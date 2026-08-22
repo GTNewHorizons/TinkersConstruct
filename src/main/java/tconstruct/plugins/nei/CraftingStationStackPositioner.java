@@ -22,9 +22,7 @@ public class CraftingStationStackPositioner implements IStackPositioner {
         }
 
         if (screen instanceof CraftingStationGui) {
-            CraftingStationGui gui = (CraftingStationGui) screen;
-
-            int offsetX = gui.hasChest() ? 5 + gui.getChestWidth() : 5;
+            int offsetX = 5;
             int offsetY = 11;
 
             for (PositionedStack stack : stacks) {
