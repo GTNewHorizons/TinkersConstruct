@@ -8,6 +8,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -19,6 +20,11 @@ import tconstruct.tools.inventory.CraftingStationContainer;
 import tconstruct.util.config.PHConstruct;
 
 public class CraftingStationLogic extends InventoryLogic implements ISidedInventory {
+
+    private static final String SIDE_INVENTORY_PREFERENCES_TAG = "SideInventoryPreferences";
+    private static final int CRAFTING_GRID_FIRST_SLOT = 1;
+    private static final int CRAFTING_GRID_SIZE = 9;
+    private static final int VALID_SIDE_INVENTORY_PREFERENCES = (1 << CRAFTING_GRID_SIZE) - 1;
 
     public ForgeDirection chestDirection = ForgeDirection.UNKNOWN;
     public int chestSize;
@@ -33,6 +39,8 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
     public int invRows, invColumns, slotCount;
 
     private static final int[] NO_SLOTS = new int[0];
+
+    private int sideInventoryPreferences;
 
     /** Cached result of {@link #getInventories()}; rebuilt when the adjacent inventories are rescanned. */
     @SuppressWarnings("rawtypes")
@@ -52,7 +60,67 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         if (slot == 0) {
             for (int i = 1; i < getSizeInventory(); i++) decrStackSize(i, 1);
         }
-        return super.decrStackSize(slot, quantity);
+        ItemStack removed = super.decrStackSize(slot, quantity);
+        clearSideInventoryPreferenceIfEmpty(slot);
+        return removed;
+    }
+
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack itemstack) {
+        super.setInventorySlotContents(slot, itemstack);
+        clearSideInventoryPreferenceIfEmpty(slot);
+    }
+
+    public boolean prefersSideInventory(int slot) {
+        int preference = getSideInventoryPreference(slot);
+        return preference != 0 && (sideInventoryPreferences & preference) != 0;
+    }
+
+    public void setSideInventoryPreference(int slot, boolean prefersSideInventory) {
+        int preference = getSideInventoryPreference(slot);
+        if (preference == 0) return;
+
+        int updatedPreferences = prefersSideInventory ? sideInventoryPreferences | preference
+                : sideInventoryPreferences & ~preference;
+        setSideInventoryPreferences(updatedPreferences);
+    }
+
+    public int getSideInventoryPreferences() {
+        return sideInventoryPreferences;
+    }
+
+    public void setSideInventoryPreferences(int preferences) {
+        preferences &= VALID_SIDE_INVENTORY_PREFERENCES;
+        if (sideInventoryPreferences != preferences) {
+            sideInventoryPreferences = preferences;
+            markDirty();
+        }
+    }
+
+    private void clearSideInventoryPreferenceIfEmpty(int slot) {
+        if (slot < CRAFTING_GRID_FIRST_SLOT || slot >= CRAFTING_GRID_FIRST_SLOT + CRAFTING_GRID_SIZE) return;
+
+        ItemStack stack = getStackInSlot(slot);
+        if (stack == null || stack.stackSize <= 0) {
+            setSideInventoryPreference(slot, false);
+        }
+    }
+
+    private static int getSideInventoryPreference(int slot) {
+        int gridSlot = slot - CRAFTING_GRID_FIRST_SLOT;
+        return gridSlot >= 0 && gridSlot < CRAFTING_GRID_SIZE ? 1 << gridSlot : 0;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tags) {
+        super.readFromNBT(tags);
+        sideInventoryPreferences = tags.getInteger(SIDE_INVENTORY_PREFERENCES_TAG) & VALID_SIDE_INVENTORY_PREFERENCES;
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tags) {
+        super.writeToNBT(tags);
+        tags.setInteger(SIDE_INVENTORY_PREFERENCES_TAG, sideInventoryPreferences);
     }
 
     @Override

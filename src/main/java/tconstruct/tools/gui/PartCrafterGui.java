@@ -24,6 +24,7 @@ import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.tools.ArrowMaterial;
 import tconstruct.library.tools.BowMaterial;
 import tconstruct.library.tools.ToolMaterial;
+import tconstruct.library.util.ColorUtils;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.library.weaponry.ArrowShaftMaterial;
 import tconstruct.tools.TinkerTools.MaterialID;
@@ -105,16 +106,23 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         if (drawChestPart) {
-            this.fontRendererObj.drawString(StatCollector.translateToLocal("inventory.PatternChest"), 8, 17, 0x404040);
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("inventory.PatternChest"),
+                    8,
+                    17,
+                    ColorUtils.inventoryTitle.getColor());
         }
 
-        this.fontRendererObj
-                .drawString(StatCollector.translateToLocal("crafters.PartBuilder"), craftingTextLeft + 6, 6, 0x404040);
+        this.fontRendererObj.drawString(
+                StatCollector.translateToLocal("crafters.PartBuilder"),
+                craftingTextLeft + 6,
+                6,
+                ColorUtils.inventoryTitle.getColor());
         this.fontRendererObj.drawString(
                 StatCollector.translateToLocal("container.inventory"),
                 craftingTextLeft + 8,
                 this.ySize - 96 + 2,
-                0x404040);
+                ColorUtils.inventoryTitle.getColor());
 
         drawMaterialInformation();
     }

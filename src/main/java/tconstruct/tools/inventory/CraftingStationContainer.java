@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -33,6 +34,19 @@ import tconstruct.tools.logic.CraftingStationLogic;
 
 public class CraftingStationContainer extends Container {
 
+    private static final int CRAFTING_RESULT_SLOT = 0;
+    private static final int CRAFTING_GRID_FIRST_SLOT = 1;
+    private static final int CRAFTING_GRID_END_SLOT = 10;
+    private static final int PLAYER_INVENTORY_FIRST_SLOT = 10;
+    private static final int PLAYER_INVENTORY_END_SLOT = 46;
+    private static final int SIDE_INVENTORY_FIRST_SLOT = 46;
+    private static final int SIDE_INVENTORY_PREFERENCES_SYNC_ID = 0;
+    private static final int CLICK_MODE_PICKUP = 0;
+    private static final int CLICK_MODE_QUICK_MOVE = 1;
+    private static final int CLICK_MODE_HOTBAR_SWAP = 2;
+    private static final int CLICK_MODE_DRAG = 5;
+    private static final int CLICK_MODE_COLLECT = 6;
+
     private final World worldObj;
     private final int posX;
     private final int posY;
@@ -55,6 +69,12 @@ public class CraftingStationContainer extends Container {
 
     /** While true, matrix changes don't recompute the result. Batches ingredient consumption into one lookup. */
     private boolean suppressCraftingUpdates;
+
+    /** Side-inventory preference of the stack currently carried by this container's cursor. */
+    private boolean carriedStackPrefersSideInventory;
+
+    /** Last preference mask sent to clients. */
+    private int lastSideInventoryPreferences = -1;
 
     public CraftingStationContainer(InventoryPlayer inventoryplayer, CraftingStationLogic logic, int x, int y, int z) {
         this.worldObj = logic.getWorldObj();
@@ -177,7 +197,7 @@ public class CraftingStationContainer extends Container {
 
         boolean nothingDone = true;
 
-        if (index == 0) {
+        if (index == CRAFTING_RESULT_SLOT) {
             // Crafting Result
             if (ret.getItem() instanceof IModifyable) {
                 nothingDone &= !this.mergeCraftedStack(itemstack, logic.getSizeInventory(), 46, true, entityPlayer);
@@ -190,13 +210,13 @@ public class CraftingStationContainer extends Container {
             }
 
             slot.onSlotChange(itemstack, ret);
-        } else if (index >= 1 && index < 10) { // From Crafting Grid
-            // First refill the attached chests
-            nothingDone &= this.refillChest(itemstack);
+        } else if (isCraftingGridSlot(index)) {
+            // Side-origin stacks may use empty slots in the attached inventory.
+            nothingDone &= !logic.prefersSideInventory(index) || this.moveToChest(itemstack);
 
-            // Then try moving to player inventory
+            // Player inventory is always the fallback, so NEI can clear the grid.
             nothingDone &= moveToPlayerInventory(itemstack);
-        } else if (index >= 10 && index < 46) { // From Player Inv or Hotbar
+        } else if (index >= PLAYER_INVENTORY_FIRST_SLOT && index < PLAYER_INVENTORY_END_SLOT) {
             // First to the crafting Matrix
             nothingDone &= moveToCraftingGrid(itemstack);
 
@@ -229,22 +249,224 @@ public class CraftingStationContainer extends Container {
         return ret;
     }
 
+    @Override
+    public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer player) {
+        ItemStack carriedBefore = copyStack(player.inventory.getItemStack());
+        boolean carriedPreferenceBefore = carriedStackPrefersSideInventory;
+        ItemStack clickedBefore = getSlotStackCopy(slotId);
+
+        ItemStack[] gridBefore = copySlotRange(CRAFTING_GRID_FIRST_SLOT, CRAFTING_GRID_END_SLOT);
+        boolean[] gridPreferencesBefore = copyGridPreferences();
+        ItemStack[] sideInventoryBefore = mode == CLICK_MODE_COLLECT
+                ? copySlotRange(SIDE_INVENTORY_FIRST_SLOT, inventorySlots.size())
+                : null;
+
+        ItemStack result = super.slotClick(slotId, clickedButton, mode, player);
+
+        ItemStack carriedAfter = player.inventory.getItemStack();
+        ItemStack[] gridAfter = copySlotRange(CRAFTING_GRID_FIRST_SLOT, CRAFTING_GRID_END_SLOT);
+        ItemStack[] sideInventoryAfter = sideInventoryBefore == null ? null
+                : copySlotRange(SIDE_INVENTORY_FIRST_SLOT, inventorySlots.size());
+
+        boolean sideInventoryShiftClick = mode == CLICK_MODE_QUICK_MOVE && isSideInventorySlot(slotId);
+        boolean incomingStackPrefersSideInventory = sideInventoryShiftClick
+                || carriedBefore != null && carriedPreferenceBefore;
+
+        updateGridPreferences(
+                gridBefore,
+                gridAfter,
+                gridPreferencesBefore,
+                carriedBefore,
+                clickedBefore,
+                slotId,
+                mode,
+                sideInventoryShiftClick,
+                incomingStackPrefersSideInventory);
+
+        boolean collectedPreferredGridStack = collectedPreferredGridStack(
+                carriedAfter,
+                gridBefore,
+                gridAfter,
+                gridPreferencesBefore);
+        boolean collectedSideInventoryStack = collectedSideInventoryStack(
+                carriedAfter,
+                sideInventoryBefore,
+                sideInventoryAfter);
+        boolean clickedStackPrefersSideInventory = isSideInventorySlot(slotId)
+                || isCraftingGridSlot(slotId) && gridPreferencesBefore[slotId - CRAFTING_GRID_FIRST_SLOT];
+        carriedStackPrefersSideInventory = getCarriedStackPreference(
+                carriedBefore,
+                carriedAfter,
+                carriedPreferenceBefore,
+                clickedBefore,
+                clickedStackPrefersSideInventory,
+                collectedPreferredGridStack,
+                collectedSideInventoryStack);
+
+        return result;
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+
+        int sideInventoryPreferences = logic.getSideInventoryPreferences();
+        if (lastSideInventoryPreferences != sideInventoryPreferences) {
+            for (ICrafting crafter : crafters) {
+                crafter.sendProgressBarUpdate(this, SIDE_INVENTORY_PREFERENCES_SYNC_ID, sideInventoryPreferences);
+            }
+            lastSideInventoryPreferences = sideInventoryPreferences;
+        }
+    }
+
+    @Override
+    public void updateProgressBar(int id, int value) {
+        if (id == SIDE_INVENTORY_PREFERENCES_SYNC_ID) {
+            logic.setSideInventoryPreferences(value);
+        }
+    }
+
+    private void updateGridPreferences(ItemStack[] before, ItemStack[] after, boolean[] preferencesBefore,
+            ItemStack carriedBefore, ItemStack clickedBefore, int clickedSlot, int mode,
+            boolean sideInventoryShiftClick, boolean incomingStackPrefersSideInventory) {
+        for (int i = 0; i < after.length; i++) {
+            int slot = CRAFTING_GRID_FIRST_SLOT + i;
+            ItemStack current = after[i];
+            if (current == null || current.stackSize <= 0) {
+                logic.setSideInventoryPreference(slot, false);
+                continue;
+            }
+
+            if (mode == CLICK_MODE_HOTBAR_SWAP && slot == clickedSlot) {
+                // Hotbar swaps replace the grid stack with an untracked player-inventory stack.
+                logic.setSideInventoryPreference(slot, false);
+                continue;
+            }
+
+            ItemStack previous = before[i];
+            boolean receivedCarriedStack = (mode == CLICK_MODE_PICKUP && slot == clickedSlot || mode == CLICK_MODE_DRAG)
+                    && carriedBefore != null
+                    && stacksCanMerge(current, carriedBefore);
+            boolean receivedShiftClickedStack = sideInventoryShiftClick && clickedBefore != null
+                    && stacksCanMerge(current, clickedBefore);
+            boolean receivedIncomingStack = receivedCarriedStack || receivedShiftClickedStack;
+            boolean prefersSideInventory = preferencesBefore[i];
+
+            if (previous == null || !stacksCanMerge(previous, current)) {
+                logic.setSideInventoryPreference(slot, receivedIncomingStack && incomingStackPrefersSideInventory);
+                continue;
+            }
+
+            if (current.stackSize > previous.stackSize && receivedIncomingStack && incomingStackPrefersSideInventory) {
+                prefersSideInventory = true;
+            }
+
+            logic.setSideInventoryPreference(slot, prefersSideInventory);
+        }
+    }
+
+    private static boolean getCarriedStackPreference(ItemStack carriedBefore, ItemStack carriedAfter,
+            boolean carriedPreferenceBefore, ItemStack clickedBefore, boolean clickedStackPrefersSideInventory,
+            boolean collectedPreferredGridStack, boolean collectedSideInventoryStack) {
+        if (carriedAfter == null || carriedAfter.stackSize <= 0) return false;
+
+        if (carriedBefore != null && stacksCanMerge(carriedBefore, carriedAfter)) {
+            return carriedPreferenceBefore || collectedPreferredGridStack || collectedSideInventoryStack;
+        }
+
+        if (clickedBefore != null && stacksCanMerge(clickedBefore, carriedAfter)) {
+            return clickedStackPrefersSideInventory;
+        }
+
+        return collectedPreferredGridStack || collectedSideInventoryStack;
+    }
+
+    private static boolean collectedPreferredGridStack(ItemStack carriedStack, ItemStack[] before, ItemStack[] after,
+            boolean[] preferencesBefore) {
+        for (int i = 0; i < before.length; i++) {
+            if (preferencesBefore[i] && stackWasCollected(carriedStack, before[i], after[i])) return true;
+        }
+        return false;
+    }
+
+    private static boolean collectedSideInventoryStack(ItemStack carriedStack, ItemStack[] before, ItemStack[] after) {
+        if (before == null || after == null) return false;
+
+        for (int i = 0; i < before.length; i++) {
+            if (stackWasCollected(carriedStack, before[i], after[i])) return true;
+        }
+        return false;
+    }
+
+    private static boolean stackWasCollected(ItemStack carriedStack, ItemStack before, ItemStack after) {
+        if (before == null || !stacksCanMerge(carriedStack, before)) return false;
+        return after == null || !stacksCanMerge(before, after) || after.stackSize < before.stackSize;
+    }
+
+    private boolean[] copyGridPreferences() {
+        boolean[] preferences = new boolean[CRAFTING_GRID_END_SLOT - CRAFTING_GRID_FIRST_SLOT];
+        for (int i = 0; i < preferences.length; i++) {
+            preferences[i] = logic.prefersSideInventory(CRAFTING_GRID_FIRST_SLOT + i);
+        }
+        return preferences;
+    }
+
+    private ItemStack[] copySlotRange(int start, int end) {
+        ItemStack[] stacks = new ItemStack[Math.max(0, end - start)];
+        for (int i = 0; i < stacks.length; i++) {
+            stacks[i] = copyStack(((Slot) inventorySlots.get(start + i)).getStack());
+        }
+        return stacks;
+    }
+
+    private ItemStack getSlotStackCopy(int slot) {
+        if (slot < 0 || slot >= inventorySlots.size()) return null;
+        return copyStack(((Slot) inventorySlots.get(slot)).getStack());
+    }
+
+    private static ItemStack copyStack(ItemStack stack) {
+        return stack == null ? null : stack.copy();
+    }
+
+    private static boolean stacksCanMerge(ItemStack first, ItemStack second) {
+        return first != null && second != null
+                && first.getItem() == second.getItem()
+                && (!first.getHasSubtypes() || first.getItemDamage() == second.getItemDamage())
+                && ItemStack.areItemStackTagsEqual(first, second);
+    }
+
+    private static boolean isCraftingGridSlot(int slot) {
+        return slot >= CRAFTING_GRID_FIRST_SLOT && slot < CRAFTING_GRID_END_SLOT;
+    }
+
+    private boolean isSideInventorySlot(int slot) {
+        return slot >= SIDE_INVENTORY_FIRST_SLOT && slot < inventorySlots.size();
+    }
+
     protected boolean refillChest(ItemStack itemstack) {
         if (itemstack == null || itemstack.stackSize <= 0 || logic.slotCount == 0) return false;
 
-        return !this.mergeItemStackRefill(itemstack, 46, 46 + logic.slotCount, false);
+        return !this.mergeItemStackRefill(
+                itemstack,
+                SIDE_INVENTORY_FIRST_SLOT,
+                SIDE_INVENTORY_FIRST_SLOT + logic.slotCount,
+                false);
     }
 
     protected boolean moveToChest(ItemStack itemstack) {
         if (itemstack == null || itemstack.stackSize <= 0 || logic.slotCount == 0) return false;
 
-        return !this.mergeItemStack(itemstack, 46, 46 + logic.slotCount, false);
+        return !this.mergeItemStack(
+                itemstack,
+                SIDE_INVENTORY_FIRST_SLOT,
+                SIDE_INVENTORY_FIRST_SLOT + logic.slotCount,
+                false);
     }
 
     protected boolean moveToPlayerInventory(ItemStack itemstack) {
         if (itemstack == null || itemstack.stackSize <= 0) return false;
 
-        return !this.mergeItemStack(itemstack, 10, 46, false);
+        return !this.mergeItemStack(itemstack, PLAYER_INVENTORY_FIRST_SLOT, PLAYER_INVENTORY_END_SLOT, false);
     }
 
     protected boolean moveToCraftingGrid(ItemStack itemstack) {
@@ -266,7 +488,7 @@ public class CraftingStationContainer extends Container {
             }
         }
 
-        return !this.mergeItemStack(itemstack, 1, 10, true);
+        return !this.mergeItemStack(itemstack, CRAFTING_GRID_FIRST_SLOT, CRAFTING_GRID_END_SLOT, true);
     }
 
     public boolean func_94530_a /* canMergeSlot */(ItemStack par1ItemStack, Slot par2Slot) {
