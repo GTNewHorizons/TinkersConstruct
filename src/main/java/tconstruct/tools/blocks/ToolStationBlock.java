@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -127,6 +128,33 @@ public class ToolStationBlock extends InventoryBlock {
                 (double) x + this.maxX,
                 (double) y + this.maxY,
                 (double) z + this.maxZ);
+    }
+
+    @Override
+    public void addCollisionBoxesToList(
+            World world, int x, int y, int z,
+            AxisAlignedBB mask,
+            List<AxisAlignedBB> list,
+            Entity entity) {
+
+        int metadata = world.getBlockMetadata(x, y, z);
+
+        if (metadata == 5 || metadata == 6) {
+            AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
+                    x,
+                    y,
+                    z,
+                    x + 1,
+                    y + 0.875,
+                    z + 1);
+
+            if (box.intersectsWith(mask)) {
+                list.add(box);
+            }
+            return;
+        }
+
+        super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
     }
 
     @Override
