@@ -362,42 +362,49 @@ public class SmelteryGui extends ActiveContainerGui {
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             list.add(formatFluid(liquid.amount));
         } else if (name.equals(StatCollector.translateToLocal("fluid.emerald.liquid"))) {
-            list.add(StatCollector.translateToLocal("gui.smeltery.emerald") + formatNumber(liquid.amount / 640f));
+            list.add(
+                    StatCollector
+                            .translateToLocalFormatted("gui.smeltery.emerald", formatNumber(liquid.amount / 640f)));
         } else if (name.equals(StatCollector.translateToLocal("fluid.quartz.molten"))) {
-            list.add(StatCollector.translateToLocal("gui.smeltery.quartz") + formatNumber(liquid.amount / 250f));
+            list.add(
+                    StatCollector.translateToLocalFormatted("gui.smeltery.quartz", formatNumber(liquid.amount / 250f)));
         } else if (name.equals(StatCollector.translateToLocal("fluid.glass.molten"))) {
             int blocks = liquid.amount / 1000;
-            if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + formatNumber(blocks));
+            if (blocks > 0)
+                list.add(StatCollector.translateToLocalFormatted("gui.smeltery.glass.block", formatNumber(blocks)));
             int panels = (liquid.amount % 1000) / 250;
             if (panels > 0)
-                list.add(StatCollector.translateToLocal("gui.smeltery.glass.pannel") + formatNumber(panels));
+                list.add(StatCollector.translateToLocalFormatted("gui.smeltery.glass.pannel", formatNumber(panels)));
             int mB = (liquid.amount % 1000) % 250;
             if (mB > 0) list.add(formatFluid(mB));
         } else if (name.equals(StatCollector.translateToLocal("fluid.stone.seared"))) {
             if (Loader.isModLoaded("dreamcraft")) {
                 int blocks = liquid.amount / 360; // in gtnh each seared stone block is 360 mb of fluid
                 if (blocks > 0)
-                    list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + formatFluid(blocks));
+                    list.add(StatCollector.translateToLocalFormatted("gui.smeltery.glass.block", formatNumber(blocks)));
                 // we also have no casting recipe for seared bricks
                 int mB = liquid.amount % 360;
                 if (mB > 0) list.add(formatFluid(mB));
             } else {
                 int blocks = liquid.amount / TConstruct.ingotLiquidValue;
-                if (blocks > 0) list.add(StatCollector.translateToLocal("gui.smeltery.glass.block") + blocks);
+                if (blocks > 0)
+                    list.add(StatCollector.translateToLocalFormatted("gui.smeltery.glass.block", formatNumber(blocks)));
                 int ingots = (liquid.amount % TConstruct.ingotLiquidValue) / (TConstruct.ingotLiquidValue / 4);
-                if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + ingots);
+                if (ingots > 0)
+                    list.add(StatCollector.translateToLocalFormatted("gui.smeltery.metal.ingot", formatNumber(ingots)));
                 int mB = (liquid.amount % TConstruct.ingotLiquidValue) % (TConstruct.ingotLiquidValue / 4);
                 if (mB > 0) list.add(formatFluid(mB));
             }
         } else if (isMolten(name)) {
             int ingots = liquid.amount / TConstruct.ingotLiquidValue;
-            if (ingots > 0) list.add(StatCollector.translateToLocal("gui.smeltery.metal.ingot") + formatNumber(ingots));
+            if (ingots > 0)
+                list.add(StatCollector.translateToLocalFormatted("gui.smeltery.metal.ingot", formatNumber(ingots)));
             int mB = liquid.amount % TConstruct.ingotLiquidValue;
             if (mB > 0) {
                 int nuggets = mB / TConstruct.nuggetLiquidValue;
                 int junk = (mB % TConstruct.nuggetLiquidValue);
-                if (nuggets > 0)
-                    list.add(StatCollector.translateToLocal("gui.smeltery.metal.nugget") + formatNumber(nuggets));
+                if (nuggets > 0) list.add(
+                        StatCollector.translateToLocalFormatted("gui.smeltery.metal.nugget", formatNumber(nuggets)));
                 if (junk > 0) list.add(formatFluid(junk));
             }
         } else {

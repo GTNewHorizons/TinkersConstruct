@@ -792,11 +792,11 @@ tconstruct.nei.dryingrack=Trockengestell
 tconstruct.nei.melting=Schmelzen
 
 gui.smeltery.fuel=Brennstoff
-gui.smeltery.emerald=Smaragde:
-gui.smeltery.glass.block=Blöcke:
-gui.smeltery.glass.pannel=Bleche:
-gui.smeltery.metal.ingot=Barren:
-gui.smeltery.metal.nugget=Nuggets:
+gui.smeltery.emerald=%s Smaragde
+gui.smeltery.glass.block=%s Blöcke
+gui.smeltery.glass.pannel=%s Bleche
+gui.smeltery.metal.ingot=%s Barren
+gui.smeltery.metal.nugget=%s Nuggets
 gui.smeltery.molten.check=Geschmolzenes,Geschmolzener
 gui.landmine=Landmine
 gui.partcrafter1=Werkzeugteilbau

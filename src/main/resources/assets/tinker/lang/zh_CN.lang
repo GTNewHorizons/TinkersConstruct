@@ -835,11 +835,11 @@ tconstruct.nei.dryingrack=晾干架
 tconstruct.nei.melting=冶炼炉熔化
 
 gui.smeltery.fuel=燃料
-gui.smeltery.emerald=绿宝石:
-gui.smeltery.glass.block=方块:
-gui.smeltery.glass.pannel=板:
-gui.smeltery.metal.ingot=锭:
-gui.smeltery.metal.nugget=粒:
+gui.smeltery.emerald=%s 绿宝石
+gui.smeltery.glass.block=%s 方块
+gui.smeltery.glass.pannel=%s 板
+gui.smeltery.metal.ingot=%s 锭
+gui.smeltery.metal.nugget=%s 粒
 gui.smeltery.molten.check=熔融
 gui.landmine=地雷
 gui.partcrafter1=合成工具部件
