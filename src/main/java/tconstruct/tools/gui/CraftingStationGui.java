@@ -45,7 +45,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     private static final int NEI_VERTICAL_MARGIN = 22;
     private static final int NEI_PANEL_MARGIN = 2;
     private static final int NEI_BOOKMARK_GROUP_WIDTH = 7;
-    private static final int MIN_BOOKMARK_COLUMNS = 2;
+    private static final int MIN_BOOKMARK_COLUMNS = 4;
     private static final int SCROLL_SEPARATOR_HEIGHT = 4;
     private static final int OUTSIDE_SLOT_ID = -999;
     private static final int CLICK_MODE_PICKUP = 0;
