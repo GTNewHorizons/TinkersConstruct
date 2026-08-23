@@ -15,6 +15,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -109,6 +111,37 @@ public class ToolStationBlock extends InventoryBlock {
     @Override
     public boolean shouldSideBeRendered(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) {
         return true;
+    }
+
+    @Override
+    public MovingObjectPosition collisionRayTrace(
+            World world, int x, int y, int z,
+            Vec3 start, Vec3 end) {
+
+        int metadata = world.getBlockMetadata(x, y, z);
+
+        if (metadata == 5 || metadata == 6) {
+            float oldMinX = (float) this.minX;
+            float oldMinY = (float) this.minY;
+            float oldMinZ = (float) this.minZ;
+            float oldMaxX = (float) this.maxX;
+            float oldMaxY = (float) this.maxY;
+            float oldMaxZ = (float) this.maxZ;
+
+            this.setBlockBounds(
+                    0.0F, 0.0F, 0.0F,
+                    1.0F, 0.875F, 1.0F);
+
+            MovingObjectPosition result = collisionRayTrace(world, x, y, z, start, end);
+
+            this.setBlockBounds(
+                    oldMinX, oldMinY, oldMinZ,
+                    oldMaxX, oldMaxY, oldMaxZ);
+
+            return result;
+        }
+
+        return super.collisionRayTrace(world, x, y, z, start, end);
     }
 
     @Override
