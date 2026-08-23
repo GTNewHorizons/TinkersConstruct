@@ -114,9 +114,7 @@ public class ToolStationBlock extends InventoryBlock {
     }
 
     @Override
-    public MovingObjectPosition collisionRayTrace(
-            World world, int x, int y, int z,
-            Vec3 start, Vec3 end) {
+    public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 start, Vec3 end) {
 
         int metadata = world.getBlockMetadata(x, y, z);
 
@@ -128,15 +126,11 @@ public class ToolStationBlock extends InventoryBlock {
             float oldMaxY = (float) this.maxY;
             float oldMaxZ = (float) this.maxZ;
 
-            this.setBlockBounds(
-                    0.0F, 0.0F, 0.0F,
-                    1.0F, 0.875F, 1.0F);
+            this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.875F, 1.0F);
 
             MovingObjectPosition result = collisionRayTrace(world, x, y, z, start, end);
 
-            this.setBlockBounds(
-                    oldMinX, oldMinY, oldMinZ,
-                    oldMaxX, oldMaxY, oldMaxZ);
+            this.setBlockBounds(oldMinX, oldMinY, oldMinZ, oldMaxX, oldMaxY, oldMaxZ);
 
             return result;
         }
@@ -164,22 +158,13 @@ public class ToolStationBlock extends InventoryBlock {
     }
 
     @Override
-    public void addCollisionBoxesToList(
-            World world, int x, int y, int z,
-            AxisAlignedBB mask,
-            List<AxisAlignedBB> list,
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List<AxisAlignedBB> list,
             Entity entity) {
 
         int metadata = world.getBlockMetadata(x, y, z);
 
         if (metadata == 5 || metadata == 6) {
-            AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
-                    x,
-                    y,
-                    z,
-                    x + 1,
-                    y + 0.875,
-                    z + 1);
+            AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 0.875, z + 1);
 
             if (box.intersectsWith(mask)) {
                 list.add(box);

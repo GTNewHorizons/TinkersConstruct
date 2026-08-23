@@ -295,14 +295,8 @@ public class LavaTankBlock extends BlockContainer {
     }
 
     @Override
-    public void addCollisionBoxesToList(
-            World world,
-            int x,
-            int y,
-            int z,
-            AxisAlignedBB entityBox,
-            List<AxisAlignedBB> list,
-            Entity entity) {
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB entityBox,
+            List<AxisAlignedBB> list, Entity entity) {
 
         super.addCollisionBoxesToList(world, x, y, z, entityBox, list, entity);
 
