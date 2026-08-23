@@ -128,7 +128,7 @@ public class ToolStationBlock extends InventoryBlock {
 
             this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.875F, 1.0F);
 
-            MovingObjectPosition result = collisionRayTrace(world, x, y, z, start, end);
+            MovingObjectPosition result = super.collisionRayTrace(world, x, y, z, start, end);
 
             this.setBlockBounds(oldMinX, oldMinY, oldMinZ, oldMaxX, oldMaxY, oldMaxZ);
 
