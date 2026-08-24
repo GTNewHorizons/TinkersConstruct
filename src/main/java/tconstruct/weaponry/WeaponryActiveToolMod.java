@@ -19,7 +19,7 @@ public class WeaponryActiveToolMod extends ActiveToolMod {
                 int rem = ammo.consumeAmmo(1, stack);
                 return rem > 0;
             } else if (ammo.getAmmoCount(stack) > 0) {
-                int d = tags.getInteger("Damage") + damage;
+                long d = (long) tags.getInteger("Damage") + damage;
                 int max = tags.getInteger("TotalDurability");
                 if (d > max) {
                     tags.setInteger("Damage", 0);
