@@ -376,7 +376,7 @@ public class AbilityHelper {
             if (damagedTool) return;
 
             int damage = tags.getCompoundTag("InfiTool").getInteger("Damage");
-            int damageTrue = damage + dam;
+            long damageTrue = (long) damage + dam; // a death penalty on a huge tool can push this past int
             int maxDamage = tags.getCompoundTag("InfiTool").getInteger("TotalDurability");
             if (damageTrue <= 0) {
                 tags.getCompoundTag("InfiTool").setInteger("Damage", 0);
@@ -384,7 +384,7 @@ public class AbilityHelper {
             } else if (damageTrue > maxDamage) {
                 breakTool(stack, tags, entity);
             } else {
-                tags.getCompoundTag("InfiTool").setInteger("Damage", damage + dam);
+                tags.getCompoundTag("InfiTool").setInteger("Damage", (int) damageTrue);
                 int toolDamage = (damage * 100 / maxDamage) + 1;
                 int stackDamage = stack.getItemDamage();
             }
