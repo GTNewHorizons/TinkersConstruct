@@ -364,8 +364,9 @@ public class TConstructRegistry {
      * @return Tool Material
      */
     public static ToolMaterial getMaterial(int key) {
-        ToolMaterial material = toolMaterials.get(key);
-        if (material != null || toolMaterials.containsKey(key)) return material;
+        Integer boxedKey = key;
+        ToolMaterial material = toolMaterials.get(boxedKey);
+        if (material != null || toolMaterials.containsKey(boxedKey)) return material;
 
         // This is probably an old tool whose material has been removed from the game.
         // Fall back to wood.
