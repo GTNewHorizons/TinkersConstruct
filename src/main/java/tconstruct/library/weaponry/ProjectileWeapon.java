@@ -242,7 +242,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
         // are we drawing an effect?
         if (renderPass >= getPartAmount()) {
             // is the effect animated?
-            String effect = "Effect" + (1 + renderPass - getPartAmount());
+            String effect = getEffectKey(1 + renderPass - getPartAmount());
             if (tags.hasKey(effect)) {
                 int index = tags.getInteger(effect);
                 if (animationEffectIcons.get(index) != null) return getCorrectAnimationIcon(
@@ -316,7 +316,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
             }
             // Effects
             else if (renderPass <= 10) {
-                String effect = "Effect" + (1 + renderPass - getPartAmount());
+                String effect = getEffectKey(1 + renderPass - getPartAmount());
                 if (tags.hasKey(effect)) return effectIcons.get(tags.getInteger(effect));
             }
             return blankSprite;

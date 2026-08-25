@@ -62,6 +62,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     protected int damageVsEntity;
     public static IIcon blankSprite;
     public static IIcon emptyIcon;
+    private static final String[] effectKeys = { "Effect1", "Effect2", "Effect3", "Effect4", "Effect5", "Effect6",
+            "Effect7", "Effect8", "Effect9" };
 
     public ToolCore(int baseDamage) {
         super();
@@ -246,12 +248,17 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
             }
             // Effects
             else if (renderPass <= 10) {
-                String effect = "Effect" + (1 + renderPass - getPartAmount());
+                String effect = getEffectKey(1 + renderPass - getPartAmount());
                 if (tags.hasKey(effect)) return effectIcons.get(tags.getInteger(effect));
             }
             return blankSprite;
         }
         return emptyIcon;
+    }
+
+    protected static String getEffectKey(int effect) {
+        if (effect > 0 && effect <= effectKeys.length) return effectKeys[effect - 1];
+        return "Effect" + effect;
     }
 
     protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, int id) {
@@ -563,11 +570,30 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     protected int getCorrectColor(ItemStack stack, int renderPass, NBTTagCompound tags, String key,
             Map<Integer, IIcon> map) {
+        String colorKey;
+        String renderKey;
+        if ("Handle".equals(key)) {
+            colorKey = "HandleColor";
+            renderKey = "RenderHandle";
+        } else if ("Head".equals(key)) {
+            colorKey = "HeadColor";
+            renderKey = "RenderHead";
+        } else if ("Accessory".equals(key)) {
+            colorKey = "AccessoryColor";
+            renderKey = "RenderAccessory";
+        } else if ("Extra".equals(key)) {
+            colorKey = "ExtraColor";
+            renderKey = "RenderExtra";
+        } else {
+            colorKey = key + "Color";
+            renderKey = "Render" + key;
+        }
+
         // custom coloring
-        if (tags.hasKey(key + "Color")) return tags.getInteger(key + "Color");
+        if (tags.hasKey(colorKey)) return tags.getInteger(colorKey);
 
         // custom texture?
-        int matId = tags.getInteger("Render" + key);
+        int matId = tags.getInteger(renderKey);
         if (map.containsKey(matId)) return super.getColorFromItemStack(stack, renderPass);
 
         // color default texture with material color
