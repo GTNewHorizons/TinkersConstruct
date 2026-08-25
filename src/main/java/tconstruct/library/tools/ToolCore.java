@@ -262,7 +262,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     }
 
     protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, int id) {
-        if (icons.containsKey(id)) return icons.get(id);
+        IIcon icon = icons.get(id);
+        if (icon != null || icons.containsKey(id)) return icon;
 
         // default icon
         return icons.get(-1);
@@ -601,8 +602,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     }
 
     protected int getDefaultColor(int renderPass, int materialID) {
-        if (TConstructRegistry.getMaterial(materialID) != null)
-            return TConstructRegistry.getMaterial(materialID).primaryColor();
+        tconstruct.library.tools.ToolMaterial material = TConstructRegistry.getMaterial(materialID);
+        if (material != null) return material.primaryColor();
 
         return 0xffffffff;
     }

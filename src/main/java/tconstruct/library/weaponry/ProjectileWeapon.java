@@ -285,7 +285,8 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
         step = Math.max(0, step);
 
-        if (icons.containsKey(id)) return icons.get(id)[step];
+        IIcon[] animation = icons.get(id);
+        if (animation != null || icons.containsKey(id)) return animation[step];
 
         // default icon
         return icons.get(-1)[step];

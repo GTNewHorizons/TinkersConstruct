@@ -408,9 +408,10 @@ public abstract class BowBase extends ToolCore {
     }
 
     protected IIcon getCorrectIcon2(Map<Integer, IIcon> icons, int id) {
-        if (!icons.containsKey(id)) return blankSprite;
+        IIcon icon = icons.get(id);
+        if (icon != null || icons.containsKey(id)) return icon;
 
-        return icons.get(id);
+        return blankSprite;
     }
 
     /* Animations */
