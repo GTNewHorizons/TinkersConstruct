@@ -263,8 +263,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, int id) {
         Integer boxedId = id;
-        IIcon icon = icons.get(boxedId);
-        if (icon != null || icons.containsKey(boxedId)) return icon;
+        if (icons.containsKey(boxedId)) return icons.get(boxedId);
 
         // default icon
         return icons.get(-1);

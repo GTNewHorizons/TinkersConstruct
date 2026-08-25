@@ -280,17 +280,17 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
     protected IIcon getCorrectAnimationIcon(Map<Integer, IIcon[]> icons, int id, float progress) {
         // animation count, standard texture as reference
-        float count = icons.get(-1).length - 1;
+        IIcon[] defaultAnimation = icons.get(-1);
+        float count = defaultAnimation.length - 1;
         int step = Math.round(progress * count);
 
         step = Math.max(0, step);
 
         Integer boxedId = id;
-        IIcon[] animation = icons.get(boxedId);
-        if (animation != null || icons.containsKey(boxedId)) return animation[step];
+        if (icons.containsKey(boxedId)) return icons.get(boxedId)[step];
 
         // default icon
-        return icons.get(-1)[step];
+        return defaultAnimation[step];
     }
 
     @Override
