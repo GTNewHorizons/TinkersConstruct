@@ -571,6 +571,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     protected int getCorrectColor(ItemStack stack, int renderPass, NBTTagCompound tags, String key,
             Map<Integer, IIcon> map) {
+        // Avoid render-time concatenation for built-in parts while preserving addon keys.
         String colorKey;
         String renderKey;
         if ("Handle".equals(key)) {
