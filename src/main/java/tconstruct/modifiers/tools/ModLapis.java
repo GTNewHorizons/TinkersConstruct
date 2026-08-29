@@ -25,6 +25,11 @@ public class ModLapis extends ItemModTypeFilter {
     }
 
     @Override
+    protected boolean isFlatPool() {
+        return true; // one 450-point pool for the tool's life, no tiers
+    }
+
+    @Override
     protected boolean canModify(ItemStack tool, ItemStack[] input) {
         if (tool.getItem() instanceof ToolCore) {
             ToolCore toolItem = (ToolCore) tool.getItem();

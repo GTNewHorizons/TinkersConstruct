@@ -61,7 +61,9 @@ public abstract class ItemModTypeFilter extends ItemModifier {
 
     public ModificationInfo matchingAmount(ItemStack[] input, ItemStack tool, int modifierMax) {
         int inTier = remainingInTier(tool, modifierMax);
-        ModificationInfo info = matchWithin(input, inTier);
+        int spillover = spilloverCapacity(tool, modifierMax);
+        ModificationInfo info = matchWithin(input, inTier + spillover);
+        if (spillover > 0) return info;
 
         // Items are consumed whole, so an input can be too coarse to make any progress at all — a 9-point
         // redstone block on a tool sitting 5 points below its ceiling used to be refused outright, leaving the
@@ -132,6 +134,26 @@ public abstract class ItemModTypeFilter extends ItemModifier {
     }
 
     /**
+     * Extra points on offer when the "Modifier tier spillover" option is on: every free modifier slot is another tier
+     * the craft may open. Off by default — then a craft opens at most one tier, as in TiC 1.12 — and never offered on
+     * the builder's thrifty retry, since spending slots is exactly what that pass holds back.
+     */
+    protected int spilloverCapacity(ItemStack tool, int modifierMax) {
+        if (!isTierSpilloverOn() || !isSlotSpendingAllowed() || isFlatPool()) return 0;
+
+        NBTTagCompound tags = getModifierTag(tool);
+        int free = tags.getInteger("Modifiers");
+        // a first application pays one slot for the tier it comes with; further tiers cost one each
+        if (!tags.hasKey(key)) return Math.max(0, free - 1) * modifierMax;
+        return Math.max(0, free) * modifierMax;
+    }
+
+    /** A modifier holding one flat pool for the tool's life ({current, tooltipIndex}) has no tiers to spill into. */
+    protected boolean isFlatPool() {
+        return false;
+    }
+
+    /**
      * Whether a free modifier slot is available to pay for the next tier. Only one tier is ever opened per craft, as in
      * TiC 1.12 (ModifierAspect.LevelAspect: "only 1 level per application").
      */
@@ -169,11 +191,26 @@ public abstract class ItemModTypeFilter extends ItemModifier {
      */
     protected void addProgress(NBTTagCompound tags, int[] keyPair, int increase) {
         keyPair[0] += increase;
-        if (keyPair[0] > keyPair[1]) {
+        settleTiers(tags, keyPair);
+        tags.setIntArray(key, keyPair);
+    }
+
+    /**
+     * Opens a tier for every ceiling the progress has passed, one free modifier slot each. Capacity is bounded so this
+     * runs at most once per craft unless spillover is on. Returns whether any tier was opened.
+     */
+    protected boolean settleTiers(NBTTagCompound tags, int[] keyPair) {
+        // One tier unless spillover is in effect, then as many as the free slots can pay for — the same bound
+        // capacity was computed under, so a corrupt pair sitting past its ceiling cannot run away here.
+        int limit = 1;
+        if (isTierSpilloverOn() && isSlotSpendingAllowed()) limit = Math.max(1, tags.getInteger("Modifiers"));
+        boolean opened = false;
+        while (keyPair[0] > keyPair[1] && limit-- > 0) {
             keyPair[1] += max;
             tags.setInteger("Modifiers", tags.getInteger("Modifiers") - 1);
+            opened = true;
         }
-        tags.setIntArray(key, keyPair);
+        return opened;
     }
 
     /**

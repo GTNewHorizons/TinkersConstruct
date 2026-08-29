@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.modifier.ItemModifier;
 import tconstruct.tools.inventory.ToolForgeContainer;
 
 /*
@@ -47,9 +48,15 @@ public class ToolForgeLogic extends ToolStationLogic implements ISidedInventory 
                         && inventory[6] == null)
                     output = inventory[1].copy();
                 else {
-                    output = ModifyBuilder.instance.modifyItem(
-                            inventory[1],
-                            new ItemStack[] { inventory[2], inventory[3], inventory[4], inventory[5], inventory[6] });
+                    ItemModifier.setTierSpillover(tierSpillover);
+                    try {
+                        output = ModifyBuilder.instance.modifyItem(
+                                inventory[1],
+                                new ItemStack[] { inventory[2], inventory[3], inventory[4], inventory[5],
+                                        inventory[6] });
+                    } finally {
+                        ItemModifier.setTierSpillover(null);
+                    }
                 }
             } else
             // Build new item

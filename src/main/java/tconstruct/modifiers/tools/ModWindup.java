@@ -51,6 +51,8 @@ public class ModWindup extends ModRedstone {
             keyPair = new int[] { increase, max, tooltipIndex };
             current = keyPair[0];
             tags.setIntArray(key, keyPair);
+            // spillover: a first craft may open more tiers than the one it comes with
+            if (settleTiers(tags, keyPair)) updateModTag(tool, keyPair);
         }
 
         // 0.005 reduction per second, numbers are in ticks -> 0.10 == 0.005s

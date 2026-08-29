@@ -15,7 +15,9 @@ import mantle.blocks.abstracts.InventoryLogic;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.modifier.ItemModifier;
 import tconstruct.tools.inventory.ToolStationContainer;
+import tconstruct.util.config.PHConstruct;
 
 /*
  * Simple class for storing items in the block
@@ -27,6 +29,8 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
 
     public ItemStack previousTool;
     public String toolName;
+    /** Whether crafts at this station keep opening modifier tiers while slots and materials last. */
+    public boolean tierSpillover = PHConstruct.modifierTierSpillover;
 
     public ToolStationLogic() {
         super(7); // 0 output, 1 tool, 2-6 modifier materials (TiC2-style five slots around the tool)
@@ -78,6 +82,25 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
     }
 
     // the table renders its contents in the world, so clients need the inventory
+    public void setTierSpillover(boolean on) {
+        tierSpillover = on;
+        buildTool(toolName);
+        markDirty();
+        syncContentsToClients();
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tags) {
+        super.readFromNBT(tags);
+        if (tags.hasKey("TierSpillover")) tierSpillover = tags.getBoolean("TierSpillover");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tags) {
+        super.writeToNBT(tags);
+        tags.setBoolean("TierSpillover", tierSpillover);
+    }
+
     protected void syncContentsToClients() {
         if (worldObj != null && !worldObj.isRemote) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -115,9 +138,15 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
                         && inventory[6] == null)
                     output = inventory[1].copy();
                 else {
-                    output = ModifyBuilder.instance.modifyItem(
-                            inventory[1],
-                            new ItemStack[] { inventory[2], inventory[3], inventory[4], inventory[5], inventory[6] });
+                    ItemModifier.setTierSpillover(tierSpillover);
+                    try {
+                        output = ModifyBuilder.instance.modifyItem(
+                                inventory[1],
+                                new ItemStack[] { inventory[2], inventory[3], inventory[4], inventory[5],
+                                        inventory[6] });
+                    } finally {
+                        ItemModifier.setTierSpillover(null);
+                    }
                 }
             } else
             // Build new item

@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.modifier.ItemModifier;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.gui.ChestSlot;
 import tconstruct.tools.logic.CraftingStationLogic;
@@ -173,7 +174,13 @@ public class CraftingStationContainer extends Container {
                     slots[i] = craftMatrix.getStackInSlot(i);
                     slots[i + 4] = craftMatrix.getStackInSlot(i + 5);
                 }
-                return ModifyBuilder.instance.modifyItem(input, slots);
+                // no toggle here and nothing syncs a config value to clients: one tier per craft, always
+                ItemModifier.setTierSpillover(false);
+                try {
+                    return ModifyBuilder.instance.modifyItem(input, slots);
+                } finally {
+                    ItemModifier.setTierSpillover(null);
+                }
             }
         }
         return null;

@@ -53,6 +53,8 @@ public class GloveSpeed extends ItemModTypeFilter {
             int tooltipIndex = addToolTip(input, tooltipName, modName);
             keyPair = new int[] { increase, max, tooltipIndex };
             tags.setIntArray(key, keyPair);
+            // spillover: a first craft may open more tiers than the one it comes with
+            if (settleTiers(tags, keyPair)) updateModTag(input, keyPair);
         }
 
         int miningSpeed = tags.getInteger("MiningSpeed");

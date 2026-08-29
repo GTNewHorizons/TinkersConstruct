@@ -37,6 +37,7 @@ import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.inventory.ToolStationContainer;
 import tconstruct.tools.logic.ToolStationLogic;
 import tconstruct.util.network.ToolStationPacket;
+import tconstruct.util.network.ToolStationSpilloverPacket;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
@@ -48,6 +49,8 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     public int selectedButton;
     public int[] slotX, slotY, iconX, iconY;
     public String title, body = "";
+    private static final int SPILLOVER_BUTTON = 1000;
+    private GuiButton spilloverButton;
 
     private static final RenderItem ghostRender = new RenderItem();
     private static final FlexibleToolRenderer ghostToolRender = new FlexibleToolRenderer();
@@ -106,6 +109,22 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
 
         this.buttonList.clear();
         createToolButtons();
+
+        // "fill every tier" toggle, bottom of the lower info panel
+        spilloverButton = new GuiButton(
+                SPILLOVER_BUTTON,
+                this.guiLeft + 110 + 178 + 6,
+                this.guiTop + 109 + 87 - 6 - 20,
+                114,
+                20,
+                spilloverLabel());
+        spilloverButton.visible = selectedButton == 0;
+        this.buttonList.add(spilloverButton);
+    }
+
+    private String spilloverLabel() {
+        return StatCollector.translateToLocal(
+                logic.tierSpillover ? "gui.toolstation.spillover.on" : "gui.toolstation.spillover.off");
     }
 
     protected void createToolButtons() {
@@ -127,6 +146,13 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
 
     @Override
     protected void actionPerformed(GuiButton button) {
+        if (button.id == SPILLOVER_BUTTON) {
+            logic.setTierSpillover(!logic.tierSpillover); // client preview; the server follows via the packet
+            TConstruct.packetPipeline.sendToServer(
+                    new ToolStationSpilloverPacket(logic.xCoord, logic.yCoord, logic.zCoord, logic.tierSpillover));
+            button.displayString = spilloverLabel();
+            return;
+        }
         this.buttonList.get(selectedButton).enabled = true;
         selectedButton = button.id;
         button.enabled = false;
@@ -141,6 +167,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         }
         title = "§n" + StatCollector.translateToLocal(element.title);
         body = StatCollector.translateToLocal(element.body).replace("\\n", "\n");
+        if (spilloverButton != null) spilloverButton.visible = selectedButton == 0;
     }
 
     protected void setSlotType(int type) {
@@ -181,13 +208,15 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
      */
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+        // another player at this station may have flipped the toggle; the tile is synced, the label is not
+        if (spilloverButton != null) spilloverButton.displayString = spilloverLabel();
         this.fontRendererObj.drawString(StatCollector.translateToLocal(logic.getInvName()), 116, 8, 0x000000);
         drawInventoryLabel();
         this.text.drawTextBox();
 
         if (logic.isStackInSlot(0)) {
             // stats in the upper panel, modifiers in the lower one
-            ToolStationGuiHelper.drawToolStatsSplit(logic.getStackInSlot(0), 296, 11, 92, 296, 109, 184);
+            ToolStationGuiHelper.drawToolStatsSplit(logic.getStackInSlot(0), 296, 11, 92, 296, 109, 166);
         } else {
             drawToolInformation();
         }

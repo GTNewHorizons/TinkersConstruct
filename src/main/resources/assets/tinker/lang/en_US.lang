@@ -1198,3 +1198,5 @@ baubletype.any=Equippable in a §aRing§7 slot
 slot.heartcanister_red=Red Heart Canister
 slot.heartcanister_yellow=Yellow Heart Canister
 slot.heartcanister_green=Green Heart Canister
+gui.toolstation.spillover.on=Tiers: fill all
+gui.toolstation.spillover.off=Tiers: one per craft

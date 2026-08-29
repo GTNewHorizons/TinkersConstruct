@@ -56,6 +56,8 @@ public class ModRedstone extends ItemModTypeFilter {
             keyPair = new int[] { increase, max, tooltipIndex };
             previous = 0;
             tags.setIntArray(key, keyPair);
+            // spillover: a first craft may open more tiers than the one it comes with
+            if (settleTiers(tags, keyPair)) updateModTag(tool, keyPair);
         }
 
         int perPoint = 8;

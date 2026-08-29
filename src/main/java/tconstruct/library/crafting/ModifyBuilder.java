@@ -32,6 +32,19 @@ public class ModifyBuilder {
         ItemStack built = build(input, modifiers);
         if (built != null) return built;
 
+        // With spillover on, a leveled modifier may take every free slot and leave a slot-hungry modifier
+        // beside it with nothing to spend. Before giving anything up, try the one-tier-per-craft build.
+        if (ItemModifier.isTierSpilloverOn()) {
+            Boolean previousSpillover = ItemModifier.getTierSpillover();
+            try {
+                ItemModifier.setTierSpillover(false);
+                built = build(input, modifiers);
+            } finally {
+                ItemModifier.setTierSpillover(previousSpillover);
+            }
+            if (built != null) return built;
+        }
+
         // A modifier is allowed to spend one of the tool's free modifier slots to take an input it could not
         // otherwise use. That can leave a slot-hungry modifier in another slot with nothing to spend, which
         // fails the whole craft — so when the greedy attempt comes to nothing, try once more with no modifier

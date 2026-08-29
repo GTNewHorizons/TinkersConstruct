@@ -42,6 +42,8 @@ public class ModAntiSpider extends ItemModTypeFilter {
             int tooltipIndex = addToolTip(tool, tooltipName, modName);
             int[] keyPair = new int[] { increase, max, tooltipIndex };
             tags.setIntArray(key, keyPair);
+            // spillover: a first craft may open more tiers than the one it comes with
+            if (settleTiers(tags, keyPair)) updateModTag(tool, keyPair);
         }
     }
 

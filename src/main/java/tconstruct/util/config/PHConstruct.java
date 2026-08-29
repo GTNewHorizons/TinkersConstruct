@@ -70,6 +70,12 @@ public class PHConstruct {
                 .getBoolean(false);
         miningLevelIncrease = config.get("Difficulty Changes", "Modifiers increase Mining Level", true)
                 .getBoolean(true);
+        modifierTierSpillover = config.get(
+                "Difficulty Changes",
+                "Modifier tier spillover",
+                false,
+                "Let one craft keep opening modifier tiers while free modifier slots and materials last, spending the slots without asking. Off: one tier per craft, as in Tinkers 1.12.")
+                .getBoolean(false);
         denyMattock = config.get("Difficulty Changes", "Deny creation of non-metal mattocks", false).getBoolean(false);
         HarvestToolAOERelativeStrength = config.get(
                 "general",
@@ -526,6 +532,7 @@ public class PHConstruct {
     public static boolean removeGoldCastRecipes;
     public static boolean labotimizeVanillaTools;
     public static boolean miningLevelIncrease;
+    public static boolean modifierTierSpillover;
     public static boolean denyMattock;
     public static boolean alternativeBoltRecipe;
     public static boolean indestructible;

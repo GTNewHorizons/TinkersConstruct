@@ -32,6 +32,26 @@ public abstract class ItemModifier {
     }
 
     /**
+     * Whether the craft being built may keep opening modifier tiers while free slots and materials last. A station sets
+     * this from its own toggle for the duration of a build; when nothing set it, the config default applies.
+     */
+    private static final ThreadLocal<Boolean> tierSpillover = new ThreadLocal<>();
+
+    public static void setTierSpillover(Boolean on) {
+        if (on == null) tierSpillover.remove();
+        else tierSpillover.set(on);
+    }
+
+    public static Boolean getTierSpillover() {
+        return tierSpillover.get();
+    }
+
+    public static boolean isTierSpilloverOn() {
+        Boolean on = tierSpillover.get();
+        return on != null ? on : tconstruct.util.config.PHConstruct.modifierTierSpillover;
+    }
+
+    /**
      * Default constructor
      *
      * @param recipe  Items to compare against when checking the modifier
