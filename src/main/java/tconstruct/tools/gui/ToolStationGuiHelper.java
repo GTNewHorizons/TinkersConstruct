@@ -2,9 +2,11 @@ package tconstruct.tools.gui;
 
 import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -32,16 +34,63 @@ public final class ToolStationGuiHelper {
     private static final FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
     private static int xPos, yPos;
     private static int clampY = Integer.MAX_VALUE;
+    /** Widest line the current panel can show; a longer one wraps rather than leave the frame. */
+    private static int clampWidth = Integer.MAX_VALUE;
+    /** Where a title is centred, relative to xPos. */
+    private static int titleCenter = 55;
 
+    /**
+     * Width of the station GUI's two side panels. Sized for the longest stock lines that a 1366x768 screen at GUI scale
+     * 3 can still hold: "- Bane of Arthropods (4/4)" (143 px) and a nine-digit ammo line before grouping (144 px), plus
+     * the panel's 8 px left and 3 px right text insets. With grouped numbers and " / " a durability or ammo line of two
+     * nine- or ten-digit figures ("- 2,147,483,647 / 2,147,483,647", 156 px) is wider than the 145 px of text the panel
+     * holds and wraps after the " / " (the 167 px panel that would hold it no longer fits that screen); a two-digit
+     * Bane tier and an unusually long translation wrap too, see flush().
+     */
+    public static final int PANEL_WIDTH = 156;
+
+    /** Rows of the panel being laid out; {@link #flush()} draws them once the whole panel is known. */
+    private static final List<String> pending = new ArrayList<>();
+
+    /** A blank row. */
     private static void newline() {
-        yPos += 10;
+        pending.add("");
     }
 
     private static void write(String s) {
-        if (yPos <= clampY) {
-            fontRendererObj.drawString(s, xPos, yPos, 0xffffffff);
+        pending.add(s);
+    }
+
+    /**
+     * Draws the queued rows. A row wider than the panel is wrapped (at a space when it has one) rather than run past
+     * the frame, but only when the wrapped panel still fits its row budget: wrapping must never hide a row that used to
+     * show. It fires for a durability or ammo line of two nine- or ten-digit grouped figures, which breaks at the space
+     * after the slash, and for an unusually long translation.
+     */
+    private static void flush() {
+        List<String> rows = pending;
+        if (clampWidth != Integer.MAX_VALUE) {
+            List<String> wrapped = new ArrayList<>();
+            for (String s : pending) {
+                if (fontRendererObj.getStringWidth(s) > clampWidth) {
+                    for (Object part : fontRendererObj.listFormattedStringToWidth(s, clampWidth)) {
+                        wrapped.add((String) part);
+                    }
+                } else {
+                    wrapped.add(s);
+                }
+            }
+            int last = wrapped.size();
+            while (last > 0 && wrapped.get(last - 1).isEmpty()) last--;
+            if (wrapped.size() == pending.size() || yPos + 10 * (last - 1) <= clampY) rows = wrapped;
         }
-        newline();
+        for (String row : rows) {
+            if (yPos <= clampY && !row.isEmpty()) {
+                fontRendererObj.drawString(row, xPos, yPos, 0xffffffff);
+            }
+            yPos += 10;
+        }
+        pending.clear();
     }
 
     public static void drawToolStats(ItemStack stack, int x, int y) {
@@ -49,6 +98,9 @@ public final class ToolStationGuiHelper {
         NBTTagCompound tags = resolveTags(stack);
 
         clampY = Integer.MAX_VALUE;
+        clampWidth = Integer.MAX_VALUE;
+        titleCenter = 55;
+        pending.clear();
         xPos = x;
         yPos = y + 8;
 
@@ -56,6 +108,7 @@ public final class ToolStationGuiHelper {
         drawStatsBody(stack, item, tags);
         newline();
         drawModifiers(tags);
+        flush();
     }
 
     /** Two-panel variant: stats clamped to the first region, modifiers written into the second. */
@@ -64,17 +117,24 @@ public final class ToolStationGuiHelper {
         NBTTagCompound tags = resolveTags(stack);
 
         clampY = limitY;
+        clampWidth = PANEL_WIDTH - 11;
+        titleCenter = PANEL_WIDTH / 2 - 8;
+        pending.clear();
         xPos = x;
         yPos = y + 8;
 
         drawTitle(stack);
         drawStatsBody(stack, item, tags);
+        flush();
 
         clampY = limitY2;
         xPos = x2;
         yPos = y2 + 8;
         drawModifiers(tags);
+        flush();
         clampY = Integer.MAX_VALUE;
+        clampWidth = Integer.MAX_VALUE;
+        titleCenter = 55;
     }
 
     private static NBTTagCompound resolveTags(ItemStack stack) {
@@ -88,7 +148,7 @@ public final class ToolStationGuiHelper {
     private static void drawTitle(ItemStack stack) {
         String name = stack.getItem() instanceof ToolCore ? ((ToolCore) stack.getItem()).getLocalizedToolName()
                 : stack.getDisplayName();
-        drawCenteredString(fontRendererObj, "\u00A7n" + name, xPos + 55, yPos, 0xffffffff);
+        drawCenteredString(fontRendererObj, "\u00A7n" + name, xPos + titleCenter, yPos, 0xffffffff);
         newline();
         newline();
     }
