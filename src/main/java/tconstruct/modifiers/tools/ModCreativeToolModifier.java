@@ -31,7 +31,16 @@ public class ModCreativeToolModifier extends ItemModifier {
     public void modify(ItemStack[] input, ItemStack tool) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int modifiers = tags.getInteger("Modifiers");
-        modifiers += 1;
+        // One slot per item. With the station's "Tiers: fill all" on, the whole stack is taken at once; the recipe
+        // is a single item, so the subset offered here holds exactly one stack.
+        int count = 1;
+        if (isTierSpilloverOn()) {
+            for (ItemStack stack : input) {
+                if (stack != null) count = stack.stackSize;
+            }
+            tags.setIntArray("ToRemove", new int[] { count });
+        }
+        modifiers += count;
         tags.setInteger("Modifiers", modifiers);
     }
 

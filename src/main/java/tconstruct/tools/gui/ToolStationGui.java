@@ -115,7 +115,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
                 SPILLOVER_BUTTON,
                 this.guiLeft + 110 + 178 + 6,
                 this.guiTop + 109 + 87 - 6 - 20,
-                114,
+                ToolStationGuiHelper.PANEL_WIDTH - 12,
                 20,
                 spilloverLabel());
         spilloverButton.visible = selectedButton == 0;
