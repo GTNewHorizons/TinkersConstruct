@@ -123,7 +123,7 @@ public class ModAttack extends ItemModTypeFilter {
             tags.setIntArray(key, keyPair);
 
             int attack = tags.getInteger("Attack");
-            attack += 1 + (increase / threshold);
+            attack += 1 + increase / threshold;
             tags.setInteger("Attack", attack);
         }
     }
