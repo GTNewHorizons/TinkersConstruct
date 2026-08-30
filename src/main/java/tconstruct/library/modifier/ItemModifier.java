@@ -52,6 +52,22 @@ public abstract class ItemModifier {
     }
 
     /**
+     * Whether the running modify() was reached through the builder, which checks capacity and free slots through
+     * matches() first. A direct call — IguanaTweaks re-applies a swapped tool's Haste and Sharpness one point at a time
+     * that way, with the slot count backed up around it — gets stock's rule instead and never asks for a free slot: the
+     * caller owns the bookkeeping.
+     */
+    private static final ThreadLocal<Boolean> insideBuilder = ThreadLocal.withInitial(() -> Boolean.FALSE);
+
+    public static void setInsideBuilder(boolean inside) {
+        insideBuilder.set(inside);
+    }
+
+    public static boolean isInsideBuilder() {
+        return insideBuilder.get();
+    }
+
+    /**
      * Default constructor
      *
      * @param recipe  Items to compare against when checking the modifier

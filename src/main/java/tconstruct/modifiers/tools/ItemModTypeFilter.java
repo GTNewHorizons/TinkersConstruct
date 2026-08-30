@@ -60,6 +60,9 @@ public abstract class ItemModTypeFilter extends ItemModifier {
     }
 
     public ModificationInfo matchingAmount(ItemStack[] input, ItemStack tool, int modifierMax) {
+        // Outside the builder nothing has vetted the input against free slots, and nothing should: stock's rule.
+        if (!isInsideBuilder()) return matchWithin(input, stockAvailable(tool, modifierMax));
+
         int inTier = remainingInTier(tool, modifierMax);
         int spillover = spilloverCapacity(tool, modifierMax);
         ModificationInfo info = matchWithin(input, inTier + spillover);
@@ -117,6 +120,19 @@ public abstract class ItemModTypeFilter extends ItemModifier {
             toRemoveArray[i] = toRemove.get(i);
         }
         return new ModificationInfo(amount, toRemoveArray);
+    }
+
+    /**
+     * Stock's room for one application: a whole tier when the progress sits on a ceiling, the rest of the tier
+     * otherwise, free slots never asked about. What a direct modify() call gets.
+     */
+    private int stockAvailable(ItemStack tool, int modifierMax) {
+        NBTTagCompound tags = getModifierTag(tool);
+        if (!tags.hasKey(key)) return modifierMax;
+        int[] keyPair = tags.getIntArray(key);
+        if (keyPair[0] % modifierMax == 0) return modifierMax;
+        int upperLimit = keyPair.length == 2 ? modifierMax : keyPair[1];
+        return upperLimit - keyPair[0];
     }
 
     /**
