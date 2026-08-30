@@ -59,15 +59,6 @@ public class ModifyBuilder {
     }
 
     private ItemStack build(ItemStack input, ItemStack[] modifiers) {
-        ItemModifier.setInsideBuilder(true);
-        try {
-            return claim(input, modifiers);
-        } finally {
-            ItemModifier.setInsideBuilder(false);
-        }
-    }
-
-    private ItemStack claim(ItemStack input, ItemStack[] modifiers) {
         ItemStack copy = input.copy(); // Prevent modifying the original
         if (!(copy.getItem() instanceof IModifyable item)) return null;
         // Subsets of the inputs are tracked as bits of an int. No station comes close to that many slots,
@@ -89,7 +80,6 @@ public class ModifyBuilder {
         int[] consumed = new int[modifiers.length];
         boolean[] claimed = new boolean[modifiers.length];
         ItemStack[] original = pool.clone();
-        List<int[]> claims = new ArrayList<>();
 
         boolean built = false;
         // A slot feeds a given modifier at most once per craft (so a leveled modifier does not
@@ -97,6 +87,7 @@ public class ModifyBuilder {
         // a modifier registered while this craft is running simply waits for the next one.
         int registered = itemModifiers.size();
         int[] tried = new int[registered];
+        boolean[] applied = new boolean[registered];
         while (true) {
             ItemModifier bestMod = null;
             int bestMask = 0;
@@ -119,8 +110,8 @@ public class ModifyBuilder {
             if (event.isCanceled()) continue;
 
             built = true;
-            bestMod.addMatchingEffect(copy); // Order matters here
-            bestMod.modify(subArray(pool, bestMask), copy);
+            apply(bestMod, subArray(pool, bestMask), copy);
+            applied[bestIndex] = true;
 
             // we do not allow negative modifiers >:(
             if (copy.getTagCompound().getCompoundTag(item.getBaseTagName()).getInteger("Modifiers") < 0) return null;
@@ -131,10 +122,10 @@ public class ModifyBuilder {
                     bestMask,
                     consumed,
                     claimed);
-            claims.add(new int[] { bestMask, bestIndex });
+            if (!applyCompanions(item, input, copy, original, bestMask, bestMod.stacks.isEmpty(), tried, applied))
+                return null;
         }
         if (!built) return null;
-        if (!applyCompanions(item, copy, original, claims, tried)) return null;
 
         for (int i = 0; i < modifiers.length; i++) {
             if (modifiers[i] != null && !claimed[i]) return null;
@@ -152,31 +143,40 @@ public class ModifyBuilder {
     /**
      * Stock applied every modifier whose recipe an input satisfied, so two modifiers sharing an item both took it from
      * one stack: in GTNH, IguanaTweaks' mining-level boost rides Tinkers' Diamond and its nether-star boost rides the
-     * extra modifier. Claiming gave each slot to one modifier and lost the second effect. Every claimed subset is
-     * offered once more, unchanged, to the modifiers that did not apply to it, and nothing further is booked for them:
-     * the item is already paid for. Returns false when a companion drove the free slots negative.
+     * extra modifier. Claiming gave each slot to one modifier and lost the second effect. Right after a claim is
+     * booked, its subset is offered once more, unchanged, to the modifiers that have not applied in this craft, and
+     * nothing further is booked for them: the item is already paid for. A companion must match both the tool as it was
+     * — stock's view, which keeps a repair from turning into a part swap and a slotless tool's nether star from buying
+     * a boost — and the tool as it stands, which keeps every once-only key honest (GTNH registers nine mining-level
+     * boosts under one key). Offering right away, not after all rounds, means a later round sees the companion's key
+     * and cannot spend a second diamond on nothing. Two recipe-less modifiers (they match by inspecting the tool: part
+     * replacement, repair, restock) never share one claim; one of them may still ride a recipe claim. Returns false
+     * when a companion drove the free slots negative.
      */
-    private boolean applyCompanions(IModifyable item, ItemStack copy, ItemStack[] original, List<int[]> claims,
-            int[] tried) {
-        for (int[] claim : claims) {
-            int mask = claim[0];
-            ItemStack[] subset = subArray(original, mask);
-            for (int m = 0; m < tried.length; m++) {
-                if (m == claim[1] || (tried[m] & mask) != 0) continue;
-                ItemModifier mod = itemModifiers.get(m);
-                if (!mod.validType(item) || !mod.matches(subset, copy)) continue;
-                tried[m] |= mask;
+    private boolean applyCompanions(IModifyable item, ItemStack input, ItemStack copy, ItemStack[] original, int mask,
+            boolean winnerBare, int[] tried, boolean[] applied) {
+        ItemStack[] subset = subArray(original, mask);
+        for (int m = 0; m < tried.length; m++) {
+            if (applied[m] || (tried[m] & mask) != 0) continue;
+            ItemModifier mod = itemModifiers.get(m);
+            // Two whole-tool operations never share one claim: GTNH registers two part-replacement modifiers that
+            // would otherwise both run and compound their XP penalties. A recipe-less modifier may still ride a
+            // RECIPE claim, as stock let TGregworks' repair mend a damaged gem-headed tool on the same gem that
+            // bought the Diamond modifier.
+            if (winnerBare && mod.stacks.isEmpty()) continue;
+            if (!mod.validType(item)) continue;
+            if (!matches(mod, subset, input) || !matches(mod, subset, copy)) continue;
+            tried[m] |= mask;
 
-                ModifyEvent event = new ModifyEvent(mod, item, copy);
-                MinecraftForge.EVENT_BUS.post(event);
-                if (event.isCanceled()) continue;
+            ModifyEvent event = new ModifyEvent(mod, item, copy);
+            MinecraftForge.EVENT_BUS.post(event);
+            if (event.isCanceled()) continue;
 
-                mod.addMatchingEffect(copy);
-                mod.modify(subset, copy);
-                NBTTagCompound tags = copy.getTagCompound().getCompoundTag(item.getBaseTagName());
-                if (tags.getInteger("Modifiers") < 0) return false;
-                tags.removeTag("ToRemove"); // consumption stays what the first modifier booked
-            }
+            apply(mod, subset, copy);
+            applied[m] = true;
+            NBTTagCompound tags = copy.getTagCompound().getCompoundTag(item.getBaseTagName());
+            if (tags.getInteger("Modifiers") < 0) return false;
+            tags.removeTag("ToRemove"); // consumption stays what the first modifier booked
         }
         return true;
     }
@@ -199,10 +199,31 @@ public class ModifyBuilder {
                 for (int b = 0; b < count; b++) {
                     if ((bits & (1 << b)) != 0) mask |= 1 << avail[b];
                 }
-                if (mod.matches(subArray(pool, mask), tool)) return mask;
+                if (matches(mod, subArray(pool, mask), tool)) return mask;
             }
         }
         return 0;
+    }
+
+    /** matches() with the modifier marked as the one the builder drives, so its capacity rules apply. */
+    private static boolean matches(ItemModifier mod, ItemStack[] subset, ItemStack tool) {
+        ItemModifier previous = ItemModifier.setDriven(mod);
+        try {
+            return mod.matches(subset, tool);
+        } finally {
+            ItemModifier.setDriven(previous);
+        }
+    }
+
+    /** addMatchingEffect() then modify(), with the modifier marked as the one the builder drives. */
+    private static void apply(ItemModifier mod, ItemStack[] subset, ItemStack tool) {
+        ItemModifier previous = ItemModifier.setDriven(mod);
+        try {
+            mod.addMatchingEffect(tool); // Order matters here
+            mod.modify(subset, tool);
+        } finally {
+            ItemModifier.setDriven(previous);
+        }
     }
 
     /** Copy of the pool with only the masked slots present, positions preserved. */

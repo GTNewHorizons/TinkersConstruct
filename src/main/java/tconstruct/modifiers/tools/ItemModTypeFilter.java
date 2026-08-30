@@ -60,8 +60,9 @@ public abstract class ItemModTypeFilter extends ItemModifier {
     }
 
     public ModificationInfo matchingAmount(ItemStack[] input, ItemStack tool, int modifierMax) {
-        // Outside the builder nothing has vetted the input against free slots, and nothing should: stock's rule.
-        if (!isInsideBuilder()) return matchWithin(input, stockAvailable(tool, modifierMax));
+        // Not the modifier the builder is driving: nothing has vetted the input against free slots, and nothing
+        // should — stock's rule.
+        if (!isDriven(this)) return matchWithin(input, stockAvailable(tool, modifierMax));
 
         int inTier = remainingInTier(tool, modifierMax);
         int spillover = spilloverCapacity(tool, modifierMax);
@@ -130,9 +131,10 @@ public abstract class ItemModTypeFilter extends ItemModifier {
         NBTTagCompound tags = getModifierTag(tool);
         if (!tags.hasKey(key)) return modifierMax;
         int[] keyPair = tags.getIntArray(key);
+        // a flat pool ({current, tooltipIndex}, i.e. Lapis) has no ceiling to stand on: just what is left of it
+        if (keyPair.length == 2) return Math.max(0, modifierMax - keyPair[0]);
         if (keyPair[0] % modifierMax == 0) return modifierMax;
-        int upperLimit = keyPair.length == 2 ? modifierMax : keyPair[1];
-        return upperLimit - keyPair[0];
+        return Math.max(0, keyPair[1] - keyPair[0]);
     }
 
     /**

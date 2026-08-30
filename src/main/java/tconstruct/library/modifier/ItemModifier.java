@@ -52,19 +52,23 @@ public abstract class ItemModifier {
     }
 
     /**
-     * Whether the running modify() was reached through the builder, which checks capacity and free slots through
-     * matches() first. A direct call — IguanaTweaks re-applies a swapped tool's Haste and Sharpness one point at a time
-     * that way, with the slot count backed up around it — gets stock's rule instead and never asks for a free slot: the
-     * caller owns the bookkeeping.
+     * The modifier the builder is applying right now, whose input it has vetted against capacity and free slots through
+     * matches(). Anything else running modify() on this thread — IguanaTweaks re-applying a swapped tool's Haste and
+     * Sharpness one point at a time from inside its part-replacement modifier, with the slot count backed up around it
+     * — gets stock's rule and never asks for a free slot: the caller owns the bookkeeping.
      */
-    private static final ThreadLocal<Boolean> insideBuilder = ThreadLocal.withInitial(() -> Boolean.FALSE);
+    private static final ThreadLocal<ItemModifier> driven = new ThreadLocal<>();
 
-    public static void setInsideBuilder(boolean inside) {
-        insideBuilder.set(inside);
+    /** Marks the modifier the builder drives; returns the previous mark so the caller can restore it. */
+    public static ItemModifier setDriven(ItemModifier modifier) {
+        ItemModifier previous = driven.get();
+        if (modifier == null) driven.remove();
+        else driven.set(modifier);
+        return previous;
     }
 
-    public static boolean isInsideBuilder() {
-        return insideBuilder.get();
+    public static boolean isDriven(ItemModifier modifier) {
+        return driven.get() == modifier;
     }
 
     /**
