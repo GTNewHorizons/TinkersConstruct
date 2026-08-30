@@ -59,6 +59,15 @@ public class ModifyBuilder {
     }
 
     private ItemStack build(ItemStack input, ItemStack[] modifiers) {
+        ItemModifier.setInsideBuilder(true);
+        try {
+            return claim(input, modifiers);
+        } finally {
+            ItemModifier.setInsideBuilder(false);
+        }
+    }
+
+    private ItemStack claim(ItemStack input, ItemStack[] modifiers) {
         ItemStack copy = input.copy(); // Prevent modifying the original
         if (!(copy.getItem() instanceof IModifyable item)) return null;
         // Subsets of the inputs are tracked as bits of an int. No station comes close to that many slots,
@@ -79,6 +88,8 @@ public class ModifyBuilder {
         }
         int[] consumed = new int[modifiers.length];
         boolean[] claimed = new boolean[modifiers.length];
+        ItemStack[] original = pool.clone();
+        List<int[]> claims = new ArrayList<>();
 
         boolean built = false;
         // A slot feeds a given modifier at most once per craft (so a leveled modifier does not
@@ -120,8 +131,10 @@ public class ModifyBuilder {
                     bestMask,
                     consumed,
                     claimed);
+            claims.add(new int[] { bestMask, bestIndex });
         }
         if (!built) return null;
+        if (!applyCompanions(item, copy, original, claims, tried)) return null;
 
         for (int i = 0; i < modifiers.length; i++) {
             if (modifiers[i] != null && !claimed[i]) return null;
@@ -134,6 +147,38 @@ public class ModifyBuilder {
         }
         copy.getTagCompound().getCompoundTag(item.getBaseTagName()).setIntArray("ToRemove", toRemove);
         return copy;
+    }
+
+    /**
+     * Stock applied every modifier whose recipe an input satisfied, so two modifiers sharing an item both took it from
+     * one stack: in GTNH, IguanaTweaks' mining-level boost rides Tinkers' Diamond and its nether-star boost rides the
+     * extra modifier. Claiming gave each slot to one modifier and lost the second effect. Every claimed subset is
+     * offered once more, unchanged, to the modifiers that did not apply to it, and nothing further is booked for them:
+     * the item is already paid for. Returns false when a companion drove the free slots negative.
+     */
+    private boolean applyCompanions(IModifyable item, ItemStack copy, ItemStack[] original, List<int[]> claims,
+            int[] tried) {
+        for (int[] claim : claims) {
+            int mask = claim[0];
+            ItemStack[] subset = subArray(original, mask);
+            for (int m = 0; m < tried.length; m++) {
+                if (m == claim[1] || (tried[m] & mask) != 0) continue;
+                ItemModifier mod = itemModifiers.get(m);
+                if (!mod.validType(item) || !mod.matches(subset, copy)) continue;
+                tried[m] |= mask;
+
+                ModifyEvent event = new ModifyEvent(mod, item, copy);
+                MinecraftForge.EVENT_BUS.post(event);
+                if (event.isCanceled()) continue;
+
+                mod.addMatchingEffect(copy);
+                mod.modify(subset, copy);
+                NBTTagCompound tags = copy.getTagCompound().getCompoundTag(item.getBaseTagName());
+                if (tags.getInteger("Modifiers") < 0) return false;
+                tags.removeTag("ToRemove"); // consumption stays what the first modifier booked
+            }
+        }
+        return true;
     }
 
     /**
