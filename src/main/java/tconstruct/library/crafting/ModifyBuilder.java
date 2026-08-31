@@ -110,6 +110,7 @@ public class ModifyBuilder {
             if (event.isCanceled()) continue;
 
             built = true;
+            ItemStack before = copy.copy(); // what this claim's companions are judged by
             apply(bestMod, subArray(pool, bestMask), copy);
             applied[bestIndex] = true;
 
@@ -122,7 +123,7 @@ public class ModifyBuilder {
                     bestMask,
                     consumed,
                     claimed);
-            if (!applyCompanions(item, input, copy, original, bestMask, bestMod.stacks.isEmpty(), tried, applied))
+            if (!applyCompanions(item, before, copy, original, bestMask, bestMod.stacks.isEmpty(), tried, applied))
                 return null;
         }
         if (!built) return null;
@@ -145,15 +146,16 @@ public class ModifyBuilder {
      * one stack: in GTNH, IguanaTweaks' mining-level boost rides Tinkers' Diamond and its nether-star boost rides the
      * extra modifier. Claiming gave each slot to one modifier and lost the second effect. Right after a claim is
      * booked, its subset is offered once more, unchanged, to the modifiers that have not applied in this craft, and
-     * nothing further is booked for them: the item is already paid for. A companion must match both the tool as it was
-     * — stock's view, which keeps a repair from turning into a part swap and a slotless tool's nether star from buying
-     * a boost — and the tool as it stands, which keeps every once-only key honest (GTNH registers nine mining-level
-     * boosts under one key). Offering right away, not after all rounds, means a later round sees the companion's key
-     * and cannot spend a second diamond on nothing. Two recipe-less modifiers (they match by inspecting the tool: part
-     * replacement, repair, restock) never share one claim; one of them may still ride a recipe claim. Returns false
-     * when a companion drove the free slots negative.
+     * nothing further is booked for them: the item is already paid for. A companion must match both the tool as it
+     * stood when its claim was booked — earlier claims' work is visible (a nether star's slot feeds a later diamond's
+     * level bonus) but the claim's own primary's is not, which keeps a repair from turning into a part swap and a
+     * slotless star from funding its own boost — and the live copy, which keeps every once-only key honest (GTNH
+     * registers nine mining-level boosts under one key). Offering right away, not after all rounds, means a later round
+     * sees the companion's key and cannot spend a second diamond on nothing. Two recipe-less modifiers (they match by
+     * inspecting the tool: part replacement, repair, restock) never share one claim; one of them may still ride a
+     * recipe claim. Returns false when a companion drove the free slots negative.
      */
-    private boolean applyCompanions(IModifyable item, ItemStack input, ItemStack copy, ItemStack[] original, int mask,
+    private boolean applyCompanions(IModifyable item, ItemStack before, ItemStack copy, ItemStack[] original, int mask,
             boolean winnerBare, int[] tried, boolean[] applied) {
         ItemStack[] subset = subArray(original, mask);
         for (int m = 0; m < tried.length; m++) {
@@ -165,7 +167,7 @@ public class ModifyBuilder {
             // bought the Diamond modifier.
             if (winnerBare && mod.stacks.isEmpty()) continue;
             if (!mod.validType(item)) continue;
-            if (!matches(mod, subset, input) || !matches(mod, subset, copy)) continue;
+            if (!matches(mod, subset, before) || !matches(mod, subset, copy)) continue;
             tried[m] |= mask;
 
             ModifyEvent event = new ModifyEvent(mod, item, copy);
