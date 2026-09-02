@@ -1,5 +1,7 @@
 package tconstruct.smeltery.itemblocks;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatFluid;
+
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -7,6 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
@@ -28,10 +32,12 @@ public class LavaTankItemBlock extends MultiItemBlock implements IFluidContainer
         if (stack.hasTagCompound()) {
             NBTTagCompound liquidTag = stack.getTagCompound().getCompoundTag("Fluid");
             if (liquidTag != null) {
-                list.add(
-                        StatCollector.translateToLocal("searedtank1.tooltip") + " "
-                                + StatCollector.translateToLocal(liquidTag.getString("FluidName")));
-                list.add(liquidTag.getInteger("Amount") + " mB");
+
+                Fluid fluidInTank = FluidRegistry.getFluid(liquidTag.getString("FluidName"));
+                String fluidName = fluidInTank == null ? "INVALID FLUID" : fluidInTank.getLocalizedName(null);
+
+                list.add(StatCollector.translateToLocalFormatted("searedtank1.tooltip", fluidName));
+                list.add(formatFluid(liquidTag.getInteger("Amount")));
             }
         } else {
             list.add(StatCollector.translateToLocal("searedtank3.tooltip"));
