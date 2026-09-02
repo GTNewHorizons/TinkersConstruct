@@ -10,12 +10,14 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -28,8 +30,10 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.TConstruct;
+import tconstruct.client.FlexibleToolRenderer;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.client.ToolGuiElement;
+import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.inventory.ToolStationContainer;
 import tconstruct.tools.logic.ToolStationLogic;
 import tconstruct.util.network.ToolStationPacket;
@@ -46,6 +50,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
     public String title, body = "";
 
     private static final RenderItem ghostRender = new RenderItem();
+    private static final FlexibleToolRenderer ghostToolRender = new FlexibleToolRenderer();
 
     // Where extra modifier slots sit while a tool-building layout is selected
     protected static final int PARK_X1 = 87, PARK_X2 = 107, PARK_X3 = 127, PARK_Y = 62;
@@ -239,20 +244,27 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(icons);
-        // Draw the slots
-
+        // Draw the slots the way TiC2 does after its cover (GuiToolStation: a black slot background at 28 %, then
+        // the border at full strength): the interior stays translucent so the ghost preview shows through it and
+        // reads as one shape. A solid 18x18 frame chops the ghost into the gaps between slots, which turns a
+        // thin item such as a bolt into stray lines.
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         for (int i = 0; i < slotX.length; i++) {
-            this.drawTexturedModalRect(cornerX + slotX[i], this.guiTop + slotY[i], 144, 216, 18, 18);
+            int x = cornerX + slotX[i];
+            int y = this.guiTop + slotY[i];
+            GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.28F);
+            this.drawTexturedModalRect(x + 1, y + 1, 145, 217, 16, 16);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            this.drawTexturedModalRect(x, y, 144, 216, 18, 1);
+            this.drawTexturedModalRect(x, y + 17, 144, 233, 18, 1);
+            this.drawTexturedModalRect(x, y + 1, 144, 217, 1, 16);
+            this.drawTexturedModalRect(x + 17, y + 1, 161, 217, 1, 16);
             if (i < iconX.length && i < iconY.length && !logic.isStackInSlot(i + 1)) {
-                this.drawTexturedModalRect(
-                        cornerX + slotX[i],
-                        this.guiTop + slotY[i],
-                        18 * iconX[i],
-                        18 * iconY[i],
-                        18,
-                        18);
+                this.drawTexturedModalRect(x, y, 18 * iconX[i], 18 * iconY[i], 18, 18);
             }
         }
+        GL11.glDisable(GL11.GL_BLEND);
 
         // Draw the two TiC2-style info panels (tool stats on top, modifiers below), pushed down
         // below the beam like TiC2's modules (beam 7 + panel decoration 4). Horizontally the
@@ -312,15 +324,22 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         if (selectedButton != 0) return;
 
         // oversized ghost preview behind the slots, TiC2-style: the tool being modified, or an anvil when empty
+        ItemStack tool = logic.getStackInSlot(1);
         GL11.glPushMatrix();
         GL11.glTranslatef(cornerX + 10, this.guiTop + 20, 0F);
         GL11.glScalef(3.7F, 3.7F, 1F);
-        if (logic.isStackInSlot(1)) {
-            ItemStack tool = logic.getStackInSlot(1);
+        if (tool != null) {
             RenderHelper.enableGUIStandardItemLighting();
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            ghostRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), tool, 0, 0);
+            if (tool.getItem() instanceof ToolCore) {
+                // draw the icon layers directly: the renderer registered for ammo also draws the ammo count,
+                // whose drop shadow at 3.7x lands outside the cover as full-contrast dashes
+                this.mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+                ghostToolRender.renderItem(IItemRenderer.ItemRenderType.INVENTORY, tool);
+            } else {
+                ghostRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), tool, 0, 0);
+            }
         } else {
             // darken the pale anvil sprite so it reads as a silhouette through the cover
             GL11.glColor4f(0.45F, 0.45F, 0.45F, 1.0F);
@@ -336,6 +355,7 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
         GL11.glDisable(GL11.GL_BLEND);
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
