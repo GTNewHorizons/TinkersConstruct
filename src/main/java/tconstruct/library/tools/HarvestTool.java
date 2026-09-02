@@ -131,10 +131,10 @@ public abstract class HarvestTool extends ToolCore {
 
         boolean used = false;
         int hotbarSlot = player.inventory.currentItem;
-        int itemSlot = hotbarSlot == 0 ? 8 : hotbarSlot + 1;
+        int itemSlot = getAdjacentHotbarSlot(hotbarSlot);
         ItemStack nearbyStack;
 
-        if (hotbarSlot < 8) {
+        if (itemSlot >= 0) {
             nearbyStack = player.inventory.getStackInSlot(itemSlot);
             if (nearbyStack != null) {
                 Item item = nearbyStack.getItem();
