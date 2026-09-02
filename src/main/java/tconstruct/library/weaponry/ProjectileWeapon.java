@@ -243,7 +243,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
         // are we drawing an effect?
         if (renderPass >= getPartAmount()) {
             // is the effect animated?
-            String effect = "Effect" + (1 + renderPass - getPartAmount());
+            String effect = getEffectKey(1 + renderPass - getPartAmount());
             if (tags.hasKey(effect)) {
                 int index = tags.getInteger(effect);
                 if (animationEffectIcons.get(index) != null) return getCorrectAnimationIcon(
@@ -281,15 +281,17 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
     protected IIcon getCorrectAnimationIcon(Map<Integer, IIcon[]> icons, int id, float progress) {
         // animation count, standard texture as reference
-        float count = icons.get(-1).length - 1;
+        IIcon[] defaultAnimation = icons.get(-1);
+        float count = defaultAnimation.length - 1;
         int step = Math.round(progress * count);
 
         step = Math.max(0, step);
 
-        if (icons.containsKey(id)) return icons.get(id)[step];
+        Integer boxedId = id;
+        if (icons.containsKey(boxedId)) return icons.get(boxedId)[step];
 
         // default icon
-        return icons.get(-1)[step];
+        return defaultAnimation[step];
     }
 
     @Override
@@ -317,7 +319,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
             }
             // Effects
             else if (renderPass <= 10) {
-                String effect = "Effect" + (1 + renderPass - getPartAmount());
+                String effect = getEffectKey(1 + renderPass - getPartAmount());
                 if (tags.hasKey(effect)) return effectIcons.get(tags.getInteger(effect));
             }
             return blankSprite;

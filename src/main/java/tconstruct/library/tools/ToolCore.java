@@ -13,6 +13,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
@@ -64,6 +65,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     protected int damageVsEntity;
     public static IIcon blankSprite;
     public static IIcon emptyIcon;
+    private static final String[] effectKeys = { "Effect1", "Effect2", "Effect3", "Effect4", "Effect5", "Effect6",
+            "Effect7", "Effect8", "Effect9" };
 
     public ToolCore(int baseDamage) {
         super();
@@ -248,7 +251,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
             }
             // Effects
             else if (renderPass <= 10) {
-                String effect = "Effect" + (1 + renderPass - getPartAmount());
+                String effect = getEffectKey(1 + renderPass - getPartAmount());
                 if (tags.hasKey(effect)) return effectIcons.get(tags.getInteger(effect));
             }
             return blankSprite;
@@ -256,8 +259,14 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         return emptyIcon;
     }
 
+    protected static String getEffectKey(int effect) {
+        if (effect > 0 && effect <= effectKeys.length) return effectKeys[effect - 1];
+        return "Effect" + effect;
+    }
+
     protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, int id) {
-        if (icons.containsKey(id)) return icons.get(id);
+        Integer boxedId = id;
+        if (icons.containsKey(boxedId)) return icons.get(boxedId);
 
         // default icon
         return icons.get(-1);
@@ -568,11 +577,31 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     protected int getCorrectColor(ItemStack stack, int renderPass, NBTTagCompound tags, String key,
             Map<Integer, IIcon> map) {
+        // Avoid render-time concatenation for built-in parts while preserving addon keys.
+        String colorKey;
+        String renderKey;
+        if ("Handle".equals(key)) {
+            colorKey = "HandleColor";
+            renderKey = "RenderHandle";
+        } else if ("Head".equals(key)) {
+            colorKey = "HeadColor";
+            renderKey = "RenderHead";
+        } else if ("Accessory".equals(key)) {
+            colorKey = "AccessoryColor";
+            renderKey = "RenderAccessory";
+        } else if ("Extra".equals(key)) {
+            colorKey = "ExtraColor";
+            renderKey = "RenderExtra";
+        } else {
+            colorKey = key + "Color";
+            renderKey = "Render" + key;
+        }
+
         // custom coloring
-        if (tags.hasKey(key + "Color")) return tags.getInteger(key + "Color");
+        if (tags.hasKey(colorKey)) return tags.getInteger(colorKey);
 
         // custom texture?
-        int matId = tags.getInteger("Render" + key);
+        int matId = tags.getInteger(renderKey);
         if (map.containsKey(matId)) return super.getColorFromItemStack(stack, renderPass);
 
         // color default texture with material color
@@ -580,19 +609,18 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
     }
 
     protected int getDefaultColor(int renderPass, int materialID) {
-        if (TConstructRegistry.getMaterial(materialID) != null)
-            return TConstructRegistry.getMaterial(materialID).primaryColor();
+        tconstruct.library.tools.ToolMaterial material = TConstructRegistry.getMaterial(materialID);
+        if (material != null) return material.primaryColor();
 
         return 0xffffffff;
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        int hotbarSlot = player.inventory.currentItem;
-        int itemSlot = hotbarSlot == 0 ? 8 : hotbarSlot + 1;
+        int itemSlot = getAdjacentHotbarSlot(player.inventory.currentItem);
         ItemStack nearbyStack;
 
-        if (hotbarSlot < 8) {
+        if (itemSlot >= 0) {
             nearbyStack = player.inventory.getStackInSlot(itemSlot);
             if (nearbyStack != null) {
                 Item item = nearbyStack.getItem();
@@ -611,6 +639,10 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
             }
         }
         return stack;
+    }
+
+    protected int getAdjacentHotbarSlot(int hotbarSlot) {
+        return hotbarSlot < InventoryPlayer.getHotbarSize() - 1 ? hotbarSlot + 1 : -1;
     }
 
     /* Vanilla overrides */
