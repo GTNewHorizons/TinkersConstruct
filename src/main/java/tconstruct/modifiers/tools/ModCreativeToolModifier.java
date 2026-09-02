@@ -32,9 +32,11 @@ public class ModCreativeToolModifier extends ItemModifier {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         int modifiers = tags.getInteger("Modifiers");
         // One slot per item. With the station's "Tiers: fill all" on, the whole stack is taken at once; the recipe
-        // is a single item, so the subset offered here holds exactly one stack.
+        // is a single item, so the subset offered here holds exactly one stack. Only the builder may take the stack:
+        // a direct modify() call from elsewhere gets stock's one-per-application rule and writes no ToRemove, the
+        // same rule ItemModTypeFilter applies.
         int count = 1;
-        if (isTierSpilloverOn()) {
+        if (isDriven(this) && isTierSpilloverOn()) {
             for (ItemStack stack : input) {
                 if (stack != null) count = stack.stackSize;
             }
