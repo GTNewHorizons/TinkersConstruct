@@ -7,12 +7,14 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -289,6 +291,25 @@ public class LavaTankBlock extends BlockContainer {
         if (liquid != null) {
             LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(x, y, z);
             logic.tank.setFluid(liquid);
+        }
+    }
+
+    @Override
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB entityBox,
+            List<AxisAlignedBB> list, Entity entity) {
+
+        super.addCollisionBoxesToList(world, x, y, z, entityBox, list, entity);
+
+        AxisAlignedBB extraBox = AxisAlignedBB.getBoundingBox(
+                x + 3.0 / 16.0,
+                y + 1.0,
+                z + 3.0 / 16.0,
+                x + 13.0 / 16.0,
+                y + 18.0 / 16.0,
+                z + 13.0 / 16.0);
+
+        if (entityBox.intersectsWith(extraBox)) {
+            list.add(extraBox);
         }
     }
 
