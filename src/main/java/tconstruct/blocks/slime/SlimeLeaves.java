@@ -21,6 +21,8 @@ import tconstruct.world.TinkerWorld;
 
 public class SlimeLeaves extends BlockLeaves {
 
+    private int[] leafDecayArray; // Replaces field_150128_a
+
     private static final String[][] leaves = new String[][] { { "slimeleaves_blue_fancy" },
             { "slimeleaves_blue_fast" } };
 
@@ -53,88 +55,70 @@ public class SlimeLeaves extends BlockLeaves {
      */
     @Override
     public void updateTick(World worldIn, int x, int y, int z, Random random) {
-        if (!worldIn.isRemote) {
-            int l = worldIn.getBlockMetadata(x, y, z);
+        if (worldIn.isRemote) return;
+        int metadata = worldIn.getBlockMetadata(x, y, z);
 
-            if ((l & 8) != 0 && (l & 4) == 0) {
-                byte b0 = 4;
-                int i1 = b0 + 1;
-                byte b1 = 32;
-                int j1 = b1 * b1;
-                int k1 = b1 / 2;
+        if ((metadata & 8) != 0 && (metadata & 4) == 0) {
+            final byte SEARCH_RADIUS = 4;
+            final int CHECK_RADIUS = SEARCH_RADIUS + 1;
+            final byte ARRAY_SIZE = 32;
+            final int ARRAY_AREA = ARRAY_SIZE * ARRAY_SIZE;
+            final int ARRAY_OFFSET = ARRAY_SIZE / 2;
 
-                if (this.field_150128_a == null) {
-                    this.field_150128_a = new int[b1 * b1 * b1];
-                }
+            if (this.leafDecayArray == null) {
+                this.leafDecayArray = new int[ARRAY_SIZE * ARRAY_SIZE * ARRAY_SIZE];
+            }
 
-                int l1;
+            if (worldIn.checkChunksExist(x - CHECK_RADIUS, y - CHECK_RADIUS, z - CHECK_RADIUS, x + CHECK_RADIUS, y + CHECK_RADIUS, z + CHECK_RADIUS)) {
+                for (int dx = -SEARCH_RADIUS; dx <= SEARCH_RADIUS; ++dx) {
+                    for (int dy = -SEARCH_RADIUS; dy <= SEARCH_RADIUS; ++dy) {
+                        for (int dz = -SEARCH_RADIUS; dz <= SEARCH_RADIUS; ++dz) {
+                            int index = (dx + ARRAY_OFFSET) * ARRAY_AREA + (dy + ARRAY_OFFSET) * ARRAY_SIZE + dz + ARRAY_OFFSET;
+                            Block block = worldIn.getBlock(x + dx, y + dy, z + dz);
 
-                if (worldIn.checkChunksExist(x - i1, y - i1, z - i1, x + i1, y + i1, z + i1)) {
-                    int i2;
-                    int j2;
-
-                    for (l1 = -b0; l1 <= b0; ++l1) {
-                        for (i2 = -b0; i2 <= b0; ++i2) {
-                            for (j2 = -b0; j2 <= b0; ++j2) {
-                                Block block = worldIn.getBlock(x + l1, y + i2, z + j2);
-
-                                if (!(block instanceof SlimeGel)) {
-                                    if (block.isLeaves(worldIn, x + l1, y + i2, z + j2)) {
-                                        this.field_150128_a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = -2;
-                                    } else {
-                                        this.field_150128_a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = -1;
-                                    }
-                                } else {
-                                    this.field_150128_a[(l1 + k1) * j1 + (i2 + k1) * b1 + j2 + k1] = 0;
-                                }
-                            }
-                        }
-                    }
-
-                    for (l1 = 1; l1 <= 4; ++l1) {
-                        for (i2 = -b0; i2 <= b0; ++i2) {
-                            for (j2 = -b0; j2 <= b0; ++j2) {
-                                for (int k2 = -b0; k2 <= b0; ++k2) {
-                                    if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1] == l1 - 1) {
-                                        if (this.field_150128_a[(i2 + k1 - 1) * j1 + (j2 + k1) * b1 + k2 + k1] == -2) {
-                                            this.field_150128_a[(i2 + k1 - 1) * j1 + (j2 + k1) * b1 + k2 + k1] = l1;
-                                        }
-
-                                        if (this.field_150128_a[(i2 + k1 + 1) * j1 + (j2 + k1) * b1 + k2 + k1] == -2) {
-                                            this.field_150128_a[(i2 + k1 + 1) * j1 + (j2 + k1) * b1 + k2 + k1] = l1;
-                                        }
-
-                                        if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1 - 1) * b1 + k2 + k1] == -2) {
-                                            this.field_150128_a[(i2 + k1) * j1 + (j2 + k1 - 1) * b1 + k2 + k1] = l1;
-                                        }
-
-                                        if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1 + 1) * b1 + k2 + k1] == -2) {
-                                            this.field_150128_a[(i2 + k1) * j1 + (j2 + k1 + 1) * b1 + k2 + k1] = l1;
-                                        }
-
-                                        if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + (k2 + k1 - 1)]
-                                                == -2) {
-                                            this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + (k2 + k1 - 1)] = l1;
-                                        }
-
-                                        if (this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1 + 1] == -2) {
-                                            this.field_150128_a[(i2 + k1) * j1 + (j2 + k1) * b1 + k2 + k1 + 1] = l1;
-                                        }
-                                    }
-                                }
+                            if (block instanceof SlimeGel) {
+                                this.leafDecayArray[index] = 0;
+                            } else if (block.isLeaves(worldIn, x + dx, y + dy, z + dz)) {
+                                this.leafDecayArray[index] = -2;
+                            } else {
+                                this.leafDecayArray[index] = -1;
                             }
                         }
                     }
                 }
 
-                l1 = this.field_150128_a[k1 * j1 + k1 * b1 + k1];
+                for (int distance = 1; distance <= 4; ++distance) {
+                    for (int dx = -SEARCH_RADIUS; dx <= SEARCH_RADIUS; ++dx) {
+                        for (int dy = -SEARCH_RADIUS; dy <= SEARCH_RADIUS; ++dy) {
+                            for (int dz = -SEARCH_RADIUS; dz <= SEARCH_RADIUS; ++dz) {
+                                if (this.leafDecayArray[(dx + ARRAY_OFFSET) * ARRAY_AREA + (dy + ARRAY_OFFSET) * ARRAY_SIZE + dz + ARRAY_OFFSET] != distance - 1) continue;
 
-                if (l1 >= 0) {
-                    worldIn.setBlockMetadataWithNotify(x, y, z, l & -9, 4);
-                } else {
-                    this.removeLeaves(worldIn, x, y, z);
+                                resolveNeighbor(dx - 1, dy, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx + 1, dy, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx, dy - 1, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx, dy + 1, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx, dy, dz - 1, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx, dy, dz + 1, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                            }
+                        }
+                    }
                 }
             }
+
+            int isSustained = this.leafDecayArray[ARRAY_OFFSET * ARRAY_AREA + ARRAY_OFFSET * ARRAY_SIZE + ARRAY_OFFSET];
+
+            if (isSustained >= 0) {
+                worldIn.setBlockMetadataWithNotify(x, y, z, metadata & -9, 4);
+            } else {
+                this.removeLeaves(worldIn, x, y, z);
+            }
+        }
+    }
+
+    private void resolveNeighbor(int dx, int dy, int dz, int distance, int offset, int size, int area) {
+        int index = (dx + offset) * area + (dy + offset) * size + (dz + offset);
+        if (this.leafDecayArray[index] == -2) {
+            this.leafDecayArray[index] = distance;
         }
     }
 
