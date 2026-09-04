@@ -25,7 +25,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mantle.blocks.iface.IServantLogic;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.itemblocks.LavaTankItemBlock;
 import tconstruct.smeltery.logic.LavaTankLogic;
@@ -246,11 +245,17 @@ public class LavaTankBlock extends BlockContainer {
     }
 
     /* Updates */
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block nBlockID) {
-        TileEntity logic = world.getTileEntity(x, y, z);
-        if (logic instanceof IServantLogic) {
-            ((IServantLogic) logic).notifyMasterOfChange();
-        }
+        if (!SmelteryBlock.isStructureChange(nBlockID)) return;
+
+        SmelteryBlock.notifyMasterOfStructureChange(world, x, y, z);
+    }
+
+    @Override
+    public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
+        SmelteryBlock.notifyMasterOfStructureChange(world, x, y, z);
+        super.onBlockPreDestroy(world, x, y, z, meta);
     }
 
     @Override
