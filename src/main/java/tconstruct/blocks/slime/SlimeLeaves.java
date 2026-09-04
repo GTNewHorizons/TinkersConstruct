@@ -69,11 +69,19 @@ public class SlimeLeaves extends BlockLeaves {
                 this.leafDecayArray = new int[ARRAY_SIZE * ARRAY_SIZE * ARRAY_SIZE];
             }
 
-            if (worldIn.checkChunksExist(x - CHECK_RADIUS, y - CHECK_RADIUS, z - CHECK_RADIUS, x + CHECK_RADIUS, y + CHECK_RADIUS, z + CHECK_RADIUS)) {
+            if (worldIn.checkChunksExist(
+                    x - CHECK_RADIUS,
+                    y - CHECK_RADIUS,
+                    z - CHECK_RADIUS,
+                    x + CHECK_RADIUS,
+                    y + CHECK_RADIUS,
+                    z + CHECK_RADIUS)) {
                 for (int dx = -SEARCH_RADIUS; dx <= SEARCH_RADIUS; ++dx) {
                     for (int dy = -SEARCH_RADIUS; dy <= SEARCH_RADIUS; ++dy) {
                         for (int dz = -SEARCH_RADIUS; dz <= SEARCH_RADIUS; ++dz) {
-                            int index = (dx + ARRAY_OFFSET) * ARRAY_AREA + (dy + ARRAY_OFFSET) * ARRAY_SIZE + dz + ARRAY_OFFSET;
+                            int index = (dx + ARRAY_OFFSET) * ARRAY_AREA + (dy + ARRAY_OFFSET) * ARRAY_SIZE
+                                    + dz
+                                    + ARRAY_OFFSET;
                             Block block = worldIn.getBlock(x + dx, y + dy, z + dz);
 
                             if (block instanceof SlimeGel) {
@@ -91,7 +99,11 @@ public class SlimeLeaves extends BlockLeaves {
                     for (int dx = -SEARCH_RADIUS; dx <= SEARCH_RADIUS; ++dx) {
                         for (int dy = -SEARCH_RADIUS; dy <= SEARCH_RADIUS; ++dy) {
                             for (int dz = -SEARCH_RADIUS; dz <= SEARCH_RADIUS; ++dz) {
-                                if (this.leafDecayArray[(dx + ARRAY_OFFSET) * ARRAY_AREA + (dy + ARRAY_OFFSET) * ARRAY_SIZE + dz + ARRAY_OFFSET] != distance - 1) continue;
+                                if (this.leafDecayArray[(dx + ARRAY_OFFSET) * ARRAY_AREA
+                                        + (dy + ARRAY_OFFSET) * ARRAY_SIZE
+                                        + dz
+                                        + ARRAY_OFFSET] != distance - 1)
+                                    continue;
 
                                 resolveNeighbor(dx - 1, dy, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
                                 resolveNeighbor(dx + 1, dy, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
