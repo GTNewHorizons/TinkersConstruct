@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,6 +27,7 @@ import mantle.blocks.iface.IServantLogic;
 import tconstruct.TConstruct;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.SmelteryProxyCommon;
+import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.logic.SmelteryDrainLogic;
 import tconstruct.smeltery.logic.SmelteryLogic;
 import tconstruct.smeltery.model.SmelteryRender;
@@ -232,24 +234,31 @@ public class SmelteryBlock extends InventoryBlock {
     /* Updating */
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        // System.out.println("Neighbor changed");
+        if (!isStructureChange(block)) return;
+
+        notifyMasterOfStructureChange(world, x, y, z);
+    }
+
+    @Override
+    public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
+        notifyMasterOfStructureChange(world, x, y, z);
+        super.onBlockPreDestroy(world, x, y, z, meta);
+    }
+
+    static boolean isStructureChange(Block block) {
+        return block == Blocks.air || block == TinkerSmeltery.smeltery
+                || block == TinkerSmeltery.smelteryNether
+                || block == TinkerSmeltery.lavaTank
+                || block == TinkerSmeltery.lavaTankNether;
+    }
+
+    static void notifyMasterOfStructureChange(World world, int x, int y, int z) {
         TileEntity logic = world.getTileEntity(x, y, z);
         if (logic instanceof IServantLogic) {
             ((IServantLogic) logic).notifyMasterOfChange();
         } else if (logic instanceof IMasterLogic) {
             ((IMasterLogic) logic).notifyChange(null, x, y, z);
         }
-    }
-
-    @Override
-    public void breakBlock(World world, int x, int y, int z, Block blockID, int meta) {
-        // TE is not valid anymore at this point. :/
-
-        TileEntity logic = world.getTileEntity(x, y, z);
-        if (logic instanceof IServantLogic) {
-            ((IServantLogic) logic).notifyMasterOfChange();
-        }
-        super.breakBlock(world, x, y, z, blockID, meta);
     }
 
     // Comparator
