@@ -802,11 +802,11 @@ tconstruct.nei.dryingrack=Stendino
 tconstruct.nei.melting=Fusione della fonderia
 
 gui.smeltery.fuel=Carburante
-gui.smeltery.emerald=Smeraldi: 
-gui.smeltery.glass.block=Blocchi: 
-gui.smeltery.glass.pannel=Pannelli: 
-gui.smeltery.metal.ingot=Lingotti: 
-gui.smeltery.metal.nugget=Pepite: 
+gui.smeltery.emerald=%s Smeraldi
+gui.smeltery.glass.block=%s Blocchi
+gui.smeltery.glass.pannel=%s Pannelli
+gui.smeltery.metal.ingot=%s Lingotti
+gui.smeltery.metal.nugget=%s Pepite
 gui.smeltery.molten.check=fuso,fusa
 gui.landmine=Mina
 gui.partcrafter1=Costruire parti

@@ -1,5 +1,7 @@
 package tconstruct.library.tools;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
@@ -286,7 +289,10 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
                 else color = EnumChatFormatting.GOLD.toString();
             }
 
-            String energy = color + tags.getInteger("Energy") + "/" + getMaxEnergyStored(stack) + " RF";
+            String energy = color + formatNumber(tags.getInteger("Energy"))
+                    + "/"
+                    + formatNumber(getMaxEnergyStored(stack))
+                    + " RF";
             list.add(energy);
         }
         if (tags.hasKey("InfiTool")) {
@@ -347,7 +353,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         int attack = (int) (tags.getCompoundTag("InfiTool").getInteger("Attack") * this.getDamageModifier());
         list.add(
                 EnumChatFormatting.BLUE + "+"
-                        + attack
+                        + formatNumber(attack)
                         + " "
                         + StatCollector.translateToLocalFormatted("attribute.name.generic.attackDamage"));
     }
@@ -611,11 +617,10 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        int hotbarSlot = player.inventory.currentItem;
-        int itemSlot = hotbarSlot == 0 ? 8 : hotbarSlot + 1;
+        int itemSlot = getAdjacentHotbarSlot(player.inventory.currentItem);
         ItemStack nearbyStack;
 
-        if (hotbarSlot < 8) {
+        if (itemSlot >= 0) {
             nearbyStack = player.inventory.getStackInSlot(itemSlot);
             if (nearbyStack != null) {
                 Item item = nearbyStack.getItem();
@@ -634,6 +639,10 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
             }
         }
         return stack;
+    }
+
+    protected int getAdjacentHotbarSlot(int hotbarSlot) {
+        return hotbarSlot < InventoryPlayer.getHotbarSize() - 1 ? hotbarSlot + 1 : -1;
     }
 
     /* Vanilla overrides */

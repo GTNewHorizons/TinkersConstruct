@@ -1,5 +1,7 @@
 package tconstruct.plugins.nei;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.awt.Rectangle;
 
 import net.minecraft.item.ItemStack;
@@ -70,7 +72,10 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
         int time = ((CachedDryingRackRecipe) this.arecipes.get(recipe)).time;
         int seconds = time / 20;
         GuiDraw.drawStringC(
-                StatCollector.translateToLocalFormatted("tconstruct.nei.dryingrack.duration", time, seconds),
+                StatCollector.translateToLocalFormatted(
+                        "tconstruct.nei.dryingrack.duration",
+                        formatNumber(time),
+                        formatNumber(seconds)),
                 81,
                 40,
                 0x808080,

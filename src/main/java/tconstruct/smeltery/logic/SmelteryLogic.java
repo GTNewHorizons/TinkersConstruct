@@ -86,6 +86,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     public int[] activeTemps; // values are multiplied by 10
     public int[] meltingTemps; // values are multiplied by 10
     private int tick;
+    private boolean structureCheckQueued;
 
     public final List<FluidStack> moltenMetal = Collections.synchronizedList(new ArrayList<>());
     public int maxLiquid;
@@ -287,6 +288,8 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     /* Updating */
     @Override
     public void updateEntity() {
+        checkStructureIfQueued();
+
         tick++;
         if (tick == 60) {
             tick = 0;
@@ -326,6 +329,13 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
                 }
                 drainComparatorOutputDirty = false;
             }
+        }
+    }
+
+    private void checkStructureIfQueued() {
+        if (structureCheckQueued) {
+            structureCheckQueued = false;
+            checkValidPlacement();
         }
     }
 
@@ -680,7 +690,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     /* Multiblock */
     @Override
     public void notifyChange(IServantLogic servant, int x, int y, int z) {
-        checkValidPlacement();
+        structureCheckQueued = true;
     }
 
     public void checkValidPlacement() {

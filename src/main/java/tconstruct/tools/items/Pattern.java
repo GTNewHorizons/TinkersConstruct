@@ -1,5 +1,7 @@
 package tconstruct.tools.items;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,8 +105,9 @@ public class Pattern extends CraftingItem implements IPattern {
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
         float cost = getPatternCost(stack) / 2f;
         if (cost > 0) {
-            if (cost - (int) cost < 0.1) list.add(StatCollector.translateToLocal("pattern1.tooltip") + (int) cost);
-            else list.add(StatCollector.translateToLocal("pattern2.tooltip") + cost);
+            if (cost - (int) cost < 0.1)
+                list.add(StatCollector.translateToLocalFormatted("pattern1.tooltip", formatNumber(cost)));
+            else list.add(StatCollector.translateToLocalFormatted("pattern2.tooltip", formatNumber(cost)));
         }
     }
 
