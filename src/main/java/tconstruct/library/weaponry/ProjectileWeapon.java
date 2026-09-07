@@ -1,5 +1,7 @@
 package tconstruct.library.weaponry;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
-import tconstruct.client.TProxyClient;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.library.tools.ToolCore;
@@ -447,9 +448,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
         list.remove(list.size() - 1); // remove last item (the damage of the bow itself)
         list.add(currentAmmo.getDisplayName());
-        list.add(
-                StatCollector.translateToLocal("attribute.name.ammo.maxAttackDamage") + ": "
-                        + TProxyClient.df.format(damage));
+        list.add(StatCollector.translateToLocal("attribute.name.ammo.maxAttackDamage") + ": " + formatNumber(damage));
     }
 
     /*---- Battlegear Support START ----*/

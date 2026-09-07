@@ -1,6 +1,7 @@
 package tconstruct.tools.gui;
 
-import java.text.DecimalFormat;
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -30,8 +31,6 @@ public final class ToolStationGuiHelper {
 
     private static final FontRenderer fontRendererObj = Minecraft.getMinecraft().fontRenderer;
     private static int xPos, yPos;
-
-    private static final DecimalFormat df = new DecimalFormat("#.##");
 
     private static void newline() {
         yPos += 10;
@@ -109,9 +108,12 @@ public final class ToolStationGuiHelper {
         // big durabilities have to split to 2 lines
         if (maxDur >= 10000) {
             write(StatCollector.translateToLocal("gui.toolstation1"));
-            write("- " + availableDurability + "/" + maxDur);
+            write("- " + formatNumber(availableDurability) + " / " + formatNumber(maxDur));
         } else {
-            write(StatCollector.translateToLocal("gui.toolstation2") + availableDurability + "/" + maxDur);
+            write(
+                    StatCollector.translateToLocal("gui.toolstation2") + formatNumber(availableDurability)
+                            + " / "
+                            + formatNumber(maxDur));
         }
     }
 
@@ -119,13 +121,13 @@ public final class ToolStationGuiHelper {
         final int max = ammoItem.getMaxAmmo(stack);
         final int current = ammoItem.getAmmoCount(stack);
 
-        write(StatCollector.translateToLocal("gui.toolstation21") + current + "/" + max);
+        write(StatCollector.translateToLocal("gui.toolstation21") + formatNumber(current) + " / " + formatNumber(max));
     }
 
     private static void drawModifiers(NBTTagCompound tags) {
         int modifiers = tags.getInteger("Modifiers");
         // remaining modifiers
-        if (modifiers != 0) write(StatCollector.translateToLocal("gui.toolstation18") + modifiers);
+        if (modifiers != 0) write(StatCollector.translateToLocal("gui.toolstation18") + formatNumber(modifiers));
 
         // Modifier-header (if we have modifiers)
         if (tags.hasKey("ModifierTip1")) {
@@ -158,11 +160,11 @@ public final class ToolStationGuiHelper {
         float mineSpeed = AbilityHelper.calcToolSpeed(tool, tags);
         float stoneboundSpeed = AbilityHelper.calcStoneboundBonus(tool, tags);
 
-        write(StatCollector.translateToLocal("gui.toolstation14") + df.format(mineSpeed));
+        write(StatCollector.translateToLocal("gui.toolstation14") + formatNumber(mineSpeed));
         if (stoneboundSpeed != 0) {
             String bloss = stoneboundSpeed > 0 ? StatCollector.translateToLocal("gui.toolstation4")
                     : StatCollector.translateToLocal("gui.toolstation5");
-            write(bloss + df.format(stoneboundSpeed));
+            write(bloss + formatNumber(stoneboundSpeed));
         }
         write(
                 StatCollector.translateToLocal("gui.toolstation15")
@@ -175,11 +177,11 @@ public final class ToolStationGuiHelper {
         float stoneboundSpeed = AbilityHelper.calcStoneboundBonus(tool, tags);
 
         write(StatCollector.translateToLocal("gui.toolstation12"));
-        write("- " + df.format(mineSpeed) + ", " + df.format(mineSpeed2));
+        write("- " + formatNumber(mineSpeed) + ", " + formatNumber(mineSpeed2));
         if (stoneboundSpeed != 0) {
             String bloss = stoneboundSpeed > 0 ? StatCollector.translateToLocal("gui.toolstation4")
                     : StatCollector.translateToLocal("gui.toolstation5");
-            write(bloss + df.format(stoneboundSpeed));
+            write(bloss + formatNumber(stoneboundSpeed));
         }
 
         write(StatCollector.translateToLocal("gui.toolstation13"));
@@ -202,15 +204,16 @@ public final class ToolStationGuiHelper {
 
         String heart = attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                 : StatCollector.translateToLocal("gui.partcrafter9");
-        if (attack % 2 == 0) write(StatCollector.translateToLocal("gui.toolstation3") + attack / 2 + heart);
-        else write(StatCollector.translateToLocal("gui.toolstation3") + df.format(attack / 2f) + heart);
+        if (attack % 2 == 0)
+            write(StatCollector.translateToLocal("gui.toolstation3") + formatNumber(attack / 2) + heart);
+        else write(StatCollector.translateToLocal("gui.toolstation3") + formatNumber(attack / 2f) + heart);
 
         if (stoneboundDamage != 0) {
             heart = stoneboundDamage == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                     : StatCollector.translateToLocal("gui.partcrafter9");
             String bloss = stoneboundDamage > 0 ? StatCollector.translateToLocal("gui.toolstation4")
                     : StatCollector.translateToLocal("gui.toolstation5");
-            write(bloss + df.format(stoneboundDamage / 2f) + heart);
+            write(bloss + formatNumber(stoneboundDamage / 2f) + heart);
         }
     }
 
@@ -225,56 +228,57 @@ public final class ToolStationGuiHelper {
 
         String heart = attack == 2 ? StatCollector.translateToLocal("gui.partcrafter8")
                 : StatCollector.translateToLocal("gui.partcrafter9");
-        if (attack % 2 == 0) write(StatCollector.translateToLocal("gui.toolstation23") + attack / 2 + heart);
-        else write(StatCollector.translateToLocal("gui.toolstation23") + df.format(attack / 2f) + heart);
+        if (attack % 2 == 0)
+            write(StatCollector.translateToLocal("gui.toolstation23") + formatNumber(attack / 2) + heart);
+        else write(StatCollector.translateToLocal("gui.toolstation23") + formatNumber(attack / 2f) + heart);
     }
 
     private static void drawProjectileWeaponStats(ProjectileWeapon weapon, NBTTagCompound tags, ItemStack stack) {
         // drawspeed
         final int drawSpeed = weapon.getWindupTime(stack);
         final float trueDraw = drawSpeed / 20f;
-        write(StatCollector.translateToLocal("gui.toolstation6") + df.format(trueDraw) + "s");
+        write(StatCollector.translateToLocal("gui.toolstation6") + formatNumber(trueDraw) + "s");
 
         // flightspeed
         final float flightSpeed = weapon.getProjectileSpeed(stack);
-        write(StatCollector.translateToLocal("gui.toolstation7") + df.format(flightSpeed) + "x");
+        write(StatCollector.translateToLocal("gui.toolstation7") + formatNumber(flightSpeed) + "x");
     }
 
     private static void drawProjectileStats(NBTTagCompound tags) {
         // weight
         final float weight = tags.getFloat("Mass");
-        write(StatCollector.translateToLocal("gui.toolstation8") + df.format(weight));
+        write(StatCollector.translateToLocal("gui.toolstation8") + formatNumber(weight));
 
         // accuracy
         final float accuracy = tags.getFloat("Accuracy");
-        write(StatCollector.translateToLocal("gui.toolstation9") + df.format(accuracy) + "%");
+        write(StatCollector.translateToLocal("gui.toolstation9") + formatNumber(accuracy) + "%");
 
         // breakchance
         final float breakChance = tags.getFloat("BreakChance") * 100;
-        write(StatCollector.translateToLocal("gui.toolstation22") + df.format(breakChance) + "%");
+        write(StatCollector.translateToLocal("gui.toolstation22") + formatNumber(breakChance) + "%");
     }
 
     private static void drawArmorStats(ArmorCore armor, NBTTagCompound tags, ItemStack stack) {
         // Damage reduction
         double damageReduction = tags.getDouble("DamageReduction");
         if (damageReduction > 0)
-            write(StatCollector.translateToLocal("gui.toolstation19") + df.format(damageReduction));
+            write(StatCollector.translateToLocal("gui.toolstation19") + formatNumber(damageReduction));
 
         // Protection
         double protection = armor.getProtection(stack);
         double maxProtection = tags.getDouble("MaxDefense");
 
         write(
-                StatCollector.translateToLocal("gui.toolstation20") + df.format(protection)
-                        + "/"
-                        + df.format(maxProtection));
+                StatCollector.translateToLocal("gui.toolstation20") + formatNumber(protection)
+                        + " / "
+                        + formatNumber(maxProtection));
     }
 
     private static void drawAccessoryStats(AccessoryCore core, NBTTagCompound tags) {
         if (tags.hasKey("MiningSpeed")) {
             float mineSpeed = tags.getInteger("MiningSpeed");
             float trueSpeed = mineSpeed / (100f);
-            write(StatCollector.translateToLocal("gui.toolstation16") + trueSpeed);
+            write(StatCollector.translateToLocal("gui.toolstation16") + formatNumber(trueSpeed));
         }
     }
 
