@@ -30,6 +30,7 @@ import tconstruct.library.tools.ToolMaterial;
 import tconstruct.library.util.ColorUtils;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.tools.logic.CraftingStationLogic;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.util.network.CraftingStationDumpPacket;
 
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
@@ -40,6 +41,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     private static final int DESCRIPTION_WIDTH = 126;
     private static final int DESCRIPTION_HEIGHT = 172;
     private static final int DEFAULT_COLUMNS = 6;
+    private static final int CLASSIC_MAX_ROWS = 10;
     private static final int MIN_COLUMNS = 5;
     private static final int MAX_OVERHANG_ROWS = 7;
     private static final int NEI_VERTICAL_MARGIN = 22;
@@ -688,8 +690,21 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         int availableWidth = availableChestWidth + CRAFTING_WIDTH + descriptionWidth;
         int maxColumns = Math.max(MIN_COLUMNS, (availableChestWidth - border.w * 2) / slotElement.w);
 
+        if (PHConstruct.classicCraftingStationLayout) {
+            int totalRows = ceilDiv(chestSlotCount, DEFAULT_COLUMNS);
+            return createRectangularLayout(
+                    DEFAULT_COLUMNS,
+                    Math.min(totalRows, CLASSIC_MAX_ROWS),
+                    totalRows > CLASSIC_MAX_ROWS,
+                    headerHeight,
+                    descriptionWidth,
+                    sideHeight,
+                    Integer.MAX_VALUE,
+                    Integer.MAX_VALUE);
+        }
+
         // Preserve the original six-column layout for standard connected inventories.
-        if (chestSlotCount <= DEFAULT_COLUMNS * 10) {
+        if (chestSlotCount <= DEFAULT_COLUMNS * CLASSIC_MAX_ROWS) {
             return createRectangularLayout(
                     DEFAULT_COLUMNS,
                     ceilDiv(chestSlotCount, DEFAULT_COLUMNS),
@@ -784,8 +799,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         int panelHeight = visibleRows * slotElement.h + headerHeight + border.h * 2;
         int combinedWidth = panelWidth + CRAFTING_WIDTH + descriptionWidth;
         int combinedHeight = Math.max(panelHeight, sideHeight);
-        int chestTopOffset = (combinedHeight - panelHeight) / 2;
-        int craftingTopOffset = (combinedHeight - sideHeight) / 2;
+        int chestTopOffset = PHConstruct.classicCraftingStationLayout ? 0 : (combinedHeight - panelHeight) / 2;
+        int craftingTopOffset = PHConstruct.classicCraftingStationLayout ? 0 : (combinedHeight - sideHeight) / 2;
         int totalRows = ceilDiv(chestSlotCount, columns);
         int visibleCapacity = columns * visibleRows;
         int unusedSlots = Math.max(0, visibleCapacity - chestSlotCount);
