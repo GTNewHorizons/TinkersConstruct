@@ -792,11 +792,11 @@ tconstruct.nei.dryingrack=Sušák
 tconstruct.nei.melting=Teplota hutě
 
 gui.smeltery1=Paliva
-gui.smeltery.emerald=Smaragdy: 
-gui.smeltery.glass.block=Bloky: 
-gui.smeltery.glass.pannel=Panely: 
-gui.smeltery.metal.ingot=Cihly: 
-gui.smeltery.metal.nugget=Valony: 
+gui.smeltery.emerald=%s Smaragdy
+gui.smeltery.glass.block=%s Bloky
+gui.smeltery.glass.pannel=%s Panely
+gui.smeltery.metal.ingot=%s Cihly
+gui.smeltery.metal.nugget=%s Valony
 gui.smeltery.molten.check=Roztavený
 gui.landmine=Nášlapná mina
 gui.partcrafter1=Vyrábění částí nástrojů

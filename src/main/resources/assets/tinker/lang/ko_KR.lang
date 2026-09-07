@@ -783,11 +783,11 @@ tconstruct.nei.dryingrack=건조대
 tconstruct.nei.melting=융화
 
 gui.smeltery.fuel=연료
-gui.smeltery.emerald=에메랄드 수: 
-gui.smeltery.glass.block=블럭 수: 
-gui.smeltery.glass.pannel=유리판 수: 
-gui.smeltery.metal.ingot=주괴 수: 
-gui.smeltery.metal.nugget=조각 수: 
+gui.smeltery.emerald=%s 에메랄드 수
+gui.smeltery.glass.block=%s 블럭 수
+gui.smeltery.glass.pannel=%s 유리판 수
+gui.smeltery.metal.ingot=%s 주괴 수
+gui.smeltery.metal.nugget=%s 조각 수
 gui.smeltery.molten.check=녹은
 gui.landmine=지뢰
 gui.partcrafter1=도구 부품 조합

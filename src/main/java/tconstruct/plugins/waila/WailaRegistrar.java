@@ -25,7 +25,6 @@ public class WailaRegistrar {
         // Tanks
         registrar.registerBodyProvider(new SearedTankDataProvider(), LavaTankBlock.class);
         registrar.registerBodyProvider(new CastingChannelDataProvider(), CastingChannelLogic.class);
-        // registrar.registerBodyProvider(new EssenceExtractorDataProvider(), EssenceExtractor.class);
 
         // Casting systems
         registrar.registerBodyProvider(new BasinDataProvider(), CastingBasinLogic.class);
