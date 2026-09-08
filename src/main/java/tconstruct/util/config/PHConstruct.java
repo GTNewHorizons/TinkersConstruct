@@ -251,6 +251,12 @@ public class PHConstruct {
                 "Disable All Recipes",
                 false,
                 "Disable all TiC recipes (smeltery, drying rack, crafting, etc)").getBoolean();
+        AbilityHelper.calcDmgViaAttr = config.get(
+                "general",
+                "Damage calculation via attributes",
+                false,
+                "It calculates damage using vanilla attribute modifiers. \n In addition to accounting for standard Weakness and Strength effects, \n it also factors in external parameter modifiers.")
+                .getBoolean(false);
 
         enableHealthRegen = config.get("Ultra Hardcore Changes", "Passive Health Regen", true).getBoolean(true);
         goldAppleRecipe = config.get(
