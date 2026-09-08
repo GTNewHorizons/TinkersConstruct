@@ -282,6 +282,12 @@ public class PHConstruct {
 
         showTravellerAccessories = config.get("Looks", "Show Traveller Gear Accessories", true).getBoolean(true);
         enableTinkerInventoryTab = config.get("Looks", "Enable Tinker Inventory Tab", true).getBoolean(true);
+        classicCraftingStationLayout = config.get(
+                "Looks",
+                "classicCraftingStationLayout",
+                false,
+                "Use the classic crafting station layout with at most 10 visible inventory rows and scrolling for larger inventories, client-side only")
+                .getBoolean(false);
 
         // dimension blacklist
         cfgForbiddenDim = config
@@ -568,6 +574,7 @@ public class PHConstruct {
     public static int connectedTexturesMode;
     public static boolean showTravellerAccessories;
     public static boolean enableTinkerInventoryTab;
+    public static boolean classicCraftingStationLayout;
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;
