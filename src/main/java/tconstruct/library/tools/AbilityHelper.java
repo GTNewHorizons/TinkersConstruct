@@ -71,17 +71,10 @@ public class AbilityHelper {
             if (!entity.hitByEntity(player)) // can't attack this entity
             {
                 NBTTagCompound tags = stack.getTagCompound();
-                NBTTagCompound toolTags = stack.getTagCompound().getCompoundTag("InfiTool");
+                NBTTagCompound toolTags = tags.getCompoundTag("InfiTool");
                 boolean broken = toolTags.getBoolean("Broken");
 
-                int durability = tags.getCompoundTag("InfiTool").getInteger("Damage");
-                float stonebound = tags.getCompoundTag("InfiTool").getFloat("Shoddy");
-
-                float stoneboundDamage = (float) Math.log(durability / 72f + 1) * -2 * stonebound;
-
                 int damage = calcDamage(player, entity, stack, tool, toolTags, baseDamage);
-                float knockback = calcKnockback(player, entity, stack, tool, toolTags, baseDamage);
-
                 float enchantDamage = 0;
 
                 // magic extra damage
@@ -101,33 +94,35 @@ public class AbilityHelper {
                         if (mod.doesCriticalHit(tool, tags, toolTags, stack, player, entity)) criticalHit = true;
                     }
 
-                    if (criticalHit) {
-                        damage += random.nextInt(damage / 2 + 2);
-                    }
+                    if (!broken) {
+                        if (criticalHit) {
+                            damage += random.nextInt(damage / 2 + 2);
+                        }
 
-                    damage += enchantDamage;
+                        damage += enchantDamage;
 
-                    if (tool.getDamageModifier() != 1f) {
-                        damage *= tool.getDamageModifier();
-                    }
-
-                    if (broken) {
+                        float damageModifier = tool.getDamageModifier();
+                        if (damageModifier != 1f) {
+                            damage *= damageModifier;
+                        }
+                    } else {
                         damage = 1;
                     }
-                    boolean causedDamage;
-                    boolean isAlive = entity.isEntityAlive();
 
+                    boolean causedDamage;
                     if (tool.pierceArmor() && !broken && entity instanceof EntityLivingBase) {
                         int armorValue = Math.min(20, ((EntityLivingBase) entity).getTotalArmorValue());
                         damage = (int) (damage / (1 - (0.04 * armorValue)));
 
-                        if (player instanceof EntityPlayer) causedDamage = entity
-                                .attackEntityFrom(causePlayerPiercingDamage((EntityPlayer) player), damage);
-                        else causedDamage = entity.attackEntityFrom(causePiercingDamage(player), damage);
+                        causedDamage = entity.attackEntityFrom(
+                                player instanceof EntityPlayer ? causePlayerPiercingDamage((EntityPlayer) player)
+                                        : causePiercingDamage(player),
+                                damage);
                     } else {
-                        if (player instanceof EntityPlayer) causedDamage = entity
-                                .attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), damage);
-                        else causedDamage = entity.attackEntityFrom(DamageSource.causeMobDamage(player), damage);
+                        causedDamage = entity.attackEntityFrom(
+                                player instanceof EntityPlayer ? DamageSource.causePlayerDamage((EntityPlayer) player)
+                                        : DamageSource.causeMobDamage(player),
+                                damage);
                     }
 
                     if (causedDamage) {
@@ -137,12 +132,13 @@ public class AbilityHelper {
                         tool.onEntityDamaged(player.worldObj, player, entity);
                         if (!necroticUHS || (entity instanceof IMob && entity instanceof EntityLivingBase
                                 && ((EntityLivingBase) entity).getHealth() <= 0)) {
-                            if (isAlive) {
+                            if (entity.isEntityAlive()) {
                                 int drain = toolTags.getInteger("Necrotic") * 2;
                                 if (drain > 0) player.heal(random.nextInt(drain + 1));
                             }
                         }
 
+                        float knockback = calcKnockback(player, entity, stack, tool, toolTags, baseDamage);
                         if (knockback > 0) {
                             entity.addVelocity(
                                     -MathHelper.sin(player.rotationYaw * (float) Math.PI / 180.0F) * knockback * 0.5F,
@@ -169,15 +165,16 @@ public class AbilityHelper {
 
                         player.setLastAttacker(entity);
 
-                        if (entity instanceof EntityLivingBase) {
-                            DamageSource.causeThornsDamage(entity); // (((EntityLivingBase)player,
-                            // (EntityLivingBase)
-                            // entity);
-                        }
+                        // It seems they didn't finish writing it.
+                        // if (entity instanceof EntityLivingBase) {
+                        // DamageSource.causeThornsDamage(entity); // (((EntityLivingBase)player,
+                        // // (EntityLivingBase)
+                        // // entity);
+                        // }
                     }
 
                     if (entity instanceof EntityLivingBase) {
-                        if (entity instanceof EntityPlayer) {
+                        if (player instanceof EntityPlayer) {
                             stack.hitEntity((EntityLivingBase) entity, (EntityPlayer) player);
                             if (entity.isEntityAlive()) {
                                 alertPlayerWolves((EntityPlayer) player, (EntityLivingBase) entity, true);
@@ -191,7 +188,7 @@ public class AbilityHelper {
                         if (causedDamage) processFiery(player, entity, toolTags);
                     }
 
-                    if (entity instanceof EntityPlayer) ((EntityPlayer) player).addExhaustion(0.3F);
+                    if (player instanceof EntityPlayer) ((EntityPlayer) player).addExhaustion(0.3F);
                     return causedDamage;
                 }
             }
