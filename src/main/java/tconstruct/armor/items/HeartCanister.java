@@ -19,6 +19,8 @@ import mantle.items.abstracts.CraftingItem;
 import tconstruct.TConstruct;
 import tconstruct.armor.player.ArmorExtended;
 import tconstruct.armor.player.TPlayerStats;
+import tconstruct.compat.BaublesHelper;
+import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.accessory.IHealthAccessory;
 import tconstruct.util.config.PHConstruct;
@@ -45,6 +47,12 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory, IBa
         int meta = stack.getItemDamage();
         if (meta == 1 || meta == 3 || meta == 5) {
             player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+        }
+        if (!world.isRemote && !PHConstruct.enableTinkerInventoryTab
+                && LoadedMods.baubles
+                && (meta == 2 || meta == 4 || meta == 6)) {
+            equipToBaubles(player, stack);
+            return stack;
         }
         if (!world.isRemote && PHConstruct.enableTinkerInventoryTab && (meta == 2 || meta == 4 || meta == 6)) {
             TPlayerStats stats = TPlayerStats.get(player);
@@ -117,6 +125,11 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory, IBa
         return ((type == 2 && slot == 6) || (type == 4 && slot == 5) || (type == 6 && slot == 4));
     }
 
+    @Optional.Method(modid = "Baubles")
+    private static void equipToBaubles(EntityPlayer player, ItemStack stack) {
+        BaublesHelper.tryEquipOne(player, stack);
+    }
+
     @Override
     @Optional.Method(modid = "Baubles|Expanded")
     public String[] getBaubleTypes(ItemStack itemstack) {
@@ -126,6 +139,12 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory, IBa
             case 6 -> new String[] { TConstruct.HEART_CANISTER_GREEN_TYPE };
             default -> new String[0];
         };
+    }
+
+    @Override
+    @Optional.Method(modid = "Baubles|Expanded")
+    public void onSlotContentsChanged(ItemStack itemstack, EntityLivingBase player) {
+        recalculatePlayerHealth(player);
     }
 
     @Override
