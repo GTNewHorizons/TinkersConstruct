@@ -246,6 +246,12 @@ public class PHConstruct {
                         "9, 400, 2, 1200, 2, true", "17, 320, 1, 1000, 3, true", "DAMAGE, 0.3, true" },
                 " If an effect fails to apply, check the console for information \n FORMAT: \n potionID (Can also put \"DAMAGE\" to hurt the player instead, \n effectDuration (in ticks) (or DAMAGE effect strength) , \n initialAmplifier (Exclude if the first parameter is DAMAGE), \n maxDuration (this is the maximum duration the potions can stack in ticks (Exclude if the first parameter is DAMAGE)), \n maxAmplifier (the maximum allowed potionAmplifier with multiple effects uses (Exclude if the first parameter is DAMAGE)), \n stackExclusiveEffect (a true or false value which allows the effect to be only applied when the essence berries are eaten while shift is held (Only works if Allow stackwise consumption = true)")
                 .getStringList();
+        craftingStationShiftClickToGrid = config.get(
+                "general",
+                "craftingStationShiftClickToGrid",
+                false,
+                "Shift-click items from the player or attached inventory into the crafting station grid first. Tinkers' tools prefer the center slot. When false, shift-click moves items directly between the player and attached inventory")
+                .getBoolean(false);
         disableAllRecipes = config.get(
                 "general",
                 "Disable All Recipes",
@@ -497,6 +503,7 @@ public class PHConstruct {
     public static String[] disgustingXPBerryEffects;
 
     public static boolean disableAllRecipes;
+    public static boolean craftingStationShiftClickToGrid;
     public static double HarvestToolAOERelativeStrength;
 
     // Mobs
