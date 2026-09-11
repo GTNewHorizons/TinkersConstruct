@@ -53,6 +53,11 @@ public class ArmorExtended implements IInventory {
             if (inventory[slot].stackSize <= quantity) {
                 ItemStack stack = inventory[slot];
                 inventory[slot] = null;
+                EntityPlayer owner = parent.get();
+                TPlayerStats ownerStats = owner == null ? null : TPlayerStats.get(owner);
+                if (ownerStats != null) {
+                    recalculateHealth(owner, ownerStats);
+                }
                 return stack;
             }
             ItemStack split = inventory[slot].splitStack(quantity);
@@ -127,35 +132,25 @@ public class ArmorExtended implements IInventory {
             bonusHP += getBaublesHealthBoost(player);
         }
 
-        int prevHealth = stats.bonusHealth;
         stats.bonusHealth = bonusHP;
-        int healthChange = bonusHP - prevHealth;
-        if (healthChange != 0) {
-            IAttributeInstance attributeinstance = player.getAttributeMap()
-                    .getAttributeInstance(SharedMonsterAttributes.maxHealth);
-            try {
-                attributeinstance.removeModifier(attributeinstance.getModifier(globalID));
-            } catch (Exception ignored) {}
-            if (bonusHP > 0) {
-                attributeinstance
-                        .applyModifier(new AttributeModifier(globalID, "tconstruct.heartCanister", bonusHP, 0));
-            }
+
+        IAttributeInstance attributeinstance = player.getAttributeMap()
+                .getAttributeInstance(SharedMonsterAttributes.maxHealth);
+        AttributeModifier applied = attributeinstance.getModifier(globalID);
+        if (applied != null && applied.getAmount() == bonusHP) {
+            return;
+        }
+        if (applied != null) {
+            attributeinstance.removeModifier(applied);
+        }
+        if (bonusHP > 0) {
+            attributeinstance.applyModifier(new AttributeModifier(globalID, "tconstruct.heartCanister", bonusHP, 0));
         }
     }
 
     @Optional.Method(modid = "Baubles")
     private int getBaublesHealthBoost(EntityPlayer player) {
-        int bonusHP = 0;
-        ItemStack[] baubleStacks = BaublesHelper.getBaubleStacks(player);
-        if (baubleStacks == null) {
-            return 0;
-        }
-        for (ItemStack stack : baubleStacks) {
-            if (stack != null && stack.getItem() instanceof IHealthAccessory) {
-                bonusHP += ((IHealthAccessory) stack.getItem()).getHealthBoost(stack);
-            }
-        }
-        return bonusHP;
+        return BaublesHelper.getBaubleHealthBoost(player);
     }
 
     @Override
