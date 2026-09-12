@@ -17,6 +17,7 @@ import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -232,6 +233,10 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        if (inventoryplayer.player instanceof EntityPlayerMP player) {
+            // The client needs the current capacity before constructing its slots, ahead of batched world updates.
+            player.playerNetServerHandler.sendPacket(getDescriptionPacket());
+        }
         return new SmelteryContainer(inventoryplayer, this);
     }
 
