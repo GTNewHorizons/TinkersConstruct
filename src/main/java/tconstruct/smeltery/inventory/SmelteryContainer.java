@@ -1,20 +1,32 @@
 package tconstruct.smeltery.inventory;
 
+import java.util.Arrays;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import tconstruct.TConstruct;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.gui.SmelteryGui;
 import tconstruct.smeltery.logic.SmelteryLogic;
+import tconstruct.util.network.SmelteryGuiPacket;
 
 public class SmelteryContainer extends ActiveContainer {
 
     public SmelteryLogic logic;
     public InventoryPlayer playerInv;
-    public int fuel = 0;
+    private int updateTicks;
+    private int[] lastHeatRuns;
+    private FluidStack lastFuel;
+    private int lastFuelCapacity;
+    private final byte[] heatLevels;
     private int slotRow;
     public int columns;
     public final int smelterySize;
@@ -25,6 +37,7 @@ public class SmelteryContainer extends ActiveContainer {
         slotRow = 0;
         columns = smeltery.getBlocksPerLayer() >= 16 ? 4 : 3;
         smelterySize = smeltery.getBlockCapacity();
+        heatLevels = new byte[smelterySize];
 
         /* Smeltery inventory */
 
@@ -83,31 +96,65 @@ public class SmelteryContainer extends ActiveContainer {
     }
 
     @Override
-    public void detectAndSendChanges() // TODO: Sync with this
-    {
-        // we only update if the size is the same, since the screen is getting closed on sizechange and would cause a
-        // crash otherwise
-        if (smelterySize == this.inventorySlots.size()) super.detectAndSendChanges();
-        /*
-         * for (int i = 0; i < crafters.size(); i++) { ICrafting icrafting = (ICrafting)crafters.get(i); if (progress !=
-         * logic.progress) { icrafting.sendProgressBarUpdate(this, 0, logic.progress); } if (fuel != logic.fuel) {
-         * icrafting.sendProgressBarUpdate(this, 1, logic.fuel); } if (fuelGague != logic.fuelGague) {
-         * icrafting.sendProgressBarUpdate(this, 2, logic.fuelGague); } } progress = logic.progress; fuel = logic.fuel;
-         * fuelGague = logic.fuelGague;
-         */
+    public void detectAndSendChanges() {
+        // The GUI closes when the structure changes size. Its old Slot objects must not read the resized inventory.
+        if (smelterySize != logic.getBlockCapacity() || updateTicks++ % 5 != 0) return;
+        super.detectAndSendChanges();
+        if (crafters.isEmpty()) return;
+        logic.updateFuelDisplay();
+        int[] heatRuns = getHeatRuns();
+        FluidStack fuel = logic.getFuel();
+        if (!Arrays.equals(heatRuns, lastHeatRuns) || !fuel.isFluidStackIdentical(lastFuel)
+                || logic.fuelCapacity != lastFuelCapacity) {
+            for (Object crafter : crafters) {
+                if (crafter instanceof EntityPlayerMP player) {
+                    TConstruct.packetPipeline
+                            .sendTo(new SmelteryGuiPacket(this, heatRuns, fuel, logic.fuelCapacity), player);
+                }
+            }
+            lastHeatRuns = heatRuns;
+            lastFuel = fuel;
+            lastFuelCapacity = logic.fuelCapacity;
+        }
     }
 
     @Override
-    public void updateProgressBar(int id, int value) {
-        if (id == 0) {
-            logic.fuelGague = value;
+    public void addCraftingToCrafters(ICrafting crafter) {
+        super.addCraftingToCrafters(crafter);
+        if (crafter instanceof EntityPlayerMP player) {
+            logic.updateFuelDisplay();
+            TConstruct.packetPipeline
+                    .sendTo(new SmelteryGuiPacket(this, getHeatRuns(), logic.getFuel(), logic.fuelCapacity), player);
         }
-        /*
-         * if (id == 1) { logic.fuel = value; }
-         */
-        /*
-         * if (id == 2) { logic.fuelGague = value; }
-         */
+    }
+
+    private int[] getHeatRuns() {
+        IntArrayList runs = new IntArrayList();
+        int previous = -1;
+        for (int i = 0; i < smelterySize; i++) {
+            int temperature = logic.getTempForSlot(i) - 20;
+            int target = logic.getMeltingPointForSlot(i) - 20;
+            int level = temperature > 0 && target > 0 ? Math.max(1, Math.min(16, 16 * temperature / target)) : 0;
+            int run = ((i + 1) << 5) | level;
+            if (level == previous) runs.set(runs.size() - 1, run);
+            else runs.add(run);
+            previous = level;
+        }
+        return runs.toIntArray();
+    }
+
+    public void updateGuiState(int[] heatRuns, FluidStack fuel, int fuelCapacity) {
+        int start = 0;
+        for (int run : heatRuns) {
+            int end = run >>> 5;
+            Arrays.fill(heatLevels, start, end, (byte) (run & 31));
+            start = end;
+        }
+        logic.setFuelDisplay(fuel, fuelCapacity);
+    }
+
+    public int getHeatLevel(int slot) {
+        return heatLevels[slot];
     }
 
     @Override
