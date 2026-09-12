@@ -2,8 +2,6 @@ package tconstruct.smeltery.model;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -14,8 +12,8 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import mantle.world.CoordTuple;
 import tconstruct.client.BlockSkinRenderHelper;
-import tconstruct.library.crafting.Smeltery;
 import tconstruct.smeltery.logic.SmelteryLogic;
+import tconstruct.smeltery.logic.SmelteryRenderData;
 import tconstruct.util.ItemHelper;
 
 @ThreadSafeISBRH(perThread = false)
@@ -115,33 +113,15 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
     void renderLayer(SmelteryLogic logic, int start, CoordTuple from, CoordTuple to, int posY, RenderBlocks renderer,
             IBlockAccess world) {
         renderer.setRenderBounds(-0.001F, -0.001F, -0.001F, 1.001F, 1.001F, 1.001F);
+        SmelteryRenderData data = logic.getRenderData();
         int i = start;
         for (int x = from.x; x <= to.x; x++) for (int z = from.z; z <= to.z; z++) {
-            // safety because of changes.
-            if (i > logic.getSizeInventory()) return;
-            ItemStack input = logic.getStackInSlot(i);
-            if (input != null && logic.getTempForSlot(i) > 20) {
-                ItemStack blockToRender = Smeltery.getRenderIndex(input);
-                if (blockToRender != null) {
-                    float blockHeight = input.stackSize / (float) blockToRender.stackSize;
-                    renderer.setRenderBounds(
-                            0.0F,
-                            0.0F,
-                            0.0F,
-                            1.0F,
-                            MathHelper.clamp_float(blockHeight, 0.01F, 1.0F),
-                            1.0F);
-
-                    Block liquidBlock = Block.getBlockFromItem(blockToRender.getItem());
-                    BlockSkinRenderHelper.renderMetadataBlock(
-                            liquidBlock,
-                            blockToRender.getItemDamage(),
-                            x,
-                            posY,
-                            z,
-                            renderer,
-                            world);
-                }
+            if (i >= data.size()) return;
+            float height = data.getHeight(i);
+            if (height > 0) {
+                renderer.setRenderBounds(0.0F, 0.0F, 0.0F, 1.0F, height, 1.0F);
+                BlockSkinRenderHelper
+                        .renderMetadataBlock(data.getBlock(i), data.getMetadata(i), x, posY, z, renderer, world);
             }
             i++;
         }
