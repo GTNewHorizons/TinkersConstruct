@@ -1,12 +1,12 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnlyApi('com.github.GTNewHorizons:Angelica:2.2.10:api')
+    compileOnlyApi('com.github.GTNewHorizons:Angelica:2.2.13:api')
     api("com.github.GTNewHorizons:Mantle:0.5.4:dev")
-    api("com.github.GTNewHorizons:ForgeMultipart:1.7.12:dev")
+    api("com.github.GTNewHorizons:ForgeMultipart:1.7.14:dev")
     // gtnhlib is compileOnlyApi by us, but needed at runtime by nei, so require the correct version
-    api("com.github.GTNewHorizons:GTNHLib:0.11.46:dev")
-    implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.130-GTNH:dev")
+    api("com.github.GTNewHorizons:GTNHLib:0.11.48:dev")
+    implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.139-GTNH:dev")
     compileOnlyApi("curse.maven:cofh-core-69162:2388751")
     compileOnly("com.github.GTNewHorizons:inventory-tweaks:1.7.1:api")
     compileOnly("com.github.GTNewHorizons:waila:1.19.34:api")
@@ -16,18 +16,18 @@ dependencies {
     compileOnly("curse.maven:dynamic-sword-skills-226360:2495462")
     compileOnly("curse.maven:notenoughkeys-224614:2276280")
     compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev")
-    compileOnly("com.github.GTNewHorizons:Mobs-Info:0.5.21-GTNH:dev")
+    compileOnly("com.github.GTNewHorizons:Mobs-Info:0.6.0-GTNH:dev")
     compileOnlyApi("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
     compileOnlyApi("com.github.GTNewHorizons:Natura:2.8.24:dev")
-    compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.22-GTNH:dev')
-    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.5')
-    runtimeOnly('com.github.GTNewHorizons:TiC-Tooltips:1.4.1:dev'){transitive = false}
-    runtimeOnly("com.github.GTNewHorizons:ServerUtilities:2.4.9:dev")
+    compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.23-GTNH:dev')
+    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.6')
+    runtimeOnly('com.github.GTNewHorizons:TiC-Tooltips:1.4.2:dev'){transitive = false}
+    runtimeOnly("com.github.GTNewHorizons:ServerUtilities:2.4.10:dev")
 
 
     // For testing scythe crop harvesting
     // devOnlyNonPublishable("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
-    // devOnlyNonPublishable("com.github.GTNewHorizons:harvestcraft:1.3.14-GTNH:dev")
+    // devOnlyNonPublishable("com.github.GTNewHorizons:harvestcraft:1.3.15-GTNH:dev")
     // devOnlyNonPublishable(deobfCurse("pams-harvest-the-nether-231262:2241397"))
     // devOnlyNonPublishable("com.github.GTNewHorizons:Natura:2.8.24:dev")
     // devOnlyNonPublishable("com.github.GTNewHorizons:EnderCore:0.5.15")
