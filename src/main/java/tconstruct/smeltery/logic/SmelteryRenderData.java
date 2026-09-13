@@ -1,10 +1,10 @@
 package tconstruct.smeltery.logic;
 
+import java.util.stream.IntStream;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 /** The block appearance of the contents, independent of the GUI's actual inventory stacks. */
 public final class SmelteryRenderData {
@@ -29,7 +29,7 @@ public final class SmelteryRenderData {
 
     /** Each run stores its exclusive end, block ID, metadata and exact rendered height. */
     public static int[] encode(ItemStack[] inventory, ItemStack[] renderStacks, int[] temperatures) {
-        IntArrayList runs = new IntArrayList();
+        IntStream.Builder runs = IntStream.builder();
         int previousBlock = -1;
         int previousMeta = 0;
         int previousHeight = 0;
@@ -45,19 +45,17 @@ public final class SmelteryRenderData {
                 height = Float.floatToIntBits(
                         MathHelper.clamp_float(input.stackSize / (float) render.stackSize, 0.01F, 1.0F));
             }
-            if (block == previousBlock && meta == previousMeta && height == previousHeight) {
-                runs.set(runs.size() - 4, slot + 1);
-            } else {
-                runs.add(slot + 1);
-                runs.add(block);
-                runs.add(meta);
-                runs.add(height);
+            if (block != previousBlock || meta != previousMeta || height != previousHeight) {
+                if (slot > 0) runs.add(slot).add(previousBlock).add(previousMeta).add(previousHeight);
                 previousBlock = block;
                 previousMeta = meta;
                 previousHeight = height;
             }
         }
-        return runs.toIntArray();
+        if (inventory.length > 0) {
+            runs.add(inventory.length).add(previousBlock).add(previousMeta).add(previousHeight);
+        }
+        return runs.build().toArray();
     }
 
     public Block getBlock(int slot) {

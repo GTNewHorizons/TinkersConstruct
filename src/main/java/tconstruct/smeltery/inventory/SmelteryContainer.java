@@ -1,6 +1,7 @@
 package tconstruct.smeltery.inventory;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +12,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tconstruct.TConstruct;
 import tconstruct.smeltery.TinkerSmeltery;
 import tconstruct.smeltery.gui.SmelteryGui;
@@ -129,18 +129,17 @@ public class SmelteryContainer extends ActiveContainer {
     }
 
     private int[] getHeatRuns() {
-        IntArrayList runs = new IntArrayList();
+        IntStream.Builder runs = IntStream.builder();
         int previous = -1;
         for (int i = 0; i < smelterySize; i++) {
             int temperature = logic.getTempForSlot(i) - 20;
             int target = logic.getMeltingPointForSlot(i) - 20;
             int level = temperature > 0 && target > 0 ? Math.max(1, Math.min(16, 16 * temperature / target)) : 0;
-            int run = ((i + 1) << 5) | level;
-            if (level == previous) runs.set(runs.size() - 1, run);
-            else runs.add(run);
+            if (previous != -1 && level != previous) runs.add((i << 5) | previous);
             previous = level;
         }
-        return runs.toIntArray();
+        if (smelterySize > 0) runs.add((smelterySize << 5) | previous);
+        return runs.build().toArray();
     }
 
     public void updateGuiState(int[] heatRuns, FluidStack fuel, int fuelCapacity) {
