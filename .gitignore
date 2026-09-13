@@ -27,4 +27,5 @@ whitelist.json
 *.iws
 src/main/resources/mixins.*.json
 *.bat
+*.sh
 layout.json
