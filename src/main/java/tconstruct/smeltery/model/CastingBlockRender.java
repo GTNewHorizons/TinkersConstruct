@@ -306,7 +306,10 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
                 // Liquids
                 if (world.getTileEntity(x, y, z) instanceof CastingBasinLogic) {
                     CastingBasinLogic logic = (CastingBasinLogic) world.getTileEntity(x, y, z);
-                    if (logic.liquid != null) {
+                    // Hide the liquid while the block is cooling (fill animation done) so the
+                    // fading block, rendered in the TESR with depth test on, is not occluded.
+                    boolean cooling = logic.getCastingDelay() > 0 && logic.getRenderOffset() == 0;
+                    if (logic.liquid != null && !cooling) {
                         float minHeight = 0.25F;
                         float maxHeight = 0.95F;
 
