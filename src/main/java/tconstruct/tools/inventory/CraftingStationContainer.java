@@ -332,6 +332,11 @@ public class CraftingStationContainer extends Container {
             }
 
             ItemStack previous = before[i];
+            if (clickedSlot == CRAFTING_RESULT_SLOT && previous != null && previous.getItem() == current.getItem()) {
+                // Crafting can return the same tool with different damage or NBT.
+                logic.setSideInventoryPreference(slot, preferencesBefore[i]);
+                continue;
+            }
             boolean receivedCarriedStack = (mode == CLICK_MODE_PICKUP && slot == clickedSlot || mode == CLICK_MODE_DRAG)
                     && carriedBefore != null
                     && stacksCanMerge(current, carriedBefore);
