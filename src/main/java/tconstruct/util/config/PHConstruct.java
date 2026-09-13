@@ -250,7 +250,7 @@ public class PHConstruct {
                 "general",
                 "craftingStationShiftClickToGrid",
                 false,
-                "Shift-click items from the player or attached inventory into the crafting station grid first. Tinkers' tools prefer the center slot. When false, shift-click moves items directly between the player and attached inventory")
+                "Shift-click items from the player or attached inventory into the crafting station grid first. When false, move items between the player and attached inventory, or into the grid if no inventory is attached. Tinkers' tools always prefer the center slot")
                 .getBoolean(false);
         disableAllRecipes = config.get(
                 "general",

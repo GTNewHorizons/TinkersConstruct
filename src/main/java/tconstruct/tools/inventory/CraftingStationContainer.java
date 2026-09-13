@@ -218,15 +218,11 @@ public class CraftingStationContainer extends Container {
             // Player inventory is always the fallback, so NEI can clear the grid.
             nothingDone &= moveToPlayerInventory(itemstack);
         } else if (index >= PLAYER_INVENTORY_FIRST_SLOT && index < PLAYER_INVENTORY_END_SLOT) {
-            if (PHConstruct.craftingStationShiftClickToGrid) {
-                nothingDone &= moveToCraftingGrid(itemstack);
-            }
+            nothingDone &= moveToCraftingGrid(itemstack);
             // Move player stacks to the attached inventory.
             nothingDone &= this.moveToChest(itemstack);
         } else { // From the Attached Chests
-            if (PHConstruct.craftingStationShiftClickToGrid) {
-                nothingDone &= moveToCraftingGrid(itemstack);
-            }
+            nothingDone &= moveToCraftingGrid(itemstack);
             // Move attached inventory stacks to the player inventory.
             nothingDone &= moveToPlayerInventory(itemstack);
         }
@@ -489,6 +485,8 @@ public class CraftingStationContainer extends Container {
                 return false;
             }
         }
+
+        if (!PHConstruct.craftingStationShiftClickToGrid && logic.slotCount > 0) return true;
 
         return !this.mergeItemStack(itemstack, CRAFTING_GRID_FIRST_SLOT, CRAFTING_GRID_END_SLOT, true);
     }
