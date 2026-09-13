@@ -11,7 +11,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -137,33 +136,20 @@ public class CraftingStationContainer extends Container {
             IInventory secondInv = logic.getSecondInventory();
 
             final int accessSide = logic.chestDirection.getOpposite().ordinal();
-            final int[] accessibleSlots = inv instanceof ISidedInventory
-                    ? ((ISidedInventory) inv).getAccessibleSlotsFromSide(accessSide)
-                    : null;
-
-            int index = 0, curIndex;
-            IInventory curInv;
-            final int invSize = inv.getSizeInventory() * (secondInv != null ? 2 : 1);
-            for (row = 0; row < logic.invRows; row++) {
-                for (col = 0; col < logic.invColumns; col++) {
-                    if (index >= invSize) break;
-                    // Adjust the inventory to account for double chests
-                    curInv = secondInv != null && index >= 27 ? secondInv : inv;
-                    // Adjust the index for the inventory
-                    curIndex = secondInv != null && index >= 27 ? index - 27 : index;
-
-                    if (accessibleSlots != null) {
-                        if (curIndex >= accessibleSlots.length) {
-                            break;
-                        } else {
-                            curIndex = accessibleSlots[curIndex];
-                        }
-                    }
-
-                    this.addSlotToContainer(
-                            new ChestSlot(curInv, curIndex, index, 8 + col * 18, 19 + row * 18, accessSide));
-                    index++;
-                }
+            int[] firstSlots = logic.getFirstInventorySlots();
+            int[] secondSlots = logic.getSecondInventorySlots();
+            for (int index = 0; index < firstSlots.length + secondSlots.length; index++) {
+                boolean first = index < firstSlots.length;
+                IInventory curInv = first ? inv : secondInv;
+                int curIndex = first ? firstSlots[index] : secondSlots[index - firstSlots.length];
+                this.addSlotToContainer(
+                        new ChestSlot(
+                                curInv,
+                                curIndex,
+                                index,
+                                8 + index % logic.invColumns * 18,
+                                19 + index / logic.invColumns * 18,
+                                accessSide));
             }
         }
 
@@ -248,6 +234,8 @@ public class CraftingStationContainer extends Container {
 
     @Override
     public ItemStack slotClick(int slotId, int clickedButton, int mode, EntityPlayer player) {
+        if (slotId >= inventorySlots.size()) return null;
+
         ItemStack carriedBefore = copyStack(player.inventory.getItemStack());
         boolean carriedPreferenceBefore = carriedStackPrefersSideInventory;
         ItemStack clickedBefore = getSlotStackCopy(slotId);
@@ -446,23 +434,17 @@ public class CraftingStationContainer extends Container {
     }
 
     protected boolean refillChest(ItemStack itemstack) {
-        if (itemstack == null || itemstack.stackSize <= 0 || logic.slotCount == 0) return false;
+        if (itemstack == null || itemstack.stackSize <= 0 || inventorySlots.size() == SIDE_INVENTORY_FIRST_SLOT)
+            return false;
 
-        return !this.mergeItemStackRefill(
-                itemstack,
-                SIDE_INVENTORY_FIRST_SLOT,
-                SIDE_INVENTORY_FIRST_SLOT + logic.slotCount,
-                false);
+        return !this.mergeItemStackRefill(itemstack, SIDE_INVENTORY_FIRST_SLOT, inventorySlots.size(), false);
     }
 
     protected boolean moveToChest(ItemStack itemstack) {
-        if (itemstack == null || itemstack.stackSize <= 0 || logic.slotCount == 0) return false;
+        if (itemstack == null || itemstack.stackSize <= 0 || inventorySlots.size() == SIDE_INVENTORY_FIRST_SLOT)
+            return false;
 
-        return !this.mergeItemStack(
-                itemstack,
-                SIDE_INVENTORY_FIRST_SLOT,
-                SIDE_INVENTORY_FIRST_SLOT + logic.slotCount,
-                false);
+        return !this.mergeItemStack(itemstack, SIDE_INVENTORY_FIRST_SLOT, inventorySlots.size(), false);
     }
 
     protected boolean moveToPlayerInventory(ItemStack itemstack) {
@@ -486,7 +468,8 @@ public class CraftingStationContainer extends Container {
             }
         }
 
-        if (!PHConstruct.craftingStationShiftClickToGrid && logic.slotCount > 0) return true;
+        if (!PHConstruct.craftingStationShiftClickToGrid && inventorySlots.size() > SIDE_INVENTORY_FIRST_SLOT)
+            return true;
 
         return !this.mergeItemStack(itemstack, CRAFTING_GRID_FIRST_SLOT, CRAFTING_GRID_END_SLOT, true);
     }
@@ -730,7 +713,7 @@ public class CraftingStationContainer extends Container {
 
     // Dump crafting grid to connected chests
     public void dumpCraftingGrid() {
-        if (logic.slotCount == 0) return;
+        if (inventorySlots.size() == SIDE_INVENTORY_FIRST_SLOT) return;
 
         beginBatchCraftingUpdate();
         try {
@@ -738,7 +721,7 @@ public class CraftingStationContainer extends Container {
             for (int i = 0; i < 9; i++) {
                 ItemStack stack = craftMatrix.getStackInSlot(i);
                 if (stack != null && stack.stackSize > 0) {
-                    if (mergeItemStack(stack, 46, 46 + logic.slotCount, false)) {
+                    if (mergeItemStack(stack, SIDE_INVENTORY_FIRST_SLOT, inventorySlots.size(), false)) {
                         craftMatrix.setInventorySlotContents(i, stack.stackSize > 0 ? stack : null);
                     }
                 }

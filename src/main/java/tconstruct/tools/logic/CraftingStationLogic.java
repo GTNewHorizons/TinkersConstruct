@@ -1,14 +1,18 @@
 package tconstruct.tools.logic;
 
 import java.lang.ref.WeakReference;
+import java.util.stream.IntStream;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -41,6 +45,8 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
     private static final int[] NO_SLOTS = new int[0];
 
     private int sideInventoryPreferences;
+    private int[] firstInventorySlots = NO_SLOTS;
+    private int[] secondInventorySlots = NO_SLOTS;
 
     /** Cached result of {@link #getInventories()}; rebuilt when the adjacent inventories are rescanned. */
     @SuppressWarnings("rawtypes")
@@ -130,6 +136,8 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        if (world.isRemote) return new CraftingStationContainer(inventoryplayer, this, x, y, z);
+
         chest = null;
         chestSize = 0;
         slotCount = 0;
@@ -164,10 +172,6 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
             if (chest == null && inv.isUseableByPlayer(inventoryplayer.player)) {
                 chest = new WeakReference<>(inv);
                 chestDirection = dir;
-                invColumns = 6;
-                chestSize = tile instanceof ISidedInventory sidedIvn
-                        ? sidedIvn.getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length
-                        : inv.getSizeInventory();
 
                 if (tile instanceof TileEntityChest tileChest) {
                     if (tileChest.adjacentChestZPos != null) {
@@ -184,14 +188,86 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
                         doubleFirst = true;
                     }
                 }
-                slotCount = chestSize * (doubleChest != null ? 2 : 1);
-                invRows = (int) Math.ceil((double) slotCount / invColumns);
             }
         }
 
         this.inventories = new WeakReference[] { this.chest, this.doubleChest, this.patternChest, this.furnace };
+        firstInventorySlots = getInventorySlots(getFirstInventory());
+        secondInventorySlots = getInventorySlots(getSecondInventory());
+        chestSize = doubleFirst ? secondInventorySlots.length : firstInventorySlots.length;
+        slotCount = firstInventorySlots.length + secondInventorySlots.length;
+        invRows = (slotCount + 5) / 6;
+        invColumns = 6;
+
+        if (inventoryplayer.player instanceof EntityPlayerMP player) {
+            NBTTagCompound data = new NBTTagCompound();
+            data.setBoolean("CraftingStationGui", true);
+            writeInventoryReference(data, "Chest", chest);
+            writeInventoryReference(data, "DoubleChest", doubleChest);
+            writeInventoryReference(data, "PatternChest", patternChest);
+            writeInventoryReference(data, "Furnace", furnace);
+            data.setInteger("ChestDirection", chestDirection.ordinal());
+            data.setBoolean("DoubleFirst", doubleFirst);
+            data.setBoolean("TinkerTable", tinkerTable);
+            data.setIntArray("FirstSlots", firstInventorySlots);
+            data.setIntArray("SecondSlots", secondInventorySlots);
+            player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(x, y, z, 0, data));
+        }
 
         return new CraftingStationContainer(inventoryplayer, this, x, y, z);
+    }
+
+    private int[] getInventorySlots(IInventory inventory) {
+        if (inventory == null) return NO_SLOTS;
+        if (inventory instanceof ISidedInventory sided) {
+            return sided.getAccessibleSlotsFromSide(chestDirection.getOpposite().ordinal()).clone();
+        }
+        return IntStream.range(0, inventory.getSizeInventory()).toArray();
+    }
+
+    public int[] getFirstInventorySlots() {
+        return firstInventorySlots;
+    }
+
+    public int[] getSecondInventorySlots() {
+        return secondInventorySlots;
+    }
+
+    private static void writeInventoryReference(NBTTagCompound data, String key, WeakReference<IInventory> ref) {
+        if (ref != null && ref.get() instanceof TileEntity tile) {
+            data.setIntArray(key, new int[] { tile.xCoord, tile.yCoord, tile.zCoord });
+        }
+    }
+
+    private WeakReference<IInventory> readInventoryReference(NBTTagCompound data, String key) {
+        int[] pos = data.getIntArray(key);
+        if (pos.length == 3 && worldObj.getTileEntity(pos[0], pos[1], pos[2]) instanceof IInventory adjacent) {
+            return new WeakReference<>(adjacent);
+        }
+        return null;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+        NBTTagCompound data = packet.func_148857_g();
+        if (!data.getBoolean("CraftingStationGui")) {
+            super.onDataPacket(manager, packet);
+            return;
+        }
+        chest = readInventoryReference(data, "Chest");
+        doubleChest = readInventoryReference(data, "DoubleChest");
+        patternChest = readInventoryReference(data, "PatternChest");
+        furnace = readInventoryReference(data, "Furnace");
+        chestDirection = ForgeDirection.getOrientation(data.getInteger("ChestDirection"));
+        doubleFirst = data.getBoolean("DoubleFirst");
+        tinkerTable = data.getBoolean("TinkerTable");
+        firstInventorySlots = data.getIntArray("FirstSlots");
+        secondInventorySlots = data.getIntArray("SecondSlots");
+        chestSize = doubleFirst ? secondInventorySlots.length : firstInventorySlots.length;
+        slotCount = firstInventorySlots.length + secondInventorySlots.length;
+        invColumns = 6;
+        invRows = (slotCount + 5) / 6;
+        inventories = new WeakReference[] { chest, doubleChest, patternChest, furnace };
     }
 
     private boolean isBlacklisted(Class<? extends TileEntity> clazz) {
