@@ -3,6 +3,7 @@ package tconstruct.blocks.slime;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,6 +20,8 @@ import tconstruct.library.TConstructRegistry;
 import tconstruct.world.TinkerWorld;
 
 public class SlimeLeaves extends BlockLeaves {
+
+    private int[] leafDecayArray; // Replaces field_150128_a
 
     private static final String[][] leaves = new String[][] { { "slimeleaves_blue_fancy" },
             { "slimeleaves_blue_fast" } };
@@ -45,6 +48,90 @@ public class SlimeLeaves extends BlockLeaves {
     @SideOnly(Side.CLIENT)
     public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
         return 0xffffff;
+    }
+
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    @Override
+    public void updateTick(World worldIn, int x, int y, int z, Random random) {
+        if (worldIn.isRemote) return;
+        int metadata = worldIn.getBlockMetadata(x, y, z);
+
+        if ((metadata & 8) != 0 && (metadata & 4) == 0) {
+            final byte SEARCH_RADIUS = 4;
+            final int CHECK_RADIUS = SEARCH_RADIUS + 1;
+            final byte ARRAY_SIZE = 32;
+            final int ARRAY_AREA = ARRAY_SIZE * ARRAY_SIZE;
+            final int ARRAY_OFFSET = ARRAY_SIZE / 2;
+
+            if (this.leafDecayArray == null) {
+                this.leafDecayArray = new int[ARRAY_SIZE * ARRAY_SIZE * ARRAY_SIZE];
+            }
+
+            if (worldIn.checkChunksExist(
+                    x - CHECK_RADIUS,
+                    y - CHECK_RADIUS,
+                    z - CHECK_RADIUS,
+                    x + CHECK_RADIUS,
+                    y + CHECK_RADIUS,
+                    z + CHECK_RADIUS)) {
+                for (int dx = -SEARCH_RADIUS; dx <= SEARCH_RADIUS; ++dx) {
+                    for (int dy = -SEARCH_RADIUS; dy <= SEARCH_RADIUS; ++dy) {
+                        for (int dz = -SEARCH_RADIUS; dz <= SEARCH_RADIUS; ++dz) {
+                            int index = (dx + ARRAY_OFFSET) * ARRAY_AREA + (dy + ARRAY_OFFSET) * ARRAY_SIZE
+                                    + dz
+                                    + ARRAY_OFFSET;
+                            Block block = worldIn.getBlock(x + dx, y + dy, z + dz);
+
+                            if (block instanceof SlimeGel) {
+                                this.leafDecayArray[index] = 0;
+                            } else if (block.isLeaves(worldIn, x + dx, y + dy, z + dz)) {
+                                this.leafDecayArray[index] = -2;
+                            } else {
+                                this.leafDecayArray[index] = -1;
+                            }
+                        }
+                    }
+                }
+
+                for (int distance = 1; distance <= 4; ++distance) {
+                    for (int dx = -SEARCH_RADIUS; dx <= SEARCH_RADIUS; ++dx) {
+                        for (int dy = -SEARCH_RADIUS; dy <= SEARCH_RADIUS; ++dy) {
+                            for (int dz = -SEARCH_RADIUS; dz <= SEARCH_RADIUS; ++dz) {
+                                if (this.leafDecayArray[(dx + ARRAY_OFFSET) * ARRAY_AREA
+                                        + (dy + ARRAY_OFFSET) * ARRAY_SIZE
+                                        + dz
+                                        + ARRAY_OFFSET] != distance - 1)
+                                    continue;
+
+                                resolveNeighbor(dx - 1, dy, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx + 1, dy, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx, dy - 1, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx, dy + 1, dz, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx, dy, dz - 1, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                                resolveNeighbor(dx, dy, dz + 1, distance, ARRAY_OFFSET, ARRAY_SIZE, ARRAY_AREA);
+                            }
+                        }
+                    }
+                }
+            }
+
+            int isSustained = this.leafDecayArray[ARRAY_OFFSET * ARRAY_AREA + ARRAY_OFFSET * ARRAY_SIZE + ARRAY_OFFSET];
+
+            if (isSustained >= 0) {
+                worldIn.setBlockMetadataWithNotify(x, y, z, metadata & -9, 4);
+            } else {
+                this.removeLeaves(worldIn, x, y, z);
+            }
+        }
+    }
+
+    private void resolveNeighbor(int dx, int dy, int dz, int distance, int offset, int size, int area) {
+        int index = (dx + offset) * area + (dy + offset) * size + (dz + offset);
+        if (this.leafDecayArray[index] == -2) {
+            this.leafDecayArray[index] = distance;
+        }
     }
 
     @Override
