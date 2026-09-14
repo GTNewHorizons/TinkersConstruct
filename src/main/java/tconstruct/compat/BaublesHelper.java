@@ -6,7 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+import baubles.api.expanded.BaubleExpandedSlots;
+import baubles.common.BaublesConfig;
+import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.Optional;
+import tconstruct.library.accessory.IHealthAccessory;
 
 public final class BaublesHelper {
 
@@ -14,7 +18,7 @@ public final class BaublesHelper {
 
     @Optional.Method(modid = "Baubles")
     public static ItemStack findFirstMatchingBauble(EntityPlayer player, Predicate<ItemStack> matcher) {
-        IInventory baubleInventory = getBaubleInventory(player);
+        IInventory baubleInventory = PlayerHandler.getPlayerBaubles(player);
         if (baubleInventory == null) {
             return null;
         }
@@ -29,7 +33,7 @@ public final class BaublesHelper {
 
     @Optional.Method(modid = "Baubles")
     public static ItemStack[] getBaubleStacks(EntityPlayer player) {
-        IInventory baubleInventory = getBaubleInventory(player);
+        IInventory baubleInventory = PlayerHandler.getPlayerBaubles(player);
         if (baubleInventory == null) {
             return null;
         }
@@ -41,6 +45,22 @@ public final class BaublesHelper {
     }
 
     @Optional.Method(modid = "Baubles")
+    public static int getBaubleHealthBoost(EntityPlayer player) {
+        IInventory baubleInventory = PlayerHandler.getPlayerBaubles(player);
+        if (baubleInventory == null) {
+            return 0;
+        }
+        int bonusHP = 0;
+        for (int i = 0; i < baubleInventory.getSizeInventory(); i++) {
+            ItemStack stack = baubleInventory.getStackInSlot(i);
+            if (stack != null && stack.getItem() instanceof IHealthAccessory) {
+                bonusHP += ((IHealthAccessory) stack.getItem()).getHealthBoost(stack);
+            }
+        }
+        return bonusHP;
+    }
+
+    @Optional.Method(modid = "Baubles")
     public static ItemStack tryMoveToBaubles(EntityPlayer player, ItemStack stack) {
         if (stack == null || stack.stackSize <= 0) {
             return null;
@@ -49,7 +69,7 @@ public final class BaublesHelper {
             return stack;
         }
 
-        IInventory baubleInventory = getBaubleInventory(player);
+        IInventory baubleInventory = PlayerHandler.getPlayerBaubles(player);
         if (baubleInventory == null) {
             return stack;
         }
@@ -59,24 +79,55 @@ public final class BaublesHelper {
             if (!baubleInventory.isItemValidForSlot(i, remaining)) {
                 continue;
             }
+            int limit = Math.max(1, Math.min(remaining.getMaxStackSize(), getSlotStackLimit(baubleInventory, i)));
             ItemStack inSlot = baubleInventory.getStackInSlot(i);
+
             if (inSlot == null) {
                 ItemStack placed = remaining.copy();
-                placed.stackSize = 1;
+                placed.stackSize = Math.min(limit, remaining.stackSize);
                 baubleInventory.setInventorySlotContents(i, placed);
-                remaining.stackSize -= 1;
+                remaining.stackSize -= placed.stackSize;
+            } else if (inSlot.stackSize < limit && canStack(inSlot, remaining)) {
+                int moved = Math.min(limit - inSlot.stackSize, remaining.stackSize);
+                ItemStack grown = inSlot.copy();
+                grown.stackSize += moved;
+                baubleInventory.setInventorySlotContents(i, grown);
+                remaining.stackSize -= moved;
             }
         }
         return remaining.stackSize > 0 ? remaining : null;
     }
 
     @Optional.Method(modid = "Baubles")
-    private static IInventory getBaubleInventory(EntityPlayer player) {
-        baubles.common.container.InventoryBaubles baubleInventory = baubles.common.lib.PlayerHandler
-                .getPlayerBaubles(player);
-        if (baubleInventory == null) {
-            return null;
+    public static boolean tryEquipOne(EntityPlayer player, ItemStack held) {
+        if (held == null || held.stackSize <= 0) {
+            return false;
         }
-        return baubleInventory;
+        ItemStack one = held.copy();
+        one.stackSize = 1;
+        if (tryMoveToBaubles(player, one) != null) {
+            return false;
+        }
+        held.stackSize--;
+        return true;
+    }
+
+    @Optional.Method(modid = "Baubles")
+    private static int getSlotStackLimit(IInventory baubleInventory, int slot) {
+        if (LoadedMods.baublesExpanded) {
+            return getExpandedSlotStackLimit(slot);
+        }
+        return baubleInventory.getInventoryStackLimit();
+    }
+
+    @Optional.Method(modid = "Baubles|Expanded")
+    private static int getExpandedSlotStackLimit(int slot) {
+        return BaublesConfig.getStackLimitForSlotType(BaubleExpandedSlots.getSlotType(slot));
+    }
+
+    private static boolean canStack(ItemStack inSlot, ItemStack incoming) {
+        return inSlot.isStackable() && inSlot.getItem() == incoming.getItem()
+                && inSlot.getItemDamage() == incoming.getItemDamage()
+                && ItemStack.areItemStackTagsEqual(inSlot, incoming);
     }
 }
