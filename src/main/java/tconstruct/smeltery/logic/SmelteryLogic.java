@@ -1,6 +1,8 @@
 package tconstruct.smeltery.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +17,7 @@ import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -36,8 +39,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mantle.blocks.abstracts.InventoryLogic;
 import mantle.blocks.abstracts.MultiServantLogic;
 import mantle.blocks.iface.IActiveLogic;
@@ -85,6 +86,18 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     public int[] activeTemps; // values are multiplied by 10
     public int[] meltingTemps; // values are multiplied by 10
+    private ItemStack[] cachedStacks = new ItemStack[0];
+    private ItemStack[] renderStacks = new ItemStack[0];
+    private FluidStack[] meltingResults = new FluidStack[0];
+    private boolean inventoryDirty = true;
+    private final BitSet heatingSlots = new BitSet();
+    private final BitSet waitingSlots = new BitSet();
+    private boolean tankChanged;
+    private NBTTagCompound lastSentClientData;
+    private NBTTagCompound lastReceivedClientData;
+    private int[] clientRenderRuns = new int[0];
+    private SmelteryRenderData renderData = new SmelteryRenderData(0, new int[0]);
+    private FluidStack displayFuel;
     private int tick;
     private boolean structureCheckQueued;
 
@@ -96,6 +109,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     boolean needsUpdate;
 
     private boolean drainComparatorOutputDirty;
+    private int lastComparatorStrength = -1;
 
     public SmelteryLogic() {
         super(0);
@@ -125,6 +139,8 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
             layers = lay;
             maxBlockCapacity = getBlocksPerLayer() * layers;
             maxLiquid = maxBlockCapacity * MB_PER_BLOCK_CAPACITY;
+            resetInventoryCache();
+            lastComparatorStrength = -1;
 
             int[] tempActive = activeTemps;
             activeTemps = new int[maxBlockCapacity];
@@ -206,6 +222,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
         // update current liquid. This is done in case some config or something changed the capacity or other things.
         updateCurrentLiquid();
+        drainComparatorOutputDirty = true;
     }
 
     /* Misc */
@@ -216,6 +233,10 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        if (inventoryplayer.player instanceof EntityPlayerMP player) {
+            // The client needs the current capacity before constructing its slots, ahead of batched world updates.
+            player.playerNetServerHandler.sendPacket(getDescriptionPacket());
+        }
         return new SmelteryContainer(inventoryplayer, this);
     }
 
@@ -261,7 +282,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     @Override
     public void setActive(boolean flag) {
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        needsUpdate = true;
     }
 
     public int getScaledFuelGague(int scale) {
@@ -288,6 +309,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     /* Updating */
     @Override
     public void updateEntity() {
+        if (worldObj.isRemote) return;
         checkStructureIfQueued();
 
         tick++;
@@ -296,14 +318,11 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
             detectEntities();
         }
 
-        /*
-         * if (worldObj.isRemote) return;
-         */
-
         if (tick % 4 == 0) {
             if (useTime > 0) useTime -= 4;
 
             if (validStructure) {
+                refreshInventory();
                 checkHasItems();
 
                 // consume fuel if needed
@@ -313,19 +332,25 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
             }
         }
 
+        if (tick % 5 == 0 && needsUpdate) {
+            NBTTagCompound data = writeClientData();
+            needsUpdate = false;
+            if (!data.equals(lastSentClientData)) {
+                lastSentClientData = data;
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            }
+        }
+
         if (tick % 20 == 0) {
             if (!validStructure) checkValidPlacement();
 
-            if (needsUpdate) {
-                needsUpdate = false;
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-            }
-
             if (drainComparatorOutputDirty) {
-                // tank dirty, update drains
-                for (CoordTuple drain : drains) {
-                    // this obfuscated method will propagate a block update (and weak updates) around give coord
-                    worldObj.func_147453_f(drain.x, drain.y, drain.z, worldObj.getBlock(drain.x, drain.y, drain.z));
+                int strength = maxLiquid == 0 ? 0 : MathHelper.ceiling_float_int(15f * currentLiquid / maxLiquid);
+                if (strength != lastComparatorStrength) {
+                    lastComparatorStrength = strength;
+                    for (CoordTuple drain : drains) {
+                        worldObj.func_147453_f(drain.x, drain.y, drain.z, worldObj.getBlock(drain.x, drain.y, drain.z));
+                    }
                 }
                 drainComparatorOutputDirty = false;
             }
@@ -414,104 +439,118 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
         if (!itemDestroyed) item.setEntityItemStack(istack);
         if (itemAdded) {
-            this.needsUpdate = true;
-            // TODO 1.7.5 send description packet in better way to not cause render update
-            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            markDirty();
         }
     }
 
     private void checkHasItems() {
-        inUse = false;
-        for (int i = 0; i < maxBlockCapacity; i++) if (this.isStackInSlot(i) && meltingTemps[i] > 200) {
-            inUse = true;
-            break;
-        }
+        inUse = !heatingSlots.isEmpty() || !waitingSlots.isEmpty();
     }
 
     private void heatItems() {
+        if (tankChanged) {
+            heatingSlots.or(waitingSlots);
+            waitingSlots.clear();
+            tankChanged = false;
+        }
         if (useTime > 0) {
-            boolean hasUse = false;
             int temperature = this.getInternalTemperature();
             int speed = temperature / 100;
             int refTemp = temperature * 10;
-            for (int i = 0; i < maxBlockCapacity; i++) {
+            for (int i = heatingSlots.nextSetBit(0); i >= 0; i = heatingSlots.nextSetBit(i + 1)) {
                 if (meltingTemps[i] > 200 && this.isStackInSlot(i)) {
-                    hasUse = true;
                     if (activeTemps[i] < refTemp && activeTemps[i] < meltingTemps[i]) {
+                        boolean wasVisible = activeTemps[i] / 10 > 20;
                         activeTemps[i] += speed; // lava has temp of 1000. we increase by 10 per application.
+                        if (!wasVisible && activeTemps[i] / 10 > 20) needsUpdate = true;
                     } else if (activeTemps[i] >= meltingTemps[i]) {
-                        if (!worldObj.isRemote) {
-                            FluidStack result = getResultFor(inventory[i]);
-                            if (result != null) {
-                                if (addMoltenMetal(result, false)) {
-                                    inventory[i] = null;
-                                    activeTemps[i] = 200;
-                                    ArrayList<FluidStack> alloys = Smeltery.mixMetals(moltenMetal);
-                                    for (FluidStack liquid : alloys) {
-                                        addMoltenMetal(liquid, true);
-                                    }
-                                    markDirty();
-                                }
-                            }
+                        FluidStack result = meltingResults[i];
+                        if (result != null && result.amount <= maxLiquid - currentLiquid
+                                && addMoltenMetal(result, false)) {
+                            inventory[i] = null;
+                            activeTemps[i] = 200;
+                            meltingTemps[i] = 200;
+                            cachedStacks[i] = null;
+                            meltingResults[i] = null;
+                            renderStacks[i] = null;
+                            heatingSlots.clear(i);
+                            mixMetals();
+                        } else {
+                            heatingSlots.clear(i);
+                            waitingSlots.set(i);
                         }
                     }
 
-                } else activeTemps[i] = 200;
+                } else {
+                    activeTemps[i] = 200;
+                    heatingSlots.clear(i);
+                }
             }
-            inUse = hasUse;
+            checkHasItems();
         }
     }
 
     boolean addMoltenMetal(FluidStack liquid, boolean first) {
-        needsUpdate = true;
-        if (moltenMetal.size() == 0) {
-            // does it fit in?
-            if (liquid.amount > this.getCapacity()) return false;
-
-            moltenMetal.add(liquid.copy());
-            updateCurrentLiquid();
-        } else {
-            // update liquid amount..
-            updateCurrentLiquid();
-
-            if (liquid.amount + currentLiquid > maxLiquid) return false;
-
-            currentLiquid += liquid.amount;
-            drainComparatorOutputDirty = true;
-            // TConstruct.logger.info("Current liquid: "+currentLiquid);
-            boolean added = false;
-            for (int i = 0; i < moltenMetal.size(); i++) {
-                FluidStack l = moltenMetal.get(i);
-                // if (l.itemID == liquid.itemID && l.itemMeta ==
-                // liquid.itemMeta)
-                if (l.isFluidEqual(liquid)) {
-                    l.amount += liquid.amount;
-                    added = true;
-                }
-                if (l.amount <= 0) {
-                    moltenMetal.remove(l);
-                    i--;
-                }
-            }
-            if (!added) {
-                if (first) moltenMetal.add(0, liquid.copy());
-                else moltenMetal.add(liquid.copy());
+        // Alloy recipes consume the existing stacks before returning their products.
+        updateCurrentLiquid();
+        if (liquid.amount <= 0 || liquid.amount > maxLiquid - currentLiquid) return false;
+        moltenMetal.removeIf(fluid -> fluid.amount <= 0);
+        for (FluidStack stored : moltenMetal) {
+            if (stored.isFluidEqual(liquid)) {
+                stored.amount += liquid.amount;
+                currentLiquid += liquid.amount;
+                markTankDirty();
+                return true;
             }
         }
+        moltenMetal.add(first ? 0 : moltenMetal.size(), liquid.copy());
+        currentLiquid += liquid.amount;
+        markTankDirty();
         return true;
     }
 
     private void updateCurrentLiquid() {
         currentLiquid = 0;
         for (FluidStack liquid : moltenMetal) currentLiquid += liquid.amount;
-        drainComparatorOutputDirty = true;
     }
 
-    private void updateTemperatures() {
-        for (int i = 0; i < maxBlockCapacity && i < meltingTemps.length; i++) {
-            meltingTemps[i] = Smeltery.getLiquifyTemperature(inventory[i]) * 10; // temperatures are *10 for more
-                                                                                 // progress control
+    private void mixMetals() {
+        for (FluidStack liquid : Smeltery.mixMetals(moltenMetal)) {
+            addMoltenMetal(liquid, true);
         }
+    }
+
+    private void resetInventoryCache() {
+        heatingSlots.clear();
+        waitingSlots.clear();
+        cachedStacks = new ItemStack[maxBlockCapacity];
+        renderStacks = new ItemStack[maxBlockCapacity];
+        meltingResults = new FluidStack[maxBlockCapacity];
+        inventoryDirty = true;
+    }
+
+    private void refreshInventory() {
+        if (!inventoryDirty) return;
+        inventoryDirty = false;
+        for (int i = 0; i < maxBlockCapacity; i++) {
+            ItemStack stack = inventory[i];
+            if (!ItemStack.areItemStacksEqual(stack, cachedStacks[i])) {
+                cachedStacks[i] = stack == null ? null : stack.copy();
+                meltingTemps[i] = Smeltery.getLiquifyTemperature(stack) * 10;
+                meltingResults[i] = getResultFor(stack);
+                renderStacks[i] = stack == null ? null : Smeltery.getRenderIndex(stack);
+                waitingSlots.clear(i);
+                heatingSlots.set(i, stack != null && meltingTemps[i] > 200);
+                if (!heatingSlots.get(i)) activeTemps[i] = 200;
+            }
+        }
+    }
+
+    private void markTankDirty() {
+        tankChanged = true;
+        needsUpdate = true;
+        drainComparatorOutputDirty = true;
+        super.markDirty();
     }
 
     public void updateFuelDisplay() {
@@ -549,6 +588,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
         fuelAmount = totalAmount;
         fuelCapacity = totalCapacity;
+        displayFuel = fuelType == null ? null : new FluidStack(fuelType, totalAmount);
     }
 
     // actually is updateFuel.
@@ -623,37 +663,14 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
         // empty
     }
 
-    @SideOnly(Side.CLIENT)
     public FluidStack getFuel() {
-        FluidStack combined = null;
+        return displayFuel == null ? new FluidStack(FluidRegistry.LAVA, 0) : displayFuel.copy();
+    }
 
-        synchronized (lavaTanks) {
-            Iterator<CoordTuple> iter = lavaTanks.iterator();
-            while (iter.hasNext()) {
-                CoordTuple coord = iter.next();
-                if (!worldObj.blockExists(coord.x, coord.y, coord.z)) continue;
-
-                TileEntity te = worldObj.getTileEntity(coord.x, coord.y, coord.z);
-                if (!(te instanceof IFluidHandler)) {
-                    iter.remove();
-                    continue;
-                }
-
-                FluidTankInfo[] info = ((IFluidHandler) te).getTankInfo(ForgeDirection.DOWN);
-                if (info.length <= 0 || info[0].fluid == null || info[0].fluid.amount <= 0) continue;
-
-                if (combined == null) {
-                    combined = info[0].fluid.copy();
-                } else if (combined.isFluidEqual(info[0].fluid)) {
-                    combined.amount += info[0].fluid.amount;
-                }
-            }
-        }
-
-        if (combined == null) {
-            return new FluidStack(FluidRegistry.LAVA, 0);
-        }
-        return combined;
+    public void setFuelDisplay(FluidStack fuel, int capacity) {
+        displayFuel = fuel;
+        fuelAmount = fuel == null ? 0 : fuel.amount;
+        fuelCapacity = capacity;
     }
 
     public FluidStack getResultFor(ItemStack stack) {
@@ -673,7 +690,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     @Override
     public void markDirty() {
-        updateTemperatures();
+        inventoryDirty = true;
 
         super.markDirty();
         needsUpdate = true;
@@ -809,11 +826,11 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
                 // update other stuff
                 adjustLayers(checkLayers, true);
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                needsUpdate = true;
                 validStructure = true;
             } else {
                 internalTemp = 20;
-                if (validStructure) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                if (validStructure) needsUpdate = true;
                 validStructure = false;
             }
         }
@@ -990,18 +1007,15 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
                 if (doDrain) {
                     // liquid = null;
                     moltenMetal.remove(liquid);
-                    worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-                    needsUpdate = true;
                     updateCurrentLiquid();
+                    markTankDirty();
                 }
                 return liq;
             } else {
                 if (doDrain && maxDrain > 0) {
                     liquid.amount -= maxDrain;
-                    worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                     currentLiquid -= maxDrain;
-                    drainComparatorOutputDirty = true;
-                    needsUpdate = true;
+                    markTankDirty();
                 }
                 return new FluidStack(liquid.getFluid(), maxDrain, liquid.tag);
             }
@@ -1012,28 +1026,14 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
 
     @Override
     public int fill(FluidStack resource, boolean doFill) {
-        // don't fill if we're not complete
-        if (!validStructure) return 0;
-
-        if (resource != null && currentLiquid < maxLiquid) // resource.amount +
-        // currentLiquid <
-        // maxLiquid)
-        {
-            if (resource.amount + currentLiquid > maxLiquid) resource.amount = maxLiquid - currentLiquid;
-            int amount = resource.amount;
-
-            if (amount > 0 && doFill) {
-                if (addMoltenMetal(resource, false)) {
-                    ArrayList<FluidStack> alloys = Smeltery.mixMetals(moltenMetal);
-                    for (FluidStack liquid : alloys) {
-                        addMoltenMetal(liquid, true);
-                    }
-                }
-                needsUpdate = true;
-                worldObj.func_147479_m(xCoord, yCoord, zCoord);
-            }
-            return amount;
-        } else return 0;
+        if (!validStructure || resource == null || resource.amount <= 0) return 0;
+        int amount = Math.min(resource.amount, Math.max(0, maxLiquid - currentLiquid));
+        if (amount == 0 || !doFill) return amount;
+        FluidStack accepted = resource.copy();
+        accepted.amount = amount;
+        if (!addMoltenMetal(accepted, false)) return 0;
+        mixMetals();
+        return amount;
     }
 
     @Override
@@ -1076,6 +1076,7 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
         else maxPos = new CoordTuple(xCoord, yCoord, zCoord);
 
         maxBlockCapacity = getBlocksPerLayer() * layers;
+        resetInventoryCache();
         inventory = new ItemStack[maxBlockCapacity];
         super.readFromNBT(tags);
 
@@ -1149,19 +1150,80 @@ public class SmelteryLogic extends InventoryLogic implements IActiveLogic, IFaci
     }
 
     /* Packets */
+    private NBTTagCompound writeClientData() {
+        refreshInventory();
+        NBTTagCompound data = new NBTTagCompound();
+        data.setBoolean("ValidStructure", validStructure);
+        data.setIntArray("MinPos", new int[] { minPos.x, minPos.y, minPos.z });
+        data.setIntArray("MaxPos", new int[] { maxPos.x, maxPos.y, maxPos.z });
+        data.setInteger("Layers", layers);
+        data.setInteger("MaxLiquid", maxLiquid);
+        data.setByte("Direction", direction);
+        data.setIntArray("Render", SmelteryRenderData.encode(inventory, renderStacks, activeTemps));
+        NBTTagList fluids = new NBTTagList();
+        for (FluidStack fluid : moltenMetal) fluids.appendTag(fluid.copy().writeToNBT(new NBTTagCompound()));
+        data.setTag("Liquids", fluids);
+        return data;
+    }
+
+    public SmelteryRenderData getRenderData() {
+        return renderData;
+    }
+
+    public void reorderFluid(int fluidId, boolean last) {
+        for (int i = 0; i < moltenMetal.size(); i++) {
+            if (moltenMetal.get(i).getFluidID() == fluidId) {
+                int target = last ? moltenMetal.size() - 1 : 0;
+                if (i != target) {
+                    moltenMetal.add(target, moltenMetal.remove(i));
+                    markTankDirty();
+                }
+                return;
+            }
+        }
+    }
+
     @Override
     public Packet getDescriptionPacket() {
-        NBTTagCompound tag = new NBTTagCompound();
-        writeToNBT(tag);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, writeClientData());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-        readFromNBT(packet.func_148857_g());
-        markDirty();
+        NBTTagCompound data = packet.func_148857_g();
+        if (data.equals(lastReceivedClientData)) return;
+        lastReceivedClientData = (NBTTagCompound) data.copy();
+        int[] min = data.getIntArray("MinPos");
+        int[] max = data.getIntArray("MaxPos");
+        minPos = new CoordTuple(min[0], min[1], min[2]);
+        maxPos = new CoordTuple(max[0], max[1], max[2]);
+        layers = data.getInteger("Layers");
+        maxLiquid = data.getInteger("MaxLiquid");
+        direction = data.getByte("Direction");
+        validStructure = data.getBoolean("ValidStructure");
+        int size = getBlocksPerLayer() * layers;
+        boolean resized = size != maxBlockCapacity;
+        if (resized) {
+            maxBlockCapacity = size;
+            inventory = new ItemStack[size];
+            activeTemps = new int[size];
+            meltingTemps = new int[size];
+        }
+        int[] runs = data.getIntArray("Render");
+        if (resized || !Arrays.equals(runs, clientRenderRuns)) {
+            clientRenderRuns = runs;
+            renderData = new SmelteryRenderData(size, runs);
+        }
+        NBTTagList fluids = data.getTagList("Liquids", 10);
+        synchronized (moltenMetal) {
+            moltenMetal.clear();
+            for (int i = 0; i < fluids.tagCount(); i++) {
+                FluidStack fluid = FluidStack.loadFluidStackFromNBT(fluids.getCompoundTagAt(i));
+                if (fluid != null) moltenMetal.add(fluid);
+            }
+            updateCurrentLiquid();
+        }
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
-        this.needsUpdate = true;
     }
 
     @Override

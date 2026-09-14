@@ -1,14 +1,10 @@
 package tconstruct.util.network;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.FluidStack;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import mantle.common.network.AbstractPacket;
-import mantle.common.network.PacketUpdateTE;
-import tconstruct.TConstruct;
 import tconstruct.smeltery.inventory.SmelteryContainer;
 import tconstruct.smeltery.logic.SmelteryLogic;
 
@@ -61,22 +57,7 @@ public class SmelteryPacket extends AbstractPacket {
                     && logic.xCoord == this.x
                     && logic.yCoord == this.y
                     && logic.zCoord == this.z) {
-                FluidStack temp = null;
-
-                for (FluidStack liquid : logic.moltenMetal) {
-                    if (liquid.getFluidID() == this.fluidID) temp = liquid;
-                }
-
-                if (temp != null) {
-                    logic.moltenMetal.remove(temp);
-                    if (this.isShiftPressed) logic.moltenMetal.add(temp);
-                    else logic.moltenMetal.add(0, temp);
-                }
-
-                NBTTagCompound data = new NBTTagCompound();
-                logic.writeToNBT(data);
-                TConstruct.packetPipeline
-                        .sendToDimension(new PacketUpdateTE(this.x, this.y, this.z, data), this.dimension);
+                logic.reorderFluid(this.fluidID, this.isShiftPressed);
             }
         }
     }
