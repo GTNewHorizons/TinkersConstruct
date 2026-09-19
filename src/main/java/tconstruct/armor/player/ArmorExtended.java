@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import tconstruct.compat.BaublesHelper;
@@ -129,7 +128,7 @@ public class ArmorExtended implements IInventory {
         }
 
         if (LoadedMods.baubles) {
-            bonusHP += getBaublesHealthBoost(player);
+            bonusHP += BaublesHelper.getBaubleHealthBoost(player);
         }
 
         stats.bonusHealth = bonusHP;
@@ -146,11 +145,6 @@ public class ArmorExtended implements IInventory {
         if (bonusHP > 0) {
             attributeinstance.applyModifier(new AttributeModifier(globalID, "tconstruct.heartCanister", bonusHP, 0));
         }
-    }
-
-    @Optional.Method(modid = "Baubles")
-    private int getBaublesHealthBoost(EntityPlayer player) {
-        return BaublesHelper.getBaubleHealthBoost(player);
     }
 
     @Override

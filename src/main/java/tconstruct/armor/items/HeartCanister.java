@@ -23,6 +23,7 @@ import tconstruct.compat.BaublesHelper;
 import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.accessory.IHealthAccessory;
+import tconstruct.util.InventoryHelper;
 import tconstruct.util.config.PHConstruct;
 
 @Optional.InterfaceList({
@@ -45,31 +46,13 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory, IBa
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         int meta = stack.getItemDamage();
-        if (meta == 1 || meta == 3 || meta == 5) {
+        if (isMiniHeart(meta)) {
             player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-        }
-        if (!world.isRemote && !PHConstruct.enableTinkerInventoryTab
-                && LoadedMods.baubles
-                && (meta == 2 || meta == 4 || meta == 6)) {
-            equipToBaubles(player, stack);
-            return stack;
-        }
-        if (!world.isRemote && PHConstruct.enableTinkerInventoryTab && (meta == 2 || meta == 4 || meta == 6)) {
-            TPlayerStats stats = TPlayerStats.get(player);
-            if (stats != null && stats.armor != null) {
-                ArmorExtended armor = stats.armor;
-                int targetSlot = meta == 2 ? 6 : meta == 4 ? 5 : 4;
-                ItemStack slotStack = armor.getStackInSlot(targetSlot);
-                if (slotStack == null) // || slotStack.getItem() == this)
-                {
-                    armor.setInventorySlotContents(targetSlot, new ItemStack(this, 1, meta));
-                    stack.stackSize--;
-                } else if (slotStack.getItem() == this && slotStack.getItemDamage() == meta
-                        && slotStack.stackSize < this.maxStackSize) {
-                            slotStack.stackSize++;
-                            stack.stackSize--;
-                        }
-                armor.recalculateHealth(player, stats);
+        } else if (!world.isRemote && isCanister(meta)) {
+            if (PHConstruct.enableTinkerInventoryTab) {
+                equipToAccessoryTab(player, stack, accessorySlot(meta));
+            } else if (LoadedMods.baubles) {
+                equipToBaubles(player, stack);
             }
         }
         return stack;
@@ -97,7 +80,7 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory, IBa
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         int meta = stack.getItemDamage();
-        if (meta == 0 || meta % 2 == 1) list.add(StatCollector.translateToLocal("item.crafting.tooltip"));
+        if (!isCanister(meta)) list.add(StatCollector.translateToLocal("item.crafting.tooltip"));
         else {
             list.add(StatCollector.translateToLocal("item.accessory.tooltip"));
             list.add(StatCollector.translateToLocal("canister.tooltip"));
@@ -121,8 +104,17 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory, IBa
 
     @Override
     public boolean canEquipAccessory(ItemStack item, int slot) {
-        int type = item.getItemDamage();
-        return ((type == 2 && slot == 6) || (type == 4 && slot == 5) || (type == 6 && slot == 4));
+        return accessorySlot(item.getItemDamage()) == slot;
+    }
+
+    private static void equipToAccessoryTab(EntityPlayer player, ItemStack stack, int slot) {
+        TPlayerStats stats = TPlayerStats.get(player);
+        if (stats == null || stats.armor == null) {
+            return;
+        }
+        ArmorExtended armor = stats.armor;
+        stack.stackSize -= InventoryHelper.insertIntoSlot(armor, slot, stack, armor.getInventoryStackLimit(), 1);
+        armor.recalculateHealth(player, stats);
     }
 
     @Optional.Method(modid = "Baubles")
@@ -172,14 +164,30 @@ public class HeartCanister extends CraftingItem implements IHealthAccessory, IBa
     @Override
     @Optional.Method(modid = "Baubles")
     public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
-        int meta = itemstack.getItemDamage();
-        return meta == 2 || meta == 4 || meta == 6;
+        return isCanister(itemstack.getItemDamage());
     }
 
     @Override
     @Optional.Method(modid = "Baubles")
     public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
         return true;
+    }
+
+    private static boolean isMiniHeart(int meta) {
+        return meta == 1 || meta == 3 || meta == 5;
+    }
+
+    private static boolean isCanister(int meta) {
+        return meta == 2 || meta == 4 || meta == 6;
+    }
+
+    private static int accessorySlot(int meta) {
+        return switch (meta) {
+            case 2 -> 6;
+            case 4 -> 5;
+            case 6 -> 4;
+            default -> -1;
+        };
     }
 
     private void recalculatePlayerHealth(EntityLivingBase entity) {

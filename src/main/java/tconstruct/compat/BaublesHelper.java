@@ -11,6 +11,7 @@ import baubles.common.BaublesConfig;
 import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.Optional;
 import tconstruct.library.accessory.IHealthAccessory;
+import tconstruct.util.InventoryHelper;
 
 public final class BaublesHelper {
 
@@ -79,21 +80,12 @@ public final class BaublesHelper {
             if (!baubleInventory.isItemValidForSlot(i, remaining)) {
                 continue;
             }
-            int limit = Math.max(1, Math.min(remaining.getMaxStackSize(), getSlotStackLimit(baubleInventory, i)));
-            ItemStack inSlot = baubleInventory.getStackInSlot(i);
-
-            if (inSlot == null) {
-                ItemStack placed = remaining.copy();
-                placed.stackSize = Math.min(limit, remaining.stackSize);
-                baubleInventory.setInventorySlotContents(i, placed);
-                remaining.stackSize -= placed.stackSize;
-            } else if (inSlot.stackSize < limit && canStack(inSlot, remaining)) {
-                int moved = Math.min(limit - inSlot.stackSize, remaining.stackSize);
-                ItemStack grown = inSlot.copy();
-                grown.stackSize += moved;
-                baubleInventory.setInventorySlotContents(i, grown);
-                remaining.stackSize -= moved;
-            }
+            remaining.stackSize -= InventoryHelper.insertIntoSlot(
+                    baubleInventory,
+                    i,
+                    remaining,
+                    getSlotStackLimit(baubleInventory, i),
+                    remaining.stackSize);
         }
         return remaining.stackSize > 0 ? remaining : null;
     }
@@ -123,11 +115,5 @@ public final class BaublesHelper {
     @Optional.Method(modid = "Baubles|Expanded")
     private static int getExpandedSlotStackLimit(int slot) {
         return BaublesConfig.getStackLimitForSlotType(BaubleExpandedSlots.getSlotType(slot));
-    }
-
-    private static boolean canStack(ItemStack inSlot, ItemStack incoming) {
-        return inSlot.isStackable() && inSlot.getItem() == incoming.getItem()
-                && inSlot.getItemDamage() == incoming.getItemDamage()
-                && ItemStack.areItemStackTagsEqual(inSlot, incoming);
     }
 }
