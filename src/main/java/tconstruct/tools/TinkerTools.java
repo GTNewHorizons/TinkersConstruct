@@ -935,35 +935,65 @@ public class TinkerTools {
         String[] patBlock = { "###", "###", "###" };
         String[] patSurround = { "###", "#m#", "###" };
 
-        // Expander modifier items (Width++/Height++): the pistons point the way the tool expands
-        GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(TinkerTools.materials, 1, 44),
-                        "glg",
-                        "pep",
-                        "glg",
-                        'g',
-                        "gearGtSmallSteel",
-                        'l',
-                        "blockLapis",
-                        'p',
-                        Blocks.sticky_piston,
-                        'e',
-                        Items.ender_pearl));
-        GameRegistry.addRecipe(
-                new ShapedOreRecipe(
-                        new ItemStack(TinkerTools.materials, 1, 45),
-                        "gpg",
-                        "lel",
-                        "gpg",
-                        'g',
-                        "gearGtSmallSteel",
-                        'l',
-                        "blockLapis",
-                        'p',
-                        Blocks.sticky_piston,
-                        'e',
-                        Items.ender_pearl));
+        // Expander modifier items (Width++/Height++): the pistons point the way the tool expands. With GregTech
+        // loaded they are its LV electric pistons; without it the recipe is TiC2's own.
+        Item gtMetaItem = Loader.isModLoaded("gregtech") ? GameRegistry.findItem("gregtech", "gt.metaitem.01") : null;
+        if (gtMetaItem != null) {
+            ItemStack lvPiston = new ItemStack(gtMetaItem, 1, 32640); // gregtech:gt.metaitem.01:32640
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(TinkerTools.materials, 1, 44),
+                            "glg",
+                            "pep",
+                            "glg",
+                            'g',
+                            "gearGtSmallSteel",
+                            'l',
+                            "blockLapis",
+                            'p',
+                            lvPiston,
+                            'e',
+                            Items.ender_pearl));
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(TinkerTools.materials, 1, 45),
+                            "gpg",
+                            "lel",
+                            "gpg",
+                            'g',
+                            "gearGtSmallSteel",
+                            'l',
+                            "blockLapis",
+                            'p',
+                            lvPiston,
+                            'e',
+                            Items.ender_pearl));
+        } else {
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(TinkerTools.materials, 1, 44),
+                            " l ",
+                            "psp",
+                            " l ",
+                            'l',
+                            "gemLapis",
+                            'p',
+                            Blocks.piston,
+                            's',
+                            "slimeball"));
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(TinkerTools.materials, 1, 45),
+                            " p ",
+                            "lsl",
+                            " p ",
+                            'l',
+                            "gemLapis",
+                            'p',
+                            Blocks.piston,
+                            's',
+                            "slimeball"));
+        }
 
         Object[] toolForgeBlocks = { "blockIron", "blockGold", Blocks.diamond_block, Blocks.emerald_block,
                 "blockCobalt", "blockArdite", "blockManyullyn", "blockCopper", "blockBronze", "blockTin",
