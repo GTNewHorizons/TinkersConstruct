@@ -595,9 +595,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         int fullRows = slotCount / columns;
         int slotsLeft = slotCount % columns;
 
-        for (int row = 0; row < fullRows; row++) {
-            slotElement.drawScaledX(x, y + row * slotElement.h, width);
-        }
+        slotElement.drawScaled(x, y, width, fullRows * slotElement.h);
 
         if (slotsLeft > 0) {
             int rowY = y + fullRows * slotElement.h;
