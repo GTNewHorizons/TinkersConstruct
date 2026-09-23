@@ -320,14 +320,16 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
         this.mc.getTextureManager().bindTexture(gui_inventory);
         if (hasChest()) {
-            drawChest();
-
-            // slider
             if (slider.isEnabled()) {
                 slider.update(mouseX, mouseY, !isMouseOverFullSlot(mouseX, mouseY) && isMouseInChest(mouseX, mouseY));
-                slider.draw();
-
                 updateChestSlots();
+            }
+            GuiElementDuex.beginBatch();
+            try {
+                drawChest();
+                if (slider.isEnabled()) slider.draw();
+            } finally {
+                GuiElementDuex.endBatch();
             }
         }
         // Draw description

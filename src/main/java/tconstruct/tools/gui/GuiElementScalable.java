@@ -48,7 +48,7 @@ public class GuiElementScalable extends GuiElementDuex {
         float minU = (float) x / texW;
         float minV = (float) y / texH;
 
-        tessellator.startDrawingQuads();
+        if (!batching) tessellator.startDrawingQuads();
         for (int yOffset = 0; yOffset < height; yOffset += tileHeight) {
             int drawHeight = Math.min(tileHeight, height - yOffset);
             float maxV = (float) (y + Math.min(h, drawHeight)) / texH;
@@ -63,7 +63,7 @@ public class GuiElementScalable extends GuiElementDuex {
                 tessellator.addVertexWithUV(left, top, 0, minU, minV);
             }
         }
-        tessellator.draw();
+        if (!batching) tessellator.draw();
         return width;
     }
 
