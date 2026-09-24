@@ -30,7 +30,6 @@ import tconstruct.library.weaponry.ProjectileWeapon;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.gui.ChestSlot;
 import tconstruct.tools.logic.CraftingStationLogic;
-import tconstruct.util.config.PHConstruct;
 
 public class CraftingStationContainer extends Container {
 
@@ -51,6 +50,7 @@ public class CraftingStationContainer extends Container {
     private final int posX;
     private final int posY;
     private final int posZ;
+    private final boolean shiftClickToGrid;
 
     @SuppressWarnings("rawtypes")
     private final WeakReference[] inventories;
@@ -83,6 +83,7 @@ public class CraftingStationContainer extends Container {
         this.posY = y;
         this.posZ = z;
         this.logic = logic;
+        this.shiftClickToGrid = logic.shiftClickToGrid;
         craftMatrix = new InventoryCraftingStation(this, 3, 3, logic);
         craftResult = new InventoryCraftingStationResult(logic);
         this.inventories = logic.getInventories();
@@ -468,8 +469,7 @@ public class CraftingStationContainer extends Container {
             }
         }
 
-        if (!PHConstruct.craftingStationShiftClickToGrid && inventorySlots.size() > SIDE_INVENTORY_FIRST_SLOT)
-            return true;
+        if (!shiftClickToGrid && inventorySlots.size() > SIDE_INVENTORY_FIRST_SLOT) return true;
 
         return !this.mergeItemStack(itemstack, CRAFTING_GRID_FIRST_SLOT, CRAFTING_GRID_END_SLOT, true);
     }

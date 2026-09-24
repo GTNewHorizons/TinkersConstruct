@@ -40,6 +40,9 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
     public boolean stencilTable;
     public boolean doubleFirst;
 
+    /** Server-selected shift-click behavior, synchronized before opening the GUI. */
+    public boolean shiftClickToGrid;
+
     public int invRows, invColumns, slotCount;
 
     private static final int[] NO_SLOTS = new int[0];
@@ -138,6 +141,7 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         if (world.isRemote) return new CraftingStationContainer(inventoryplayer, this, x, y, z);
 
+        shiftClickToGrid = PHConstruct.craftingStationShiftClickToGrid;
         chest = null;
         chestSize = 0;
         slotCount = 0;
@@ -209,6 +213,7 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
             data.setInteger("ChestDirection", chestDirection.ordinal());
             data.setBoolean("DoubleFirst", doubleFirst);
             data.setBoolean("TinkerTable", tinkerTable);
+            data.setBoolean("ShiftClickToGrid", shiftClickToGrid);
             data.setIntArray("FirstSlots", firstInventorySlots);
             data.setIntArray("SecondSlots", secondInventorySlots);
             player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(x, y, z, 0, data));
@@ -261,6 +266,7 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         chestDirection = ForgeDirection.getOrientation(data.getInteger("ChestDirection"));
         doubleFirst = data.getBoolean("DoubleFirst");
         tinkerTable = data.getBoolean("TinkerTable");
+        shiftClickToGrid = data.getBoolean("ShiftClickToGrid");
         firstInventorySlots = data.getIntArray("FirstSlots");
         secondInventorySlots = data.getIntArray("SecondSlots");
         chestSize = doubleFirst ? secondInventorySlots.length : firstInventorySlots.length;
