@@ -1,5 +1,6 @@
 package tconstruct.api;
 
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -9,8 +10,16 @@ import net.minecraft.item.ItemStack;
 public class ExtendedStackLimitHelper {
 
     public static boolean hasExtendedStackLimit(Slot slot) {
-        return slot != null && (slot instanceof IExtendedStackLimitProvider
-                || slot.inventory instanceof IExtendedStackLimitProvider);
+        return getProvider(slot) != null;
+    }
+
+    public static boolean hasExtendedStackLimit(Container container) {
+        if (container == null) return false;
+
+        for (Object object : container.inventorySlots) {
+            if (object instanceof Slot slot && hasExtendedStackLimit(slot)) return true;
+        }
+        return false;
     }
 
     public static int getStackLimit(Slot slot, ItemStack stack) {

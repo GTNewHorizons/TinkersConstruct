@@ -3,8 +3,10 @@ package tconstruct.tools.inventory;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -87,6 +89,15 @@ public class CraftingStationContainer extends Container {
 
     /** Last oversized stack state sent to each server-side listener. */
     private final Map<EntityPlayerMP, Map<Integer, ItemStack>> extendedStackStates = new HashMap<>();
+
+    /** Slots selected by the client during an extended drag operation. */
+    private final Set<Slot> extendedDragSlots = new HashSet<>();
+
+    /** Drag distribution mode used by the current extended drag operation. */
+    private int extendedDragMode = -1;
+
+    /** Whether the current extended drag operation has passed its start phase. */
+    private boolean extendedDragActive;
 
     public CraftingStationContainer(InventoryPlayer inventoryplayer, CraftingStationLogic logic, int x, int y, int z) {
         this.worldObj = logic.getWorldObj();
@@ -272,6 +283,10 @@ public class CraftingStationContainer extends Container {
         ItemStack result;
         if (isExtendedStackSlot(slotId) && isExtendedSlotClickMode(mode)) {
             result = handleExtendedSlotClick(slotId, clickedButton, mode, player);
+        } else if (hasExtendedStackSlots() && mode == CLICK_MODE_DRAG) {
+            result = handleExtendedDrag(slotId, clickedButton, player);
+        } else if (hasExtendedStackSlots() && mode == CLICK_MODE_COLLECT) {
+            result = handleExtendedCollect(slotId, clickedButton, player);
         } else {
             result = super.slotClick(slotId, clickedButton, mode, player);
         }
@@ -539,6 +554,8 @@ public class CraftingStationContainer extends Container {
     }
 
     public ItemStack handleExtendedSlotClick(int slotId, int clickedButton, int mode, EntityPlayer player) {
+        if (slotId < 0 || slotId >= inventorySlots.size()) return null;
+
         Slot slot = inventorySlots.get(slotId);
         return switch (mode) {
             case CLICK_MODE_PICKUP -> handleExtendedPickup(slot, clickedButton, player);
@@ -551,7 +568,7 @@ public class CraftingStationContainer extends Container {
 
     public ItemStack handleExtendedPickup(Slot slot, int clickedButton, EntityPlayer player) {
         InventoryPlayer inventory = player.inventory;
-        ItemStack stored = slot.getStack();
+        ItemStack stored = getNonEmptyStack(slot);
         ItemStack carried = inventory.getItemStack();
         ItemStack result = copyStack(stored);
 
@@ -614,11 +631,141 @@ public class CraftingStationContainer extends Container {
         return result;
     }
 
+    private ItemStack handleExtendedDrag(int slotId, int clickedButton, EntityPlayer player) {
+        int dragEvent = Container.func_94532_c(clickedButton);
+        if (dragEvent == 0) {
+            extendedDragSlots.clear();
+            extendedDragMode = Container.func_94529_b(clickedButton);
+            extendedDragActive = player.inventory.getItemStack() != null && Container.func_94528_d(extendedDragMode);
+            return null;
+        }
+
+        if (dragEvent == 1) {
+            ItemStack carried = player.inventory.getItemStack();
+            if (!extendedDragActive || carried == null || carried.stackSize <= extendedDragSlots.size()) {
+                resetExtendedDrag();
+                return null;
+            }
+
+            Slot slot = getSlotIfPresent(slotId);
+            if (canAddExtendedDragSlot(slot, carried)) extendedDragSlots.add(slot);
+            return null;
+        }
+
+        if (dragEvent == 2) {
+            if (!extendedDragActive) return null;
+
+            ItemStack carried = player.inventory.getItemStack();
+            if (carried != null) {
+                ItemStack template = carried.copy();
+                int remaining = carried.stackSize;
+                Set<Slot> selectedSlots = new HashSet<>(extendedDragSlots);
+                int selectedSlotCount = selectedSlots.size();
+                for (Slot slot : selectedSlots) {
+                    if (remaining < selectedSlotCount || !canAddExtendedDragSlot(slot, carried)) continue;
+
+                    ItemStack existing = getNonEmptyStack(slot);
+                    int existingSize = existing == null ? 0 : existing.stackSize;
+                    int targetSize = getDraggedStackSize(
+                            template.stackSize,
+                            extendedDragMode,
+                            selectedSlotCount,
+                            existingSize,
+                            getStorageLimit(slot, template));
+                    int moved = targetSize - existingSize;
+                    if (moved <= 0) continue;
+
+                    ItemStack placed = template.copy();
+                    placed.stackSize = targetSize;
+                    slot.putStack(placed);
+                    slot.onSlotChanged();
+                    remaining -= moved;
+                }
+
+                template.stackSize = remaining;
+                player.inventory.setItemStack(remaining > 0 ? template : null);
+            }
+
+            resetExtendedDrag();
+            return null;
+        }
+
+        resetExtendedDrag();
+        return null;
+    }
+
+    private ItemStack handleExtendedCollect(int slotId, int clickedButton, EntityPlayer player) {
+        if (slotId < 0) return null;
+
+        Slot clickedSlot = getSlotIfPresent(slotId);
+        if (clickedSlot != null && getNonEmptyStack(clickedSlot) != null && clickedSlot.canTakeStack(player))
+            return null;
+
+        ItemStack carried = player.inventory.getItemStack();
+        if (carried == null || carried.stackSize >= carried.getMaxStackSize()) return null;
+
+        boolean changed = false;
+        int firstIndex = clickedButton == 0 ? 0 : inventorySlots.size() - 1;
+        int step = clickedButton == 0 ? 1 : -1;
+        for (int pass = 0; pass < 2 && carried.stackSize < carried.getMaxStackSize(); pass++) {
+            for (int index = firstIndex; index >= 0 && index < inventorySlots.size()
+                    && carried.stackSize < carried.getMaxStackSize(); index += step) {
+                Slot slot = inventorySlots.get(index);
+                ItemStack stored = getNonEmptyStack(slot);
+                if (stored == null || !slot.canTakeStack(player)
+                        || !func_94530_a(carried, slot)
+                        || !stacksCanMerge(carried, stored))
+                    continue;
+
+                int limit = getStorageLimit(slot, carried);
+                if (pass == 0 && stored.stackSize >= limit) continue;
+
+                int amount = Math.min(carried.getMaxStackSize() - carried.stackSize, stored.stackSize);
+                ItemStack extracted = slot.decrStackSize(amount);
+                if (extracted == null || extracted.stackSize <= 0) continue;
+
+                carried.stackSize += extracted.stackSize;
+                clearEmptySlot(slot);
+                slot.onPickupFromSlot(player, extracted);
+                slot.onSlotChanged();
+                changed = true;
+            }
+        }
+
+        if (changed) detectAndSendChanges();
+        return null;
+    }
+
+    private boolean canAddExtendedDragSlot(Slot slot, ItemStack carried) {
+        if (slot == null || !slot.isItemValid(carried) || !func_94530_a(carried, slot) || !canDragIntoSlot(slot))
+            return false;
+
+        ItemStack existing = getNonEmptyStack(slot);
+        return existing == null
+                || stacksCanMerge(carried, existing) && existing.stackSize < getStorageLimit(slot, carried);
+    }
+
+    private static int getDraggedStackSize(int carriedSize, int dragMode, int slotCount, int existingSize, int limit) {
+        long requested = dragMode == 0 ? carriedSize / (long) slotCount : 1L;
+        long target = Math.min((long) existingSize + requested, limit);
+        return target > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) target;
+    }
+
+    private Slot getSlotIfPresent(int slotId) {
+        return slotId < 0 || slotId >= inventorySlots.size() ? null : inventorySlots.get(slotId);
+    }
+
+    private void resetExtendedDrag() {
+        extendedDragSlots.clear();
+        extendedDragMode = -1;
+        extendedDragActive = false;
+    }
+
     public ItemStack handleExtendedHotbarSwap(Slot slot, int hotbarIndex, EntityPlayer player) {
         if (hotbarIndex < 0 || hotbarIndex >= 9) return null;
 
         InventoryPlayer inventory = player.inventory;
-        ItemStack stored = slot.getStack();
+        ItemStack stored = getNonEmptyStack(slot);
         ItemStack hotbar = inventory.getStackInSlot(hotbarIndex);
         ItemStack result = copyStack(stored);
 
@@ -680,7 +827,7 @@ public class CraftingStationContainer extends Container {
 
     public ItemStack handleExtendedCreativePick(Slot slot, EntityPlayer player) {
         InventoryPlayer inventory = player.inventory;
-        ItemStack stored = slot.getStack();
+        ItemStack stored = getNonEmptyStack(slot);
         if (stored == null || !player.capabilities.isCreativeMode || inventory.getItemStack() != null) {
             return copyStack(stored);
         }
@@ -693,7 +840,7 @@ public class CraftingStationContainer extends Container {
 
     public ItemStack handleExtendedDrop(Slot slot, int clickedButton, EntityPlayer player) {
         InventoryPlayer inventory = player.inventory;
-        ItemStack stored = slot.getStack();
+        ItemStack stored = getNonEmptyStack(slot);
         ItemStack result = copyStack(stored);
         if (stored == null || inventory.getItemStack() != null || !slot.canTakeStack(player)) return result;
 
@@ -742,7 +889,7 @@ public class CraftingStationContainer extends Container {
         boolean[] extendedSlots = new boolean[inventorySlots.size()];
         for (int slotId = SIDE_INVENTORY_FIRST_SLOT; slotId < inventorySlots.size(); slotId++) {
             Slot slot = inventorySlots.get(slotId);
-            extendedSlots[slotId] = slot instanceof ChestSlot && ExtendedStackLimitHelper.hasExtendedStackLimit(slot);
+            extendedSlots[slotId] = ExtendedStackLimitHelper.hasExtendedStackLimit(slot);
         }
         return extendedSlots;
     }
@@ -763,6 +910,10 @@ public class CraftingStationContainer extends Container {
 
     public boolean isExtendedStackSlot(int slot) {
         return slot >= 0 && slot < extendedStackSlots.length && extendedStackSlots[slot];
+    }
+
+    private boolean hasExtendedStackSlots() {
+        return extendedStackSlotIds.length > 0;
     }
 
     protected boolean refillChest(ItemStack itemstack) {
@@ -907,7 +1058,7 @@ public class CraftingStationContainer extends Container {
         if (stack.stackSize > 0) {
             while (!playerInventory && slotIndex < slotsTotal || playerInventory && slotIndex >= slotsStart) {
                 otherInventorySlot = this.inventorySlots.get(slotIndex);
-                copyStack = otherInventorySlot.getStack();
+                copyStack = getNonEmptyStack(otherInventorySlot);
 
                 if (copyStack == null && otherInventorySlot.isItemValid(stack)) {
                     int limit = ExtendedStackLimitHelper.getStackLimit(otherInventorySlot, stack);
@@ -945,6 +1096,17 @@ public class CraftingStationContainer extends Container {
         return ret;
     }
 
+    private static ItemStack getNonEmptyStack(Slot slot) {
+        if (slot == null) return null;
+
+        ItemStack stack = slot.getStack();
+        return stack == null || stack.stackSize <= 0 ? null : stack;
+    }
+
+    private static int getStorageLimit(Slot slot, ItemStack stack) {
+        return ExtendedStackLimitHelper.getStackLimit(slot, stack);
+    }
+
     // only refills items that are already present
     protected boolean mergeItemStackRefill(@Nonnull ItemStack stack, int startIndex, int endIndex,
             boolean useEndIndex) {
@@ -961,7 +1123,7 @@ public class CraftingStationContainer extends Container {
         if (stack.isStackable()) {
             while (stack.stackSize > 0 && (!useEndIndex && k < endIndex || useEndIndex && k >= startIndex)) {
                 slot = this.inventorySlots.get(k);
-                itemstack1 = slot.getStack();
+                itemstack1 = getNonEmptyStack(slot);
 
                 if (itemstack1 != null && itemstack1.getItem() == stack.getItem()
                         && (!stack.getHasSubtypes() || stack.getItemDamage() == itemstack1.getItemDamage())
@@ -998,10 +1160,9 @@ public class CraftingStationContainer extends Container {
 
         while (!useEndIndex && k < endIndex || useEndIndex && k >= startIndex) {
             final Slot slot = this.inventorySlots.get(k);
-            ItemStack itemstack1 = slot.getStack();
+            ItemStack itemstack1 = getNonEmptyStack(slot);
 
-            if ((itemstack1 == null || itemstack1.stackSize == 0) && slot.isItemValid(stack)
-                    && this.func_94530_a /* canMergeSlot */(stack, slot)) {
+            if (itemstack1 == null && slot.isItemValid(stack) && this.func_94530_a /* canMergeSlot */(stack, slot)) {
                 int limit = ExtendedStackLimitHelper.getStackLimit(slot, stack);
                 int amount = Math.min(stack.stackSize, limit);
                 if (amount > 0) {

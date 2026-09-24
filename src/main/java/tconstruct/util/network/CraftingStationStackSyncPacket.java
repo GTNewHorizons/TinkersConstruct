@@ -99,7 +99,10 @@ public class CraftingStationStackSyncPacket extends AbstractPacket {
 
             if (slotIds[i] < 0 || slotIds[i] >= container.inventorySlots.size()) continue;
             Slot slot = container.getSlot(slotIds[i]);
-            if (slot != null) slot.putStack(stacks[i]);
+            if (slot != null) {
+                slot.putStack(stacks[i]);
+                slot.onSlotChanged();
+            }
         }
     }
 
