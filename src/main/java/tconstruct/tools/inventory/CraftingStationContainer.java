@@ -1,12 +1,16 @@
 package tconstruct.tools.inventory;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
@@ -20,11 +24,14 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
+import tconstruct.TConstruct;
+import tconstruct.api.ExtendedStackLimitHelper;
 import tconstruct.library.crafting.ModifyBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.gui.ChestSlot;
 import tconstruct.tools.logic.CraftingStationLogic;
+import tconstruct.util.network.CraftingStationStackSyncPacket;
 
 public class CraftingStationContainer extends Container {
 
@@ -38,6 +45,8 @@ public class CraftingStationContainer extends Container {
     private static final int CLICK_MODE_PICKUP = 0;
     private static final int CLICK_MODE_QUICK_MOVE = 1;
     private static final int CLICK_MODE_HOTBAR_SWAP = 2;
+    private static final int CLICK_MODE_CREATIVE_PICK = 3;
+    private static final int CLICK_MODE_DROP = 4;
     private static final int CLICK_MODE_DRAG = 5;
     private static final int CLICK_MODE_COLLECT = 6;
 
@@ -47,7 +56,7 @@ public class CraftingStationContainer extends Container {
     private final int posZ;
 
     @SuppressWarnings("rawtypes")
-    private final WeakReference[] inventories;
+    public final WeakReference[] inventories;
 
     /**
      * The crafting matrix inventory (3x3).
@@ -59,16 +68,25 @@ public class CraftingStationContainer extends Container {
     EntityPlayer player;
 
     /** Last matched recipe, tried first to avoid rescanning the whole recipe list on every matrix change. */
-    private IRecipe lastRecipe;
+    public IRecipe lastRecipe;
 
     /** While true, matrix changes don't recompute the result. Batches ingredient consumption into one lookup. */
-    private boolean suppressCraftingUpdates;
+    public boolean suppressCraftingUpdates;
 
     /** Side-inventory preference of the stack currently carried by this container's cursor. */
-    private boolean carriedStackPrefersSideInventory;
+    public boolean carriedStackPrefersSideInventory;
 
     /** Last preference mask sent to clients. */
-    private int lastSideInventoryPreferences = -1;
+    public int lastSideInventoryPreferences = -1;
+
+    /** Provider-backed side slots whose counts cannot use the vanilla byte-sized update. */
+    private final boolean[] extendedStackSlots;
+
+    /** Provider-backed side slot indices, cached because the slot layout cannot change after construction. */
+    private final int[] extendedStackSlotIds;
+
+    /** Last oversized stack state sent to each server-side listener. */
+    private final Map<EntityPlayerMP, Map<Integer, ItemStack>> extendedStackStates = new HashMap<>();
 
     public CraftingStationContainer(InventoryPlayer inventoryplayer, CraftingStationLogic logic, int x, int y, int z) {
         this.worldObj = logic.getWorldObj();
@@ -160,6 +178,8 @@ public class CraftingStationContainer extends Container {
             }
         }
 
+        this.extendedStackSlots = createExtendedStackSlots();
+        this.extendedStackSlotIds = createExtendedStackSlotIds();
         this.onCraftMatrixChanged(this.craftMatrix);
     }
 
@@ -180,7 +200,7 @@ public class CraftingStationContainer extends Container {
     }
 
     public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int index) {
-        Slot slot = (Slot) this.inventorySlots.get(index);
+        Slot slot = this.inventorySlots.get(index);
 
         if (slot == null || !slot.getHasStack()) {
             return null;
@@ -249,7 +269,12 @@ public class CraftingStationContainer extends Container {
                 ? copySlotRange(SIDE_INVENTORY_FIRST_SLOT, inventorySlots.size())
                 : null;
 
-        ItemStack result = super.slotClick(slotId, clickedButton, mode, player);
+        ItemStack result;
+        if (isExtendedStackSlot(slotId) && isExtendedSlotClickMode(mode)) {
+            result = handleExtendedSlotClick(slotId, clickedButton, mode, player);
+        } else {
+            result = super.slotClick(slotId, clickedButton, mode, player);
+        }
 
         ItemStack carriedAfter = player.inventory.getItemStack();
         ItemStack[] gridAfter = copySlotRange(CRAFTING_GRID_FIRST_SLOT, CRAFTING_GRID_END_SLOT);
@@ -296,6 +321,7 @@ public class CraftingStationContainer extends Container {
 
     @Override
     public void detectAndSendChanges() {
+        suppressOversizedVanillaUpdates();
         super.detectAndSendChanges();
 
         int sideInventoryPreferences = logic.getSideInventoryPreferences();
@@ -305,6 +331,95 @@ public class CraftingStationContainer extends Container {
             }
             lastSideInventoryPreferences = sideInventoryPreferences;
         }
+
+        sendExtendedStackUpdates();
+    }
+
+    private void sendExtendedStackUpdates() {
+        if (worldObj.isRemote) return;
+
+        for (ICrafting crafter : crafters) {
+            if (!(crafter instanceof EntityPlayerMP playerMP)) continue;
+
+            Map<Integer, ItemStack> previousStacks = extendedStackStates
+                    .computeIfAbsent(playerMP, ignored -> new HashMap<>());
+            List<Integer> changedSlotIds = null;
+            List<ItemStack> changedStacks = null;
+
+            for (int slotId : extendedStackSlotIds) {
+                ItemStack stack = inventorySlots.get(slotId).getStack();
+                ItemStack previous = previousStacks.get(slotId);
+                if (!isOversized(stack)) {
+                    previousStacks.remove(slotId);
+                    continue;
+                }
+
+                if (!ItemStack.areItemStacksEqual(previous, stack)) {
+                    if (changedSlotIds == null) {
+                        changedSlotIds = new ArrayList<>();
+                        changedStacks = new ArrayList<>();
+                    }
+                    changedSlotIds.add(slotId);
+                    changedStacks.add(stack);
+                    previousStacks.put(slotId, stack.copy());
+                }
+            }
+
+            ItemStack cursorStack = playerMP.inventory.getItemStack();
+            ItemStack previousCursorStack = previousStacks.get(-1);
+            boolean cursorWasOversized = isOversized(previousCursorStack);
+            if (isOversized(cursorStack)) {
+                if (!ItemStack.areItemStacksEqual(previousCursorStack, cursorStack)) {
+                    if (changedSlotIds == null) {
+                        changedSlotIds = new ArrayList<>();
+                        changedStacks = new ArrayList<>();
+                    }
+                    changedSlotIds.add(-1);
+                    changedStacks.add(cursorStack);
+                    previousStacks.put(-1, cursorStack.copy());
+                }
+            } else {
+                if (cursorWasOversized && !ItemStack.areItemStacksEqual(previousCursorStack, cursorStack)) {
+                    if (changedSlotIds == null) {
+                        changedSlotIds = new ArrayList<>();
+                        changedStacks = new ArrayList<>();
+                    }
+                    changedSlotIds.add(-1);
+                    changedStacks.add(cursorStack);
+                }
+                previousStacks.remove(-1);
+            }
+
+            if (changedSlotIds != null) {
+                TConstruct.packetPipeline.sendTo(
+                        new CraftingStationStackSyncPacket(
+                                windowId,
+                                toIntArray(changedSlotIds),
+                                changedStacks.toArray(new ItemStack[0])),
+                        playerMP);
+            }
+        }
+    }
+
+    private void suppressOversizedVanillaUpdates() {
+        for (int slotId : extendedStackSlotIds) {
+            ItemStack stack = inventorySlots.get(slotId).getStack();
+            if (isOversized(stack) && !ItemStack.areItemStacksEqual(inventoryItemStacks.get(slotId), stack)) {
+                inventoryItemStacks.set(slotId, stack.copy());
+            }
+        }
+    }
+
+    private static boolean isOversized(ItemStack stack) {
+        return stack != null && stack.stackSize > Byte.MAX_VALUE;
+    }
+
+    private static int[] toIntArray(List<Integer> values) {
+        int[] result = new int[values.size()];
+        for (int i = 0; i < values.size(); i++) {
+            result[i] = values.get(i);
+        }
+        return result;
     }
 
     @Override
@@ -314,7 +429,7 @@ public class CraftingStationContainer extends Container {
         }
     }
 
-    private void updateGridPreferences(ItemStack[] before, ItemStack[] after, boolean[] preferencesBefore,
+    public void updateGridPreferences(ItemStack[] before, ItemStack[] after, boolean[] preferencesBefore,
             ItemStack carriedBefore, ItemStack clickedBefore, int clickedSlot, int mode,
             boolean sideInventoryShiftClick, boolean incomingStackPrefersSideInventory) {
         for (int i = 0; i < after.length; i++) {
@@ -358,7 +473,7 @@ public class CraftingStationContainer extends Container {
         }
     }
 
-    private static boolean getCarriedStackPreference(ItemStack carriedBefore, ItemStack carriedAfter,
+    public static boolean getCarriedStackPreference(ItemStack carriedBefore, ItemStack carriedAfter,
             boolean carriedPreferenceBefore, ItemStack clickedBefore, boolean clickedStackPrefersSideInventory,
             boolean collectedPreferredGridStack, boolean collectedSideInventoryStack) {
         if (carriedAfter == null || carriedAfter.stackSize <= 0) return false;
@@ -374,7 +489,7 @@ public class CraftingStationContainer extends Container {
         return collectedPreferredGridStack || collectedSideInventoryStack;
     }
 
-    private static boolean collectedPreferredGridStack(ItemStack carriedStack, ItemStack[] before, ItemStack[] after,
+    public static boolean collectedPreferredGridStack(ItemStack carriedStack, ItemStack[] before, ItemStack[] after,
             boolean[] preferencesBefore) {
         for (int i = 0; i < before.length; i++) {
             if (preferencesBefore[i] && stackWasCollected(carriedStack, before[i], after[i])) return true;
@@ -382,7 +497,7 @@ public class CraftingStationContainer extends Container {
         return false;
     }
 
-    private static boolean collectedSideInventoryStack(ItemStack carriedStack, ItemStack[] before, ItemStack[] after) {
+    public static boolean collectedSideInventoryStack(ItemStack carriedStack, ItemStack[] before, ItemStack[] after) {
         if (before == null || after == null) return false;
 
         for (int i = 0; i < before.length; i++) {
@@ -391,12 +506,12 @@ public class CraftingStationContainer extends Container {
         return false;
     }
 
-    private static boolean stackWasCollected(ItemStack carriedStack, ItemStack before, ItemStack after) {
+    public static boolean stackWasCollected(ItemStack carriedStack, ItemStack before, ItemStack after) {
         if (before == null || !stacksCanMerge(carriedStack, before)) return false;
         return after == null || !stacksCanMerge(before, after) || after.stackSize < before.stackSize;
     }
 
-    private boolean[] copyGridPreferences() {
+    public boolean[] copyGridPreferences() {
         boolean[] preferences = new boolean[CRAFTING_GRID_END_SLOT - CRAFTING_GRID_FIRST_SLOT];
         for (int i = 0; i < preferences.length; i++) {
             preferences[i] = logic.prefersSideInventory(CRAFTING_GRID_FIRST_SLOT + i);
@@ -404,36 +519,250 @@ public class CraftingStationContainer extends Container {
         return preferences;
     }
 
-    private ItemStack[] copySlotRange(int start, int end) {
+    public ItemStack[] copySlotRange(int start, int end) {
         ItemStack[] stacks = new ItemStack[Math.max(0, end - start)];
         for (int i = 0; i < stacks.length; i++) {
-            stacks[i] = copyStack(((Slot) inventorySlots.get(start + i)).getStack());
+            stacks[i] = copyStack(inventorySlots.get(start + i).getStack());
         }
         return stacks;
     }
 
-    private ItemStack getSlotStackCopy(int slot) {
+    public ItemStack getSlotStackCopy(int slot) {
         if (slot < 0 || slot >= inventorySlots.size()) return null;
-        return copyStack(((Slot) inventorySlots.get(slot)).getStack());
+        return copyStack(inventorySlots.get(slot).getStack());
     }
 
-    private static ItemStack copyStack(ItemStack stack) {
+    public static boolean isExtendedSlotClickMode(int mode) {
+        return mode == CLICK_MODE_PICKUP || mode == CLICK_MODE_HOTBAR_SWAP
+                || mode == CLICK_MODE_CREATIVE_PICK
+                || mode == CLICK_MODE_DROP;
+    }
+
+    public ItemStack handleExtendedSlotClick(int slotId, int clickedButton, int mode, EntityPlayer player) {
+        Slot slot = inventorySlots.get(slotId);
+        return switch (mode) {
+            case CLICK_MODE_PICKUP -> handleExtendedPickup(slot, clickedButton, player);
+            case CLICK_MODE_HOTBAR_SWAP -> handleExtendedHotbarSwap(slot, clickedButton, player);
+            case CLICK_MODE_CREATIVE_PICK -> handleExtendedCreativePick(slot, player);
+            case CLICK_MODE_DROP -> handleExtendedDrop(slot, clickedButton, player);
+            default -> null;
+        };
+    }
+
+    public ItemStack handleExtendedPickup(Slot slot, int clickedButton, EntityPlayer player) {
+        InventoryPlayer inventory = player.inventory;
+        ItemStack stored = slot.getStack();
+        ItemStack carried = inventory.getItemStack();
+        ItemStack result = copyStack(stored);
+
+        if (stored == null) {
+            if (carried == null || !slot.isItemValid(carried)) return result;
+
+            int amount = clickedButton == 0 ? carried.stackSize : 1;
+            amount = Math.min(amount, ExtendedStackLimitHelper.getStackLimit(slot, carried));
+            if (amount <= 0) return result;
+
+            ItemStack placed = carried.splitStack(amount);
+            slot.putStack(placed);
+            slot.onSlotChanged();
+            if (carried.stackSize <= 0) inventory.setItemStack(null);
+            return result;
+        }
+
+        if (!slot.canTakeStack(player)) return result;
+
+        if (carried == null) {
+            int transferLimit = getNormalStackLimit(stored);
+            int amount = clickedButton == 0 ? transferLimit : transferLimit / 2 + transferLimit % 2;
+            ItemStack extracted = slot.decrStackSize(Math.min(stored.stackSize, amount));
+            if (extracted != null && extracted.stackSize > 0) {
+                inventory.setItemStack(extracted);
+                clearEmptySlot(slot);
+                slot.onPickupFromSlot(player, extracted);
+                slot.onSlotChanged();
+            }
+            return result;
+        }
+
+        if (!slot.isItemValid(carried) || !stacksCanMerge(stored, carried)) return result;
+
+        int limit = ExtendedStackLimitHelper.getStackLimit(slot, stored);
+        int available = Math.max(0, limit - stored.stackSize);
+        int amount = clickedButton == 0 ? Math.min(carried.stackSize, available) : Math.min(1, available);
+        if (amount > 0) {
+            stored.stackSize += amount;
+            carried.stackSize -= amount;
+            slot.putStack(stored);
+            slot.onSlotChanged();
+            if (carried.stackSize <= 0) inventory.setItemStack(null);
+            return result;
+        }
+
+        if (clickedButton == 0) {
+            int cursorSpace = Math.max(0, getNormalStackLimit(carried) - carried.stackSize);
+            int amountToTake = Math.min(stored.stackSize, cursorSpace);
+            if (amountToTake > 0) {
+                ItemStack extracted = slot.decrStackSize(amountToTake);
+                if (extracted != null && extracted.stackSize > 0) {
+                    carried.stackSize += extracted.stackSize;
+                    clearEmptySlot(slot);
+                    slot.onPickupFromSlot(player, extracted);
+                    slot.onSlotChanged();
+                }
+            }
+        }
+        return result;
+    }
+
+    public ItemStack handleExtendedHotbarSwap(Slot slot, int hotbarIndex, EntityPlayer player) {
+        if (hotbarIndex < 0 || hotbarIndex >= 9) return null;
+
+        InventoryPlayer inventory = player.inventory;
+        ItemStack stored = slot.getStack();
+        ItemStack hotbar = inventory.getStackInSlot(hotbarIndex);
+        ItemStack result = copyStack(stored);
+
+        if (stored == null) {
+            if (hotbar == null || !slot.isItemValid(hotbar)) return result;
+
+            int amount = Math.min(hotbar.stackSize, ExtendedStackLimitHelper.getStackLimit(slot, hotbar));
+            if (amount <= 0) return result;
+
+            ItemStack placed = hotbar.splitStack(amount);
+            slot.putStack(placed);
+            inventory.setInventorySlotContents(hotbarIndex, hotbar.stackSize > 0 ? hotbar : null);
+            slot.onSlotChanged();
+            return result;
+        }
+
+        if (!slot.canTakeStack(player)) return result;
+
+        if (hotbar == null) {
+            ItemStack extracted = slot.decrStackSize(getNormalStackLimit(stored));
+            if (extracted != null && extracted.stackSize > 0) {
+                inventory.setInventorySlotContents(hotbarIndex, extracted);
+                clearEmptySlot(slot);
+                slot.onPickupFromSlot(player, extracted);
+                slot.onSlotChanged();
+            }
+            return result;
+        }
+
+        if (stacksCanMerge(stored, hotbar) && slot.isItemValid(hotbar)) {
+            int available = Math.max(0, getNormalStackLimit(hotbar) - hotbar.stackSize);
+            int amount = Math.min(stored.stackSize, available);
+            if (amount > 0) {
+                ItemStack extracted = slot.decrStackSize(amount);
+                if (extracted != null && extracted.stackSize > 0) {
+                    hotbar.stackSize += extracted.stackSize;
+                    inventory.setInventorySlotContents(hotbarIndex, hotbar);
+                    clearEmptySlot(slot);
+                    slot.onPickupFromSlot(player, extracted);
+                    slot.onSlotChanged();
+                }
+            }
+            return result;
+        }
+
+        int emptySlot = inventory.getFirstEmptyStack();
+        if (emptySlot < 0) return result;
+
+        ItemStack extracted = slot.decrStackSize(getNormalStackLimit(stored));
+        if (extracted != null && extracted.stackSize > 0) {
+            inventory.setInventorySlotContents(emptySlot, hotbar);
+            inventory.setInventorySlotContents(hotbarIndex, extracted);
+            clearEmptySlot(slot);
+            slot.onPickupFromSlot(player, extracted);
+            slot.onSlotChanged();
+        }
+        return result;
+    }
+
+    public ItemStack handleExtendedCreativePick(Slot slot, EntityPlayer player) {
+        InventoryPlayer inventory = player.inventory;
+        ItemStack stored = slot.getStack();
+        if (stored == null || !player.capabilities.isCreativeMode || inventory.getItemStack() != null) {
+            return copyStack(stored);
+        }
+
+        ItemStack picked = stored.copy();
+        picked.stackSize = getNormalStackLimit(picked);
+        inventory.setItemStack(picked);
+        return stored.copy();
+    }
+
+    public ItemStack handleExtendedDrop(Slot slot, int clickedButton, EntityPlayer player) {
+        InventoryPlayer inventory = player.inventory;
+        ItemStack stored = slot.getStack();
+        ItemStack result = copyStack(stored);
+        if (stored == null || inventory.getItemStack() != null || !slot.canTakeStack(player)) return result;
+
+        int amount = clickedButton == 0 ? 1 : getNormalStackLimit(stored);
+        ItemStack dropped = slot.decrStackSize(amount);
+        if (dropped != null && dropped.stackSize > 0) {
+            clearEmptySlot(slot);
+            slot.onPickupFromSlot(player, dropped);
+            player.dropPlayerItemWithRandomChoice(dropped, true);
+            slot.onSlotChanged();
+        }
+        return result;
+    }
+
+    public static void clearEmptySlot(Slot slot) {
+        ItemStack stack = slot.getStack();
+        if (stack != null && stack.stackSize <= 0) {
+            slot.putStack(null);
+        }
+    }
+
+    public static int getNormalStackLimit(ItemStack stack) {
+        return Math.max(0, stack.getMaxStackSize());
+    }
+
+    public static ItemStack copyStack(ItemStack stack) {
         return stack == null ? null : stack.copy();
     }
 
-    private static boolean stacksCanMerge(ItemStack first, ItemStack second) {
+    public static boolean stacksCanMerge(ItemStack first, ItemStack second) {
         return first != null && second != null
                 && first.getItem() == second.getItem()
                 && (!first.getHasSubtypes() || first.getItemDamage() == second.getItemDamage())
                 && ItemStack.areItemStackTagsEqual(first, second);
     }
 
-    private static boolean isCraftingGridSlot(int slot) {
+    public static boolean isCraftingGridSlot(int slot) {
         return slot >= CRAFTING_GRID_FIRST_SLOT && slot < CRAFTING_GRID_END_SLOT;
     }
 
-    private boolean isSideInventorySlot(int slot) {
+    public boolean isSideInventorySlot(int slot) {
         return slot >= SIDE_INVENTORY_FIRST_SLOT && slot < inventorySlots.size();
+    }
+
+    private boolean[] createExtendedStackSlots() {
+        boolean[] extendedSlots = new boolean[inventorySlots.size()];
+        for (int slotId = SIDE_INVENTORY_FIRST_SLOT; slotId < inventorySlots.size(); slotId++) {
+            Slot slot = inventorySlots.get(slotId);
+            extendedSlots[slotId] = slot instanceof ChestSlot && ExtendedStackLimitHelper.hasExtendedStackLimit(slot);
+        }
+        return extendedSlots;
+    }
+
+    private int[] createExtendedStackSlotIds() {
+        int count = 0;
+        for (boolean extended : extendedStackSlots) {
+            if (extended) count++;
+        }
+
+        int[] slotIds = new int[count];
+        int index = 0;
+        for (int slotId = SIDE_INVENTORY_FIRST_SLOT; slotId < extendedStackSlots.length; slotId++) {
+            if (extendedStackSlots[slotId]) slotIds[index++] = slotId;
+        }
+        return slotIds;
+    }
+
+    public boolean isExtendedStackSlot(int slot) {
+        return slot >= 0 && slot < extendedStackSlots.length && extendedStackSlots[slot];
     }
 
     protected boolean refillChest(ItemStack itemstack) {
@@ -490,7 +819,7 @@ public class CraftingStationContainer extends Container {
     }
 
     /** Like {@link CraftingManager#findMatchingRecipe} but tries the last matched recipe first. */
-    private ItemStack findMatchingRecipeCached() {
+    public ItemStack findMatchingRecipeCached() {
         // Vanilla's two-item tool repair takes precedence over the recipe list
         if (isVanillaToolRepair()) {
             return CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix, this.worldObj);
@@ -502,7 +831,6 @@ public class CraftingStationContainer extends Container {
         }
         this.lastRecipe = null;
 
-        @SuppressWarnings("unchecked")
         List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
         for (int i = 0; i < recipes.size(); i++) {
             IRecipe recipe = recipes.get(i);
@@ -517,7 +845,7 @@ public class CraftingStationContainer extends Container {
     /**
      * Mirrors the repair check in {@link CraftingManager#findMatchingRecipe}: two size-1 stacks of one repairable item.
      */
-    private boolean isVanillaToolRepair() {
+    public boolean isVanillaToolRepair() {
         ItemStack first = null;
         ItemStack second = null;
         int found = 0;
@@ -542,12 +870,12 @@ public class CraftingStationContainer extends Container {
      * Suppresses result updates until {@link #endBatchCraftingUpdate}; each consumed ingredient fires a lookup
      * otherwise.
      */
-    void beginBatchCraftingUpdate() {
+    public void beginBatchCraftingUpdate() {
         suppressCraftingUpdates = true;
     }
 
     /** Re-enables result updates and recomputes once. */
-    void endBatchCraftingUpdate() {
+    public void endBatchCraftingUpdate() {
         suppressCraftingUpdates = false;
         this.onCraftMatrixChanged(this.craftMatrix);
     }
@@ -578,19 +906,23 @@ public class CraftingStationContainer extends Container {
 
         if (stack.stackSize > 0) {
             while (!playerInventory && slotIndex < slotsTotal || playerInventory && slotIndex >= slotsStart) {
-                otherInventorySlot = (Slot) this.inventorySlots.get(slotIndex);
+                otherInventorySlot = this.inventorySlots.get(slotIndex);
                 copyStack = otherInventorySlot.getStack();
 
                 if (copyStack == null && otherInventorySlot.isItemValid(stack)) {
-                    ItemStack placed = stack.copy();
-                    if (placed.hasTagCompound() && placed.getItem() instanceof IModifyable modifyable) {
-                        placed.getTagCompound().getCompoundTag(modifyable.getBaseTagName()).removeTag("ToRemove");
+                    int limit = ExtendedStackLimitHelper.getStackLimit(otherInventorySlot, stack);
+                    int amount = Math.min(stack.stackSize, limit);
+                    if (amount > 0) {
+                        ItemStack placed = stack.copy();
+                        placed.stackSize = amount;
+                        if (placed.hasTagCompound() && placed.getItem() instanceof IModifyable modifyable) {
+                            placed.getTagCompound().getCompoundTag(modifyable.getBaseTagName()).removeTag("ToRemove");
+                        }
+                        otherInventorySlot.putStack(placed);
+                        otherInventorySlot.onSlotChanged();
+                        stack.stackSize -= amount;
+                        failedToMerge = true;
                     }
-                    otherInventorySlot.putStack(placed);
-                    otherInventorySlot.onSlotChanged();
-                    stack.stackSize = 0;
-                    failedToMerge = true;
-                    break;
                 }
 
                 if (playerInventory) {
@@ -628,24 +960,20 @@ public class CraftingStationContainer extends Container {
 
         if (stack.isStackable()) {
             while (stack.stackSize > 0 && (!useEndIndex && k < endIndex || useEndIndex && k >= startIndex)) {
-                slot = (Slot) this.inventorySlots.get(k);
+                slot = this.inventorySlots.get(k);
                 itemstack1 = slot.getStack();
 
                 if (itemstack1 != null && itemstack1.getItem() == stack.getItem()
                         && (!stack.getHasSubtypes() || stack.getItemDamage() == itemstack1.getItemDamage())
                         && ItemStack.areItemStackTagsEqual(stack, itemstack1)
                         && this.func_94530_a /* canMergeSlot */(stack, slot)) {
-                    int l = itemstack1.stackSize + stack.stackSize;
-                    int limit = Math.min(stack.getMaxStackSize(), slot.getSlotStackLimit());
+                    int limit = ExtendedStackLimitHelper.getStackLimit(slot, stack);
+                    int space = limit - itemstack1.stackSize;
+                    int amount = Math.min(stack.stackSize, Math.max(0, space));
 
-                    if (l <= limit) {
-                        stack.stackSize = 0;
-                        itemstack1.stackSize = l;
-                        slot.onSlotChanged();
-                        didSomething = true;
-                    } else if (itemstack1.stackSize < limit) {
-                        stack.stackSize -= (limit - itemstack1.stackSize);
-                        itemstack1.stackSize = limit;
+                    if (amount > 0) {
+                        stack.stackSize -= amount;
+                        itemstack1.stackSize += amount;
                         slot.onSlotChanged();
                         didSomething = true;
                     }
@@ -669,23 +997,21 @@ public class CraftingStationContainer extends Container {
         int k = useEndIndex ? endIndex - 1 : startIndex;
 
         while (!useEndIndex && k < endIndex || useEndIndex && k >= startIndex) {
-            final Slot slot = (Slot) this.inventorySlots.get(k);
+            final Slot slot = this.inventorySlots.get(k);
             ItemStack itemstack1 = slot.getStack();
 
             if ((itemstack1 == null || itemstack1.stackSize == 0) && slot.isItemValid(stack)
                     && this.func_94530_a /* canMergeSlot */(stack, slot)) {
-                // Forge: Make sure to respect isItemValid in the slot.
-                int limit = slot.getSlotStackLimit();
-                ItemStack stack2 = stack.copy();
-                if (stack2.stackSize > limit) {
-                    stack2.stackSize = limit;
-                    stack.stackSize -= limit;
-                } else {
-                    stack.stackSize = 0;
+                int limit = ExtendedStackLimitHelper.getStackLimit(slot, stack);
+                int amount = Math.min(stack.stackSize, limit);
+                if (amount > 0) {
+                    ItemStack stack2 = stack.copy();
+                    stack2.stackSize = amount;
+                    stack.stackSize -= amount;
+                    slot.putStack(stack2);
+                    slot.onSlotChanged();
+                    didSomething = true;
                 }
-                slot.putStack(stack2);
-                slot.onSlotChanged();
-                didSomething = true;
 
                 if (stack.stackSize <= 0) {
                     break;
