@@ -51,7 +51,7 @@ public abstract class AmmoItem extends ToolCore implements IBattlegearWeapon, IA
         if (!stack.hasTagCompound()) return toAdd;
         NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
         int oldCount = tags.getInteger("Ammo");
-        int newCount = Math.min(oldCount + toAdd, getMaxAmmo(stack));
+        int newCount = (int) Math.min((long) oldCount + toAdd, getMaxAmmo(stack));
         setAmmo(newCount, stack);
         return toAdd - (newCount - oldCount);
     }
