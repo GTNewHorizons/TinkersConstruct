@@ -18,62 +18,45 @@ public class RecipeHandlerAlloying extends RecipeHandlerBase {
 
     public static final Rectangle OUTPUT_TANK = new Rectangle(118, 9, 18, 32);
 
-    public class CachedAlloyingRecipe extends CachedBaseRecipe {
+    public class CachedAlloyingRecipe extends CachedRecipe {
 
-        private final List<FluidTankElement> fluidTanks;
-        private int minAmount;
+        private final List<PositionedStack> inputs;
+        private final PositionedStack.Fluid output;
 
         public CachedAlloyingRecipe(AlloyMix recipe) {
-            this.fluidTanks = new ArrayList<>();
+            this.inputs = new ArrayList<>();
 
             int maxAmount = recipe.mixers.get(0).amount;
-            int mult = 1;
-            this.minAmount = maxAmount;
             for (FluidStack stack : recipe.mixers) {
                 if (stack.amount > maxAmount) {
                     maxAmount = stack.amount;
                 }
-                if (stack.amount < this.minAmount) {
-                    this.minAmount = stack.amount;
-                }
             }
-            FluidTankElement tank = new FluidTankElement(OUTPUT_TANK, maxAmount * mult, recipe.result);
-            tank.fluid.amount *= mult;
-            this.fluidTanks.add(tank);
+            this.output = new PositionedStack.Fluid(
+                    recipe.result,
+                    OUTPUT_TANK.x,
+                    OUTPUT_TANK.y,
+                    OUTPUT_TANK.width,
+                    OUTPUT_TANK.height,
+                    maxAmount);
 
             int width = 36 / recipe.mixers.size();
             int counter = 0;
             for (FluidStack stack : recipe.mixers) {
-                if (counter == recipe.mixers.size() - 1) {
-                    tank = new FluidTankElement(
-                            new Rectangle(21 + width * counter, 9, 36 - width * counter, 32),
-                            maxAmount * mult,
-                            stack);
-                } else {
-                    tank = new FluidTankElement(
-                            new Rectangle(21 + width * counter, 9, width, 32),
-                            maxAmount * mult,
-                            stack);
-                }
-                tank.fluid.amount *= mult;
-                this.fluidTanks.add(tank);
+                int tankWidth = counter == recipe.mixers.size() - 1 ? 36 - width * counter : width;
+                this.inputs.add(new PositionedStack.Fluid(stack, 21 + width * counter, 9, tankWidth, 32, maxAmount));
                 counter++;
             }
         }
 
         @Override
-        public PositionedStack getIngredient() {
-            return null;
+        public List<PositionedStack> getIngredients() {
+            return this.inputs;
         }
 
         @Override
         public PositionedStack getResult() {
-            return null;
-        }
-
-        @Override
-        public List<FluidTankElement> getFluidTanks() {
-            return this.fluidTanks;
+            return this.output;
         }
     }
 
