@@ -2,11 +2,15 @@ package tconstruct.library.tools;
 
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityGhast;
@@ -40,8 +44,10 @@ import tconstruct.library.util.PiercingEntityDamage;
 
 public class AbilityHelper {
 
+    final private static UUID itemModifierUUID = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
     public static Random random = new Random();
     public static boolean necroticUHS;
+    public static boolean calcDmgViaAttr;
 
     /* Normal interactions */
     public static boolean onBlockChanged(ItemStack stack, World world, Block block, int x, int y, int z,
@@ -219,12 +225,24 @@ public class AbilityHelper {
         damage += earlyModDamage;
 
         if (living != null) {
-            if (living.isPotionActive(Potion.damageBoost)) {
-                damage += 3 << living.getActivePotionEffect(Potion.damageBoost).getAmplifier();
-            }
+            if (!AbilityHelper.calcDmgViaAttr) {
+                if (living.isPotionActive(Potion.damageBoost)) {
+                    damage += 3 << living.getActivePotionEffect(Potion.damageBoost).getAmplifier();
+                }
 
-            if (living.isPotionActive(Potion.weakness)) {
-                damage -= 2 << living.getActivePotionEffect(Potion.weakness).getAmplifier();
+                if (living.isPotionActive(Potion.weakness)) {
+                    damage -= 2 << living.getActivePotionEffect(Potion.weakness).getAmplifier();
+                }
+            } else {
+                IAttributeInstance attributeDamage = living.getEntityAttribute(SharedMonsterAttributes.attackDamage);
+                AttributeModifier attributeModifier = new AttributeModifier(
+                        itemModifierUUID,
+                        "ToolCore modifier",
+                        damage,
+                        0);
+                attributeDamage.applyModifier(attributeModifier);
+                damage = (int) Math.round(attributeDamage.getAttributeValue());
+                attributeDamage.removeModifier(attributeModifier);
             }
         }
 
