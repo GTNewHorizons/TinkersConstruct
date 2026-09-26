@@ -31,7 +31,7 @@ import tconstruct.util.config.PHConstruct;
 
 public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
 
-    public class CachedToolMaterialsRecipe extends CachedBaseRecipe {
+    public class CachedToolMaterialsRecipe extends CachedRecipe {
 
         public List<PositionedStack> toolParts;
         public ToolMaterial material;
@@ -90,7 +90,7 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
     public void drawBackground(int recipe) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GuiDraw.changeTexture(this.getGuiTexture());
-        GuiDraw.drawTexturedModalRect(0, 0, 0, 0, 160, 130);
+        GuiDraw.drawTexturedModalRect(0, 0, 0, 0, 160, 110);
     }
 
     @Override

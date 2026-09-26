@@ -3,7 +3,6 @@ package tconstruct.plugins.nei;
 import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -26,24 +25,33 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
 
     public static final Rectangle MOLTEN_TANK = new Rectangle(115, 20, 18, 18);
 
-    public class CachedMeltingRecipe extends CachedBaseRecipe {
+    public class CachedMeltingRecipe extends CachedRecipe {
 
         private final PositionedStack input;
         private final int temperature;
-        private final FluidTankElement output;
+        private final PositionedStack.Fluid output;
 
         public CachedMeltingRecipe(ItemStack input) {
-            this.input = new PositionedStack(input, 28, 21);
-            this.temperature = Smeltery.getLiquifyTemperature(input);
-            this.output = new FluidTankElement(MOLTEN_TANK, 1, Smeltery.getSmelteryResult(input));
-            this.output.capacity = this.output.fluid != null ? this.output.fluid.amount : 1000;
+            this(input, input);
         }
 
         public CachedMeltingRecipe(List<ItemStack> input) {
+            this(input, input.get(0));
+        }
+
+        private CachedMeltingRecipe(Object input, ItemStack first) {
             this.input = new PositionedStack(input, 28, 21);
-            this.temperature = Smeltery.getLiquifyTemperature(input.get(0));
-            this.output = new FluidTankElement(MOLTEN_TANK, 1, Smeltery.getSmelteryResult(input.get(0)));
-            this.output.capacity = this.output.fluid != null ? this.output.fluid.amount : 1000;
+            this.temperature = Smeltery.getLiquifyTemperature(first);
+            FluidStack result = Smeltery.getSmelteryResult(first);
+            this.output = result != null
+                    ? new PositionedStack.Fluid(
+                            result,
+                            MOLTEN_TANK.x,
+                            MOLTEN_TANK.y,
+                            MOLTEN_TANK.width,
+                            MOLTEN_TANK.height,
+                            0)
+                    : null;
         }
 
         @Override
@@ -53,14 +61,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
 
         @Override
         public PositionedStack getResult() {
-            return null;
-        }
-
-        @Override
-        public List<FluidTankElement> getFluidTanks() {
-            List<FluidTankElement> tanks = new ArrayList<>();
-            tanks.add(this.output);
-            return tanks;
+            return this.output;
         }
     }
 

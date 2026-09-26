@@ -16,39 +16,31 @@ public abstract class RecipeHandlerCastingBase extends RecipeHandlerBase {
     public static final Rectangle MOLTEN_FLOW = new Rectangle(60, 8, 6, 11);
     public static final Rectangle MOLTEN_FLOW_NO_ITEM = new Rectangle(60, 8, 6, 27);
 
-    public class CachedCastingRecipe extends CachedBaseRecipe {
+    public class CachedCastingRecipe extends CachedRecipe {
 
         private final List<PositionedStack> resources;
-        private final FluidTankElement metal;
         private PositionedStack output;
 
         public CachedCastingRecipe(CastingRecipe recipe) {
-            this.metal = new FluidTankElement(MOLTEN_FLOW, recipe.castingMetal.amount, recipe.castingMetal);
-            this.metal.flowingTexture = true;
             this.resources = new ArrayList<>();
+            Rectangle flow = recipe.cast != null ? MOLTEN_FLOW : MOLTEN_FLOW_NO_ITEM;
+            this.resources.add(
+                    new PositionedStack.Fluid(recipe.castingMetal, flow.x, flow.y, flow.width, flow.height, 0)
+                            .setFlowingTexture(true));
             if (recipe.cast != null) {
                 this.resources.add(new PositionedStack(recipe.cast, 55, 19));
-            } else {
-                this.metal.position = MOLTEN_FLOW_NO_ITEM;
             }
             this.output = new PositionedStack(recipe.output, 110, 18);
         }
 
         @Override
         public List<PositionedStack> getIngredients() {
-            return getCycledIngredients(cycleticks / 20, this.resources);
+            return this.resources;
         }
 
         @Override
         public PositionedStack getResult() {
             return this.output;
-        }
-
-        @Override
-        public List<FluidTankElement> getFluidTanks() {
-            List<FluidTankElement> res = new ArrayList<>();
-            res.add(this.metal);
-            return res;
         }
     }
 
@@ -98,6 +90,7 @@ public abstract class RecipeHandlerCastingBase extends RecipeHandlerBase {
                 this.arecipes.add(irecipe);
             }
         }
+        super.loadUsageRecipes(ingred);
     }
 
     @Override
