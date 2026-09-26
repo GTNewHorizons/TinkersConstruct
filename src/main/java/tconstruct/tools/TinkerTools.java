@@ -79,6 +79,7 @@ import tconstruct.modifiers.tools.ModBlaze;
 import tconstruct.modifiers.tools.ModButtertouch;
 import tconstruct.modifiers.tools.ModCreativeToolModifier;
 import tconstruct.modifiers.tools.ModDurability;
+import tconstruct.modifiers.tools.ModExpander;
 import tconstruct.modifiers.tools.ModExtraModifier;
 import tconstruct.modifiers.tools.ModFlux;
 import tconstruct.modifiers.tools.ModInteger;
@@ -773,6 +774,21 @@ public class TinkerTools {
         ItemStack reinforcement = new ItemStack(TinkerTools.materials, 1, 43);
         ModifyBuilder.registerModifier(new ModReinforced(new ItemStack[] { reinforcement }, 16, 1));
 
+        ItemStack expanderHorizontal = new ItemStack(TinkerTools.materials, 1, 44);
+        ItemStack expanderVertical = new ItemStack(TinkerTools.materials, 1, 45);
+        ModifyBuilder.registerModifier(
+                new ModExpander(
+                        new ItemStack[] { expanderHorizontal },
+                        "Width++",
+                        "\u00a7a",
+                        StatCollector.translateToLocal("modifier.tool.width")));
+        ModifyBuilder.registerModifier(
+                new ModExpander(
+                        new ItemStack[] { expanderVertical },
+                        "Height++",
+                        "\u00a7a",
+                        StatCollector.translateToLocal("modifier.tool.height")));
+
         TConstructRegistry.registerActiveToolMod(new TActiveOmniMod());
     }
 
@@ -918,6 +934,66 @@ public class TinkerTools {
     private void craftingTableRecipes() {
         String[] patBlock = { "###", "###", "###" };
         String[] patSurround = { "###", "#m#", "###" };
+
+        // Expander modifier items (Width++/Height++): the pistons point the way the tool expands. With GregTech
+        // loaded they are its LV electric pistons; without it the recipe is TiC2's own.
+        Item gtMetaItem = Loader.isModLoaded("gregtech") ? GameRegistry.findItem("gregtech", "gt.metaitem.01") : null;
+        if (gtMetaItem != null) {
+            ItemStack lvPiston = new ItemStack(gtMetaItem, 1, 32640); // gregtech:gt.metaitem.01:32640
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(TinkerTools.materials, 1, 44),
+                            "glg",
+                            "pep",
+                            "glg",
+                            'g',
+                            "gearGtSmallSteel",
+                            'l',
+                            "blockLapis",
+                            'p',
+                            lvPiston,
+                            'e',
+                            Items.ender_pearl));
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(TinkerTools.materials, 1, 45),
+                            "gpg",
+                            "lel",
+                            "gpg",
+                            'g',
+                            "gearGtSmallSteel",
+                            'l',
+                            "blockLapis",
+                            'p',
+                            lvPiston,
+                            'e',
+                            Items.ender_pearl));
+        } else {
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(TinkerTools.materials, 1, 44),
+                            " l ",
+                            "psp",
+                            " l ",
+                            'l',
+                            "gemLapis",
+                            'p',
+                            Blocks.piston,
+                            's',
+                            "slimeball"));
+            GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                            new ItemStack(TinkerTools.materials, 1, 45),
+                            " p ",
+                            "lsl",
+                            " p ",
+                            'l',
+                            "gemLapis",
+                            'p',
+                            Blocks.piston,
+                            's',
+                            "slimeball"));
+        }
 
         Object[] toolForgeBlocks = { "blockIron", "blockGold", Blocks.diamond_block, Blocks.emerald_block,
                 "blockCobalt", "blockArdite", "blockManyullyn", "blockCopper", "blockBronze", "blockTin",
