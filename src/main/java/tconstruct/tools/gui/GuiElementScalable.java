@@ -1,6 +1,6 @@
 package tconstruct.tools.gui;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.Tessellator;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,54 +31,39 @@ public class GuiElementScalable extends GuiElementDuex {
     }
 
     public int drawScaledX(int xPos, int yPos, int width) {
-        for (int i = 0; i < width / w; i++) {
-            draw(xPos + i * w, yPos);
-        }
-        // remainder that doesn't fit total width
-        int remainder = width % w;
-        if (remainder > 0) {
-            GuiScreen.func_146110_a(xPos + width - remainder, yPos, x, y, remainder, h, texW, texH);
-        }
-
-        return width;
+        return drawScaled(xPos, yPos, width, h);
     }
 
     public int drawScaledY(int xPos, int yPos, int height) {
-        for (int i = 0; i < height / h; i++) {
-            draw(xPos, yPos + i * h);
-        }
-        // remainder that doesn't fit total width
-        int remainder = height % h;
-        if (remainder > 0) {
-            // drawModalRectWithCustomSizedTexture
-            GuiScreen.func_146110_a(xPos, yPos + height - remainder, x, y, w, remainder, texW, texH);
-        }
-
+        drawScaled(xPos, yPos, w, height);
         return w;
     }
 
     public int drawScaled(int xPos, int yPos, int width, int height) {
-        // we draw full height row-wise
-        int full = height / this.h;
-        for (int i = 0; i < full; i++) {
-            drawScaledX(xPos, yPos + i * this.h, width);
-        }
+        if (width <= 0 || height <= 0) return width;
 
-        yPos += full * this.h;
+        Tessellator tessellator = Tessellator.instance;
+        int tileWidth = w == 1 ? width : w;
+        int tileHeight = h == 1 ? height : h;
+        float minU = (float) x / texW;
+        float minV = (float) y / texH;
 
-        // and the remainder is drawn manually
-        int yRest = height % this.h;
-        // the same as drawScaledX but with the remaining height
-        for (int i = 0; i < width / w; i++) {
-            drawScaledY(xPos + i * w, yPos, yRest);
+        if (!batching) tessellator.startDrawingQuads();
+        for (int yOffset = 0; yOffset < height; yOffset += tileHeight) {
+            int drawHeight = Math.min(tileHeight, height - yOffset);
+            float maxV = (float) (y + Math.min(h, drawHeight)) / texH;
+            int top = yPos + yOffset;
+            for (int xOffset = 0; xOffset < width; xOffset += tileWidth) {
+                int drawWidth = Math.min(tileWidth, width - xOffset);
+                float maxU = (float) (x + Math.min(w, drawWidth)) / texW;
+                int left = xPos + xOffset;
+                tessellator.addVertexWithUV(left, top + drawHeight, 0, minU, maxV);
+                tessellator.addVertexWithUV(left + drawWidth, top + drawHeight, 0, maxU, maxV);
+                tessellator.addVertexWithUV(left + drawWidth, top, 0, maxU, minV);
+                tessellator.addVertexWithUV(left, top, 0, minU, minV);
+            }
         }
-        // remainder that doesn't fit total width
-        int remainder = width % w;
-        if (remainder > 0) {
-            // drawModalRectWithCustomSizedTexture
-            GuiScreen.func_146110_a(xPos + width - remainder, yPos, x, y, remainder, yRest, texW, texH);
-        }
-
+        if (!batching) tessellator.draw();
         return width;
     }
 

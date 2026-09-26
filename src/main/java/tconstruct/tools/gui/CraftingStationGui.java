@@ -320,14 +320,16 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
         this.mc.getTextureManager().bindTexture(gui_inventory);
         if (hasChest()) {
-            drawChest();
-
-            // slider
             if (slider.isEnabled()) {
                 slider.update(mouseX, mouseY, !isMouseOverFullSlot(mouseX, mouseY) && isMouseInChest(mouseX, mouseY));
-                slider.draw();
-
                 updateChestSlots();
+            }
+            GuiElementDuex.beginBatch();
+            try {
+                drawChest();
+                if (slider.isEnabled()) slider.draw();
+            } finally {
+                GuiElementDuex.endBatch();
             }
         }
         // Draw description
@@ -595,9 +597,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         int fullRows = slotCount / columns;
         int slotsLeft = slotCount % columns;
 
-        for (int row = 0; row < fullRows; row++) {
-            slotElement.drawScaledX(x, y + row * slotElement.h, width);
-        }
+        slotElement.drawScaled(x, y, width, fullRows * slotElement.h);
 
         if (slotsLeft > 0) {
             int rowY = y + fullRows * slotElement.h;
