@@ -25,7 +25,7 @@ public abstract class RecipeHandlerCastingBase extends RecipeHandlerBase {
             this.resources = new ArrayList<>();
             Rectangle flow = recipe.cast != null ? MOLTEN_FLOW : MOLTEN_FLOW_NO_ITEM;
             this.resources.add(
-                    new PositionedStack.Fluid(recipe.castingMetal, flow.x, flow.y, flow.width, flow.height, 0)
+                    new PositionedStack.Tank(recipe.castingMetal, flow.x, flow.y, flow.width, flow.height, 0)
                             .setFlowingTexture(true));
             if (recipe.cast != null) {
                 this.resources.add(new PositionedStack(recipe.cast, 55, 19));

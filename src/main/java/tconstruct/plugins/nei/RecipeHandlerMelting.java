@@ -29,7 +29,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
 
         private final PositionedStack input;
         private final int temperature;
-        private final PositionedStack.Fluid output;
+        private final PositionedStack.Tank output;
 
         public CachedMeltingRecipe(ItemStack input) {
             this(input, input);
@@ -44,7 +44,7 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
             this.temperature = Smeltery.getLiquifyTemperature(first);
             FluidStack result = Smeltery.getSmelteryResult(first);
             this.output = result != null
-                    ? new PositionedStack.Fluid(
+                    ? new PositionedStack.Tank(
                             result,
                             MOLTEN_TANK.x,
                             MOLTEN_TANK.y,

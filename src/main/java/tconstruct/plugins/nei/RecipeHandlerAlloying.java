@@ -21,7 +21,7 @@ public class RecipeHandlerAlloying extends RecipeHandlerBase {
     public class CachedAlloyingRecipe extends CachedRecipe {
 
         private final List<PositionedStack> inputs;
-        private final PositionedStack.Fluid output;
+        private final PositionedStack.Tank output;
 
         public CachedAlloyingRecipe(AlloyMix recipe) {
             this.inputs = new ArrayList<>();
@@ -32,7 +32,7 @@ public class RecipeHandlerAlloying extends RecipeHandlerBase {
                     maxAmount = stack.amount;
                 }
             }
-            this.output = new PositionedStack.Fluid(
+            this.output = new PositionedStack.Tank(
                     recipe.result,
                     OUTPUT_TANK.x,
                     OUTPUT_TANK.y,
@@ -44,7 +44,7 @@ public class RecipeHandlerAlloying extends RecipeHandlerBase {
             int counter = 0;
             for (FluidStack stack : recipe.mixers) {
                 int tankWidth = counter == recipe.mixers.size() - 1 ? 36 - width * counter : width;
-                this.inputs.add(new PositionedStack.Fluid(stack, 21 + width * counter, 9, tankWidth, 32, maxAmount));
+                this.inputs.add(new PositionedStack.Tank(stack, 21 + width * counter, 9, tankWidth, 32, maxAmount));
                 counter++;
             }
         }
