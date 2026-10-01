@@ -1,15 +1,14 @@
 package tconstruct.plugins.nei;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import codechicken.nei.api.IBookmarkContainerHandler;
-import tconstruct.tools.gui.CraftingStationGui;
 import tconstruct.tools.inventory.CraftingStationContainer;
 import tconstruct.tools.logic.CraftingStationLogic;
 
@@ -21,76 +20,72 @@ public class NEITConstructBookmarkContainerHandler implements IBookmarkContainer
 
     @Override
     public void pullBookmarkItemsFromContainer(GuiContainer guiContainer, ArrayList<ItemStack> bookmarkItems) {
-        CraftingStationGui gui = (CraftingStationGui) guiContainer;
         CraftingStationLogic logic = ((CraftingStationContainer) guiContainer.inventorySlots).logic;
         if (logic.getFirstInventory() == null) {
             return;
         }
 
-        List<ItemStack> containerStacks = getStacks(gui);
+        Container container = guiContainer.inventorySlots;
         for (ItemStack bookmarkItem : bookmarkItems) {
-
-            int bookmarkSizeBackup = bookmarkItem.stackSize;
-
-            for (int i = magicNumber; i < containerStacks.size(); i++) {
-                ItemStack containerItem = containerStacks.get(i);
-
-                if (containerItem == null) {
-                    continue;
-                }
-
-                if (bookmarkItem.isItemEqual(containerItem)) {
-                    if (bookmarkItem.stackSize <= 0) {
-                        break;
-                    }
-
-                    int transferAmount = Math.min(bookmarkItem.stackSize, containerItem.stackSize);
-
-                    moveItems(guiContainer, i, transferAmount);
-                    bookmarkItem.stackSize -= transferAmount;
-
-                    if (bookmarkItem.stackSize == 0) {
-                        break;
-                    }
+            int remaining = bookmarkItem.stackSize;
+            for (int i = magicNumber; i < container.inventorySlots.size() && remaining > 0; i++) {
+                ItemStack containerItem = container.getSlot(i).getStack();
+                if (containerItem != null && bookmarkItem.isItemEqual(containerItem)) {
+                    remaining -= moveItems(guiContainer, i, Math.min(remaining, containerItem.stackSize));
                 }
             }
-            bookmarkItem.stackSize = bookmarkSizeBackup;
         }
     }
 
-    private List<ItemStack> getStacks(GuiContainer container) {
-        List<ItemStack> result = new ArrayList<>();
-        for (int i = 0; i < container.inventorySlots.inventorySlots.size(); i++) {
-            result.add(container.inventorySlots.getSlot(i).getStack());
+    private int moveItems(GuiContainer container, int fromSlot, int transferAmount) {
+        Slot source = container.inventorySlots.getSlot(fromSlot);
+        ItemStack sourceStack = source.getStack();
+        if (sourceStack == null || !source.canTakeStack(mc.thePlayer)) {
+            return 0;
         }
-        return result;
-    }
 
-    private void moveItems(GuiContainer container, int fromSlot, int transferAmount) {
-        for (int i = 0; i < transferAmount; i++) {
-            int toSlot = findValidPlayerInventoryDestination(container.inventorySlots, fromSlot);
+        if (!source.isItemValid(sourceStack)) {
+            // The remainder cannot be put back into an extraction-only slot, so move the whole stack.
+            int toSlot = findValidPlayerInventoryDestination(container.inventorySlots, fromSlot, sourceStack.stackSize);
             if (toSlot == -1) {
-                return;
+                return 0;
+            }
+            int moved = sourceStack.stackSize;
+            clickSlot(container, fromSlot, 0);
+            clickSlot(container, toSlot, 0);
+            return moved;
+        }
+
+        int moved = 0;
+        for (int i = 0; i < transferAmount; i++) {
+            int toSlot = findValidPlayerInventoryDestination(container.inventorySlots, fromSlot, 1);
+            if (toSlot == -1) {
+                break;
             }
             clickSlot(container, fromSlot, 0);
             clickSlot(container, toSlot, 1);
             clickSlot(container, fromSlot, 0);
+            moved++;
         }
+        return moved;
     }
 
     private void clickSlot(GuiContainer container, int slotIdx, int button) {
         mc.playerController.windowClick(container.inventorySlots.windowId, slotIdx, button, 0, mc.thePlayer);
     }
 
-    private int findValidPlayerInventoryDestination(Container container, int fromSlot) {
+    private int findValidPlayerInventoryDestination(Container container, int fromSlot, int amount) {
         ItemStack stackToMove = container.getSlot(fromSlot).getStack();
+        if (stackToMove == null) {
+            return -1;
+        }
         for (int i = 10; i < magicNumber; i++) { // 10 comes from the magic number including crafting field + product
-            ItemStack toStack = container.getSlot(i).getStack();
-            if (toStack == null) {
-                return i;
-            }
-            int diff = stackToMove.getMaxStackSize() - toStack.stackSize;
-            if (toStack.isItemEqual(stackToMove) && diff > 0) {
+            Slot destination = container.getSlot(i);
+            ItemStack toStack = destination.getStack();
+            int capacity = Math.min(destination.getSlotStackLimit(), stackToMove.getMaxStackSize())
+                    - (toStack == null ? 0 : toStack.stackSize);
+            if (capacity >= amount && (toStack == null
+                    || toStack.isItemEqual(stackToMove) && ItemStack.areItemStackTagsEqual(toStack, stackToMove))) {
                 return i;
             }
         }
