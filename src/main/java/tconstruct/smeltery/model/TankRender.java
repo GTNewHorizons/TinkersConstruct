@@ -45,38 +45,36 @@ public class TankRender implements ISimpleBlockRenderingHandler {
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
             RenderBlocks renderer) {
         if (modelID == tankModelID) {
-            // Liquid
-            if (ForgeHooksClient.getWorldRenderPass() == 0) {
-                LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(x, y, z);
-                if (logic != null && logic.containsFluid()) {
-                    FluidStack liquid = logic.tank.getFluid();
-                    renderer.setRenderBounds(0.001, 0.001, 0.001, 0.999, logic.getFluidAmountScaled(), 0.999);
-                    Fluid fluid = liquid.getFluid();
-                    BlockSkinRenderHelper.renderLiquidBlock(
-                            fluid.getStillIcon(),
-                            fluid.getStillIcon(),
-                            x,
-                            y,
-                            z,
-                            renderer,
-                            world,
-                            false,
-                            fluid.getColor(liquid));
+            // Everything is drawn in the translucent pass: in pass 0 the alpha test discards fluid textures
+            // that are less than 50% opaque (e.g. GT gases), so they would be invisible.
+            if (ForgeHooksClient.getWorldRenderPass() != 1) return false;
 
-                    return true;
-                }
-                return false;
+            // Liquid
+            LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(x, y, z);
+            if (logic != null && logic.containsFluid()) {
+                FluidStack liquid = logic.tank.getFluid();
+                renderer.setRenderBounds(0.001, 0.001, 0.001, 0.999, logic.getFluidAmountScaled(), 0.999);
+                Fluid fluid = liquid.getFluid();
+                BlockSkinRenderHelper.renderLiquidBlock(
+                        fluid.getStillIcon(),
+                        fluid.getStillIcon(),
+                        x,
+                        y,
+                        z,
+                        renderer,
+                        world,
+                        false,
+                        fluid.getColor(liquid));
             }
+
             // Block
-            else {
-                int meta = world.getBlockMetadata(x, y, z);
-                if (meta == 0 && world.getBlock(x, y + 1, z) == Blocks.air) {
-                    renderer.setRenderBounds(0.1875, 0, 0.1875, 0.8125, 0.125, 0.8125);
-                    renderer.renderStandardBlock(block, x, y + 1, z);
-                }
-                renderer.setRenderBounds(0, 0, 0, 1, 1, 1);
-                return renderer.renderStandardBlock(block, x, y, z);
+            int meta = world.getBlockMetadata(x, y, z);
+            if (meta == 0 && world.getBlock(x, y + 1, z) == Blocks.air) {
+                renderer.setRenderBounds(0.1875, 0, 0.1875, 0.8125, 0.125, 0.8125);
+                renderer.renderStandardBlock(block, x, y + 1, z);
             }
+            renderer.setRenderBounds(0, 0, 0, 1, 1, 1);
+            return renderer.renderStandardBlock(block, x, y, z);
         }
         return false;
     }
