@@ -22,11 +22,13 @@ import tconstruct.TConstruct;
 import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
+import tconstruct.library.tools.BuildInput;
 import tconstruct.library.tools.CustomMaterial;
 import tconstruct.library.tools.FletchingMaterial;
 import tconstruct.library.tools.FletchlingLeafMaterial;
 import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.tools.TinkerTools;
+import tconstruct.weaponry.AmmoMaterials;
 import tconstruct.weaponry.TinkerWeaponry;
 
 @Optional.InterfaceList({
@@ -91,6 +93,17 @@ public class ArrowAmmo extends AmmoItem implements IBauble, IBaubleExpanded {
     @Override
     public int durabilityTypeHandle() {
         return 0;
+    }
+
+    /** The lookups WeaponryHandler.onAmmoCrafted refuses an arrow on. */
+    @Override
+    public boolean takesPartMaterial(BuildInput input, ItemStack part) {
+        return switch (input) {
+            case HEAD -> TConstructRegistry.getArrowMaterial(ToolBuilder.instance.getMaterialID(part)) != null;
+            case HANDLE -> AmmoMaterials.shaftMaterial(part) != null;
+            case ACCESSORY -> AmmoMaterials.fletchingMaterial(ToolBuilder.instance.getMaterialID(part)) != null;
+            default -> true;
+        };
     }
 
     @Override

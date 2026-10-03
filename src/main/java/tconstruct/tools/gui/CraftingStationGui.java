@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import codechicken.nei.VisiblityData;
@@ -81,6 +82,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
             sliderBottom,
             sliderBackground);
     private final GuiBorderWidget border = new GuiBorderWidget();
+    private final CraftingStationReadout readout = new CraftingStationReadout();
 
     private int firstSlotId;
     private int lastSlotId;
@@ -89,7 +91,6 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     /* end slider/slots */
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/tinkertable.png");
-    private static final ResourceLocation description = new ResourceLocation("tinker", "textures/gui/description.png");
     private static final ResourceLocation icons = new ResourceLocation("tinker", "textures/gui/icons.png");
 
     public boolean active;
@@ -154,6 +155,17 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         }
     }
 
+    /** Reads the event's wheel, as the station screens do: Mouse.getDWheel is one total the chest's slider takes. */
+    @Override
+    public void handleMouseInput() {
+        super.handleMouseInput();
+        int wheel = Mouse.getEventDWheel();
+        if (wheel == 0 || !logic.tinkerTable) return;
+        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+        readout.scroll(x, y, wheel);
+    }
+
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 0 && logic.chest != null) {
@@ -165,6 +177,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
         drawDumpButtonTooltip(mouseX, mouseY);
+        String title = logic.tinkerTable ? readout.cutTitleAt(mouseX, mouseY) : null;
+        if (title != null) drawHoveringText(Collections.singletonList(title), mouseX, mouseY, fontRendererObj);
     }
 
     private void drawDumpButtonTooltip(int mouseX, int mouseY) {
@@ -213,28 +227,26 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
                 ColorUtils.inventoryTitle.getColor());
 
         if (logic.tinkerTable) {
-            if (logic.isStackInSlot(0)) // output slot = modified item
-                drawToolStats(logic.getStackInSlot(0));
-            else if (logic.isStackInSlot(5)) { // center slot if no output item
-                // other slots empty?
-                if (!logic.isStackInSlot(1) && !logic.isStackInSlot(2)
-                        && !logic.isStackInSlot(3)
-                        && !logic.isStackInSlot(4)
-                        && !logic.isStackInSlot(6)
-                        && !logic.isStackInSlot(7)
-                        && !logic.isStackInSlot(8)
-                        && !logic.isStackInSlot(9))
-                    drawToolStats(logic.getStackInSlot(5));
-                else drawToolInformation();
-            } else drawToolInformation();
+            ItemStack shown = shownStack();
+            if (shown != null) drawToolStats(shown);
+            else drawToolInformation();
         }
+    }
+
+    /** The stack the side panel reads out: the output, else a lone item in the center slot; null for neither. */
+    private ItemStack shownStack() {
+        if (logic.isStackInSlot(0)) // output slot = modified item
+            return logic.getStackInSlot(0);
+        if (!logic.isStackInSlot(5)) return null;
+        // center slot if no output item and the other slots are empty
+        for (int slot = 1; slot <= 9; slot++) if (slot != 5 && logic.isStackInSlot(slot)) return null;
+        return logic.getStackInSlot(5);
     }
 
     void drawToolStats(ItemStack stack) {
         if (stack == null) return;
 
-        if (stack.getItem() instanceof IModifyable)
-            ToolStationGuiHelper.drawToolStats(stack, descTextLeft + 10, descTop - guiTop);
+        if (stack.getItem() instanceof IModifyable) readout.drawText(fontRendererObj, guiLeft, guiTop);
 
         int matID = PatternBuilder.instance.getPartID(stack);
 
@@ -246,11 +258,11 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
     }
 
     void drawToolInformation() {
-        int offsetX = descTextLeft + 63;
+        int offsetX = descTextLeft + readout.width() / 2;
         int offsetY = descTop - guiTop;
 
         this.drawCenteredString(fontRendererObj, title, offsetX, offsetY + 8, 0xffffff);
-        fontRendererObj.drawSplitString(body, offsetX - 56, offsetY + 24, 115, 0xffffff);
+        fontRendererObj.drawSplitString(body, descTextLeft + 7, offsetY + 24, readout.width() - 11, 0xffffff);
     }
 
     protected void drawMaterialStats(ToolMaterial materialEnum) {
@@ -259,7 +271,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
         String centerTitle = "\u00A7n" + materialEnum.localizedName();
 
-        drawCenteredString(this.fontRendererObj, centerTitle, baseX + 55, baseY, 16777215);
+        drawCenteredString(this.fontRendererObj, centerTitle, descTextLeft + readout.width() / 2, baseY, 16777215);
 
         this.fontRendererObj.drawString(
                 StatCollector.translateToLocal("gui.partcrafter4") + materialEnum.durability(),
@@ -332,9 +344,11 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         }
         // Draw description
         if (logic.tinkerTable) {
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.mc.getTextureManager().bindTexture(description);
-            this.drawTexturedModalRect(this.descLeft, this.descTop, 0, 0, 126, 172);
+            ItemStack shown = shownStack();
+            ItemStack tool = shown != null && shown.getItem() instanceof IModifyable ? shown : null;
+            // NEI's bottom row of buttons stays clear, as the chest's layout keeps it
+            readout.layout(descLeft, descTop, width, height - NEI_VERTICAL_MARGIN, tool);
+            readout.draw(mc, mouseX, mouseY);
         }
     }
 
@@ -371,8 +385,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         if (new Rectangle(craftingLeft, craftingTop, CRAFTING_WIDTH, CRAFTING_HEIGHT).intersects(itemPanelSlot))
             return true;
 
-        return logic.tinkerTable
-                && new Rectangle(descLeft, descTop, DESCRIPTION_WIDTH, DESCRIPTION_HEIGHT).intersects(itemPanelSlot);
+        return logic.tinkerTable && readout.bounds().intersects(itemPanelSlot);
     }
 
     public boolean hasChest() {

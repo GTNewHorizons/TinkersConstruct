@@ -17,12 +17,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.compat.LoadedMods;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.ToolBuilder;
+import tconstruct.library.tools.BuildInput;
 import tconstruct.library.tools.CustomMaterial;
 import tconstruct.library.tools.DualMaterialToolPart;
 import tconstruct.library.tools.FletchingMaterial;
 import tconstruct.library.tools.FletchlingLeafMaterial;
 import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.tools.TinkerTools;
+import tconstruct.weaponry.AmmoMaterials;
 import tconstruct.weaponry.TinkerWeaponry;
 
 @Optional.InterfaceList({
@@ -79,6 +81,31 @@ public class BoltAmmo extends AmmoItem implements IBauble, IBaubleExpanded {
     @Override
     public Item getAccessoryItem() {
         return TinkerWeaponry.fletching;
+    }
+
+    /** A bolt core carries both of the recipe's bolt parts, so the slots take only it and the fletching. */
+    @Override
+    public Item[] getToolBuildComponents() {
+        return new Item[] { TinkerWeaponry.partBolt, TinkerWeaponry.fletching, null, null };
+    }
+
+    @Override
+    public BuildInput kindOf(BuildInput input) {
+        return input == BuildInput.HANDLE ? BuildInput.ACCESSORY : input;
+    }
+
+    /** onAmmoCrafted wants arrow stats for both of the core's materials, the rod and the metal cast over it. */
+    @Override
+    public boolean takesPartMaterial(BuildInput input, ItemStack part) {
+        if (input == BuildInput.HEAD) {
+            if (!(part.getItem() instanceof DualMaterialToolPart core)) return false;
+            return TConstructRegistry.getArrowMaterial(core.getMaterialID(part)) != null
+                    && TConstructRegistry.getArrowMaterial(core.getMaterialID2(part)) != null;
+        }
+        if (input == BuildInput.HANDLE) {
+            return AmmoMaterials.fletchingMaterial(ToolBuilder.instance.getMaterialID(part)) != null;
+        }
+        return true;
     }
 
     @Override

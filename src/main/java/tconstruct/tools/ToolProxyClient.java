@@ -28,6 +28,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mantle.client.MProxyClient;
@@ -55,6 +56,7 @@ import tconstruct.tools.gui.FurnaceGui;
 import tconstruct.tools.gui.PartChestGui;
 import tconstruct.tools.gui.PartCrafterGui;
 import tconstruct.tools.gui.PatternChestGui;
+import tconstruct.tools.gui.SlotHints;
 import tconstruct.tools.gui.StencilTableGui;
 import tconstruct.tools.gui.ToolForgeGui;
 import tconstruct.tools.gui.ToolStationGui;
@@ -73,6 +75,7 @@ import tconstruct.tools.model.BattlesignTesr;
 import tconstruct.tools.model.FancyItemRender;
 import tconstruct.tools.model.FrypanRender;
 import tconstruct.tools.model.TableRender;
+import tconstruct.tools.model.ToolStationTesr;
 import tconstruct.weaponry.TinkerWeaponry;
 
 public class ToolProxyClient extends ToolProxyCommon {
@@ -125,6 +128,13 @@ public class ToolProxyClient extends ToolProxyCommon {
         // MinecraftForgeClient.registerItemRenderer(TinkerTools.dagger, daggerRenderer); // todo proper renderer
 
         TileEntityRendererDispatcher.instance.mapSpecialRenderers.put(BattlesignLogic.class, new BattlesignTesr());
+        // covers ToolForgeLogic too: the renderer dispatcher walks superclasses
+        ToolStationTesr table = new ToolStationTesr();
+        ClientRegistry.bindTileEntitySpecialRenderer(ToolStationLogic.class, table);
+        // it drops its cached texels when the atlas is restitched
+        MinecraftForge.EVENT_BUS.register(table);
+
+        MinecraftForge.EVENT_BUS.register(new SlotHints());
     }
 
     public void registerManualIcons() {
@@ -772,9 +782,9 @@ public class ToolProxyClient extends ToolProxyCommon {
                 0,
                 3,
                 0,
-                new int[] { 0, 1, 2, 13 },
-                new int[] { 13, 13, 13, 13 },
-                "gui.toolforge1",
+                new int[] { 0, 1, 2, 3, 4, 5 },
+                new int[] { 13, 13, 13, 13, 13, 13 },
+                "gui.toolstation.repair",
                 "gui.toolforge2");
 
         // tier 1 tools
@@ -787,7 +797,8 @@ public class ToolProxyClient extends ToolProxyCommon {
                     iconCoordsT1[i * 2],
                     iconCoordsT1[i * 2 + 1],
                     tier1Tools[i].getUnlocalizedToolName(),
-                    locString);
+                    locString,
+                    tier1Tools[i]);
         }
 
         // tier 2 tools
@@ -800,11 +811,17 @@ public class ToolProxyClient extends ToolProxyCommon {
                     iconCoordsT2[i * 2],
                     iconCoordsT2[i * 2 + 1],
                     tier2Tools[i].getUnlocalizedToolName(),
-                    locString);
+                    locString,
+                    tier2Tools[i]);
         }
     }
 
     void addToolButton(int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons, String title, String body) {
+        addToolButton(slotType, xButton, yButton, xIcons, yIcons, title, body, null);
+    }
+
+    void addToolButton(int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons, String title, String body,
+            ToolCore tool) {
         TConstructClientRegistry.addToolButton(
                 new ToolGuiElement(
                         slotType,
@@ -815,11 +832,13 @@ public class ToolProxyClient extends ToolProxyCommon {
                         title,
                         body,
                         "tinker",
-                        "textures/gui/icons.png"));
+                        "textures/gui/icons.png",
+                        tool,
+                        ToolSlotLayouts.of(tool)));
     }
 
-    void addTierTwoButton(int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons, String title,
-            String body) {
+    void addTierTwoButton(int slotType, int xButton, int yButton, int[] xIcons, int[] yIcons, String title, String body,
+            ToolCore tool) {
         TConstructClientRegistry.addTierTwoButton(
                 new ToolGuiElement(
                         slotType,
@@ -830,7 +849,9 @@ public class ToolProxyClient extends ToolProxyCommon {
                         title,
                         body,
                         "tinker",
-                        "textures/gui/icons.png"));
+                        "textures/gui/icons.png",
+                        tool,
+                        ToolSlotLayouts.of(tool)));
     }
 
     void addToolRenderMappings() {

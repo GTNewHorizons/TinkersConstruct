@@ -18,6 +18,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import mantle.lib.client.MantleClientRegistry;
 import tconstruct.client.AmmoItemRenderer;
 import tconstruct.library.client.TConstructClientRegistry;
+import tconstruct.library.client.ToolGuiElement;
 import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.TinkerTools;
@@ -163,15 +164,18 @@ public class WeaponryClientProxy extends WeaponryCommonProxy {
         for (int i = 0; i < tools.length; i++) {
             String locString = String.format("gui.toolstation.%s.desc", tools[i].getToolName().toLowerCase());
             TConstructClientRegistry.addToolButton(
-                    icons[i][0],
-                    icons[i][1],
-                    icons[i][2],
-                    coords[i * 2],
-                    coords[i * 2 + 1],
-                    tools[i].getLocalizedToolName(),
-                    locString,
-                    Reference.RESOURCE,
-                    tex);
+                    new ToolGuiElement(
+                            icons[i][0],
+                            icons[i][1],
+                            icons[i][2],
+                            coords[i * 2],
+                            coords[i * 2 + 1],
+                            tools[i].getLocalizedToolName(),
+                            locString,
+                            Reference.RESOURCE,
+                            tex,
+                            tools[i],
+                            WeaponrySlotLayouts.of(tools[i])));
         }
 
         // Tool Forge
@@ -190,15 +194,18 @@ public class WeaponryClientProxy extends WeaponryCommonProxy {
         for (int i = 0; i < tools.length; i++) {
             String locString = String.format("gui.toolstation.%s.desc", tools[i].getToolName().toLowerCase());
             TConstructClientRegistry.addTierTwoButton(
-                    icons[i][0],
-                    icons[i][1],
-                    icons[i][2],
-                    coords[i * 2],
-                    coords[i * 2 + 1],
-                    tools[i].getLocalizedToolName(),
-                    locString,
-                    Reference.RESOURCE,
-                    tex);
+                    new ToolGuiElement(
+                            icons[i][0],
+                            icons[i][1],
+                            icons[i][2],
+                            coords[i * 2],
+                            coords[i * 2 + 1],
+                            tools[i].getLocalizedToolName(),
+                            locString,
+                            Reference.RESOURCE,
+                            tex,
+                            tools[i],
+                            WeaponrySlotLayouts.of(tools[i])));
         }
     }
 

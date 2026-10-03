@@ -1,5 +1,8 @@
 package tconstruct.tools.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.world.World;
 
@@ -18,100 +21,22 @@ public class ToolForgeGui extends ToolStationGui {
     }
 
     @Override
-    protected void createToolButtons() {
-        ToolGuiElement repair = TConstructClientRegistry.toolButtons.get(0);
-        GuiButtonTool repairButton = new GuiButtonTool(
-                0,
-                this.guiLeft,
-                this.guiTop,
-                repair.buttonIconX,
-                repair.buttonIconY,
-                repair.domain,
-                repair.texture,
-                repair); // Repair
-        repairButton.enabled = false;
-        this.buttonList.add(repairButton);
-        int offset = TConstructClientRegistry.tierTwoButtons.size();
-
-        for (int iter = 0; iter < TConstructClientRegistry.tierTwoButtons.size(); iter++) {
-            ToolGuiElement element = TConstructClientRegistry.tierTwoButtons.get(iter);
-            GuiButtonTool button = new GuiButtonTool(
-                    iter + 1,
-                    this.guiLeft + 22 * ((iter + 1) % 5),
-                    this.guiTop + 22 * ((iter + 1) / 5),
-                    element.buttonIconX,
-                    element.buttonIconY,
-                    element.domain,
-                    element.texture,
-                    element);
-            this.buttonList.add(button);
-        }
-
-        for (int iter = 1; iter < TConstructClientRegistry.toolButtons.size(); iter++) {
-            ToolGuiElement element = TConstructClientRegistry.toolButtons.get(iter);
-            GuiButtonTool button = new GuiButtonTool(
-                    iter + offset,
-                    this.guiLeft + 22 * ((iter + offset) % 5),
-                    this.guiTop + 22 * ((iter + offset) / 5),
-                    element.buttonIconX,
-                    element.buttonIconY,
-                    element.domain,
-                    element.texture,
-                    element);
-            this.buttonList.add(button);
-        }
+    StationTheme theme() {
+        return StationTheme.METAL;
     }
 
     @Override
-    protected void setIconUVs() {
-        iconX = new int[] { 0, 1, 2, 13 };
-        iconY = new int[] { 13, 13, 13, 13 };
+    protected List<ToolGuiElement> tabs() {
+        List<ToolGuiElement> station = TConstructClientRegistry.toolButtons;
+        List<ToolGuiElement> tabs = new ArrayList<>(station.size() + TConstructClientRegistry.tierTwoButtons.size());
+        tabs.add(station.get(0));
+        tabs.addAll(TConstructClientRegistry.tierTwoButtons);
+        tabs.addAll(station.subList(1, station.size()));
+        return tabs;
     }
 
     @Override
-    protected void setSlotType(int type) {
-        switch (type) {
-            case 0:
-                slotX = new int[] { 56, 38, 38, 14 }; // Repair
-                slotY = new int[] { 37, 28, 46, 37 };
-                break;
-            case 1:
-                slotX = new int[] { 56, 56, 56, 14 }; // Three parts
-                slotY = new int[] { 19, 55, 37, 37 };
-                break;
-            case 2:
-                slotX = new int[] { 56, 56, 14, 14 }; // Two parts
-                slotY = new int[] { 28, 46, 28, 46 };
-                break;
-            case 3:
-                slotX = new int[] { 38, 47, 56, 14 }; // Double head
-                slotY = new int[] { 28, 46, 28, 37 };
-                break;
-            case 4:
-                slotX = new int[] { 47, 38, 56, 47 }; // Four parts
-                slotY = new int[] { 19, 37, 37, 55 };
-                break;
-            case 5:
-                slotX = new int[] { 38, 47, 56, 47 }; // Four parts, double head
-                slotY = new int[] { 19, 55, 19, 37 };
-                break;
-            case 6:
-                slotX = new int[] { 38, 38, 20, 56 }; // Double head
-                slotY = new int[] { 28, 46, 28, 28 };
-                break;
-            case 7:
-                slotX = new int[] { 56, 56, 56, 14 }; // Three parts reverse
-                slotY = new int[] { 19, 37, 55, 37 };
-                break;
-            case 8:
-                slotX = new int[] { 20, 38, 56, 38 }; // Double head middle
-                slotY = new int[] { 28, 46, 28, 28 };
-                break;
-            case 9:
-                slotX = new int[] { 38, 56, 47, 47 }; // Four parts, crossbow.
-                slotY = new int[] { 37, 37, 55, 19 };
-                break;
-        }
-        toolSlots.resetSlots(slotX, slotY);
+    protected int[][] slotTypeLayout(int type) {
+        return StationSlotLayouts.forgeLayout(type);
     }
 }
