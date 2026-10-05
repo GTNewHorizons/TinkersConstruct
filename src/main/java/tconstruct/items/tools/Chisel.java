@@ -1,19 +1,13 @@
 package tconstruct.items.tools;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.Detailing.DetailInput;
 import tconstruct.library.tools.AbilityHelper;
@@ -50,87 +44,34 @@ public class Chisel extends ToolCore {
                 && par1ItemStack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Broken");
     }
 
-    boolean performDetailing(World world, int x, int y, int z, int blockID, int blockMeta) {
-        return false;
-    }
-
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float clickX, float clickY, float clickZ) {
-        return false;
+        if (!player.capabilities.isCreativeMode && (!stack.hasTagCompound()
+                || stack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Broken"))) return false;
+        if (!world.canMineBlock(player, x, y, z) || !player.canPlayerEdit(x, y, z, side, stack)) return false;
+
+        Block block = world.getBlock(x, y, z);
+        int meta = world.getBlockMetadata(x, y, z);
+        DetailInput details = TConstruct.chiselDetailing.getDetailing(block, meta);
+        if (details == null || world.getTileEntity(x, y, z) != null) return false;
+        if (world.isRemote) return true;
+
+        if (!world.setBlock(x, y, z, Block.getBlockFromItem(details.output.getItem()), details.outputMeta, 3))
+            return false;
+        if (!player.capabilities.isCreativeMode) {
+            int reinforced = stack.getTagCompound().getCompoundTag("InfiTool").getInteger("Unbreaking");
+            if (random.nextInt(10) < 10 - reinforced) {
+                AbilityHelper.damageTool(stack, 1, null, false);
+            }
+        }
+        world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
+        return true;
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer entityplayer) {
-        if (entityplayer.capabilities.isCreativeMode) {
-            onEaten(stack, world, entityplayer);
-        } else {
-            NBTTagCompound tags = stack.getTagCompound().getCompoundTag("InfiTool");
-            if (!tags.getBoolean("Broken")) entityplayer.setItemInUse(stack, getMaxItemUseDuration(stack));
-        }
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         return stack;
-    }
-
-    @Override
-    public ItemStack onEaten(ItemStack itemstack, World world, EntityPlayer entityplayer) {
-        if (!world.isRemote) {
-            MovingObjectPosition movingobjectposition = getMovingObjectPositionFromPlayer(world, entityplayer, true);
-            if (movingobjectposition == null) {
-                return itemstack;
-            }
-            if (movingobjectposition.typeOfHit == MovingObjectType.BLOCK) {
-                int x = movingobjectposition.blockX;
-                int y = movingobjectposition.blockY;
-                int z = movingobjectposition.blockZ;
-                Block block = world.getBlock(x, y, z);
-                int meta = world.getBlockMetadata(x, y, z);
-
-                DetailInput details = TConstruct.chiselDetailing.getDetailing(block, meta);
-                if (details != null) {
-                    world.setBlock(x, y, z, Block.getBlockFromItem(details.output.getItem()), details.outputMeta, 3);
-                    if (!(entityplayer.capabilities.isCreativeMode)) {
-                        int reinforced = 0;
-                        NBTTagCompound tags = itemstack.getTagCompound();
-
-                        if (tags.getCompoundTag("InfiTool").hasKey("Unbreaking"))
-                            reinforced = tags.getCompoundTag("InfiTool").getInteger("Unbreaking");
-
-                        if (random.nextInt(10) < 10 - reinforced) {
-                            AbilityHelper.damageTool(itemstack, 1, null, false);
-                        }
-                    }
-                    world.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
-                    entityplayer.swingItem();
-                }
-            }
-        }
-
-        return itemstack;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
-        super.onUpdate(stack, world, entity, par4, par5);
-        if (entity instanceof EntityPlayerSP) {
-            EntityPlayerSP player = (EntityPlayerSP) entity;
-            ItemStack usingItem = player.getItemInUse();
-            if (usingItem != null && usingItem.getItem() == this) {
-                player.swingItem();
-                player.movementInput.moveForward *= 2.0;
-                player.movementInput.moveStrafe *= 2.0;
-            }
-        }
-    }
-
-    @Override
-    public int getMaxItemUseDuration(ItemStack itemstack) {
-        if (!itemstack.hasTagCompound()) return 20;
-
-        int speed = itemstack.getTagCompound().getCompoundTag("InfiTool").getInteger("MiningSpeed") / 100;
-        int truespeed = 20 - speed;
-        if (truespeed < 0) truespeed = 0;
-        return truespeed;
     }
 
     @Override
