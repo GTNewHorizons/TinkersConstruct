@@ -34,6 +34,7 @@ import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.modifier.ItemModifier;
 import tconstruct.library.util.TextureHelper;
+import tconstruct.modifiers.tools.ModPiston;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.entity.FancyEntityItem;
 import tconstruct.util.config.PHConstruct;
@@ -490,6 +491,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
+        if (!world.isRemote && stack.hasTagCompound())
+            ModPiston.repaintLine(stack.getTagCompound().getCompoundTag("InfiTool"));
         for (ActiveToolMod mod : TConstructRegistry.activeModifiers) {
             mod.updateTool(this, stack, world, entity);
         }

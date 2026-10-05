@@ -11,6 +11,8 @@ import tconstruct.library.tools.ToolCore;
 
 public class ModPiston extends ItemModTypeFilter {
 
+    private static final String LINE = "\u00a74Knockback (", GRAY_LINE = "\u00a77Knockback (";
+
     String tooltipName;
 
     public ModPiston(int effect, ItemStack[] items, int[] values) {
@@ -64,7 +66,7 @@ public class ModPiston extends ItemModTypeFilter {
             int modifiers = tags.getInteger("Modifiers");
             modifiers -= 1;
             tags.setInteger("Modifiers", modifiers);
-            String modName = "\u00a74Knockback (" + increase + "/" + max + ")";
+            String modName = LINE + increase + "/" + max + ")";
             int tooltipIndex = addToolTip(tool, tooltipName, modName);
             int[] keyPair = new int[] { increase, max, tooltipIndex };
             tags.setIntArray(key, keyPair);
@@ -79,8 +81,17 @@ public class ModPiston extends ItemModTypeFilter {
     void updateModTag(ItemStack tool, int[] keys) {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
         String tip = "ModifierTip" + keys[2];
-        String modName = "\u00a77Knockback (" + keys[0] + "/" + keys[1] + ")";
+        String modName = LINE + keys[0] + "/" + keys[1] + ")";
         tags.setString(tip, modName);
+    }
+
+    /** A tool's saved Knockback line from before every piston wrote it red is repainted red. */
+    public static void repaintLine(NBTTagCompound tags) {
+        int[] keys = tags.getIntArray("Piston");
+        if (keys.length < 3) return;
+        String tip = "ModifierTip" + keys[2];
+        String line = tags.getString(tip);
+        if (line.startsWith(GRAY_LINE)) tags.setString(tip, LINE + line.substring(GRAY_LINE.length()));
     }
 
     public boolean validType(ToolCore tool) {
