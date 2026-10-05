@@ -116,6 +116,7 @@ public class Chisel extends ToolCore {
             EntityPlayerSP player = (EntityPlayerSP) entity;
             ItemStack usingItem = player.getItemInUse();
             if (usingItem != null && usingItem.getItem() == this) {
+                player.swingItem();
                 player.movementInput.moveForward *= 2.0;
                 player.movementInput.moveStrafe *= 2.0;
             }
