@@ -47,8 +47,9 @@ public class Chisel extends ToolCore {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float clickX, float clickY, float clickZ) {
-        if (!player.capabilities.isCreativeMode && (!stack.hasTagCompound()
-                || stack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Broken"))) return false;
+        if (!player.capabilities.isCreativeMode
+                && (!stack.hasTagCompound() || stack.getTagCompound().getCompoundTag("InfiTool").getBoolean("Broken")))
+            return false;
         if (!world.canMineBlock(player, x, y, z) || !player.canPlayerEdit(x, y, z, side, stack)) return false;
 
         Block block = world.getBlock(x, y, z);
