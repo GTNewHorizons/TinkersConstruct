@@ -2,7 +2,6 @@ package tconstruct.tools.logic;
 
 import java.util.Arrays;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -95,11 +94,18 @@ public abstract class StationCraft extends InventoryLogic {
         ItemStack tool = inventory[1];
         if (tool == null) return null;
         if (!(tool.getItem() instanceof IModifyable)) return name.equals("") ? null : tryRenameTool(null, name);
-        ItemStack[] materials = Arrays.copyOfRange(inventory, 2, inventory.length);
-        boolean any = false;
-        for (ItemStack material : materials) any |= material != null;
-        ItemStack output = any ? ModifyBuilder.instance.modifyItem(tool, materials) : tool.copy();
+        ItemStack output = hasMaterials() ? modifiedTool() : tool.copy();
         return name.equals("") ? output : tryRenameTool(output, name);
+    }
+
+    private boolean hasMaterials() {
+        for (int slot = 2; slot < inventory.length; slot++) if (inventory[slot] != null) return true;
+        return false;
+    }
+
+    /** The center tool as the side slots repair or modify it; null when they do nothing to it. */
+    private ItemStack modifiedTool() {
+        return ModifyBuilder.instance.modifyItem(inventory[1], Arrays.copyOfRange(inventory, 2, inventory.length));
     }
 
     ItemStack buildFromParts(String name) {
@@ -116,32 +122,29 @@ public abstract class StationCraft extends InventoryLogic {
             return true;
         }
         if (!(output.getItem() instanceof IModifyable)) {
-            takeNamingInputs(output.stackSize);
+            takeNamingInputs(output);
             return false;
         }
         NBTTagCompound tags = output.getTagCompound().getCompoundTag(((IModifyable) output.getItem()).getBaseTagName());
         int[] toRemove = tags.hasKey("ToRemove") ? tags.getIntArray("ToRemove") : null;
+        tags.removeTag("ToRemove");
+        // a rename alone uses nothing in the side slots
+        if (!hasMaterials() || modifiedTool() == null) {
+            takeNamingInputs(output);
+            return false;
+        }
         int next = 0;
-        boolean took = false;
         for (int slot = 2; slot < inventory.length; slot++) {
             if (inventory[slot] == null) continue;
             decrStackSize(slot, toRemove == null || next >= toRemove.length ? 1 : toRemove[next++]);
-            took = true;
         }
-        tags.removeTag("ToRemove");
         decrStackSize(1, inventory[1].stackSize);
-        return took;
+        return true;
     }
 
-    /** The named items taken from the center, and one name tag if the station holds one. */
-    private void takeNamingInputs(int taken) {
+    /** The named items taken from the center; a rename costs nothing else. */
+    private void takeNamingInputs(ItemStack output) {
         // a right-click or a drop takes part of the output; the rest stays in the center
-        if (inventory[1] != null) decrStackSize(1, Math.min(taken, inventory[1].stackSize));
-        for (int slot = 2; slot < inventory.length; slot++) {
-            if (inventory[slot] != null && inventory[slot].getItem() == Items.name_tag) {
-                decrStackSize(slot, 1);
-                return;
-            }
-        }
+        if (inventory[1] != null) decrStackSize(1, Math.min(output.stackSize, inventory[1].stackSize));
     }
 }

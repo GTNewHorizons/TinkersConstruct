@@ -2,7 +2,6 @@ package tconstruct.tools.logic;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
@@ -165,21 +164,8 @@ public class ToolStationLogic extends StationCraft implements ISidedInventory {
         if (tags.hasKey("display") && tags.getCompoundTag("display").hasKey("Name"))
             display = tags.getCompoundTag("display");
 
-        boolean doRename = false;
-        if (display == null) {
-            display = new NBTTagCompound();
-            doRename = true;
-        }
-        // we only allow renaming with a nametag otherwise
-        else if (!name.equals(display.getString("Name"))) {
-            int nametagCount = 0;
-            for (ItemStack itemStack : inventory)
-                if (itemStack != null && itemStack.getItem() == Items.name_tag) nametagCount++;
-
-            doRename = nametagCount == 1;
-        }
-
-        if (!doRename) return output;
+        if (display == null) display = new NBTTagCompound();
+        else if (name.equals(display.getString("Name"))) return output;
 
         display.setString("Name", name);
         tags.setTag("display", display);
