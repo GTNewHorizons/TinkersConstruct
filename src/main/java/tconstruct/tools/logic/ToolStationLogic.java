@@ -1,32 +1,37 @@
 package tconstruct.tools.logic;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
 
-import mantle.blocks.abstracts.InventoryLogic;
-import tconstruct.library.crafting.ModifyBuilder;
-import tconstruct.library.crafting.ToolBuilder;
-import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.inventory.ToolStationContainer;
 
 /*
  * Simple class for storing items in the block
  */
 
-public class ToolStationLogic extends InventoryLogic implements ISidedInventory {
+public class ToolStationLogic extends StationCraft implements ISidedInventory {
 
     private static final int[] NO_SLOTS = new int[0];
 
     public ItemStack previousTool;
     public String toolName;
+    /** The tab the tile builds for, set by whoever last picked one on it, like toolName; null is Repair & Modify. */
+    private ToolCore selectedTool;
+    public final StationTabs tabs = new StationTabs();
+    public final TableFacing table = new TableFacing(this);
 
     public ToolStationLogic() {
-        super(4);
+        super(7); // 0 output, 1 tool, 2-6 materials
         toolName = "";
     }
 
@@ -61,6 +66,7 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
         if (slot != 0) {
             buildTool(toolName);
         }
+        syncContentsToClients();
     }
 
     @Override
@@ -69,7 +75,58 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
         if (slot != 0) {
             buildTool(toolName);
         }
+        syncContentsToClients();
         return itemstack;
+    }
+
+    // the table renders its contents in the world, so clients need the inventory
+    public void syncContentsToClients() {
+        if (worldObj != null && !worldObj.isRemote) {
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
+    }
+
+    public ToolCore getSelectedTool() {
+        return selectedTool;
+    }
+
+    /** The player is null when loading the tile; true when anything the tile saves changed. */
+    public boolean setSelectedTool(ToolCore tool, EntityPlayer player) {
+        boolean changed = tool != selectedTool;
+        selectedTool = tool;
+        if (player != null && tabs.rememberTab(player, tool)) changed = true;
+        return changed;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tags) {
+        super.readFromNBT(tags);
+        table.readFromNBT(tags);
+        setSelectedTool(StationTabs.toolNamed(tags.getString("SelectedTool")), null);
+        tabs.readFromNBT(tags);
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tags) {
+        super.writeToNBT(tags);
+        table.writeToNBT(tags);
+        if (selectedTool != null) tags.setString("SelectedTool", Item.itemRegistry.getNameForObject(selectedTool));
+        tabs.writeToNBT(tags);
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound tag = new NBTTagCompound();
+        writeToNBT(tag);
+        // a local connection passes the packet unencoded; without the copy the integrated client shares the server's
+        // stack tags and strips the output's ToRemove before the server reads it
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, (NBTTagCompound) tag.copy());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        readFromNBT(packet.func_148857_g());
+        rememberServerBuild();
     }
 
     @Override
@@ -81,31 +138,9 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
     }
 
     public void buildTool(String name) {
-        ItemStack output = null;
-        if (inventory[1] != null) {
-            if (inventory[1].getItem() instanceof IModifyable) // Modify item
-            {
-                if (inventory[2] == null && inventory[3] == null) output = inventory[1].copy();
-                else {
-                    output = ModifyBuilder.instance
-                            .modifyItem(inventory[1], new ItemStack[] { inventory[2], inventory[3] });
-                }
-            } else
-            // Build new item
-            {
-                toolName = name;
-                ItemStack tool = ToolBuilder.instance.buildTool(inventory[1], inventory[2], inventory[3], name);
-                if (inventory[0] == null) output = tool;
-                else if (tool != null) {
-                    NBTTagCompound tags = tool.getTagCompound();
-                    if (!tags.getCompoundTag(((IModifyable) tool.getItem()).getBaseTagName()).hasKey("Built")) {
-                        output = tool;
-                    }
-                }
-            }
-            if (!name.equals("")) // Name item
-                output = tryRenameTool(output, name);
-        }
+        ItemStack output = selectedTool == null ? modifyTool(name) : buildFromParts(name);
+        // the client predicts with its own config; for cells the server refused, the server's word stands
+        if (output != null && worldObj != null && worldObj.isRemote && serverBuildsNothing(selectedTool)) output = null;
         inventory[0] = output;
     }
 
@@ -129,21 +164,8 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
         if (tags.hasKey("display") && tags.getCompoundTag("display").hasKey("Name"))
             display = tags.getCompoundTag("display");
 
-        boolean doRename = false;
-        if (display == null) {
-            display = new NBTTagCompound();
-            doRename = true;
-        }
-        // we only allow renaming with a nametag otherwise
-        else if (!name.equals(display.getString("Name"))) {
-            int nametagCount = 0;
-            for (ItemStack itemStack : inventory)
-                if (itemStack != null && itemStack.getItem() == Items.name_tag) nametagCount++;
-
-            doRename = nametagCount == 1;
-        }
-
-        if (!doRename) return output;
+        if (display == null) display = new NBTTagCompound();
+        else if (name.equals(display.getString("Name"))) return output;
 
         display.setString("Name", name);
         tags.setTag("display", display);
@@ -188,9 +210,4 @@ public class ToolStationLogic extends InventoryLogic implements ISidedInventory 
 
     @Override
     public void closeInventory() {}
-
-    public static boolean canRename(NBTTagCompound tags, ItemStack tool) {
-        return tags != null && (!tags.hasKey("Name")
-                || tags.getString("Name").equals("\u00A7f" + ToolBuilder.defaultToolName(tool)));
-    }
 }

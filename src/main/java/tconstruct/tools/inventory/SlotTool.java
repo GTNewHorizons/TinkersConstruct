@@ -1,28 +1,17 @@
 package tconstruct.tools.inventory;
 
-import java.util.Random;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.MinecraftForge;
-
-import tconstruct.library.event.ToolCraftedEvent;
-import tconstruct.library.modifier.IModifyable;
 
 public class SlotTool extends Slot {
 
-    /** The player that is using the GUI where this slot resides. */
-    public EntityPlayer player;
+    private final ToolStationContainer container;
 
-    Random random = new Random();
-
-    public SlotTool(EntityPlayer entityplayer, IInventory builder, int par3, int par4, int par5) {
-        super(builder, par3, par4, par5);
-        this.player = entityplayer;
+    public SlotTool(ToolStationContainer container, IInventory inventory, int index, int x, int y) {
+        super(inventory, index, x, y);
+        this.container = container;
     }
 
     /**
@@ -34,67 +23,8 @@ public class SlotTool extends Slot {
     }
 
     public void onPickupFromSlot(EntityPlayer par1EntityPlayer, ItemStack stack) {
-        this.onCrafting(stack);
+        container.onResultTaken(par1EntityPlayer, stack);
         // stack.setUnlocalizedName("\u00A7f" + toolName);
         super.onPickupFromSlot(par1EntityPlayer, stack);
-    }
-
-    /**
-     * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood. Typically increases an
-     * internal count then calls onCrafting(item).
-     */
-    protected void onCrafting(ItemStack stack, int par2) {
-        // this.field_75228_b += par2;
-        this.onCrafting(stack);
-    }
-
-    /**
-     * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
-     */
-    protected void onCrafting(ItemStack stack) {
-        if (stack.getItem() instanceof IModifyable) {
-            NBTTagCompound tags = stack.getTagCompound()
-                    .getCompoundTag(((IModifyable) stack.getItem()).getBaseTagName());
-            int[] toRemoveArray = tags.hasKey("ToRemove") ? tags.getIntArray("ToRemove") : null;
-            int toRemoveIndex = 0;
-
-            boolean full = (inventory.getStackInSlot(2) != null || inventory.getStackInSlot(3) != null);
-            for (int i = 2; i <= 3; i++) {
-                ItemStack item = inventory.getStackInSlot(i);
-                if (item == null) {
-                    continue;
-                }
-                if (toRemoveArray == null || toRemoveIndex >= toRemoveArray.length) {
-                    inventory.decrStackSize(i, 1);
-                } else {
-                    inventory.decrStackSize(i, toRemoveArray[toRemoveIndex]);
-                    toRemoveIndex++;
-                }
-            }
-            tags.removeTag("ToRemove");
-            ItemStack compare = inventory.getStackInSlot(1);
-            int amount = compare.getItem() instanceof IModifyable ? compare.stackSize : 1;
-            inventory.decrStackSize(1, amount);
-            if (!player.worldObj.isRemote && full) player.worldObj.playSoundEffect(
-                    player.posX,
-                    player.posY,
-                    player.posZ,
-                    "tinker:little_saw",
-                    1.0F,
-                    (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            MinecraftForge.EVENT_BUS.post(new ToolCraftedEvent(this.inventory, player, stack));
-        } else
-        // Simply naming items
-        {
-            int amount = inventory.getStackInSlot(1).stackSize;
-            inventory.decrStackSize(1, amount);
-
-            for (int i = 0; i < inventory.getSizeInventory(); i++) {
-                if (inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).getItem() == Items.name_tag) {
-                    inventory.decrStackSize(i, 1);
-                    break;
-                }
-            }
-        }
     }
 }

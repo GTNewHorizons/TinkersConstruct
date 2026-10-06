@@ -34,6 +34,7 @@ import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.IModifyable;
 import tconstruct.library.modifier.ItemModifier;
 import tconstruct.library.util.TextureHelper;
+import tconstruct.modifiers.tools.ModPiston;
 import tconstruct.tools.TinkerTools;
 import tconstruct.tools.entity.FancyEntityItem;
 import tconstruct.util.config.PHConstruct;
@@ -468,10 +469,30 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         return TinkerTools.toolRod;
     }
 
+    /** The part each build slot takes, indexed by BuildInput; null for a slot the build leaves empty. */
+    public Item[] getToolBuildComponents() {
+        return new Item[] { getHeadItem(), getHandleItem(), getAccessoryItem(), getExtraItem() };
+    }
+
+    /**
+     * Whether the build takes this part's material at this input. Every material by default; a tool whose craft event
+     * refuses by material mirrors that event's lookup here, so a build cell refuses what the build would.
+     */
+    public boolean takesPartMaterial(BuildInput input, ItemStack part) {
+        return true;
+    }
+
+    /** The kind of part this input is once the build events have run; the input itself unless a tool moves it. */
+    public BuildInput kindOf(BuildInput input) {
+        return input;
+    }
+
     /* Updating */
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
+        if (!world.isRemote && stack.hasTagCompound())
+            ModPiston.repaintLine(stack.getTagCompound().getCompoundTag("InfiTool"));
         for (ActiveToolMod mod : TConstructRegistry.activeModifiers) {
             mod.updateTool(this, stack, world, entity);
         }

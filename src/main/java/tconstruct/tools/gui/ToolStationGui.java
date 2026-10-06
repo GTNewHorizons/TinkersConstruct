@@ -1,12 +1,20 @@
 package tconstruct.tools.gui;
 
+import static tconstruct.tools.gui.StationButtons.COLUMN_W;
+import static tconstruct.tools.gui.StationDraw.background;
+import static tconstruct.tools.gui.StationPanels.PANEL_WIDTH_MAX;
+import static tconstruct.tools.gui.StationPanels.PANEL_WIDTH_MIN;
+import static tconstruct.tools.gui.StationPanels.PANEL_X;
+import static tconstruct.tools.gui.StationPanels.UPPER_Y;
+import static tconstruct.tools.gui.StationPanels.Y_SIZE;
+
 import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -16,62 +24,63 @@ import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import codechicken.nei.VisiblityData;
-import codechicken.nei.api.INEIGuiHandler;
-import codechicken.nei.api.TaggedInventoryArea;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.TConstruct;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.client.ToolGuiElement;
+import tconstruct.library.modifier.IModifyable;
+import tconstruct.library.tools.ToolCore;
 import tconstruct.tools.inventory.ToolStationContainer;
 import tconstruct.tools.logic.ToolStationLogic;
-import tconstruct.util.network.ToolStationPacket;
+import tconstruct.util.config.PHConstruct;
+import tconstruct.util.network.ToolStationSelectionPacket;
 
 @SideOnly(Side.CLIENT)
-@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
-public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
+public class ToolStationGui extends TinkerStationGui {
 
-    public ToolStationLogic logic;
-    public ToolStationContainer toolSlots;
-    public GuiTextField text;
-    public int selectedButton;
     public int[] slotX, slotY, iconX, iconY;
     public String title, body = "";
+
+    ToolGuiElement tabElement;
+    ResourceLocation tabSheet;
+    private ScrollSwitch scrollSwitch;
 
     public ToolStationGui(InventoryPlayer inventoryplayer, ToolStationLogic stationlogic, World world, int x, int y,
             int z) {
         super(stationlogic.getGuiContainer(inventoryplayer, world, x, y, z));
         this.logic = stationlogic;
         toolSlots = (ToolStationContainer) inventorySlots;
+        cells = new CraftCells(this);
+        components = new ComponentList(this);
+        panels = new StationPanels(this);
         selectedButton = 0;
-        setSlotType(0);
-        setIconUVs();
-        title = EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("gui.toolforge1");
+        ToolGuiElement repair = tabs().get(0);
+        cells.applyTabLayout(repair);
+        iconX = repair.iconsX;
+        iconY = repair.iconsY;
+        title = EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("gui.toolstation.repair");
         body = StatCollector.translateToLocal("gui.toolforge2");
         Keyboard.enableRepeatEvents(true);
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        this.text.mouseClicked(mouseX - this.guiLeft, mouseY - this.guiTop, mouseButton);
-    }
-
-    protected void setIconUVs() {
-        iconX = new int[] { 0, 1, 2 };
-        iconY = new int[] { 13, 13, 13 };
-    }
-
-    @Override
     public void initGui() {
+        // a resize re-inits this object, and super.initGui centers guiTop off ySize, so it goes back to 166 first
+        this.ySize = 166;
         super.initGui();
-        this.xSize = 176 + 110;
-        this.guiLeft = (this.width - 176) / 2 - 110;
+        this.xSize = 176 + COLUMN_W;
+        // assigned after super, so the taller panel grows down from guiTop instead of lifting the whole assembly
+        this.ySize = Y_SIZE;
+        this.guiLeft = (this.width - 176) / 2 - COLUMN_W;
+        // the panels narrow before the assembly slides left; 185 is everything but the column and the panel: a 4 px
+        // left margin, 178 to the panel, the 2 px beam cap and a 1 px right margin
+        panels.panelWidth = Math.max(PANEL_WIDTH_MIN, Math.min(PANEL_WIDTH_MAX, this.width - (185 + COLUMN_W)));
+        int footprintRight = PANEL_X + panels.panelWidth + 2; // through the right beam cap
+        this.guiLeft = Math.max(4, Math.min(this.guiLeft, this.width - footprintRight - 1));
 
         if (this.text == null) {
-            this.text = new GuiTextField(this.fontRendererObj, 70 + 110, 8, 102, 12);
+            this.text = new GuiTextField(this.fontRendererObj, 70 + COLUMN_W, 7, 92, 12);
             this.text.setMaxStringLength(40);
             this.text.setEnableBackgroundDrawing(false);
             this.text.setVisible(true);
@@ -81,184 +90,138 @@ public class ToolStationGui extends GuiContainer implements INEIGuiHandler {
         }
 
         this.buttonList.clear();
-        createToolButtons();
+        StationButtons.createToolButtons(this);
+        if (tabElement == null && toolSlots.selectedTool != null) StationButtons.showRememberedTab(this);
+        // a resize rebuilds the buttons around the tab that is still open
+        this.buttonList.get(0).enabled = selectedButton != 0;
+        this.buttonList.get(selectedButton).enabled = false;
+        // last, so a tab's button index stays its id
+        scrollSwitch = new ScrollSwitch(this.guiLeft + panels.right(), this.guiTop + UPPER_Y, theme());
+        this.buttonList.add(scrollSwitch);
+        // NEI fits its item grid around the panels right after this, before the first frame lays them out
+        panels.layoutPanels(fontRendererObj, shownTool());
     }
 
-    protected void createToolButtons() {
-        for (int iter = 0; iter < TConstructClientRegistry.toolButtons.size(); iter++) {
-            ToolGuiElement element = TConstructClientRegistry.toolButtons.get(iter);
-            GuiButtonTool button = new GuiButtonTool(
-                    iter,
-                    this.guiLeft + 22 * (iter % 5),
-                    this.guiTop + 22 * (iter / 5),
-                    element.buttonIconX,
-                    element.buttonIconY,
-                    element.domain,
-                    element.texture,
-                    element);
-            this.buttonList.add(button);
-        }
-        this.buttonList.get(0).enabled = false;
+    /** The tabs in button order, Repair & Modify first. */
+    protected List<ToolGuiElement> tabs() {
+        return TConstructClientRegistry.toolButtons;
+    }
+
+    StationTheme theme() {
+        return StationTheme.WOOD;
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
+        if (button == scrollSwitch) {
+            PHConstruct.setStationPanelScrollBar(!panels.scrolls());
+            return;
+        }
+        if (!(button instanceof GuiButtonTool tab)) return;
+        showTab(tab);
+        toolSlots.selectTool(tabTool());
+        TConstruct.packetPipeline.sendToServer(new ToolStationSelectionPacket(tabTool()));
+    }
+
+    void showTab(GuiButtonTool button) {
         this.buttonList.get(selectedButton).enabled = true;
         selectedButton = button.id;
         button.enabled = false;
 
-        ToolGuiElement element = ((GuiButtonTool) button).element;
-        setSlotType(element.slotType);
+        ToolGuiElement element = button.element;
+        tabElement = element;
+        tabSheet = new ResourceLocation(element.domain, element.texture);
+        cells.applyTabLayout(element);
         iconX = element.iconsX;
         iconY = element.iconsY;
         title = "§n" + StatCollector.translateToLocal(element.title);
         body = StatCollector.translateToLocal(element.body).replace("\\n", "\n");
+        components.setComponents(element.tool);
+        // not ySize: a tab is pressed while a click has it widened to the side panels
+        cells.placeSlots(Y_SIZE);
     }
 
-    protected void setSlotType(int type) {
-        switch (type) {
-            case 0:
-                slotX = new int[] { 56, 38, 38 }; // Repair
-                slotY = new int[] { 37, 28, 46 };
-                break;
-            case 1:
-                slotX = new int[] { 56, 56, 56 }; // Three parts
-                slotY = new int[] { 19, 55, 37 };
-                break;
-            case 2:
-                slotX = new int[] { 56, 56, 14 }; // Two parts
-                slotY = new int[] { 28, 46, 37 };
-                break;
-            case 3:
-                slotX = new int[] { 38, 47, 56 }; // Double head
-                slotY = new int[] { 28, 46, 28 };
-                break;
-            case 7:
-                slotX = new int[] { 56, 56, 56 }; // Three parts reverse
-                slotY = new int[] { 19, 37, 55 };
-                break;
-        }
-        toolSlots.resetSlots(slotX, slotY);
+    ToolCore tabTool() {
+        return tabElement == null ? null : tabElement.tool;
+    }
+
+    private ItemStack shownTool() {
+        ItemStack output = logic.getStackInSlot(0);
+        if (output != null || toolSlots.isRestricting()) return output;
+        ItemStack center = logic.getStackInSlot(1);
+        return center != null && center.getItem() instanceof IModifyable ? center : null;
+    }
+
+    /** The cells' x row then their y row, or null for a type this block has no layout for. */
+    protected int[][] slotTypeLayout(int type) {
+        return StationSlotLayouts.stationLayout(type);
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
         this.text.updateCursorCounter();
+        // the server's answer to opening can move the container to another tab
+        if (tabTool() != toolSlots.selectedTool) StationButtons.showRememberedTab(this);
     }
 
     /**
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
     @Override
-    protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        this.fontRendererObj.drawString(StatCollector.translateToLocal(logic.getInvName()), 116, 8, 0x000000);
-        this.fontRendererObj
-                .drawString(StatCollector.translateToLocal("container.inventory"), 118, this.ySize - 96 + 2, 0x000000);
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        this.fontRendererObj.drawString(StatCollector.translateToLocal(logic.getInvName()), COLUMN_W + 6, 8, 0x000000);
+        drawInventoryLabel();
         this.text.drawTextBox();
 
-        if (logic.isStackInSlot(0)) {
-            ToolStationGuiHelper.drawToolStats(logic.getStackInSlot(0), 294, 0);
-        } else {
-            drawToolInformation();
+        panels.drawPanelText(fontRendererObj, mouseX, mouseY);
+
+        drawRefusedSlot(mouseX, mouseY);
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        drawSlotPartTooltip(mouseX, mouseY);
+        String caption = panels.cutCaptionAt(mouseX - this.guiLeft, mouseY - this.guiTop);
+        if (caption != null) drawHoveringText(Collections.singletonList(caption), mouseX, mouseY, fontRendererObj);
+        if (scrollSwitch.func_146115_a()) {
+            drawHoveringText(Collections.singletonList(scrollSwitch.tooltip()), mouseX, mouseY, fontRendererObj);
         }
     }
-
-    protected void drawToolInformation() {
-        this.drawCenteredString(fontRendererObj, title, 349, 8, 0xffffff);
-        fontRendererObj.drawSplitString(body, 294, 24, 115, 0xffffff);
-    }
-
-    private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/toolstation.png");
-    private static final ResourceLocation icons = new ResourceLocation("tinker", "textures/gui/icons.png");
-    private static final ResourceLocation description = new ResourceLocation("tinker", "textures/gui/description.png");
 
     /**
      * Draw the background layer for the GuiContainer (everything behind the items)
      */
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        panels.layoutPanels(fontRendererObj, shownTool());
+        // before the buttons draw, so the switch shows the panels drawn this frame
+        scrollSwitch.on = panels.scrolls();
+        cells.placeSlots(this.ySize);
         // Draw the background
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(background);
-        final int cornerX = this.guiLeft + 110;
+        final int cornerX = this.guiLeft + COLUMN_W;
         this.drawTexturedModalRect(cornerX, this.guiTop, 0, 0, 176, this.ySize);
 
+        GhostPreview.drawGhostPreview(this, fontRendererObj, cornerX);
+
+        // drawn after the ghost's cover, which can reach under the arrow's tail
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.mc.getTextureManager().bindTexture(background);
         if (this.text.isFocused()) {
-            this.drawTexturedModalRect(cornerX + 62, this.guiTop, 0, this.ySize, 112, 22);
+            this.drawTexturedModalRect(cornerX + 68, this.guiTop + 6, 0, 210, 102, 12);
+        }
+        GhostPreview.drawOutputColumn(this, cornerX);
+
+        cells.drawCells(fontRendererObj, this.zLevel, cornerX, mouseX, mouseY);
+
+        if (toolSlots.isRestricting() && this.mc.thePlayer.inventory.getItemStack() == null) {
+            Slot hovered = components.hoveredBuildSlot(mouseX, mouseY);
+            if (hovered != null) components.drawInventoryMatches(hovered);
         }
 
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(icons);
-        // Draw the slots
-
-        for (int i = 0; i < slotX.length; i++) {
-            this.drawTexturedModalRect(cornerX + slotX[i], this.guiTop + slotY[i], 144, 216, 18, 18);
-            if (!logic.isStackInSlot(i + 1)) {
-                this.drawTexturedModalRect(
-                        cornerX + slotX[i],
-                        this.guiTop + slotY[i],
-                        18 * iconX[i],
-                        18 * iconY[i],
-                        18,
-                        18);
-            }
-        }
-
-        // Draw description
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(description);
-        this.drawTexturedModalRect(cornerX + 176, this.guiTop, 0, 0, 126, this.ySize + 30);
-    }
-
-    @Override
-    protected void keyTyped(char typedChar, int keyCode) {
-        if (keyCode == 1 || (!this.text.isFocused() && keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode())) {
-            logic.setToolname("");
-            updateServer("");
-            Keyboard.enableRepeatEvents(false);
-            this.mc.thePlayer.closeScreen();
-        } else if (text.textboxKeyTyped(typedChar, keyCode)) {
-            final String toolName = text.getText().trim();
-            logic.setToolname(toolName);
-            updateServer(toolName);
-        } else {
-            // for nei
-            super.keyTyped(typedChar, keyCode);
-        }
-    }
-
-    private void updateServer(String name) {
-        TConstruct.packetPipeline.sendToServer(new ToolStationPacket(logic.xCoord, logic.yCoord, logic.zCoord, name));
-    }
-
-    @Override
-    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
-        currentVisibility.showWidgets = width - xSize >= 107;
-        if (guiLeft < 58) {
-            currentVisibility.showStateButtons = false;
-        }
-        return currentVisibility;
-    }
-
-    @Override
-    public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
-        return null;
-    }
-
-    @Override
-    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
-        if (y + h - 4 < guiTop || y + 4 > guiTop + ySize) return false;
-        return x - w - 4 >= guiLeft - 40 && x + 4 <= guiLeft + xSize + 126;
+        StationDraw.drawFrames(this, mouseX, mouseY);
     }
 }

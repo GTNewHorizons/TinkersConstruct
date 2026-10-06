@@ -15,6 +15,9 @@ import tconstruct.library.tools.AbilityHelper;
 
 public class PHConstruct {
 
+    private static Configuration config;
+    private static Property stationPanelScrollBarProperty;
+
     public static void initProps(File location) {
 
         /*
@@ -34,7 +37,7 @@ public class PHConstruct {
             TConstruct.logger.warn(e.getLocalizedMessage());
         }
 
-        Configuration config = new Configuration(mainFile);
+        config = new Configuration(mainFile);
         // config.load(); /* Load happens in the constructor */
 
         superfunWorld = config.get("Superfun", "All the world is Superfun", false).getBoolean(false);
@@ -294,6 +297,12 @@ public class PHConstruct {
                 false,
                 "Use the classic crafting station layout with at most 10 visible inventory rows and scrolling for larger inventories, client-side only")
                 .getBoolean(false);
+        stationPanelScrollBarProperty = config.get(
+                "Looks",
+                "Tool Station panel scroll bar",
+                SCROLL_BAR_UNSET,
+                "The Tool Station's and Tool Forge's side panels. 0 = not chosen yet: a scroll bar only where their text does not fit the screen; 1 = on: the panels keep their size and scroll their text; 2 = off: the panels grow to fit their text, past the bottom of the screen if need be. The switch on the station's screen sets it; client-side only");
+        stationPanelScrollBar = stationPanelScrollBarProperty.getInt(SCROLL_BAR_UNSET);
 
         // dimension blacklist
         cfgForbiddenDim = config
@@ -582,6 +591,14 @@ public class PHConstruct {
     public static boolean showTravellerAccessories;
     public static boolean enableTinkerInventoryTab;
     public static boolean classicCraftingStationLayout;
+    public static final int SCROLL_BAR_UNSET = 0, SCROLL_BAR_ON = 1, SCROLL_BAR_OFF = 2;
+    public static int stationPanelScrollBar;
+
+    public static void setStationPanelScrollBar(boolean on) {
+        stationPanelScrollBar = on ? SCROLL_BAR_ON : SCROLL_BAR_OFF;
+        stationPanelScrollBarProperty.set(stationPanelScrollBar);
+        config.save();
+    }
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;
