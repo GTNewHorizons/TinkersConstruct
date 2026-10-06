@@ -23,6 +23,11 @@ import tconstruct.library.util.IToolPart;
 
 public class ToolBuilder {
 
+    /** Caps a durability value to what the int NBT tag can hold, instead of letting it wrap around. */
+    public static int clampDurability(long durability) {
+        return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, durability));
+    }
+
     public static ToolBuilder instance = new ToolBuilder();
 
     public HashMap<String, ToolRecipe> recipeList = new HashMap<>();
@@ -170,7 +175,8 @@ public class ToolBuilder {
 
         if (extra != -1) extraMat = TConstructRegistry.getMaterial(extra);
 
-        int durability = headMat.durability();
+        // long: the head durabilities summed below can exceed Integer.MAX_VALUE
+        long durability = headMat.durability();
         int heads = 1;
         int handles = 0;
         float modifier = 1f;
@@ -212,7 +218,7 @@ public class ToolBuilder {
             modifier /= handles;
         }
 
-        durability = (int) (durability / heads * (0.5 + heads * 0.5) * modifier * item.getDurabilityModifier());
+        durability = (long) (durability / heads * (0.5 + heads * 0.5) * modifier * item.getDurabilityModifier());
         attack = attack / heads + item.getDamageVsEntity(null);
         if (attack % heads != 0) attack++;
 
@@ -236,8 +242,8 @@ public class ToolBuilder {
         }
 
         compound.getCompoundTag("InfiTool").setInteger("Damage", 0); // Damage is damage to the tool
-        compound.getCompoundTag("InfiTool").setInteger("TotalDurability", durability);
-        compound.getCompoundTag("InfiTool").setInteger("BaseDurability", durability);
+        compound.getCompoundTag("InfiTool").setInteger("TotalDurability", clampDurability(durability));
+        compound.getCompoundTag("InfiTool").setInteger("BaseDurability", clampDurability(durability));
         compound.getCompoundTag("InfiTool").setInteger("BonusDurability", 0); // Modifier
         compound.getCompoundTag("InfiTool").setFloat("ModDurability", 0f); // Modifier
         compound.getCompoundTag("InfiTool").setBoolean("Broken", false);
