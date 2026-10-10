@@ -79,6 +79,9 @@ public class TPlayerHandler {
         // Lookup player
         TPlayerStats stats = TPlayerStats.get(player);
         migrateDisabledAccessoryInventory(player, stats);
+        if (stats != null && stats.armor != null) {
+            stats.armor.recalculateHealth(player, stats);
+        }
 
         stats.level = player.experienceLevel;
         stats.hunger = player.getFoodStats().getFoodLevel();
