@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 
+import tconstruct.library.util.ColorUtils;
 import tconstruct.tools.logic.PatternChestLogic;
 
 public class PatternChestGui extends GuiContainer {
@@ -24,9 +25,16 @@ public class PatternChestGui extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        fontRendererObj.drawString(StatCollector.translateToLocal("inventory.PatternChest"), 8, 8, 0x404040);
-        fontRendererObj
-                .drawString(StatCollector.translateToLocal("container.inventory"), 17, (ySize - 96) + 2, 0x404040);
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("inventory.PatternChest"),
+                8,
+                8,
+                ColorUtils.inventoryTitle.getColor());
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("container.inventory"),
+                17,
+                (ySize - 96) + 2,
+                ColorUtils.inventoryTitle.getColor());
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/patternchest.png");

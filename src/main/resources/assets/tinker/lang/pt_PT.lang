@@ -767,11 +767,11 @@ tconstruct.nei.dryingrack=Cabide de Secagem
 tconstruct.nei.melting=Oficina de Fundição Melting
 
 gui.smeltery.fuel=Combustível
-gui.smeltery.emerald=Esmeralda: 
-gui.smeltery.glass.block=Blocos: 
-gui.smeltery.glass.pannel=Painéis: 
-gui.smeltery.metal.ingot=Lingotes: 
-gui.smeltery.metal.nugget=Pepitas: 
+gui.smeltery.emerald=%s Esmeralda
+gui.smeltery.glass.block=%s Blocos
+gui.smeltery.glass.pannel=%s Painéis
+gui.smeltery.metal.ingot=%s Lingotes
+gui.smeltery.metal.nugget=%s Pepitas
 gui.smeltery.molten.check=Derretido
 gui.landmine=Mina Terrestre
 gui.partcrafter1=Criação das Partes de Ferramentas

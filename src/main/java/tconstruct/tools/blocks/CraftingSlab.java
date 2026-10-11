@@ -72,14 +72,6 @@ public class CraftingSlab extends InventorySlab {
 
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-        int metadata = world.getBlockMetadata(x, y, z);
-        if (metadata == 5 || metadata == 6) return AxisAlignedBB.getBoundingBox(
-                (double) x + this.minX,
-                (double) y + this.minY,
-                (double) z + this.minZ,
-                (double) x + this.maxX,
-                (double) y + this.maxY - 0.125,
-                (double) z + this.maxZ);
         return AxisAlignedBB.getBoundingBox(
                 (double) x + this.minX,
                 (double) y + this.minY,

@@ -21,6 +21,7 @@ import tconstruct.TConstruct;
 import tconstruct.library.client.StencilGuiElement;
 import tconstruct.library.client.TConstructClientRegistry;
 import tconstruct.library.crafting.StencilBuilder;
+import tconstruct.library.util.ColorUtils;
 import tconstruct.tools.inventory.PatternShaperChestContainer;
 import tconstruct.tools.logic.StencilTableLogic;
 import tconstruct.util.network.PatternTablePacket;
@@ -63,12 +64,19 @@ public class StencilTableGui extends GuiContainer implements INEIGuiHandler {
                     StatCollector.translateToLocal("inventory.PatternChest"),
                     TEXTURE_WIDTH + 5,
                     17,
-                    0x404040);
+                    ColorUtils.inventoryTitle.getColor());
         }
 
-        fontRendererObj.drawString(StatCollector.translateToLocal("crafters.PatternShaper"), 50, 6, 0x404040);
-        fontRendererObj
-                .drawString(StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("crafters.PatternShaper"),
+                50,
+                6,
+                ColorUtils.inventoryTitle.getColor());
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("container.inventory"),
+                8,
+                (ySize - 96) + 2,
+                ColorUtils.inventoryTitle.getColor());
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/patternshaper.png");

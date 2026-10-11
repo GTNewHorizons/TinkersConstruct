@@ -1,7 +1,6 @@
 package tconstruct.client;
 
 import java.io.InputStream;
-import java.text.DecimalFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,8 +25,6 @@ import tconstruct.common.TProxyCommon;
 import tconstruct.tools.items.ManualInfo;
 
 public class TProxyClient extends TProxyCommon {
-
-    public static DecimalFormat df = new DecimalFormat("##.#");
 
     /* TODO: Split this class up into its respective parts */
     public static SmallFontRenderer smallFontRenderer;

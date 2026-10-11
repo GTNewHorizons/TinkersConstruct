@@ -74,6 +74,39 @@ public class ItemHelper {
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
     }
 
+    public static void renderStandardInvBlock(RenderBlocks renderblocks, Block block, int meta, float[][] bounds) {
+        Tessellator tessellator = Tessellator.instance;
+        IIcon[] icons = new IIcon[6];
+        for (int side = 0; side < 6; side++) {
+            icons[side] = ItemHelper.getIconSafe(block.getIcon(side, meta));
+        }
+        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+        tessellator.startDrawingQuads();
+        for (int i = 0; i < bounds.length; i++) {
+            renderblocks.setRenderBounds(
+                    bounds[i][0],
+                    bounds[i][1],
+                    bounds[i][2],
+                    bounds[i][3],
+                    bounds[i][4],
+                    bounds[i][5]);
+            tessellator.setNormal(0.0F, -1F, 0.0F);
+            renderblocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, icons[0]);
+            tessellator.setNormal(0.0F, 1.0F, 0.0F);
+            renderblocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, icons[1]);
+            tessellator.setNormal(0.0F, 0.0F, -1F);
+            renderblocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, icons[2]);
+            tessellator.setNormal(0.0F, 0.0F, 1.0F);
+            renderblocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, icons[3]);
+            tessellator.setNormal(-1F, 0.0F, 0.0F);
+            renderblocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, icons[4]);
+            tessellator.setNormal(1.0F, 0.0F, 0.0F);
+            renderblocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, icons[5]);
+        }
+        tessellator.draw();
+        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+    }
+
     public static void renderInvBlockFace(RenderBlocks renderblocks, Block block, int meta) {
         Tessellator tessellator = Tessellator.instance;
         GL11.glScalef(2f, 2f, 2f);

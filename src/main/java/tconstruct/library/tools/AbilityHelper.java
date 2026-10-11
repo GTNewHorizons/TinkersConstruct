@@ -54,7 +54,7 @@ public class AbilityHelper {
         if (tags.getCompoundTag("InfiTool").hasKey("Unbreaking"))
             reinforced = tags.getCompoundTag("InfiTool").getInteger("Unbreaking");
 
-        if (random.nextInt(10) < 10 - reinforced) {
+        if (random.nextInt(10) < 10 - reinforced && (double) block.getBlockHardness(world, x, y, z) != 0.0D) {
             damageTool(stack, 1, tags, player, false);
         }
 

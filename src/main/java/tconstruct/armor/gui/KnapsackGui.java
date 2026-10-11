@@ -11,6 +11,7 @@ import tconstruct.armor.inventory.KnapsackContainer;
 import tconstruct.armor.player.KnapsackInventory;
 import tconstruct.client.tabs.InventoryTabKnapsack;
 import tconstruct.client.tabs.TabRegistry;
+import tconstruct.library.util.ColorUtils;
 
 public class KnapsackGui extends InventoryEffectRenderer {
 
@@ -48,9 +49,16 @@ public class KnapsackGui extends InventoryEffectRenderer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-        fontRendererObj.drawString(StatCollector.translateToLocal("inventory.knapsack"), 8, 6, 0x404040);
-        fontRendererObj
-                .drawString(StatCollector.translateToLocal("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("inventory.knapsack"),
+                8,
+                6,
+                ColorUtils.inventoryTitle.getColor());
+        fontRendererObj.drawString(
+                StatCollector.translateToLocal("container.inventory"),
+                8,
+                (ySize - 96) + 4,
+                ColorUtils.inventoryTitle.getColor());
     }
 
     private static final ResourceLocation background = new ResourceLocation("tinker", "textures/gui/knapsack.png");

@@ -94,7 +94,7 @@ public class TinkerWorldEvents {
                 if (item == TinkerTools.cutlass) {
                     player.addPotionEffect(new PotionEffect(Potion.moveSpeed.id, 3 * 20, 1));
                 } else if (item == TinkerTools.battlesign) {
-                    event.ammount *= 1.5; // Puts battlesign blocking at 3/4 instead of 1/2
+                    event.ammount *= 0.25; // Puts battlesign blocking at 3/4 instead of 1/2
                 }
             }
         } else if (reciever instanceof EntityCreeper) {

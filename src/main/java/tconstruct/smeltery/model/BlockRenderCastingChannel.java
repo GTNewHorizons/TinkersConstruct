@@ -4,14 +4,11 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-
-import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizons.angelica.api.ThreadSafeISBRH;
 
@@ -19,6 +16,7 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import tconstruct.client.BlockSkinRenderHelper;
 import tconstruct.smeltery.logic.CastingChannelLogic;
+import tconstruct.util.ItemHelper;
 
 /**
  * @author BluSunrize
@@ -28,31 +26,16 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
 
     public static int renderID = RenderingRegistry.getNextAvailableRenderId();
 
+    private static final float[][] CHANNEL_BOUNDS = { { 0.3125F, 0.375F, 0.3125F, 0.6875F, 0.5F, 0.6875F },
+            { 0.3125F, 0.375F, 0.0F, 0.6875F, 0.5F, 0.3125F }, { 0.3125F, 0.5F, 0.0F, 0.375F, 0.625F, 0.3125F },
+            { 0.625F, 0.5F, 0.0F, 0.6875F, 0.625F, 0.3125F }, { 0.3125F, 0.375F, 0.6875F, 0.6875F, 0.5F, 1.0F },
+            { 0.3125F, 0.5F, 0.6875F, 0.375F, 0.625F, 1.0F }, { 0.625F, 0.5F, 0.6875F, 0.6875F, 0.625F, 1.0F },
+            { 0.3125F, 0.375F, 0.3125F, 0.375F, 0.625F, 0.6875F },
+            { 0.625F, 0.375F, 0.3125F, 0.6875F, 0.625F, 0.6875F } };
+
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
-        // Floor
-        renderer.setRenderBounds(0.3125D, 0.375D, 0.3125D, 0.6875D, 0.5D, 0.6875D);
-        this.renderStandardBlock(block, metadata, renderer);
-        // Channel Z-
-        renderer.setRenderBounds(0.3125D, 0.375D, 0D, 0.6875D, 0.5D, 0.3125D);
-        this.renderStandardBlock(block, metadata, renderer);
-        renderer.setRenderBounds(0.3125D, 0.5D, 0D, 0.375D, 0.625D, 0.3125D);
-        this.renderStandardBlock(block, metadata, renderer);
-        renderer.setRenderBounds(0.625D, 0.5D, 0D, 0.6875D, 0.625D, 0.3125D);
-        this.renderStandardBlock(block, metadata, renderer);
-        // Channel Z+
-        renderer.setRenderBounds(0.3125D, 0.375D, 0.6875D, 0.6875D, 0.5D, 1D);
-        this.renderStandardBlock(block, metadata, renderer);
-        renderer.setRenderBounds(0.3125D, 0.5D, 0.6875D, 0.375D, 0.625D, 1D);
-        this.renderStandardBlock(block, metadata, renderer);
-        renderer.setRenderBounds(0.625D, 0.5D, 0.6875D, 0.6875D, 0.625D, 1D);
-        this.renderStandardBlock(block, metadata, renderer);
-        // Wall X-
-        renderer.setRenderBounds(0.3125D, 0.375D, 0.3125D, 0.375D, 0.625D, 0.6875D);
-        this.renderStandardBlock(block, metadata, renderer);
-        // Wall X+
-        renderer.setRenderBounds(0.625D, 0.375D, 0.3125D, 0.6875D, 0.625D, 0.6875D);
-        this.renderStandardBlock(block, metadata, renderer);
+        ItemHelper.renderStandardInvBlock(renderer, block, metadata, CHANNEL_BOUNDS);
     }
 
     @Override
@@ -198,36 +181,6 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
                 world,
                 false,
                 fluid.getColor(fluidStack));
-    }
-
-    private void renderStandardBlock(Block block, int meta, RenderBlocks renderer) {
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, -1.0F, 0.0F);
-        renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, meta));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, meta));
-        tessellator.draw();
-        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
     }
 
     @Override

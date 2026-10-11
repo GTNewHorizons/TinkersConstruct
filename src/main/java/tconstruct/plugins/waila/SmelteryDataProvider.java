@@ -1,5 +1,7 @@
 package tconstruct.plugins.waila;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatFluid;
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -40,7 +42,7 @@ public class SmelteryDataProvider implements IWailaDataProvider {
                     currenttip.add(SpecialChars.ITALIC + StatCollector.translateToLocal("tconstruct.waila.empty"));
                 } else {
                     for (FluidStack st : fls) {
-                        currenttip.add(WailaRegistrar.fluidNameHelper(st) + " (" + st.amount + "mB)");
+                        currenttip.add(WailaRegistrar.fluidNameHelper(st) + " (" + formatFluid(st.amount) + ")");
                     }
                 }
             } else {

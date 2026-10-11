@@ -131,10 +131,10 @@ public abstract class HarvestTool extends ToolCore {
 
         boolean used = false;
         int hotbarSlot = player.inventory.currentItem;
-        int itemSlot = hotbarSlot == 0 ? 8 : hotbarSlot + 1;
+        int itemSlot = getAdjacentHotbarSlot(hotbarSlot);
         ItemStack nearbyStack;
 
-        if (hotbarSlot < 8) {
+        if (itemSlot >= 0) {
             nearbyStack = player.inventory.getStackInSlot(itemSlot);
             if (nearbyStack != null) {
                 Item item = nearbyStack.getItem();
@@ -303,8 +303,8 @@ public abstract class HarvestTool extends ToolCore {
             }
 
             // send an update to the server, so we get an update back
-            if (PHConstruct.extraBlockUpdates) Minecraft.getMinecraft().getNetHandler().addToSendQueue(
-                    new C07PacketPlayerDigging(2, x, y, z, Minecraft.getMinecraft().objectMouseOver.sideHit));
+            if (PHConstruct.extraBlockUpdates) Minecraft.getMinecraft().getNetHandler()
+                    .addToSendQueue(new C07PacketPlayerDigging(2, x, y, z, sidehit));
         }
     }
 }

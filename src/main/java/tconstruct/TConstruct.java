@@ -51,6 +51,7 @@ import tconstruct.library.TConstructRegistry;
 import tconstruct.library.crafting.Detailing;
 import tconstruct.library.crafting.LiquidCasting;
 import tconstruct.library.util.AoEExclusionList;
+import tconstruct.library.util.BlockSideHitListener;
 import tconstruct.mechworks.TinkerMechworks;
 import tconstruct.mechworks.landmine.behavior.Behavior;
 import tconstruct.mechworks.landmine.behavior.stackCombo.SpecialStackHandler;
@@ -196,6 +197,7 @@ public class TConstruct {
         chiselDetailing = new Detailing();
 
         AoEExclusionList.init(new File(event.getModConfigurationDirectory(), "TConstruct_AOEExclusions.cfg"));
+        BlockSideHitListener.init();
 
         playerTracker = new TPlayerHandler();
         NetworkRegistry.INSTANCE.registerGuiHandler(TConstruct.instance, proxy);

@@ -6,7 +6,6 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -234,22 +233,11 @@ public class Scythe extends Weapon {
                                                             .getClientPlayHandler();
                                                     if (handler instanceof NetHandlerPlayClient) {
                                                         NetHandlerPlayClient handlerClient = (NetHandlerPlayClient) handler;
+                                                        // scythe aoe is a cube so the face is irrelevant
                                                         handlerClient.addToSendQueue(
-                                                                new C07PacketPlayerDigging(
-                                                                        0,
-                                                                        x,
-                                                                        y,
-                                                                        z,
-                                                                        Minecraft
-                                                                                .getMinecraft().objectMouseOver.sideHit));
+                                                                new C07PacketPlayerDigging(0, x, y, z, 1));
                                                         handlerClient.addToSendQueue(
-                                                                new C07PacketPlayerDigging(
-                                                                        2,
-                                                                        x,
-                                                                        y,
-                                                                        z,
-                                                                        Minecraft
-                                                                                .getMinecraft().objectMouseOver.sideHit));
+                                                                new C07PacketPlayerDigging(2, x, y, z, 1));
                                                     }
                                                 }
 

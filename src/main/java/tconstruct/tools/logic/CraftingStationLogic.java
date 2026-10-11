@@ -1,13 +1,18 @@
 package tconstruct.tools.logic;
 
 import java.lang.ref.WeakReference;
+import java.util.stream.IntStream;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -20,6 +25,11 @@ import tconstruct.util.config.PHConstruct;
 
 public class CraftingStationLogic extends InventoryLogic implements ISidedInventory {
 
+    private static final String SIDE_INVENTORY_PREFERENCES_TAG = "SideInventoryPreferences";
+    private static final int CRAFTING_GRID_FIRST_SLOT = 1;
+    private static final int CRAFTING_GRID_SIZE = 9;
+    private static final int VALID_SIDE_INVENTORY_PREFERENCES = (1 << CRAFTING_GRID_SIZE) - 1;
+
     public ForgeDirection chestDirection = ForgeDirection.UNKNOWN;
     public int chestSize;
     public WeakReference<IInventory> chest;
@@ -30,9 +40,16 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
     public boolean stencilTable;
     public boolean doubleFirst;
 
+    /** Server-selected shift-click behavior, synchronized before opening the GUI. */
+    public boolean shiftClickToGrid;
+
     public int invRows, invColumns, slotCount;
 
     private static final int[] NO_SLOTS = new int[0];
+
+    private int sideInventoryPreferences;
+    private int[] firstInventorySlots = NO_SLOTS;
+    private int[] secondInventorySlots = NO_SLOTS;
 
     /** Cached result of {@link #getInventories()}; rebuilt when the adjacent inventories are rescanned. */
     @SuppressWarnings("rawtypes")
@@ -52,7 +69,67 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
         if (slot == 0) {
             for (int i = 1; i < getSizeInventory(); i++) decrStackSize(i, 1);
         }
-        return super.decrStackSize(slot, quantity);
+        ItemStack removed = super.decrStackSize(slot, quantity);
+        clearSideInventoryPreferenceIfEmpty(slot);
+        return removed;
+    }
+
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack itemstack) {
+        super.setInventorySlotContents(slot, itemstack);
+        clearSideInventoryPreferenceIfEmpty(slot);
+    }
+
+    public boolean prefersSideInventory(int slot) {
+        int preference = getSideInventoryPreference(slot);
+        return preference != 0 && (sideInventoryPreferences & preference) != 0;
+    }
+
+    public void setSideInventoryPreference(int slot, boolean prefersSideInventory) {
+        int preference = getSideInventoryPreference(slot);
+        if (preference == 0) return;
+
+        int updatedPreferences = prefersSideInventory ? sideInventoryPreferences | preference
+                : sideInventoryPreferences & ~preference;
+        setSideInventoryPreferences(updatedPreferences);
+    }
+
+    public int getSideInventoryPreferences() {
+        return sideInventoryPreferences;
+    }
+
+    public void setSideInventoryPreferences(int preferences) {
+        preferences &= VALID_SIDE_INVENTORY_PREFERENCES;
+        if (sideInventoryPreferences != preferences) {
+            sideInventoryPreferences = preferences;
+            markDirty();
+        }
+    }
+
+    private void clearSideInventoryPreferenceIfEmpty(int slot) {
+        if (slot < CRAFTING_GRID_FIRST_SLOT || slot >= CRAFTING_GRID_FIRST_SLOT + CRAFTING_GRID_SIZE) return;
+
+        ItemStack stack = getStackInSlot(slot);
+        if (stack == null || stack.stackSize <= 0) {
+            setSideInventoryPreference(slot, false);
+        }
+    }
+
+    private static int getSideInventoryPreference(int slot) {
+        int gridSlot = slot - CRAFTING_GRID_FIRST_SLOT;
+        return gridSlot >= 0 && gridSlot < CRAFTING_GRID_SIZE ? 1 << gridSlot : 0;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tags) {
+        super.readFromNBT(tags);
+        sideInventoryPreferences = tags.getInteger(SIDE_INVENTORY_PREFERENCES_TAG) & VALID_SIDE_INVENTORY_PREFERENCES;
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tags) {
+        super.writeToNBT(tags);
+        tags.setInteger(SIDE_INVENTORY_PREFERENCES_TAG, sideInventoryPreferences);
     }
 
     @Override
@@ -62,6 +139,9 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
+        if (world.isRemote) return new CraftingStationContainer(inventoryplayer, this, x, y, z);
+
+        shiftClickToGrid = PHConstruct.craftingStationShiftClickToGrid;
         chest = null;
         chestSize = 0;
         slotCount = 0;
@@ -96,10 +176,6 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
             if (chest == null && inv.isUseableByPlayer(inventoryplayer.player)) {
                 chest = new WeakReference<>(inv);
                 chestDirection = dir;
-                invColumns = 6;
-                chestSize = tile instanceof ISidedInventory sidedIvn
-                        ? sidedIvn.getAccessibleSlotsFromSide(dir.getOpposite().ordinal()).length
-                        : inv.getSizeInventory();
 
                 if (tile instanceof TileEntityChest tileChest) {
                     if (tileChest.adjacentChestZPos != null) {
@@ -116,14 +192,88 @@ public class CraftingStationLogic extends InventoryLogic implements ISidedInvent
                         doubleFirst = true;
                     }
                 }
-                slotCount = chestSize * (doubleChest != null ? 2 : 1);
-                invRows = (int) Math.ceil((double) slotCount / invColumns);
             }
         }
 
         this.inventories = new WeakReference[] { this.chest, this.doubleChest, this.patternChest, this.furnace };
+        firstInventorySlots = getInventorySlots(getFirstInventory());
+        secondInventorySlots = getInventorySlots(getSecondInventory());
+        chestSize = doubleFirst ? secondInventorySlots.length : firstInventorySlots.length;
+        slotCount = firstInventorySlots.length + secondInventorySlots.length;
+        invRows = (slotCount + 5) / 6;
+        invColumns = 6;
+
+        if (inventoryplayer.player instanceof EntityPlayerMP player) {
+            NBTTagCompound data = new NBTTagCompound();
+            data.setBoolean("CraftingStationGui", true);
+            writeInventoryReference(data, "Chest", chest);
+            writeInventoryReference(data, "DoubleChest", doubleChest);
+            writeInventoryReference(data, "PatternChest", patternChest);
+            writeInventoryReference(data, "Furnace", furnace);
+            data.setInteger("ChestDirection", chestDirection.ordinal());
+            data.setBoolean("DoubleFirst", doubleFirst);
+            data.setBoolean("TinkerTable", tinkerTable);
+            data.setBoolean("ShiftClickToGrid", shiftClickToGrid);
+            data.setIntArray("FirstSlots", firstInventorySlots);
+            data.setIntArray("SecondSlots", secondInventorySlots);
+            player.playerNetServerHandler.sendPacket(new S35PacketUpdateTileEntity(x, y, z, 0, data));
+        }
 
         return new CraftingStationContainer(inventoryplayer, this, x, y, z);
+    }
+
+    private int[] getInventorySlots(IInventory inventory) {
+        if (inventory == null) return NO_SLOTS;
+        if (inventory instanceof ISidedInventory sided) {
+            return sided.getAccessibleSlotsFromSide(chestDirection.getOpposite().ordinal()).clone();
+        }
+        return IntStream.range(0, inventory.getSizeInventory()).toArray();
+    }
+
+    public int[] getFirstInventorySlots() {
+        return firstInventorySlots;
+    }
+
+    public int[] getSecondInventorySlots() {
+        return secondInventorySlots;
+    }
+
+    private static void writeInventoryReference(NBTTagCompound data, String key, WeakReference<IInventory> ref) {
+        if (ref != null && ref.get() instanceof TileEntity tile) {
+            data.setIntArray(key, new int[] { tile.xCoord, tile.yCoord, tile.zCoord });
+        }
+    }
+
+    private WeakReference<IInventory> readInventoryReference(NBTTagCompound data, String key) {
+        int[] pos = data.getIntArray(key);
+        if (pos.length == 3 && worldObj.getTileEntity(pos[0], pos[1], pos[2]) instanceof IInventory adjacent) {
+            return new WeakReference<>(adjacent);
+        }
+        return null;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+        NBTTagCompound data = packet.func_148857_g();
+        if (!data.getBoolean("CraftingStationGui")) {
+            super.onDataPacket(manager, packet);
+            return;
+        }
+        chest = readInventoryReference(data, "Chest");
+        doubleChest = readInventoryReference(data, "DoubleChest");
+        patternChest = readInventoryReference(data, "PatternChest");
+        furnace = readInventoryReference(data, "Furnace");
+        chestDirection = ForgeDirection.getOrientation(data.getInteger("ChestDirection"));
+        doubleFirst = data.getBoolean("DoubleFirst");
+        tinkerTable = data.getBoolean("TinkerTable");
+        shiftClickToGrid = data.getBoolean("ShiftClickToGrid");
+        firstInventorySlots = data.getIntArray("FirstSlots");
+        secondInventorySlots = data.getIntArray("SecondSlots");
+        chestSize = doubleFirst ? secondInventorySlots.length : firstInventorySlots.length;
+        slotCount = firstInventorySlots.length + secondInventorySlots.length;
+        invColumns = 6;
+        invRows = (slotCount + 5) / 6;
+        inventories = new WeakReference[] { chest, doubleChest, patternChest, furnace };
     }
 
     private boolean isBlacklisted(Class<? extends TileEntity> clazz) {

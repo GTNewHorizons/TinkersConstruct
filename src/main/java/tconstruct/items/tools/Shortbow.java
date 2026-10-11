@@ -1,5 +1,7 @@
 package tconstruct.items.tools;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.List;
 
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -115,7 +117,10 @@ public class Shortbow extends BowBase {
                 else color = "\u00a76";
             }
 
-            String energy = color + tags.getInteger("Energy") + "/" + getMaxEnergyStored(stack) + " RF";
+            String energy = color + formatNumber(tags.getInteger("Energy"))
+                    + " / "
+                    + formatNumber(getMaxEnergyStored(stack))
+                    + " RF";
             list.add(energy);
         }
         if (tags.hasKey("InfiTool")) {

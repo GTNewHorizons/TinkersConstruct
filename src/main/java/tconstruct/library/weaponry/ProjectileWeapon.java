@@ -1,5 +1,7 @@
 package tconstruct.library.weaponry;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
-import tconstruct.client.TProxyClient;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.library.tools.AbilityHelper;
 import tconstruct.library.tools.ToolCore;
@@ -242,7 +243,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
         // are we drawing an effect?
         if (renderPass >= getPartAmount()) {
             // is the effect animated?
-            String effect = "Effect" + (1 + renderPass - getPartAmount());
+            String effect = getEffectKey(1 + renderPass - getPartAmount());
             if (tags.hasKey(effect)) {
                 int index = tags.getInteger(effect);
                 if (animationEffectIcons.get(index) != null) return getCorrectAnimationIcon(
@@ -280,15 +281,17 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
     protected IIcon getCorrectAnimationIcon(Map<Integer, IIcon[]> icons, int id, float progress) {
         // animation count, standard texture as reference
-        float count = icons.get(-1).length - 1;
+        IIcon[] defaultAnimation = icons.get(-1);
+        float count = defaultAnimation.length - 1;
         int step = Math.round(progress * count);
 
         step = Math.max(0, step);
 
-        if (icons.containsKey(id)) return icons.get(id)[step];
+        Integer boxedId = id;
+        if (icons.containsKey(boxedId)) return icons.get(boxedId)[step];
 
         // default icon
-        return icons.get(-1)[step];
+        return defaultAnimation[step];
     }
 
     @Override
@@ -316,7 +319,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
             }
             // Effects
             else if (renderPass <= 10) {
-                String effect = "Effect" + (1 + renderPass - getPartAmount());
+                String effect = getEffectKey(1 + renderPass - getPartAmount());
                 if (tags.hasKey(effect)) return effectIcons.get(tags.getInteger(effect));
             }
             return blankSprite;
@@ -445,9 +448,7 @@ public abstract class ProjectileWeapon extends ToolCore implements IBattlegearWe
 
         list.remove(list.size() - 1); // remove last item (the damage of the bow itself)
         list.add(currentAmmo.getDisplayName());
-        list.add(
-                StatCollector.translateToLocal("attribute.name.ammo.maxAttackDamage") + ": "
-                        + TProxyClient.df.format(damage));
+        list.add(StatCollector.translateToLocal("attribute.name.ammo.maxAttackDamage") + ": " + formatNumber(damage));
     }
 
     /*---- Battlegear Support START ----*/

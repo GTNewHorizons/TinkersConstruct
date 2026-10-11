@@ -7,12 +7,14 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -23,7 +25,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mantle.blocks.iface.IServantLogic;
 import tconstruct.library.TConstructRegistry;
 import tconstruct.smeltery.itemblocks.LavaTankItemBlock;
 import tconstruct.smeltery.logic.LavaTankLogic;
@@ -244,11 +245,17 @@ public class LavaTankBlock extends BlockContainer {
     }
 
     /* Updates */
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block nBlockID) {
-        TileEntity logic = world.getTileEntity(x, y, z);
-        if (logic instanceof IServantLogic) {
-            ((IServantLogic) logic).notifyMasterOfChange();
-        }
+        if (!SmelteryBlock.isStructureChange(nBlockID)) return;
+
+        SmelteryBlock.notifyMasterOfStructureChange(world, x, y, z);
+    }
+
+    @Override
+    public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
+        SmelteryBlock.notifyMasterOfStructureChange(world, x, y, z);
+        super.onBlockPreDestroy(world, x, y, z, meta);
     }
 
     @Override
@@ -289,6 +296,25 @@ public class LavaTankBlock extends BlockContainer {
         if (liquid != null) {
             LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(x, y, z);
             logic.tank.setFluid(liquid);
+        }
+    }
+
+    @Override
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB entityBox,
+            List<AxisAlignedBB> list, Entity entity) {
+
+        super.addCollisionBoxesToList(world, x, y, z, entityBox, list, entity);
+
+        AxisAlignedBB extraBox = AxisAlignedBB.getBoundingBox(
+                x + 3.0 / 16.0,
+                y + 1.0,
+                z + 3.0 / 16.0,
+                x + 13.0 / 16.0,
+                y + 18.0 / 16.0,
+                z + 13.0 / 16.0);
+
+        if (entityBox.intersectsWith(extraBox)) {
+            list.add(extraBox);
         }
     }
 

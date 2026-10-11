@@ -50,6 +50,8 @@ public class FlexibleToolRenderer implements IItemRenderer {
     }
 
     private static final int toolIcons = 10;
+    private final IIcon[] compactIconBuffer = new IIcon[toolIcons];
+    private final IIcon[] rawIconBuffer = new IIcon[toolIcons];
 
     protected void specialAnimation(ItemRenderType type, ItemStack item) {}
 
@@ -60,12 +62,11 @@ public class FlexibleToolRenderer implements IItemRenderer {
         Entity ent = null;
         if (data.length > 1) ent = (Entity) data[1];
 
-        IIcon[] parts = new IIcon[toolIcons];
-        int iconParts = getIcons(item, type, ent, parts);
+        int iconParts = getIcons(item, type, ent, compactIconBuffer);
 
         // drawing the inventory is a simple procedure
         if (type == ItemRenderType.INVENTORY) {
-            renderInventory(iconParts, parts, item);
+            renderInventory(iconParts, compactIconBuffer, item);
             return;
         }
 
@@ -82,7 +83,7 @@ public class FlexibleToolRenderer implements IItemRenderer {
         float[] xSub = new float[iconParts];
         float[] ySub = new float[iconParts];
         for (int i = 0; i < iconParts; ++i) {
-            IIcon icon = parts[i];
+            IIcon icon = compactIconBuffer[i];
             xMin[i] = icon.getMinU();
             xMax[i] = icon.getMaxU();
             yMin[i] = icon.getMinV();
@@ -262,23 +263,26 @@ public class FlexibleToolRenderer implements IItemRenderer {
         boolean isInventory = type == ItemRenderType.INVENTORY;
         ToolCore tool = (ToolCore) item.getItem();
 
-        IIcon[] tempParts = new IIcon[iconParts];
         label: {
             if (!isInventory && ent instanceof EntityPlayer) {
                 EntityPlayer player = (EntityPlayer) ent;
                 ItemStack itemInUse = player.getItemInUse();
                 if (itemInUse != null) {
                     int useCount = player.getItemInUseCount();
-                    for (int i = iconParts; i-- > 0;) tempParts[i] = tool.getIcon(item, i, player, itemInUse, useCount);
+                    for (int i = iconParts; i-- > 0;) {
+                        rawIconBuffer[i] = tool.getIcon(item, i, player, itemInUse, useCount);
+                    }
                     break label;
                 }
             }
-            for (int i = iconParts; i-- > 0;) tempParts[i] = tool.getIcon(item, i);
+            for (int i = iconParts; i-- > 0;) {
+                rawIconBuffer[i] = tool.getIcon(item, i);
+            }
         }
 
         int count = 0;
         for (int i = 0; i < iconParts; ++i) {
-            IIcon part = tempParts[i];
+            IIcon part = rawIconBuffer[i];
             if (part == null || part == ToolCore.blankSprite || part == ToolCore.emptyIcon) ++count;
             else parts[i - count] = part;
         }

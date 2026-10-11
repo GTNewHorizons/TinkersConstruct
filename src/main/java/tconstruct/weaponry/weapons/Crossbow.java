@@ -308,7 +308,7 @@ public class Crossbow extends ProjectileWeapon {
         // are we drawing an effect?
         if (renderPass >= getPartAmount()) {
             // is the effect animated?
-            String effect = "Effect" + (1 + renderPass - getPartAmount());
+            String effect = getEffectKey(1 + renderPass - getPartAmount());
             if (tags.hasKey(effect)) {
                 int index = tags.getInteger(effect);
                 if (animationEffectIcons.get(index) != null)

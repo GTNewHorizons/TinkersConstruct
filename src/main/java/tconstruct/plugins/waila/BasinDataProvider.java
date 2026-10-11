@@ -1,5 +1,8 @@
 package tconstruct.plugins.waila;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatFluid;
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -43,9 +46,9 @@ public class BasinDataProvider implements IWailaDataProvider {
                         StatCollector.translateToLocal("tconstruct.waila.liquidtag")
                                 + WailaRegistrar.fluidNameHelper(fs));
                 currenttip.add(
-                        StatCollector.translateToLocal("tconstruct.waila.amounttag") + fs.amount
-                                + "/"
-                                + te.getCapacity());
+                        StatCollector.translateToLocal("tconstruct.waila.amounttag") + formatNumber(fs.amount)
+                                + " / "
+                                + formatFluid(te.getCapacity()));
                 final int progress = te.getProgress();
                 currenttip.add(StatCollector.translateToLocal("tconstruct.waila.progress") + progress + "%");
             } else {

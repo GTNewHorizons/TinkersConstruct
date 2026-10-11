@@ -16,6 +16,9 @@ package tconstruct.tools.gui;
 
 public class GuiBorderWidget {
 
+    private static final int OUTLINE_WIDTH = 1;
+    private static final int SHADOW_WIDTH = 2;
+
     // all elements based on generic gui
     public GuiElementDuex cornerTopLeft = new GuiElementDuex(0, 0, 7, 7, 64, 64);
     public GuiElementDuex cornerTopRight = new GuiElementDuex(64 - 7, 0, 7, 7, 64, 64);
@@ -26,6 +29,28 @@ public class GuiBorderWidget {
     public GuiElementScalable borderBottom = new GuiElementScalable(7, 64 - 7, 64 - 7 - 7, 7, 64, 64);
     public GuiElementScalable borderLeft = new GuiElementScalable(0, 7, 7, 64 - 7 - 7, 64, 64);
     public GuiElementScalable borderRight = new GuiElementScalable(64 - 7, 7, 7, 64 - 7 - 7, 64, 64);
+
+    private final GuiElementScalable borderInteriorPixel = new GuiElementScalable(
+            borderBottom.x,
+            borderBottom.y,
+            1,
+            1,
+            borderBottom.texW,
+            borderBottom.texH);
+    private final GuiElementScalable borderShadowPixel = new GuiElementScalable(
+            borderBottom.x,
+            borderBottom.y + borderBottom.h - OUTLINE_WIDTH - SHADOW_WIDTH,
+            1,
+            1,
+            borderBottom.texW,
+            borderBottom.texH);
+    private final GuiElementScalable borderOutlinePixel = new GuiElementScalable(
+            borderBottom.x,
+            borderBottom.y + borderBottom.h - OUTLINE_WIDTH,
+            1,
+            1,
+            borderBottom.texW,
+            borderBottom.texH);
 
     public int xPos;
     public int yPos;
@@ -60,6 +85,14 @@ public class GuiBorderWidget {
 
     public int getHeightWithBorder(int height) {
         return height + borderTop.h + borderBottom.h;
+    }
+
+    public void drawConcaveBottomRight(int x, int y) {
+        int shadowSize = OUTLINE_WIDTH + SHADOW_WIDTH;
+        borderInteriorPixel.drawScaled(x, y, w, h);
+        borderShadowPixel.drawScaled(x + w - shadowSize, y + h - shadowSize, shadowSize, shadowSize);
+        borderInteriorPixel.draw(x + w - shadowSize, y + h - shadowSize);
+        borderOutlinePixel.draw(x + w - OUTLINE_WIDTH, y + h - OUTLINE_WIDTH);
     }
 
     public void draw() {

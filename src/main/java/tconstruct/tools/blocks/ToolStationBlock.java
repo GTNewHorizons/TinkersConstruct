@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +15,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -111,6 +114,31 @@ public class ToolStationBlock extends InventoryBlock {
     }
 
     @Override
+    public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 start, Vec3 end) {
+
+        int metadata = world.getBlockMetadata(x, y, z);
+
+        if (metadata == 5 || metadata == 6) {
+            float oldMinX = (float) this.minX;
+            float oldMinY = (float) this.minY;
+            float oldMinZ = (float) this.minZ;
+            float oldMaxX = (float) this.maxX;
+            float oldMaxY = (float) this.maxY;
+            float oldMaxZ = (float) this.maxZ;
+
+            this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.875F, 1.0F);
+
+            MovingObjectPosition result = super.collisionRayTrace(world, x, y, z, start, end);
+
+            this.setBlockBounds(oldMinX, oldMinY, oldMinZ, oldMaxX, oldMaxY, oldMaxZ);
+
+            return result;
+        }
+
+        return super.collisionRayTrace(world, x, y, z, start, end);
+    }
+
+    @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
         int metadata = world.getBlockMetadata(x, y, z);
         if (metadata == 5 || metadata == 6) return AxisAlignedBB.getBoundingBox(
@@ -127,6 +155,24 @@ public class ToolStationBlock extends InventoryBlock {
                 (double) x + this.maxX,
                 (double) y + this.maxY,
                 (double) z + this.maxZ);
+    }
+
+    @Override
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List<AxisAlignedBB> list,
+            Entity entity) {
+
+        int metadata = world.getBlockMetadata(x, y, z);
+
+        if (metadata == 5 || metadata == 6) {
+            AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 0.875, z + 1);
+
+            if (box.intersectsWith(mask)) {
+                list.add(box);
+            }
+            return;
+        }
+
+        super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
     }
 
     @Override

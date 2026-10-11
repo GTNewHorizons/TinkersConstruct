@@ -1,6 +1,7 @@
 package tconstruct.tools.gui;
 
-import java.text.DecimalFormat;
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,7 @@ import tconstruct.library.crafting.PatternBuilder;
 import tconstruct.library.tools.ArrowMaterial;
 import tconstruct.library.tools.BowMaterial;
 import tconstruct.library.tools.ToolMaterial;
+import tconstruct.library.util.ColorUtils;
 import tconstruct.library.util.HarvestLevels;
 import tconstruct.library.weaponry.ArrowShaftMaterial;
 import tconstruct.tools.TinkerTools.MaterialID;
@@ -48,7 +50,7 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     private static final int DESC_WIDTH = 126;
     private static final int DESC_HEIGHT = 166;
     private static final int CHEST_WIDTH = 122;
-    private static final int CHEST_HEIGHT = 114;
+    private static final int CHEST_HEIGHT = 115;
     private static final String SPACE_STRING = " ";
 
     // Panel positions
@@ -63,8 +65,6 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
 
     private int chestLeft = 0;
     private int chestTop = 0;
-
-    private static DecimalFormat df = new DecimalFormat("##.##");
 
     public PartCrafterGui(InventoryPlayer inventoryplayer, PartBuilderLogic partlogic, World world, int x, int y,
             int z) {
@@ -106,16 +106,23 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2) {
         if (drawChestPart) {
-            this.fontRendererObj.drawString(StatCollector.translateToLocal("inventory.PatternChest"), 8, 17, 0x404040);
+            this.fontRendererObj.drawString(
+                    StatCollector.translateToLocal("inventory.PatternChest"),
+                    8,
+                    17,
+                    ColorUtils.inventoryTitle.getColor());
         }
 
-        this.fontRendererObj
-                .drawString(StatCollector.translateToLocal("crafters.PartBuilder"), craftingTextLeft + 6, 6, 0x404040);
+        this.fontRendererObj.drawString(
+                StatCollector.translateToLocal("crafters.PartBuilder"),
+                craftingTextLeft + 6,
+                6,
+                ColorUtils.inventoryTitle.getColor());
         this.fontRendererObj.drawString(
                 StatCollector.translateToLocal("container.inventory"),
                 craftingTextLeft + 8,
                 this.ySize - 96 + 2,
-                0x404040);
+                ColorUtils.inventoryTitle.getColor());
 
         drawMaterialInformation();
     }
@@ -171,7 +178,7 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
             strWait2Draw.add(
                     StatCollector.translateToLocalFormatted(
                             "gui.partcrafter.durability",
-                            McTextFormatter.addGreen(String.valueOf(materialEnum.durability()))));
+                            McTextFormatter.addGreen(formatNumber(materialEnum.durability()))));
             strWait2Draw.add(
                     StatCollector.translateToLocalFormatted(
                             "gui.partcrafter.mininglevel",
@@ -179,25 +186,25 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
             strWait2Draw.add(
                     StatCollector.translateToLocalFormatted(
                             "gui.partcrafter.miningspeed",
-                            McTextFormatter.addAqua(String.valueOf(materialEnum.toolSpeed() / 100f))));
+                            McTextFormatter.addAqua(formatNumber(materialEnum.toolSpeed() / 100f))));
             strWait2Draw.add(
                     StatCollector.translateToLocalFormatted(
                             "gui.partcrafter.attack",
-                            McTextFormatter.addRed(String.valueOf(materialEnum.attack()))));
+                            McTextFormatter.addRed(formatNumber(materialEnum.attack()))));
             strWait2Draw.add(
                     StatCollector.translateToLocalFormatted(
                             "gui.partcrafter.handlemodifier",
-                            McTextFormatter.addYellow(String.valueOf(materialEnum.handleDurability()))));
+                            McTextFormatter.addYellow(formatNumber(materialEnum.handleDurability()))));
 
             if (bowMaterial != null) {
                 strWait2Draw.add(
                         StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.drawspeed",
-                                McTextFormatter.addGray(df.format(bowMaterial.drawspeed / 20f))));
+                                McTextFormatter.addGray(formatNumber(bowMaterial.drawspeed / 20f))));
                 strWait2Draw.add(
                         StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.arrowspeed",
-                                McTextFormatter.addGray(df.format(bowMaterial.flightSpeedMax))));
+                                McTextFormatter.addGray(formatNumber(bowMaterial.flightSpeedMax))));
             }
 
             if (arrowShaftMaterial != null) {
@@ -206,11 +213,11 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
                 strWait2Draw.add(
                         SPACE_STRING + StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.weight",
-                                McTextFormatter.addYellow(df.format(arrowShaftMaterial.weight))));
+                                McTextFormatter.addYellow(formatNumber(arrowShaftMaterial.weight))));
                 strWait2Draw.add(
                         SPACE_STRING + StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.breakchance",
-                                McTextFormatter.addYellow(df.format(arrowShaftMaterial.fragility * 100f))));
+                                McTextFormatter.addYellow(formatNumber(arrowShaftMaterial.fragility * 100f))));
             }
 
             if (arrowMaterial != null) {
@@ -219,11 +226,11 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
                 strWait2Draw.add(
                         SPACE_STRING + StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.weight",
-                                McTextFormatter.addYellow(df.format(arrowMaterial.mass))));
+                                McTextFormatter.addYellow(formatNumber(arrowMaterial.mass))));
                 strWait2Draw.add(
                         SPACE_STRING + StatCollector.translateToLocalFormatted(
                                 "gui.partcrafter.breakchance",
-                                McTextFormatter.addYellow(df.format(arrowMaterial.breakChance * 100f))));
+                                McTextFormatter.addYellow(formatNumber(arrowMaterial.breakChance * 100f))));
             }
 
             for (String tempStr : strWait2Draw) {

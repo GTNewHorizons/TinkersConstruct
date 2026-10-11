@@ -5,7 +5,6 @@ import net.minecraft.inventory.Slot;
 
 import codechicken.nei.recipe.DefaultOverlayHandler;
 import codechicken.nei.recipe.IRecipeHandler;
-import tconstruct.tools.gui.CraftingStationGui;
 import tconstruct.tools.inventory.CraftingStationContainer;
 import tconstruct.tools.logic.CraftingStationLogic;
 
@@ -21,15 +20,7 @@ public class CraftingStationOverlayHandler extends DefaultOverlayHandler {
 
     @Override
     public int transferRecipe(GuiContainer gui, IRecipeHandler handler, int recipeIndex, int multiplier) {
-
-        if (gui.inventorySlots instanceof CraftingStationContainer stationContainer) {
-            if (stationContainer.logic.chest != null && gui instanceof CraftingStationGui stationGui) {
-                offsetx = 5 + stationGui.getChestWidth();
-            } else {
-                offsetx = 5;
-            }
-        }
-
+        offsetx = 5;
         return super.transferRecipe(gui, handler, recipeIndex, multiplier);
     }
 

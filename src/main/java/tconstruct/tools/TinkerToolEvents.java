@@ -1,5 +1,7 @@
 package tconstruct.tools;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -490,10 +492,10 @@ public class TinkerToolEvents implements IMobExtraInfoProvider {
                             Translations.BASE_CHANCE.get(0d),
                             StatCollector.translateToLocalFormatted(
                                     "tconstruct.mobsinfocompat.tinkers_construct_beheading",
-                                    m1),
+                                    formatNumber(m1)),
                             StatCollector.translateToLocalFormatted(
                                     "tconstruct.mobsinfocompat.tinkers_construct_beheading_1",
-                                    m2)));
+                                    formatNumber(m2))));
         }
 
         @Override

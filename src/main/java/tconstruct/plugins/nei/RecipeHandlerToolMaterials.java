@@ -1,5 +1,7 @@
 package tconstruct.plugins.nei;
 
+import static com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,26 +109,28 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                     ColorUtils.materialName.getColor(),
                     false);
             GuiDraw.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter4") + crecipe.material.durability,
+                    StatCollector.translateToLocal("gui.partcrafter4") + formatNumber(crecipe.material.durability),
                     35,
                     20,
                     ColorUtils.materialDurability.getColor(),
                     false);
             GuiDraw.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter5") + crecipe.material.handleModifier + "x",
+                    StatCollector.translateToLocal("gui.partcrafter5") + formatNumber(crecipe.material.handleModifier)
+                            + "x",
                     35,
                     30,
                     ColorUtils.materialHandleModifier1.getColor(),
                     false);
             GuiDraw.drawString(
                     StatCollector.translateToLocal("gui.partcrafter11")
-                            + Math.round(crecipe.material.durability * crecipe.material.handleModifier),
+                            + formatNumber(crecipe.material.durability * crecipe.material.handleModifier),
                     35,
                     40,
                     ColorUtils.materialHandleModifier2.getColor(),
                     false);
             GuiDraw.drawString(
-                    StatCollector.translateToLocal("gui.partcrafter6") + crecipe.material.miningspeed / 100F,
+                    StatCollector.translateToLocal("gui.partcrafter6")
+                            + formatNumber(crecipe.material.miningspeed / 100F),
                     35,
                     50,
                     ColorUtils.materialMiningSpeed.getColor(),
@@ -142,14 +146,16 @@ public class RecipeHandlerToolMaterials extends RecipeHandlerBase {
                     : StatCollector.translateToLocal("gui.partcrafter9");
             if (crecipe.material.attack() % 2 == 0) {
                 GuiDraw.drawString(
-                        StatCollector.translateToLocal("gui.partcrafter10") + crecipe.material.attack / 2 + heart,
+                        StatCollector.translateToLocal("gui.partcrafter10") + formatNumber(crecipe.material.attack / 2)
+                                + heart,
                         35,
                         70,
                         ColorUtils.materialAttack1.getColor(),
                         false);
             } else {
                 GuiDraw.drawString(
-                        StatCollector.translateToLocal("gui.partcrafter10") + crecipe.material.attack / 2F + heart,
+                        StatCollector.translateToLocal("gui.partcrafter10") + formatNumber(crecipe.material.attack / 2F)
+                                + heart,
                         35,
                         70,
                         ColorUtils.materialAttack2.getColor(),
