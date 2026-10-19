@@ -24,6 +24,10 @@ dependencies {
     runtimeOnly('com.github.GTNewHorizons:TiC-Tooltips:1.4.2:dev'){transitive = false}
     runtimeOnly("com.github.GTNewHorizons:ServerUtilities:2.4.10:dev")
 
+    // For testing crafting station layouts with large inventories (Binnie compartments)
+    devOnlyNonPublishable("com.github.GTNewHorizons:ForestryMC:4.11.39:dev")
+    devOnlyNonPublishable("com.github.GTNewHorizons:Binnie:2.6.48:dev")
+
 
     // For testing scythe crop harvesting
     // devOnlyNonPublishable("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
