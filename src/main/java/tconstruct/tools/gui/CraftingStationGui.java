@@ -688,12 +688,17 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         int descriptionWidth = logic.tinkerTable ? DESCRIPTION_WIDTH : 0;
         int sideHeight = logic.tinkerTable ? DESCRIPTION_HEIGHT : CRAFTING_HEIGHT;
         int availableWidth = availableChestWidth + CRAFTING_WIDTH + descriptionWidth;
-        int maxColumns = Math.max(MIN_COLUMNS, (availableChestWidth - border.w * 2) / slotElement.w);
+        int configuredMaxColumns = PHConstruct.craftingStationMaxColumns;
+        int minColumns = Math.min(MIN_COLUMNS, configuredMaxColumns);
+        int defaultColumns = Math.min(DEFAULT_COLUMNS, configuredMaxColumns);
+        int maxColumns = Math.min(
+                configuredMaxColumns,
+                Math.max(minColumns, (availableChestWidth - border.w * 2) / slotElement.w));
 
         if (PHConstruct.classicCraftingStationLayout) {
-            int totalRows = ceilDiv(chestSlotCount, DEFAULT_COLUMNS);
+            int totalRows = ceilDiv(chestSlotCount, defaultColumns);
             return createRectangularLayout(
-                    DEFAULT_COLUMNS,
+                    defaultColumns,
                     Math.min(totalRows, CLASSIC_MAX_ROWS),
                     totalRows > CLASSIC_MAX_ROWS,
                     headerHeight,
@@ -704,10 +709,10 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         }
 
         // Preserve the original six-column layout for standard connected inventories.
-        if (chestSlotCount <= DEFAULT_COLUMNS * CLASSIC_MAX_ROWS) {
+        if (chestSlotCount <= defaultColumns * CLASSIC_MAX_ROWS) {
             return createRectangularLayout(
-                    DEFAULT_COLUMNS,
-                    ceilDiv(chestSlotCount, DEFAULT_COLUMNS),
+                    defaultColumns,
+                    ceilDiv(chestSlotCount, defaultColumns),
                     false,
                     headerHeight,
                     descriptionWidth,
@@ -718,7 +723,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
         // Prefer a complete layout that fits, so scrolling remains a fallback.
         ChestLayout best = null;
-        for (int columns = MIN_COLUMNS; columns <= maxColumns; columns++) {
+        for (int columns = minColumns; columns <= maxColumns; columns++) {
             ChestLayout rectangle = createRectangularLayout(
                     columns,
                     ceilDiv(chestSlotCount, columns),
@@ -752,7 +757,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         int maxVisibleRows = Math.max(1, (availableHeight - headerHeight - border.h * 2) / slotElement.h);
         int centeredCraftingTop = (height - CRAFTING_HEIGHT) / 2;
         int maxVisibleLowerRows = Math.max(1, (height - NEI_VERTICAL_MARGIN - centeredCraftingTop) / slotElement.h);
-        for (int columns = MIN_COLUMNS; columns <= maxColumns; columns++) {
+        for (int columns = minColumns; columns <= maxColumns; columns++) {
             ChestLayout candidate = createRectangularLayout(
                     columns,
                     maxVisibleRows,
@@ -783,7 +788,7 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
 
         // Last resort for screens that cannot fit even the reserved minimum layout.
         return createRectangularLayout(
-                MIN_COLUMNS,
+                minColumns,
                 maxVisibleRows,
                 true,
                 headerHeight,

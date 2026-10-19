@@ -294,6 +294,17 @@ public class PHConstruct {
                 false,
                 "Use the classic crafting station layout with at most 10 visible inventory rows and scrolling for larger inventories, client-side only")
                 .getBoolean(false);
+        craftingStationMaxColumns = Math.max(
+                1,
+                Math.min(
+                        CRAFTING_STATION_MAX_COLUMNS_LIMIT,
+                        config.get(
+                                "Looks",
+                                "craftingStationMaxColumns",
+                                CRAFTING_STATION_MAX_COLUMNS_DEFAULT,
+                                "Maximum width in slots of the inventory panel attached to the crafting station, client-side only",
+                                1,
+                                CRAFTING_STATION_MAX_COLUMNS_LIMIT).getInt(CRAFTING_STATION_MAX_COLUMNS_DEFAULT)));
 
         // dimension blacklist
         cfgForbiddenDim = config
@@ -582,6 +593,9 @@ public class PHConstruct {
     public static boolean showTravellerAccessories;
     public static boolean enableTinkerInventoryTab;
     public static boolean classicCraftingStationLayout;
+    public static final int CRAFTING_STATION_MAX_COLUMNS_DEFAULT = 7;
+    public static final int CRAFTING_STATION_MAX_COLUMNS_LIMIT = 64;
+    public static int craftingStationMaxColumns;
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;
