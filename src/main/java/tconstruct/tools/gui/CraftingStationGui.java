@@ -691,9 +691,8 @@ public class CraftingStationGui extends GuiContainer implements INEIGuiHandler {
         int configuredMaxColumns = PHConstruct.craftingStationMaxColumns;
         int minColumns = Math.min(MIN_COLUMNS, configuredMaxColumns);
         int defaultColumns = Math.min(DEFAULT_COLUMNS, configuredMaxColumns);
-        int maxColumns = Math.min(
-                configuredMaxColumns,
-                Math.max(minColumns, (availableChestWidth - border.w * 2) / slotElement.w));
+        int maxColumns = Math
+                .min(configuredMaxColumns, Math.max(minColumns, (availableChestWidth - border.w * 2) / slotElement.w));
 
         if (PHConstruct.classicCraftingStationLayout) {
             int totalRows = ceilDiv(chestSlotCount, defaultColumns);
