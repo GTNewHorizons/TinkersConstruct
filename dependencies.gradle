@@ -1,12 +1,12 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnlyApi('com.github.GTNewHorizons:Angelica:2.2.13:api')
+    compileOnlyApi('com.github.GTNewHorizons:Angelica:2.2.35:api')
     api("com.github.GTNewHorizons:Mantle:0.5.4:dev")
-    api("com.github.GTNewHorizons:ForgeMultipart:1.7.14:dev")
+    api("com.github.GTNewHorizons:ForgeMultipart:1.7.18:dev")
     // gtnhlib is compileOnlyApi by us, but needed at runtime by nei, so require the correct version
-    api("com.github.GTNewHorizons:GTNHLib:0.11.48:dev")
-    implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.139-GTNH:dev")
+    api("com.github.GTNewHorizons:GTNHLib:0.11.54:dev")
+    implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.163-GTNH:dev")
     compileOnlyApi("curse.maven:cofh-core-69162:2388751")
     compileOnly("com.github.GTNewHorizons:inventory-tweaks:1.7.1:api")
     compileOnly("com.github.GTNewHorizons:waila:1.19.34:api")
@@ -19,14 +19,14 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:Mobs-Info:0.6.0-GTNH:dev")
     compileOnlyApi("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
     compileOnlyApi("com.github.GTNewHorizons:Natura:2.8.24:dev")
-    compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.23-GTNH:dev')
-    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.6')
+    compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.25-GTNH:dev')
+    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.10')
     runtimeOnly('com.github.GTNewHorizons:TiC-Tooltips:1.4.2:dev'){transitive = false}
-    runtimeOnly("com.github.GTNewHorizons:ServerUtilities:2.4.10:dev")
+    runtimeOnly("com.github.GTNewHorizons:ServerUtilities:2.4.21:dev")
 
     // For testing crafting station layouts with large inventories (Binnie compartments)
     devOnlyNonPublishable("com.github.GTNewHorizons:ForestryMC:4.11.39:dev")
-    devOnlyNonPublishable("com.github.GTNewHorizons:Binnie:2.6.48:dev")
+    devOnlyNonPublishable("com.github.GTNewHorizons:Binnie:2.6.49:dev")
 
 
     // For testing scythe crop harvesting
