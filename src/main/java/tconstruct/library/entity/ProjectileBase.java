@@ -21,6 +21,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
+import org.joml.Math;
+
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
@@ -30,6 +32,7 @@ import tconstruct.library.tools.AbilityHelper;
 import tconstruct.library.tools.ToolCore;
 import tconstruct.library.weaponry.AmmoItem;
 import tconstruct.util.Reference;
+import tconstruct.util.config.PHConstruct;
 import tconstruct.weaponry.entity.ArrowEntity;
 
 // have to base this on EntityArrow, otherwise minecraft does derp things because everything is handled based on class.
@@ -182,6 +185,11 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
     }
 
     public void onHitEntity(MovingObjectPosition movingobjectposition) {
+        if (!PHConstruct.projectilesIgnoreDeadEntities) {
+            if (movingobjectposition.entityHit != null && !movingobjectposition.entityHit.isEntityAlive()) {
+                return; // Ignore hit if the entity is already dead
+            }
+        }
         NBTTagCompound tags = returnStack.getTagCompound().getCompoundTag("InfiTool");
         float speed = MathHelper
                 .sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
@@ -438,7 +446,8 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
             float f1;
 
             for (Entity ent : list) {
-                if (!ent.canBeCollidedWith()) continue;
+                if (!ent.canBeCollidedWith() || (PHConstruct.projectilesIgnoreDeadEntities && !ent.isEntityAlive()))
+                    continue;
                 // we don't shoot ourselves into the foot.
                 if (ent == this.shootingEntity && this.ticksInAir < 5) continue;
 

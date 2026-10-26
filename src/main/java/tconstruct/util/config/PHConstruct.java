@@ -396,6 +396,13 @@ public class PHConstruct {
                 true,
                 "Can the Scythe harvest crops in an AOE on right click?.").getBoolean();
 
+        projectilesIgnoreDeadEntities = config.get(
+                "general",
+                "Projectiles ignore dead entities",
+                true,
+                "Should TiC projectiles collide with mobs that are in a death animation? Setting this to false means that projectiles are blocked by them as usual, which can make ranged combat inconvenient.")
+                .getBoolean(true);
+
         bypassGloveSpeedCheck = config.get(
                 "Difficulty Changes",
                 "Tinkerer's Glove Bypass Certain Block Restrictions",
@@ -619,4 +626,5 @@ public class PHConstruct {
     // New features
     public static boolean scytheAoeHarvest;
     public static boolean bypassGloveSpeedCheck;
+    public static boolean projectilesIgnoreDeadEntities;
 }
