@@ -55,7 +55,7 @@ public class Chisel extends ToolCore {
         Block block = world.getBlock(x, y, z);
         int meta = world.getBlockMetadata(x, y, z);
         DetailInput details = TConstruct.chiselDetailing.getDetailing(block, meta);
-        if (details == null || world.getTileEntity(x, y, z) != null) return false;
+        if (details == null) return false;
         if (world.isRemote) return true;
 
         if (!world.setBlock(x, y, z, Block.getBlockFromItem(details.output.getItem()), details.outputMeta, 3))
