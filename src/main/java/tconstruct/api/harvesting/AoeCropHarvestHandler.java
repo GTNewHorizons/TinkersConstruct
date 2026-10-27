@@ -14,11 +14,14 @@ public class AoeCropHarvestHandler {
 
     /**
      * We're using EventPriority.HIGH here to run before RightClickCropHandler from EnderCore.
+     * <p>
+     * Only right clicks harvest.
      */
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void handlePlayerInteractEvent(PlayerInteractEvent event) {
         ItemStack equippedItem = event.entityPlayer.getCurrentEquippedItem();
-        if (!event.world.isRemote && isScythe(equippedItem)
+        if (!event.world.isRemote && event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK
+                && isScythe(equippedItem)
                 && harvestCropsInRange(equippedItem, event.entityPlayer, event.world, event.x, event.y, event.z)) {
             event.setCanceled(true);
         }
