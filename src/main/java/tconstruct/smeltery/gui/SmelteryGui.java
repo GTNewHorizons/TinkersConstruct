@@ -43,7 +43,6 @@ public class SmelteryGui extends ActiveContainerGui {
     private final int columns;
     private final int smelterySize;
     public static final int maxRows = 8;
-    private int fuelDisplayTick = 0;
 
     public SmelteryGui(InventoryPlayer inventoryplayer, SmelteryLogic smeltery, World world, int x, int y, int z) {
         super((ActiveContainer) smeltery.getGuiContainer(inventoryplayer, world, x, y, z));
@@ -63,7 +62,6 @@ public class SmelteryGui extends ActiveContainerGui {
             return;
         }
 
-        if (fuelDisplayTick++ % 5 == 0) logic.updateFuelDisplay();
         updateScrollbar(mouseX, mouseY);
 
         super.drawScreen(mouseX, mouseY, par3);
@@ -280,10 +278,8 @@ public class SmelteryGui extends ActiveContainerGui {
         if (slotSize > columns * maxRows) slotSize = columns * maxRows;
         int iter;
         for (iter = 0; iter < slotSize && iter + slotPos * columns < smelterySize; iter++) {
-            int slotTemp = logic.getTempForSlot(iter + slotPos * columns) - 20;
-            int maxTemp = logic.getMeltingPointForSlot(iter + slotPos * columns) - 20;
-            if (slotTemp > 0 && maxTemp > 0) {
-                int size = Math.max(1, Math.min(16, 16 * slotTemp / maxTemp));
+            int size = ((SmelteryContainer) inventorySlots).getHeatLevel(iter + slotPos * columns);
+            if (size > 0) {
                 drawTexturedModalRect(
                         cornerX - xleft + (iter % columns * 22),
                         cornerY + 8 + (iter / columns * 18) + 16 - size,

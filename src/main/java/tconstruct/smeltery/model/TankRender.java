@@ -45,8 +45,10 @@ public class TankRender implements ISimpleBlockRenderingHandler {
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
             RenderBlocks renderer) {
         if (modelID == tankModelID) {
-            // Liquid
-            if (ForgeHooksClient.getWorldRenderPass() == 0) {
+            // Liquid, in the translucent pass: the alpha test of pass 0 discards fluid textures that are less than
+            // 50% opaque (e.g. GT gases). The block itself is drawn in pass 0, its textures are fully opaque or fully
+            // clear.
+            if (ForgeHooksClient.getWorldRenderPass() == 1) {
                 LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(x, y, z);
                 if (logic != null && logic.containsFluid()) {
                     FluidStack liquid = logic.tank.getFluid();

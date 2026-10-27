@@ -50,7 +50,7 @@ public class PartCrafterGui extends GuiContainer implements INEIGuiHandler {
     private static final int DESC_WIDTH = 126;
     private static final int DESC_HEIGHT = 166;
     private static final int CHEST_WIDTH = 122;
-    private static final int CHEST_HEIGHT = 114;
+    private static final int CHEST_HEIGHT = 115;
     private static final String SPACE_STRING = " ";
 
     // Panel positions
