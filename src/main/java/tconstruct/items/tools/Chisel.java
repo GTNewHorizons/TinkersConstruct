@@ -1,6 +1,8 @@
 package tconstruct.items.tools;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -8,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import tconstruct.TConstruct;
 import tconstruct.library.crafting.Detailing.DetailInput;
 import tconstruct.library.tools.AbilityHelper;
@@ -56,7 +60,10 @@ public class Chisel extends ToolCore {
         int meta = world.getBlockMetadata(x, y, z);
         DetailInput details = TConstruct.chiselDetailing.getDetailing(block, meta);
         if (details == null) return false;
-        if (world.isRemote) return true;
+        if (world.isRemote) {
+            releaseUseKey();
+            return true;
+        }
 
         if (!world.setBlock(x, y, z, Block.getBlockFromItem(details.output.getItem()), details.outputMeta, 3))
             return false;
@@ -73,6 +80,11 @@ public class Chisel extends ToolCore {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         return stack;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void releaseUseKey() {
+        KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode(), false);
     }
 
     @Override
