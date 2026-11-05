@@ -184,6 +184,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
     public void onHitEntity(MovingObjectPosition movingobjectposition) {
         // Early return if the entity is already dead
         if (!movingobjectposition.entityHit.isEntityAlive()) {
+            if (!bounceOnNoDamage) this.setDead();
             this.bounce();
             return;
         }
