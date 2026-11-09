@@ -186,6 +186,9 @@ public abstract class CastingBlockLogic extends InventoryLogic
                     this.liquid = copyLiquid;
                     needsUpdate = true;
                     markDirty();
+                    // sync the cooling start immediately so the client animation begins on time;
+                    // the client then counts down on its own (no per-tick sync needed)
+                    if (castingDelay > 0) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 }
                 return copyLiquid.amount;
             } else {
@@ -202,6 +205,9 @@ public abstract class CastingBlockLogic extends InventoryLogic
                     worldObj.func_147479_m(xCoord, yCoord, zCoord);
                     needsUpdate = true;
                     markDirty();
+                    // sync the cooling start immediately so the client animation begins on time;
+                    // the client then counts down on its own (no per-tick sync needed)
+                    if (castingDelay > 0) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 }
                 return roomInTank;
             } else {
@@ -382,8 +388,13 @@ public abstract class CastingBlockLogic extends InventoryLogic
     @Override
     public void updateEntity() {
         if (castingDelay > 0) {
+            // The client decrements this on its own each tick, so the cooling progress (used by
+            // the casting animation) does not need to be synced every tick. Only the start and end
+            // are synced; the end sync corrects any drift. Descriptor packets are batched anyway.
             castingDelay--;
-            if (castingDelay == 0) castLiquid();
+            if (castingDelay == 0) {
+                castLiquid();
+            }
         }
         if (renderOffset > 0) {
             // renderOffset -= Math.max(renderOffset/3, 6);
@@ -489,6 +500,24 @@ public abstract class CastingBlockLogic extends InventoryLogic
         }
 
         return (int) (((maxCastingDelay - castingDelay) / (double) maxCastingDelay) * 100);
+    }
+
+    public int getCastingDelay() {
+        return castingDelay;
+    }
+
+    public int getRenderOffset() {
+        return renderOffset;
+    }
+
+    public int getMaxCastingDelay() {
+        return maxCastingDelay;
+    }
+
+    public ItemStack getRecipeOutput() {
+        if (liquid == null) return null;
+        CastingRecipe recipe = liquidCasting.getCastingRecipe(liquid, inventory[0]);
+        return recipe != null ? recipe.getResult() : null;
     }
 
     @Override
