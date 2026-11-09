@@ -1,6 +1,7 @@
 package tconstruct.tools.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.Tessellator;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,6 +22,18 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiElementDuex {
+
+    protected static boolean batching;
+
+    static void beginBatch() {
+        Tessellator.instance.startDrawingQuads();
+        batching = true;
+    }
+
+    static void endBatch() {
+        batching = false;
+        Tessellator.instance.draw();
+    }
 
     // this is totally completely ugly but it's a simple solution that doesn't clutter everything too much >_>
     public static int defaultTexW = 256;
@@ -68,6 +81,16 @@ public class GuiElementDuex {
      * @param yPos Y-Coordinate on the screen
      */
     public int draw(int xPos, int yPos) {
+        if (batching) {
+            Tessellator tessellator = Tessellator.instance;
+            float minU = (float) x / texW, maxU = (float) (x + w) / texW;
+            float minV = (float) y / texH, maxV = (float) (y + h) / texH;
+            tessellator.addVertexWithUV(xPos, yPos + h, 0, minU, maxV);
+            tessellator.addVertexWithUV(xPos + w, yPos + h, 0, maxU, maxV);
+            tessellator.addVertexWithUV(xPos + w, yPos, 0, maxU, minV);
+            tessellator.addVertexWithUV(xPos, yPos, 0, minU, minV);
+            return w;
+        }
         // drawModalRectWithCustomSizedTexture
         GuiScreen.func_146110_a(xPos, yPos, x, y, w, h, texW, texH);
         return w;
