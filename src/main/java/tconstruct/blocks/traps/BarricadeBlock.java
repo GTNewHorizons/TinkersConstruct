@@ -90,7 +90,7 @@ public class BarricadeBlock extends MantleBlock {
                         x + 0.5F,
                         y + 0.5F,
                         z + 0.5F,
-                        var9.stepSound.soundName,
+                        var9.stepSound.func_150496_b(),
                         (var9.stepSound.getVolume() + 1.0F) / 2.0F,
                         var9.stepSound.getPitch() * 0.8F);
                 player.swingItem();
