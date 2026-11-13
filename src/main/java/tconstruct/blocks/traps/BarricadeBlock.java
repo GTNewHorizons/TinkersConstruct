@@ -29,6 +29,7 @@ public class BarricadeBlock extends MantleBlock {
         this.modelBlock = model;
         this.modelMeta = meta;
         setHardness(4.0F);
+        this.setStepSound(Block.soundTypeWood);
         this.setCreativeTab(TConstructRegistry.blockTab);
     }
 
