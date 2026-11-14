@@ -25,7 +25,7 @@ public class ArmorExtended implements IInventory {
 
     public ItemStack[] inventory = new ItemStack[7];
     public WeakReference<EntityPlayer> parent;
-    public UUID globalID = UUID.fromString("B243BE32-DC1B-4C53-8D13-8752D5C69D5B");
+    public static final UUID globalID = UUID.fromString("B243BE32-DC1B-4C53-8D13-8752D5C69D5B");
 
     public void init(EntityPlayer player) {
         parent = new WeakReference<>(player);
@@ -52,20 +52,14 @@ public class ArmorExtended implements IInventory {
             if (inventory[slot].stackSize <= quantity) {
                 ItemStack stack = inventory[slot];
                 inventory[slot] = null;
-                EntityPlayer owner = parent.get();
-                TPlayerStats ownerStats = owner == null ? null : TPlayerStats.get(owner);
-                if (ownerStats != null) {
-                    recalculateHealth(owner, ownerStats);
-                }
+                markDirty();
                 return stack;
             }
             ItemStack split = inventory[slot].splitStack(quantity);
             if (inventory[slot].stackSize == 0) {
                 inventory[slot] = null;
             }
-            EntityPlayer player = parent.get();
-            TPlayerStats stats = TPlayerStats.get(player);
-            recalculateHealth(player, stats);
+            markDirty();
             return split;
         } else {
             return null;
@@ -86,9 +80,7 @@ public class ArmorExtended implements IInventory {
             itemstack.stackSize = getInventoryStackLimit();
         }
 
-        EntityPlayer player = parent.get();
-        TPlayerStats stats = TPlayerStats.get(player);
-        recalculateHealth(player, stats);
+        markDirty();
     }
 
     @Override
@@ -109,7 +101,10 @@ public class ArmorExtended implements IInventory {
     @Override
     public void markDirty() {
         EntityPlayer player = parent.get();
-        TPlayerStats stats = TPlayerStats.get(player);
+        TPlayerStats stats = player == null ? null : TPlayerStats.get(player);
+        if (stats == null) {
+            return;
+        }
         // recalculateSkills(player, stats);
         recalculateHealth(player, stats);
 
