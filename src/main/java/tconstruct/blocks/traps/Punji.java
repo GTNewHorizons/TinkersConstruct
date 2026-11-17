@@ -60,7 +60,7 @@ public class Punji extends MantleBlock {
                         (float) x + 0.5F,
                         (float) y + 0.5F,
                         (float) z + 0.5F,
-                        this.stepSound.soundName,
+                        this.stepSound.func_150496_b(),
                         (this.stepSound.getVolume() + 1.0F) / 2.0F,
                         this.stepSound.getPitch() * 0.8F);
                 player.swingItem();
