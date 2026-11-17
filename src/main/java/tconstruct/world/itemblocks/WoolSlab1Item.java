@@ -48,7 +48,7 @@ public class WoolSlab1Item extends MultiItemBlock {
                         (float) x + 0.5F,
                         (float) y + 0.5F,
                         (float) z + 0.5F,
-                        this.block.stepSound.soundName,
+                        this.block.stepSound.func_150496_b(),
                         (this.block.stepSound.getVolume() + 1.0F) / 2.0F,
                         this.block.stepSound.getPitch() * 0.8F);
                 --stack.stackSize;
