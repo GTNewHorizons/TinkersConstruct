@@ -16,8 +16,6 @@ import tconstruct.library.crafting.Smeltery;
 
 public class RecipeHandlerAlloying extends RecipeHandlerBase {
 
-    public static final Rectangle OUTPUT_TANK = new Rectangle(118, 9, 18, 32);
-
     public class CachedAlloyingRecipe extends CachedRecipe {
 
         private final List<PositionedStack> inputs;
@@ -32,13 +30,7 @@ public class RecipeHandlerAlloying extends RecipeHandlerBase {
                     maxAmount = stack.amount;
                 }
             }
-            this.output = new PositionedStack.Tank(
-                    recipe.result,
-                    OUTPUT_TANK.x,
-                    OUTPUT_TANK.y,
-                    OUTPUT_TANK.width,
-                    OUTPUT_TANK.height,
-                    maxAmount);
+            this.output = new PositionedStack.Tank(recipe.result, 118, 9, 18, 32, maxAmount);
 
             int width = 36 / recipe.mixers.size();
             int counter = 0;
