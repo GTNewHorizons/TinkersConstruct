@@ -3,6 +3,7 @@ package tconstruct.modifiers.tools;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import tconstruct.library.crafting.ToolBuilder;
 import tconstruct.library.modifier.ItemModifier;
 import tconstruct.util.config.PHConstruct;
 
@@ -37,18 +38,20 @@ public class ModDurability extends ItemModifier {
         NBTTagCompound tags = tool.getTagCompound().getCompoundTag("InfiTool");
 
         int base = tags.getInteger("BaseDurability");
-        int bonus = tags.getInteger("BonusDurability");
+        long bonus = tags.getInteger("BonusDurability");
         float modDur = tags.getFloat("ModDurability");
 
         bonus += durability;
         modDur += modifier;
         tags.setBoolean("Broken", false);
 
-        int total = (int) ((base + bonus) * (modDur + 1f));
+        // long: base + bonus can exceed Integer.MAX_VALUE, and a wrapped sum would trip the <= 0 check below.
+        // The multiply is still done in float, so a tool that doesn't overflow gets exactly the value it got before.
+        long total = (long) ((base + bonus) * (modDur + 1f));
         if (total <= 0) total = 1;
 
-        tags.setInteger("TotalDurability", total);
-        tags.setInteger("BonusDurability", bonus);
+        tags.setInteger("TotalDurability", ToolBuilder.clampDurability(total));
+        tags.setInteger("BonusDurability", ToolBuilder.clampDurability(bonus));
         tags.setFloat("ModDurability", modDur);
 
         if (PHConstruct.miningLevelIncrease) {

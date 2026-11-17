@@ -691,7 +691,7 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
             int energy = tags.getInteger("Energy");
             int max = getMaxEnergyStored(stack);
             if (energy > 0) {
-                int damage = ((max - energy) * 100) / max;
+                int damage = (int) (((long) max - energy) * 100 / max);
                 if (damage == 0 && max - energy > 0) damage = 1;
                 super.setDamage(stack, damage);
                 return damage;
@@ -700,7 +700,8 @@ public abstract class ToolCore extends Item implements IEnergyContainerItem, IEq
         int dur = tags.getCompoundTag("InfiTool").getInteger("Damage");
         int max = tags.getCompoundTag("InfiTool").getInteger("TotalDurability");
         int damage = 0;
-        if (max > 0) damage = (dur * 100) / max;
+        // long: a tool with more than ~21M durability wraps dur * 100 once it is worn enough
+        if (max > 0) damage = (int) ((long) dur * 100 / max);
 
         // rounding.
         if (damage == 0 && dur > 0) damage = 1;

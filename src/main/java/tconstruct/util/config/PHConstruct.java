@@ -294,6 +294,13 @@ public class PHConstruct {
                 false,
                 "Use the classic crafting station layout with at most 10 visible inventory rows and scrolling for larger inventories, client-side only")
                 .getBoolean(false);
+        craftingStationMinBookmarkColumns = config.getInt(
+                "craftingStationMinBookmarkColumns",
+                "Looks",
+                4,
+                1,
+                64,
+                "Minimum width in slots kept free for the NEI bookmark panel when laying out the crafting station inventory, client-side only");
 
         // dimension blacklist
         cfgForbiddenDim = config
@@ -582,6 +589,7 @@ public class PHConstruct {
     public static boolean showTravellerAccessories;
     public static boolean enableTinkerInventoryTab;
     public static boolean classicCraftingStationLayout;
+    public static int craftingStationMinBookmarkColumns;
 
     // dimensionblacklist
     public static boolean slimeIslGenDim0Only;

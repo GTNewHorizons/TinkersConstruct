@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 
 import tconstruct.library.util.AoEExclusionList;
 import tconstruct.library.util.BlockSideHitListener;
@@ -43,25 +44,34 @@ public abstract class AOEHarvestTool extends HarvestTool {
 
         int sideHit = BlockSideHitListener.getSideHit(player);
 
+        // Width++/Height++ expander modifiers enlarge the area by one block on each side of their axis
+        int widthRange = breakRadius + (toolTags.getBoolean("Width++") ? 1 : 0);
+        int heightRange = breakRadius + (toolTags.getBoolean("Height++") ? 1 : 0);
+
         // we successfully destroyed a block. time to do AOE!
-        int xRange = breakRadius;
-        int yRange = breakRadius;
+        int xRange = widthRange;
+        int yRange = heightRange;
         int zRange = breakDepth;
         switch (sideHit) {
             case 0:
-            case 1:
+            case 1: {
+                // floor/ceiling: width sits perpendicular to the player's facing, height runs along it
+                int facing = MathHelper.floor_double((player.rotationYaw * 4F) / 360F + 0.5D) & 3;
+                boolean facingZ = facing == 0 || facing == 2;
+                xRange = facingZ ? widthRange : heightRange;
                 yRange = breakDepth;
-                zRange = breakRadius;
+                zRange = facingZ ? heightRange : widthRange;
                 break;
+            }
             case 2:
             case 3:
-                xRange = breakRadius;
+                xRange = widthRange;
                 zRange = breakDepth;
                 break;
             case 4:
             case 5:
                 xRange = breakDepth;
-                zRange = breakRadius;
+                zRange = widthRange;
                 break;
         }
 
