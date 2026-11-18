@@ -1,6 +1,7 @@
 package tconstruct.library.entity;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -221,6 +222,16 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
         // this is needed so really high scaling bow&arrow combinations don't get out of hand
         if (this instanceof ArrowEntity) damage = Math.max(0, damage - totalAttack / 2f);
+
+        // Owner player restoration
+        if (shootingEntity == null && cachedOwnerUUID != null) {
+            Entity entity = this.worldObj.func_152378_a(cachedOwnerUUID);
+
+            if (entity != null) {
+                shootingEntity = entity;
+                cachedOwnerUUID = null;
+            }
+        }
 
         boolean shotByPlayer = this.shootingEntity != null && this.shootingEntity instanceof EntityPlayer;
 
@@ -599,11 +610,31 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         }
     }
 
+    private UUID cachedOwnerUUID;
+
     /** NBT stuff **/
     @Override
     public void writeEntityToNBT(NBTTagCompound tags) {
-        super.writeEntityToNBT(tags);
+        // vanilla
+        tags.setShort("xTile", (short) this.field_145791_d);
+        tags.setShort("yTile", (short) this.field_145792_e);
+        tags.setShort("zTile", (short) this.field_145789_f);
+        tags.setShort("life", (short) this.ticksInGround);
+        tags.setByte("inTile", (byte) Block.getIdFromBlock(this.field_145790_g));
+        tags.setByte("inData", (byte) this.inData);
+        tags.setByte("shake", (byte) this.arrowShake);
+        tags.setByte("inGround", (byte) (this.inGround ? 1 : 0));
+        tags.setByte("pickup", (byte) this.canBePickedUp);
+        tags.setDouble("damage", this.damage);
 
+        // Owner restoration
+        UUID uuid = shootingEntity != null ? shootingEntity.getUniqueID() : cachedOwnerUUID;
+        if (uuid != null) {
+            tags.setLong("OwnerUUIDMost", uuid.getMostSignificantBits());
+            tags.setLong("OwnerUUIDLeast", uuid.getLeastSignificantBits());
+        }
+
+        // TiC
         tags.setTag("Throwable", this.returnStack.writeToNBT(new NBTTagCompound()));
         tags.setByte("onGround", (byte) (onGround ? 1 : 0));
         // tags.setBoolean("Retrieval", doNotRetrieve);
@@ -611,8 +642,31 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
     @Override
     public void readEntityFromNBT(NBTTagCompound tags) {
-        super.readEntityFromNBT(tags);
+        // vanilla
+        this.field_145791_d = tags.getShort("xTile");
+        this.field_145792_e = tags.getShort("yTile");
+        this.field_145789_f = tags.getShort("zTile");
+        this.ticksInGround = tags.getShort("life");
+        this.field_145790_g = Block.getBlockById(tags.getByte("inTile") & 255);
+        this.inData = tags.getByte("inData") & 255;
+        this.arrowShake = tags.getByte("shake") & 255;
+        this.inGround = tags.getByte("inGround") == 1;
+        if (tags.hasKey("damage", 99)) {
+            this.damage = tags.getDouble("damage");
+        }
 
+        if (tags.hasKey("pickup", 99)) {
+            this.canBePickedUp = tags.getByte("pickup");
+        } else if (tags.hasKey("player", 99)) {
+            this.canBePickedUp = tags.getBoolean("player") ? 1 : 0;
+        }
+
+        // Owner restoration
+        if (tags.hasKey("OwnerUUIDMost", 99)) {
+            cachedOwnerUUID = new UUID(tags.getLong("OwnerUUIDMost"), tags.getLong("OwnerUUIDLeast"));
+        }
+
+        // TiC
         this.returnStack = ItemStack.loadItemStackFromNBT(tags.getCompoundTag("Throwable"));
         onGround = tags.getByte("onGround") == 1;
         // doNotRetrieve = tags.getBoolean("Retrieval");
