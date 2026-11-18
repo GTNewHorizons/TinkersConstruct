@@ -17,7 +17,7 @@ import tconstruct.library.crafting.DryingRackRecipes.DryingRecipe;
 
 public class RecipeHandlerDryingRack extends RecipeHandlerBase {
 
-    public class CachedDryingRackRecipe extends CachedBaseRecipe {
+    public class CachedDryingRackRecipe extends CachedRecipe {
 
         public PositionedStack input;
         public PositionedStack output;
@@ -64,7 +64,7 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
     public void drawBackground(int recipe) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GuiDraw.changeTexture(this.getGuiTexture());
-        GuiDraw.drawTexturedModalRect(0, 0, 0, 0, 160, 65);
+        GuiDraw.drawTexturedModalRect(0, 0, 0, 0, 160, 50);
     }
 
     @Override
