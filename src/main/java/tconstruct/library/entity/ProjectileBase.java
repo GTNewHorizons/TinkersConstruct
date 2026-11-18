@@ -182,6 +182,13 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
     }
 
     public void onHitEntity(MovingObjectPosition movingobjectposition) {
+        // Early return if the entity is already dead
+        if (!movingobjectposition.entityHit.isEntityAlive()) {
+            if (!bounceOnNoDamage) this.setDead();
+            this.bounce();
+            return;
+        }
+
         NBTTagCompound tags = returnStack.getTagCompound().getCompoundTag("InfiTool");
         float speed = MathHelper
                 .sqrt_double(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
@@ -285,14 +292,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         // and now we come to the part where we actually deal the damage!
         if (!dealDamage(damage, ammo, tags, movingobjectposition.entityHit)) {
             if (!bounceOnNoDamage) this.setDead();
-
-            // bounce off if we didn't deal damage
-            this.motionX *= -0.10000000149011612D;
-            this.motionY *= -0.10000000149011612D;
-            this.motionZ *= -0.10000000149011612D;
-            this.rotationYaw += 180.0F;
-            this.prevRotationYaw += 180.0F;
-            this.ticksInAir = 0;
+            this.bounce();
             return;
         }
         // we hit it, BURNNNNNN
@@ -318,6 +318,15 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
                 // this.shootingEntity = movingobjectposition.entityHit;
             }
         }
+    }
+
+    private void bounce() {
+        this.motionX *= -0.10000000149011612D;
+        this.motionY *= -0.10000000149011612D;
+        this.motionZ *= -0.10000000149011612D;
+        this.rotationYaw += 180.0F;
+        this.prevRotationYaw += 180.0F;
+        this.ticksInAir = 0;
     }
 
     // returns true if it was successful
