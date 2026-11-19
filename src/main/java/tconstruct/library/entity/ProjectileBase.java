@@ -224,12 +224,12 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         if (this instanceof ArrowEntity) damage = Math.max(0, damage - totalAttack / 2f);
 
         // Owner player restoration
-        if (!this.worldObj.isRemote && this.shootingEntity == null && this.OwnerUUID != null) {
-            Entity entity = this.worldObj.func_152378_a(this.OwnerUUID);
+        if (!this.worldObj.isRemote && this.shootingEntity == null && this.ownerUUID != null) {
+            Entity entity = this.worldObj.func_152378_a(this.ownerUUID);
 
             if (entity != null) {
                 this.shootingEntity = entity;
-                this.OwnerUUID = null;
+                this.ownerUUID = null;
             }
         }
 
@@ -610,7 +610,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         }
     }
 
-    private UUID OwnerUUID;
+    private UUID ownerUUID;
 
     /** NBT stuff **/
     @Override
@@ -628,7 +628,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
         tags.setDouble("damage", this.damage);
 
         // Owner restoration
-        UUID uuid = this.shootingEntity != null ? this.shootingEntity.getUniqueID() : this.OwnerUUID;
+        UUID uuid = this.shootingEntity != null ? this.shootingEntity.getUniqueID() : this.ownerUUID;
         if (uuid != null) {
             tags.setLong("OwnerUUIDMost", uuid.getMostSignificantBits());
             tags.setLong("OwnerUUIDLeast", uuid.getLeastSignificantBits());
@@ -663,7 +663,7 @@ public abstract class ProjectileBase extends EntityArrow implements IEntityAddit
 
         // Owner restoration
         if (tags.hasKey("OwnerUUIDMost", 99)) {
-            this.OwnerUUID = new UUID(tags.getLong("OwnerUUIDMost"), tags.getLong("OwnerUUIDLeast"));
+            this.ownerUUID = new UUID(tags.getLong("OwnerUUIDMost"), tags.getLong("OwnerUUIDLeast"));
         }
 
         // TiC
