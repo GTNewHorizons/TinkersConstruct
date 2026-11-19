@@ -50,7 +50,7 @@ public class SlimeGel extends TConstructBlock {
                         x + 0.5F,
                         y + 0.5F,
                         z + 0.5F,
-                        var9.stepSound.soundName,
+                        var9.stepSound.getStepResourcePath(),
                         (var9.stepSound.getVolume()) / 2.0F,
                         var9.stepSound.getPitch() * 0.65F);
             }

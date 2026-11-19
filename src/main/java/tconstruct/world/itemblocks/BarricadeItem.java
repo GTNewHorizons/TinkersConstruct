@@ -82,7 +82,7 @@ public class BarricadeItem extends ItemBlock {
                         (float) x + 0.5F,
                         (float) y + 0.5F,
                         (float) z + 0.5F,
-                        block.stepSound.soundName,
+                        block.stepSound.func_150496_b(),
                         (block.stepSound.getVolume() + 1.0F) / 2.0F,
                         block.stepSound.getPitch() * 0.8F);
                 --stack.stackSize;
